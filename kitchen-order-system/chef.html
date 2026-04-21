@@ -2,11 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>Chef Dashboard - Kitchen Order System</title>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+// FIREBASE CONFIGURATION - Embedded directly
+const firebaseConfig = {
+    apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
+    authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
+    projectId: "kitchenordersystem-66eb2",
+    storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
+    messagingSenderId: "786074432195",
+    appId: "1:786074432195:web:8381f2cba8f43002232876"
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+console.log("✅ Firebase initialized successfully");
+</script>
 
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -124,13 +144,11 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 <button class="admin-btn-mobile" onclick="openAdmin()">👑 Open Admin Panel</button>
 <button class="admin-fab" onclick="openAdmin()">👑 Admin Panel</button>
 <div class="sync-status" id="syncStatus">🔄 Connecting to cloud...</div>
-</div>
 
 <script>
 // ========================
-// FIREBASE VERSION - FULL WORKING
+// ITEMS DATABASE
 // ========================
-
 const allItems = [
     {code: "HOT001", name: "Tomato Peeled Tin", unit: "can", section: "Hot Kitchen", maxLimit: 12},
     {code: "HOT002", name: "Black Pepper Corn", unit: "kg", section: "Hot Kitchen", maxLimit: 4},
@@ -163,6 +181,8 @@ const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry", "Butchery", "Beach Ho
 
 kitchens.forEach(kitchen => { kitchenData[kitchen] = { cart: [], chefName: "" }; });
 
+// ============ FIREBASE FUNCTIONS ============
+
 async function loadRequestsFromFirebase() {
     try {
         const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
@@ -174,7 +194,7 @@ async function loadRequestsFromFirebase() {
         document.getElementById("syncStatus").style.color = "#27ae60";
     } catch (error) {
         console.error("Firebase error:", error);
-        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
+        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode - Check Firebase";
         document.getElementById("syncStatus").style.color = "#e74c3c";
     }
 }
@@ -185,9 +205,12 @@ async function saveRequestToFirebase(request) {
         showToast("✅ Request saved to cloud!");
         await loadRequestsFromFirebase();
     } catch (error) {
-        showToast("❌ Error saving to cloud");
+        console.error("Save error:", error);
+        showToast("❌ Error saving to cloud: " + error.message);
     }
 }
+
+// ============ HELPER FUNCTIONS ============
 
 function getItemsForKitchen(kitchen) { return allItems.filter(i => i.section === kitchen); }
 
@@ -243,7 +266,7 @@ function renderCart(kitchen) {
         else {
             desktopBody.innerHTML = "";
             cart.forEach((item, idx) => {
-                desktopBody.innerHTML += `<tr><td>${item.code}</td><td><strong>${item.name}</strong></td><td>${item.qty}</td><td>${item.unit}</td><td>${item.qty}/${item.maxLimit}</td><td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">Remove</button></tr>`;
+                desktopBody.innerHTML += `<tr><td>${item.code}</td><td><strong>${item.name}</strong></td><td>${item.qty}</td><td>${item.unit}</td><td>${item.qty}/${item.maxLimit}</td><td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">Remove</button></td></tr>`;
             });
         }
     }
