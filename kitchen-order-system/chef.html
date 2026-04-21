@@ -8,25 +8,7 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-<script>
-// FIREBASE CONFIGURATION - Embedded directly
-const firebaseConfig = {
-    apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
-    authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
-    projectId: "kitchenordersystem-66eb2",
-    storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
-    messagingSenderId: "786074432195",
-    appId: "1:786074432195:web:8381f2cba8f43002232876"
-};
-
-// Initialize Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.firestore();
-console.log("✅ Firebase initialized successfully");
-</script>
+<script src="firebase-config.js"></script>
 
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -194,7 +176,7 @@ async function loadRequestsFromFirebase() {
         document.getElementById("syncStatus").style.color = "#27ae60";
     } catch (error) {
         console.error("Firebase error:", error);
-        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode - Check Firebase";
+        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
         document.getElementById("syncStatus").style.color = "#e74c3c";
     }
 }
@@ -266,7 +248,14 @@ function renderCart(kitchen) {
         else {
             desktopBody.innerHTML = "";
             cart.forEach((item, idx) => {
-                desktopBody.innerHTML += `<tr><td>${item.code}</td><td><strong>${item.name}</strong></td><td>${item.qty}</td><td>${item.unit}</td><td>${item.qty}/${item.maxLimit}</td><td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">Remove</button></td></tr>`;
+                desktopBody.innerHTML += `<tr>
+                    <td>${item.code}</td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.qty}</td>
+                    <td>${item.unit}</td>
+                    <td>${item.qty}/${item.maxLimit}</td>
+                    <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">Remove</button></td>
+                </tr>`;
             });
         }
     }
@@ -299,10 +288,16 @@ async function submitRequest(kitchen) {
 function loadMyRequests(kitchen) {
     const id = kitchen.replace(/\s/g, '_');
     const chefName = document.getElementById(`chefName_${id}`).value.trim();
-    if(!chefName) { document.getElementById(`myRequestsDesktop_${id}`).innerHTML = '<div class="empty-state">Enter chef name to see requests</div>'; return; }
+    if(!chefName) { 
+        const container = document.getElementById(`myRequestsDesktop_${id}`);
+        if(container) container.innerHTML = '<div class="empty-state">Enter chef name to see requests</div>'; 
+        return; 
+    }
     
     const myRequests = allRequests.filter(r => r.chefName === chefName && r.section === kitchen);
     const container = document.getElementById(`myRequestsDesktop_${id}`);
+    if(!container) return;
+    
     if(myRequests.length === 0) { container.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>'; return; }
     
     container.innerHTML = "";
@@ -323,7 +318,14 @@ function loadMyRequests(kitchen) {
         });
         itemsHtml += `</tbody></table>`;
         
-        container.innerHTML += `<div style="border:1px solid #e0e0e0; border-radius:12px; padding:16px; margin-bottom:20px;"><div style="display:flex; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap;"><span style="font-weight:bold;">📄 ${req.requestId}</span><span class="status-badge ${statusClass}">${statusText}</span></div><div style="background:#f8f9fa; padding:10px; border-radius:8px; margin-bottom:10px;">📅 ${req.submittedAt}</div>${itemsHtml}</div>`;
+        container.innerHTML += `<div style="border:1px solid #e0e0e0; border-radius:12px; padding:16px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap;">
+                <span style="font-weight:bold;">📄 ${req.requestId}</span>
+                <span class="status-badge ${statusClass}">${statusText}</span>
+            </div>
+            <div style="background:#f8f9fa; padding:10px; border-radius:8px; margin-bottom:10px;">📅 ${req.submittedAt}</div>
+            ${itemsHtml}
+        </div>`;
     });
 }
 
@@ -375,14 +377,22 @@ function generatePages() {
     kitchens.forEach(k => { container.innerHTML += createKitchenPage(k); });
     kitchens.forEach(k => {
         const id = k.replace(/\s/g, '_');
-        document.getElementById(`chefName_${id}`).addEventListener("input", () => { loadItems(k); loadMyRequests(k); });
+        const chefInput = document.getElementById(`chefName_${id}`);
+        if(chefInput) {
+            chefInput.addEventListener("input", () => { loadItems(k); loadMyRequests(k); });
+        }
     });
     switchKitchen("Hot Kitchen");
 }
 
 generatePages();
 loadRequestsFromFirebase();
-db.collection("kitchen_requests").onSnapshot(() => { loadRequestsFromFirebase(); });
+
+// REAL-TIME LISTENER - Auto updates when admin approves
+db.collection("kitchen_requests").onSnapshot(() => {
+    console.log("🔄 Real-time update detected! Refreshing...");
+    loadRequestsFromFirebase();
+});
 </script>
 </body>
 </html>
