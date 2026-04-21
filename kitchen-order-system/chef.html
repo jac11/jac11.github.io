@@ -15,10 +15,13 @@
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fb; }
 
 .header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 16px 24px; position: sticky; top: 0; z-index: 100; }
-.header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+.header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; flex-wrap: wrap; gap: 10px; }
 .logo { font-size: 1.4rem; font-weight: bold; }
 .logo span { color: #ffd700; }
+.header-buttons { display: flex; gap: 10px; }
 .logout-btn { background: rgba(255,255,255,0.2); border: none; padding: 8px 20px; border-radius: 25px; color: white; font-weight: 600; cursor: pointer; }
+.refresh-btn { background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 25px; color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.refresh-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.02); }
 
 .kitchen-tabs { background: white; padding: 0 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: sticky; top: 70px; z-index: 99; overflow-x: auto; white-space: nowrap; }
 .tabs-container { max-width: 1400px; margin: 0 auto; display: flex; gap: 8px; padding: 12px 0; }
@@ -62,7 +65,7 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
 .button-group { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
-.sync-status { font-size: 12px; text-align: right; margin-top: 10px; padding: 5px; border-radius: 10px; }
+.sync-status { font-size: 12px; text-align: right; margin-top: 10px; padding: 5px 10px; border-radius: 10px; display: inline-block; float: right; }
 
 @media screen and (min-width: 769px) {
     .search-add-row { display: flex; gap: 12px; align-items: flex-end; }
@@ -81,7 +84,8 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
     .table-wrapper { overflow-x: auto; }
     .cart-table { min-width: 500px; }
     .kitchen-tabs { padding: 0 16px; }
-    .sync-status { font-size: 10px; }
+    .header-buttons { gap: 5px; }
+    .refresh-btn { padding: 6px 12px; font-size: 12px; }
 }
 
 .request-item { background: #f8f9fa; border-radius: 14px; padding: 14px; margin-bottom: 10px; border-left: 4px solid; }
@@ -99,6 +103,9 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 .approved-items-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
 .approved-items-table th { background: #e8f4fd; padding: 8px; font-size: 0.75rem; text-align: left; }
 .approved-items-table td { padding: 8px; font-size: 0.8rem; border-bottom: 1px solid #f0f0f0; }
+
+.spinning { animation: spin 0.5s linear; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -106,7 +113,12 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 <div class="header">
     <div class="header-content">
         <div class="logo">🍳 Kitchen Order <span>| Chef Dashboard</span></div>
-        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        <div class="header-buttons">
+            <button class="refresh-btn" onclick="manualRefresh()">
+                🔄 Refresh
+            </button>
+            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+        </div>
     </div>
 </div>
 
@@ -160,6 +172,7 @@ const allItems = [
 let currentKitchen = "Hot Kitchen";
 let kitchenData = {};
 let allRequests = [];
+let refreshInterval = null;
 const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
 kitchens.forEach(kitchen => { kitchenData[kitchen] = { cart: [], chefName: "" }; });
@@ -178,7 +191,7 @@ async function loadRequestsFromFirebase() {
         document.getElementById("syncStatus").style.color = "#27ae60";
     } catch (error) {
         console.error("Firebase error:", error);
-        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
+        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode - " + error.message;
         document.getElementById("syncStatus").style.background = "#fee2e2";
         document.getElementById("syncStatus").style.color = "#e74c3c";
     }
@@ -193,6 +206,23 @@ async function saveRequestToFirebase(request) {
         console.error("Save error:", error);
         showToast("❌ Error saving to cloud: " + error.message);
     }
+}
+
+// Manual refresh function
+async function manualRefresh() {
+    const refreshBtn = document.querySelector('.refresh-btn');
+    refreshBtn.style.opacity = "0.7";
+    refreshBtn.innerHTML = "🔄 Refreshing...";
+    showToast("🔄 Refreshing data...");
+    await loadRequestsFromFirebase();
+    if (currentKitchen) {
+        loadMyRequests(currentKitchen);
+        renderCart(currentKitchen);
+    }
+    setTimeout(() => {
+        refreshBtn.style.opacity = "1";
+        refreshBtn.innerHTML = "🔄 Refresh";
+    }, 500);
 }
 
 // ============ HELPER FUNCTIONS ============
@@ -391,11 +421,25 @@ function generatePages() {
 generatePages();
 loadRequestsFromFirebase();
 
-// 🔴 CRITICAL: REAL-TIME LISTENER - Auto updates when admin approves
+// REAL-TIME LISTENER - Auto updates when admin approves
 db.collection("kitchen_requests").onSnapshot(() => {
     console.log("🔄 Real-time update detected! Refreshing chef dashboard...");
     loadRequestsFromFirebase();
 });
+
+// AUTO REFRESH EVERY 3 SECONDS
+setInterval(() => {
+    if (currentKitchen) {
+        loadRequestsFromFirebase();
+    }
+}, 3000);
+
+// Also refresh cart and requests every 2 seconds for any pending changes
+setInterval(() => {
+    if (currentKitchen) {
+        loadMyRequests(currentKitchen);
+    }
+}, 2000);
 </script>
 </body>
 </html>
