@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
-<meta charset="UTF-8"><script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<meta charset="UTF-8">
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
@@ -184,27 +184,52 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 const ADMIN_PASSWORD = "admin123";
 let currentKitchenFilter = "all";
 let currentStatusFilter = "pending";
+let allRequests = [];
 
-function checkPassword() {
-    if(document.getElementById("passwordInput").value === ADMIN_PASSWORD) {
-        document.getElementById("passwordModal").style.display = "none";
-        document.getElementById("mainContent").style.display = "block";
+// ============ FIREBASE FUNCTIONS ============
+
+async function loadRequestsFromFirebase() {
+    try {
+        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
+        allRequests = [];
+        snapshot.forEach(doc => {
+            allRequests.push({ firebaseId: doc.id, ...doc.data() });
+        });
+        console.log("✅ Loaded from Firebase:", allRequests.length, "requests");
         refreshData();
-        setInterval(refreshData, 5000);
-    } else {
-        document.getElementById("passwordError").innerHTML = "Wrong password! Try: admin123";
+        updateStats();
+    } catch (error) {
+        console.error("Firebase error:", error);
+        showToast("⚠️ Firebase connection error. Check console.");
     }
 }
 
-function getRequests() {
-    let data = localStorage.getItem("kitchen_requests");
-    return data ? JSON.parse(data) : [];
+async function updateRequestInFirebase(firebaseId, updatedItems) {
+    try {
+        await db.collection("kitchen_requests").doc(firebaseId).update({
+            items: updatedItems
+        });
+        console.log("✅ Updated in Firebase");
+        return true;
+    } catch (error) {
+        console.error("Update error:", error);
+        showToast("❌ Error saving to Firebase");
+        return false;
+    }
 }
 
-function saveRequests(requests) {
-    localStorage.setItem("kitchen_requests", JSON.stringify(requests));
-    console.log("Saved requests:", requests.length);
+async function deleteRequestFromFirebase(firebaseId) {
+    try {
+        await db.collection("kitchen_requests").doc(firebaseId).delete();
+        console.log("✅ Deleted from Firebase");
+        return true;
+    } catch (error) {
+        console.error("Delete error:", error);
+        return false;
+    }
 }
+
+// ============ HELPER FUNCTIONS ============
 
 function getRequestStatus(req) {
     if(!req.items || req.items.length === 0) return "pending";
@@ -215,9 +240,8 @@ function getRequestStatus(req) {
 }
 
 function updateStats() {
-    const requests = getRequests();
     let pending = 0, approved = 0, rejected = 0, partial = 0;
-    requests.forEach(req => {
+    allRequests.forEach(req => {
         const status = getRequestStatus(req);
         if(status === "pending") pending++;
         else if(status === "approved") approved++;
@@ -227,11 +251,26 @@ function updateStats() {
     document.getElementById("pendingCount").innerText = pending;
     document.getElementById("approvedCount").innerText = approved;
     document.getElementById("rejectedCount").innerText = rejected;
-    document.getElementById("totalCount").innerText = requests.length;
+    document.getElementById("totalCount").innerText = allRequests.length;
 }
 
-function approveItem(reqId, itemIdx) {
-    const inputField = document.getElementById(`qty_${reqId}_${itemIdx}`);
+function getKitchenClass(kitchen) {
+    const map = {
+        "Hot Kitchen": "kitchen-hot",
+        "Cold Kitchen": "kitchen-cold",
+        "Pastry": "kitchen-pastry",
+        "Butchery": "kitchen-butchery",
+        "Beach House": "kitchen-beach",
+        "Nihon Kitchen": "kitchen-nihon",
+        "Staff Kitchen": "kitchen-staff"
+    };
+    return map[kitchen] || "";
+}
+
+// ============ APPROVAL FUNCTIONS ============
+
+async function approveItem(firebaseId, itemIdx) {
+    const inputField = document.getElementById(`qty_${firebaseId}_${itemIdx}`);
     let approvalQty = inputField ? parseFloat(inputField.value) : 0;
     
     if(isNaN(approvalQty) || approvalQty < 0) {
@@ -239,8 +278,7 @@ function approveItem(reqId, itemIdx) {
         return;
     }
     
-    const requests = getRequests();
-    const req = requests.find(r => r.id == reqId);
+    const req = allRequests.find(r => r.firebaseId === firebaseId);
     
     if(req) {
         const item = req.items[itemIdx];
@@ -260,41 +298,44 @@ function approveItem(reqId, itemIdx) {
         item.approvedQty = approvalQty;
         item.rejectionReason = null;
         
-        saveRequests(requests);
-        showToast(`✅ Approved: ${item.name} (${approvalQty} ${item.unit})`);
-        refreshData();
+        const success = await updateRequestInFirebase(firebaseId, req.items);
+        if(success) {
+            showToast(`✅ Approved: ${item.name} (${approvalQty} ${item.unit})`);
+            await loadRequestsFromFirebase();
+        }
     }
 }
 
-function rejectItem(reqId, itemIdx) {
+async function rejectItem(firebaseId, itemIdx) {
     const reason = prompt("Enter rejection reason:", "Out of stock");
     if(reason !== null && reason.trim() !== "") {
-        const requests = getRequests();
-        const req = requests.find(r => r.id == reqId);
+        const req = allRequests.find(r => r.firebaseId === firebaseId);
         if(req) {
             req.items[itemIdx].status = "rejected";
             req.items[itemIdx].rejectionReason = reason;
             req.items[itemIdx].approvedQty = 0;
-            saveRequests(requests);
-            showToast(`❌ Rejected: ${req.items[itemIdx].name} - Reason: ${reason}`);
-            refreshData();
+            
+            const success = await updateRequestInFirebase(firebaseId, req.items);
+            if(success) {
+                showToast(`❌ Rejected: ${req.items[itemIdx].name} - Reason: ${reason}`);
+                await loadRequestsFromFirebase();
+            }
         }
     } else if(reason !== null && reason.trim() === "") {
         showToast("⚠️ Please enter a rejection reason");
     }
 }
 
-function approveAll(reqId) {
+async function approveAll(firebaseId) {
     if(!confirm("Approve ALL items in this request?")) return;
     
-    const requests = getRequests();
-    const req = requests.find(r => r.id == reqId);
+    const req = allRequests.find(r => r.firebaseId === firebaseId);
     
     if(req) {
         let hasError = false;
         
         req.items.forEach((item, idx) => {
-            const inputField = document.getElementById(`qty_${reqId}_${idx}`);
+            const inputField = document.getElementById(`qty_${firebaseId}_${idx}`);
             let approvalQty = inputField ? parseFloat(inputField.value) : item.originalQty;
             
             if(isNaN(approvalQty) || approvalQty < 0) {
@@ -318,53 +359,62 @@ function approveAll(reqId) {
             item.rejectionReason = null;
         });
         
-        saveRequests(requests);
-        showToast(`✅ All items approved${hasError ? " (some adjusted)" : ""}`);
-        refreshData();
+        const success = await updateRequestInFirebase(firebaseId, req.items);
+        if(success) {
+            showToast(`✅ All items approved${hasError ? " (some adjusted)" : ""}`);
+            await loadRequestsFromFirebase();
+        }
     }
 }
 
-function rejectAll(reqId) {
+async function rejectAll(firebaseId) {
     const reason = prompt("Enter rejection reason for ALL items:", "Not available");
     if(reason !== null && reason.trim() !== "") {
-        const requests = getRequests();
-        const req = requests.find(r => r.id == reqId);
+        const req = allRequests.find(r => r.firebaseId === firebaseId);
         if(req) {
             req.items.forEach(item => {
                 item.status = "rejected";
                 item.rejectionReason = reason;
                 item.approvedQty = 0;
             });
-            saveRequests(requests);
-            showToast(`❌ All items rejected - Reason: ${reason}`);
-            refreshData();
+            
+            const success = await updateRequestInFirebase(firebaseId, req.items);
+            if(success) {
+                showToast(`❌ All items rejected - Reason: ${reason}`);
+                await loadRequestsFromFirebase();
+            }
         }
     } else if(reason !== null && reason.trim() === "") {
         showToast("⚠️ Please enter a rejection reason");
     }
 }
 
-function resetOldRequests() {
+async function resetOldRequests() {
     if(confirm("⚠️ This will delete ALL approved and rejected requests. Pending requests will remain. Are you sure?")) {
-        let requests = getRequests();
-        // Keep only pending requests
-        const pendingRequests = requests.filter(r => getRequestStatus(r) === "pending");
-        saveRequests(pendingRequests);
+        const pendingRequests = allRequests.filter(r => getRequestStatus(r) === "pending");
+        
+        for (const req of allRequests) {
+            if (getRequestStatus(req) !== "pending") {
+                await deleteRequestFromFirebase(req.firebaseId);
+            }
+        }
+        
         showToast(`🗑️ Reset complete. ${pendingRequests.length} pending requests remaining.`);
-        refreshData();
+        await loadRequestsFromFirebase();
     }
 }
 
+// ============ EXPORT FUNCTION ============
+
 function exportToExcel() {
-    const requests = getRequests();
-    if(requests.length === 0) {
+    if(allRequests.length === 0) {
         showToast("No data to export");
         return;
     }
     
     let csv = "Request ID,Kitchen,Chef Name,Date,Item Code,Item Name,Requested Qty,Unit,Status,Approved/Rejected Qty,Rejection Reason\n";
     
-    requests.forEach(req => {
+    allRequests.forEach(req => {
         req.items.forEach(item => {
             let status = item.status;
             let finalQty = "";
@@ -398,6 +448,8 @@ function exportToExcel() {
     showToast("📎 Exported to Excel");
 }
 
+// ============ FILTER & RENDER FUNCTIONS ============
+
 function filterKitchen(kitchen) {
     currentKitchenFilter = kitchen;
     document.querySelectorAll('.kitchen-filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -417,21 +469,8 @@ function showTab(tab) {
     refreshData();
 }
 
-function getKitchenClass(kitchen) {
-    const map = {
-        "Hot Kitchen": "kitchen-hot",
-        "Cold Kitchen": "kitchen-cold",
-        "Pastry": "kitchen-pastry",
-        "Butchery": "kitchen-butchery",
-        "Beach House": "kitchen-beach",
-        "Nihon Kitchen": "kitchen-nihon",
-        "Staff Kitchen": "kitchen-staff"
-    };
-    return map[kitchen] || "";
-}
-
 function refreshData() {
-    let requests = getRequests();
+    let requests = [...allRequests];
     
     if(currentKitchenFilter !== "all") {
         requests = requests.filter(r => r.section === currentKitchenFilter);
@@ -480,10 +519,10 @@ function refreshData() {
                     <tr style="background:#e8f5e9;">
                         <td>${item.code}</td>
                         <td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td>
-                        <td>${item.originalQty}</td></td>
-                        <td>${item.unit}</td></td>
+                        <td>${item.originalQty}</td>
+                        <td>${item.unit}</td>
                         <td><strong style="color:#27ae60;">${item.approvedQty}</strong></td>
-                        <td>✅ Approved</td></td>
+                        <td>✅ Approved</td>
                         <td><span class="status-badge status-approved">Approved</span></td>
                     </tr>
                 `;
@@ -491,12 +530,12 @@ function refreshData() {
             else if(item.status === "rejected") {
                 itemsHtml += `
                     <tr style="background:#fee2e2;">
-                        <td>${item.code}</td></td>
-                        <td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td></td>
-                        <td>${item.originalQty}</td></td>
-                        <td>${item.unit}</td></td>
-                        <td><strong style="color:#e74c3c;">0</strong></td></td>
-                        <td>❌ Rejected</td></td>
+                        <td>${item.code}</td>
+                        <td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td>
+                        <td>${item.originalQty}</td>
+                        <td>${item.unit}</td>
+                        <td><strong style="color:#e74c3c;">0</strong></td>
+                        <td>❌ Rejected</td>
                         <td><span class="status-badge status-rejected">${item.rejectionReason || 'No reason'}</span></td>
                     </tr>
                 `;
@@ -505,12 +544,12 @@ function refreshData() {
                 const defaultValue = item.originalQty;
                 itemsHtml += `
                     <tr>
-                        <td>${item.code}</td></td>
-                        <td><strong>${item.name}</strong><br><small style="color:#3498db;">Max: ${item.maxLimit}</small></td></td>
-                        <td>${item.originalQty}</td></td>
-                        <td>${item.unit}</td></td>
-                        <td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${defaultValue}" min="0" max="${item.maxLimit}" step="0.5"></td>
-                        <td><button class="btn-approve" onclick="approveItem(${req.id}, ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem(${req.id}, ${idx})">❌ Reject</button></td>
+                        <td>${item.code}</td>
+                        <td><strong>${item.name}</strong><br><small style="color:#3498db;">Max: ${item.maxLimit}</small></td>
+                        <td>${item.originalQty}</td>
+                        <td>${item.unit}</td>
+                        <td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${defaultValue}" min="0" max="${item.maxLimit}" step="0.5"></td>
+                        <td><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></td>
                         <td><span class="status-badge status-pending">⏳ Pending</span></td>
                     </tr>
                 `;
@@ -523,8 +562,8 @@ function refreshData() {
         if(status === "pending" || status === "partial") {
             actions = `
                 <div class="request-actions">
-                    <button class="btn-approve-all" onclick="approveAll(${req.id})">✅ Approve All</button>
-                    <button class="btn-reject-all" onclick="rejectAll(${req.id})">❌ Reject All</button>
+                    <button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All</button>
+                    <button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All</button>
                 </div>
             `;
         }
@@ -558,6 +597,22 @@ function showToast(msg) {
     toast.innerText = msg;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2500);
+}
+
+// ============ INITIALIZATION ============
+
+function checkPassword() {
+    if(document.getElementById("passwordInput").value === ADMIN_PASSWORD) {
+        document.getElementById("passwordModal").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+        loadRequestsFromFirebase();
+        // Set up real-time listener
+        db.collection("kitchen_requests").onSnapshot(() => {
+            loadRequestsFromFirebase();
+        });
+    } else {
+        document.getElementById("passwordError").innerHTML = "Wrong password! Try: admin123";
+    }
 }
 
 window.onload = () => { 
