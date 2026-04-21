@@ -405,9 +405,11 @@ th {
 <button class="admin-fab" onclick="openAdmin()">👑 Admin Panel</button>
 
 <script>
+    // ========================
+// FIREBASE VERSION - REPLACE ALL SCRIPT CONTENT
 // ========================
-// ALL ITEMS FOR ALL KITCHENS
-// ========================
+
+// Items database
 const allItems = [
     {code: "HOT001", name: "Tomato Peeled Tin", unit: "can", section: "Hot Kitchen", maxLimit: 12},
     {code: "HOT002", name: "Black Pepper Corn", unit: "kg", section: "Hot Kitchen", maxLimit: 4},
@@ -435,6 +437,7 @@ const allItems = [
 
 let currentKitchen = "Hot Kitchen";
 let kitchenData = {};
+let allRequests = [];
 
 const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
@@ -442,19 +445,39 @@ kitchens.forEach(kitchen => {
     kitchenData[kitchen] = { cart: [], chefName: "" };
 });
 
-function getAllRequests() {
-    let requests = localStorage.getItem("kitchen_requests");
-    if(!requests) {
-        localStorage.setItem("kitchen_requests", JSON.stringify([]));
-        return [];
+// ============ FIREBASE FUNCTIONS ============
+
+async function loadRequestsFromFirebase() {
+    try {
+        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
+        allRequests = [];
+        snapshot.forEach(doc => {
+            allRequests.push({ firebaseId: doc.id, ...doc.data() });
+        });
+        console.log("✅ Loaded from Firebase:", allRequests.length, "requests");
+        if (currentKitchen) loadMyRequests(currentKitchen);
+        document.getElementById("syncStatus").innerHTML = "✅ Connected • Real-time";
+        document.getElementById("syncStatus").style.color = "#27ae60";
+    } catch (error) {
+        console.error("Firebase error:", error);
+        document.getElementById("syncStatus").innerHTML = "⚠️ Offline • Check connection";
+        document.getElementById("syncStatus").style.color = "#e74c3c";
     }
-    return JSON.parse(requests);
 }
 
-function saveAllRequests(requests) {
-    localStorage.setItem("kitchen_requests", JSON.stringify(requests));
-    console.log("Saved requests:", requests.length);
+async function saveRequestToFirebase(request) {
+    try {
+        const docRef = await db.collection("kitchen_requests").add(request);
+        console.log("✅ Saved to Firebase with ID:", docRef.id);
+        showToast("✅ Request saved to cloud!");
+        await loadRequestsFromFirebase();
+    } catch (error) {
+        console.error("Save error:", error);
+        showToast("❌ Error saving to cloud");
+    }
 }
+
+// ============ HELPER FUNCTIONS ============
 
 function getItemsForKitchen(kitchen) {
     return allItems.filter(i => i.section === kitchen);
@@ -576,7 +599,7 @@ function clearCart(kitchen) {
     }
 }
 
-function submitRequest(kitchen) {
+async function submitRequest(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_');
     const chefName = document.getElementById(`chefName_${kitchenId}`).value.trim();
     const cart = kitchenData[kitchen].cart;
@@ -591,10 +614,8 @@ function submitRequest(kitchen) {
         return;
     }
     
-    const requests = getAllRequests();
     const newRequest = {
-        id: Date.now(),
-        requestId: "REQ-" + (Date.now()).toString().slice(-6),
+        requestId: "REQ-" + Date.now().toString().slice(-6),
         chefName: chefName,
         section: kitchen,
         items: cart.map(i => ({
@@ -606,21 +627,10 @@ function submitRequest(kitchen) {
         timestamp: Date.now()
     };
     
-    requests.push(newRequest);
-    saveAllRequests(requests);
-    showToast(`✅ Request ${newRequest.requestId} submitted to admin!`);
-    console.log("Request submitted:", newRequest);
-    
+    await saveRequestToFirebase(newRequest);
     kitchenData[kitchen].cart = [];
     renderCart(kitchen);
-    loadMyRequests(kitchen);
-}
-
-function getOverallStatus(items) {
-    if(items.every(i => i.status === "approved")) return "approved";
-    if(items.every(i => i.status === "rejected")) return "rejected";
-    if(items.some(i => i.status === "approved") && items.some(i => i.status === "rejected")) return "partial";
-    return "pending";
+    showToast(`✅ Request ${newRequest.requestId} submitted!`);
 }
 
 function loadMyRequests(kitchen) {
@@ -632,10 +642,9 @@ function loadMyRequests(kitchen) {
         return;
     }
     
-    const requests = getAllRequests();
-    const myRequests = requests.filter(r => r.chefName === chefName && r.section === kitchen);
-    
+    const myRequests = allRequests.filter(r => r.chefName === chefName && r.section === kitchen);
     const container = document.getElementById(`myRequestsDesktop_${kitchenId}`);
+    
     if(myRequests.length === 0) {
         container.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
         return;
@@ -643,9 +652,11 @@ function loadMyRequests(kitchen) {
     
     container.innerHTML = "";
     [...myRequests].reverse().forEach(req => {
-        const status = getOverallStatus(req.items);
-        const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
-        const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+        const allApproved = req.items.every(i => i.status === "approved");
+        const allRejected = req.items.every(i => i.status === "rejected");
+        let statusClass = "status-pending", statusText = "⏳ Pending";
+        if(allApproved) { statusClass = "status-approved"; statusText = "✅ Approved"; }
+        else if(allRejected) { statusClass = "status-rejected"; statusText = "❌ Rejected"; }
         
         let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
         
@@ -778,13 +789,18 @@ function generatePages() {
     kitchens.forEach(k => {
         const id = k.replace(/\s/g, '_');
         document.getElementById(`chefName_${id}`).addEventListener("input", () => { loadItems(k); loadMyRequests(k); });
-        document.getElementById(`qty_${id}`).addEventListener("input", function() {});
     });
     switchKitchen("Hot Kitchen");
 }
 
 generatePages();
-setInterval(() => { if(currentKitchen) loadMyRequests(currentKitchen); }, 3000);
+loadRequestsFromFirebase();
+
+// Real-time listener
+db.collection("kitchen_requests").onSnapshot(() => {
+    loadRequestsFromFirebase();
+});
 </script>
+<div class="sync-status" id="syncStatus" style="font-size: 12px; color: #27ae60; text-align: right; margin-top: 10px;">🔄 Connecting to cloud...</div>
 </body>
 </html>
