@@ -62,7 +62,7 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
 .button-group { display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
-.sync-status { font-size: 12px; text-align: right; margin-top: 10px; }
+.sync-status { font-size: 12px; text-align: right; margin-top: 10px; padding: 5px; border-radius: 10px; }
 
 @media screen and (min-width: 769px) {
     .search-add-row { display: flex; gap: 12px; align-items: flex-end; }
@@ -81,6 +81,7 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
     .table-wrapper { overflow-x: auto; }
     .cart-table { min-width: 500px; }
     .kitchen-tabs { padding: 0 16px; }
+    .sync-status { font-size: 10px; }
 }
 
 .request-item { background: #f8f9fa; border-radius: 14px; padding: 14px; margin-bottom: 10px; border-left: 4px solid; }
@@ -172,11 +173,13 @@ async function loadRequestsFromFirebase() {
         snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
         console.log("✅ Loaded:", allRequests.length, "requests");
         if (currentKitchen) loadMyRequests(currentKitchen);
-        document.getElementById("syncStatus").innerHTML = "✅ Connected • Real-time";
+        document.getElementById("syncStatus").innerHTML = "✅ Connected • Real-time • " + allRequests.length + " orders";
+        document.getElementById("syncStatus").style.background = "#e8f5e9";
         document.getElementById("syncStatus").style.color = "#27ae60";
     } catch (error) {
         console.error("Firebase error:", error);
         document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
+        document.getElementById("syncStatus").style.background = "#fee2e2";
         document.getElementById("syncStatus").style.color = "#e74c3c";
     }
 }
@@ -388,9 +391,9 @@ function generatePages() {
 generatePages();
 loadRequestsFromFirebase();
 
-// REAL-TIME LISTENER - Auto updates when admin approves
+// 🔴 CRITICAL: REAL-TIME LISTENER - Auto updates when admin approves
 db.collection("kitchen_requests").onSnapshot(() => {
-    console.log("🔄 Real-time update detected! Refreshing...");
+    console.log("🔄 Real-time update detected! Refreshing chef dashboard...");
     loadRequestsFromFirebase();
 });
 </script>
