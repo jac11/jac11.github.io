@@ -4,9 +4,28 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Admin Dashboard - Approve Orders</title>
+
+<script>
+// FIREBASE CONFIGURATION
+const firebaseConfig = {
+    apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
+    authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
+    projectId: "kitchenordersystem-66eb2",
+    storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
+    messagingSenderId: "786074432195",
+    appId: "1:786074432195:web:8381f2cba8f43002232876"
+};
+
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+console.log("✅ Firebase initialized successfully");
+</script>
+
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; }
@@ -16,14 +35,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .header h1 { font-size: 1.4rem; }
 .header span { color: #e94560; }
 .header-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
-
 .btn-header { background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 25px; color: white; cursor: pointer; font-weight: 600; }
 .btn-header:hover { background: rgba(255,255,255,0.3); }
 .btn-danger { background: #e74c3c; }
-.btn-danger:hover { background: #c0392b; }
 
 .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
-
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
 .stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s; }
 .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -66,16 +82,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .items-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
 
 .requested-qty { background: #f0f0f0; padding: 6px 12px; border-radius: 20px; display: inline-block; font-weight: 600; }
-.approval-input { 
-    width: 100px; 
-    padding: 10px 12px; 
-    border: 2px solid #3498db; 
-    border-radius: 8px; 
-    text-align: center; 
-    font-size: 14px; 
-    font-weight: 600;
-    background: white;
-}
+.approval-input { width: 100px; padding: 10px 12px; border: 2px solid #3498db; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 600; background: white; }
 .approval-input:focus { outline: none; border-color: #27ae60; }
 
 .btn-approve { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 5px; }
@@ -111,14 +118,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     .kitchen-filters { overflow-x: auto; flex-wrap: nowrap; }
 }
 
-@media print {
-    .header-buttons, .kitchen-filters, .tabs, .floating-refresh, .btn-approve, .btn-reject, .request-actions, .toast {
-        display: none !important;
-    }
-    .request-card { break-inside: avoid; page-break-inside: avoid; }
-    body { background: white; }
-    .container { padding: 0; }
-}
+@media print { .header-buttons, .kitchen-filters, .tabs, .floating-refresh, .btn-approve, .btn-reject, .request-actions, .toast { display: none !important; } .request-card { break-inside: avoid; } }
 </style>
 </head>
 <body>
@@ -138,7 +138,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         <div class="header-content">
             <h1>👑 Admin Dashboard <span>| Approve Items</span></h1>
             <div class="header-buttons">
-                <button class="btn-header" onclick="window.open('analytics.html', '_blank')">📊 Analytics</button>
                 <button class="btn-header" onclick="exportToExcel()">📎 Export Excel</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
                 <button class="btn-header btn-danger" onclick="resetOldRequests()">🗑️ Reset Old</button>
@@ -186,52 +185,28 @@ let currentKitchenFilter = "all";
 let currentStatusFilter = "pending";
 let allRequests = [];
 
-// ============ FIREBASE FUNCTIONS ============
-
-async function loadRequestsFromFirebase() {
+async function loadRequests() {
     try {
         const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
         allRequests = [];
-        snapshot.forEach(doc => {
-            allRequests.push({ firebaseId: doc.id, ...doc.data() });
-        });
-        console.log("✅ Loaded from Firebase:", allRequests.length, "requests");
+        snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
         refreshData();
         updateStats();
-    } catch (error) {
-        console.error("Firebase error:", error);
-        showToast("⚠️ Firebase connection error. Check console.");
-    }
+        console.log("✅ Loaded:", allRequests.length, "requests");
+    } catch (error) { console.error("Firebase error:", error); }
 }
 
-async function updateRequestInFirebase(firebaseId, updatedItems) {
-    try {
-        await db.collection("kitchen_requests").doc(firebaseId).update({
-            items: updatedItems
-        });
-        console.log("✅ Updated in Firebase");
-        return true;
-    } catch (error) {
-        console.error("Update error:", error);
-        showToast("❌ Error saving to Firebase");
-        return false;
-    }
+async function updateRequest(reqId, updatedItems) {
+    try { await db.collection("kitchen_requests").doc(reqId).update({ items: updatedItems }); showToast("✅ Updated"); await loadRequests(); }
+    catch (error) { showToast("❌ Error"); }
 }
 
-async function deleteRequestFromFirebase(firebaseId) {
-    try {
-        await db.collection("kitchen_requests").doc(firebaseId).delete();
-        console.log("✅ Deleted from Firebase");
-        return true;
-    } catch (error) {
-        console.error("Delete error:", error);
-        return false;
-    }
+async function deleteRequest(reqId) {
+    try { await db.collection("kitchen_requests").doc(reqId).delete(); showToast("✅ Deleted"); await loadRequests(); }
+    catch (error) { showToast("❌ Error"); }
 }
 
-// ============ HELPER FUNCTIONS ============
-
-function getRequestStatus(req) {
+function getStatus(req) {
     if(!req.items || req.items.length === 0) return "pending";
     if(req.items.every(i => i.status === "approved")) return "approved";
     if(req.items.every(i => i.status === "rejected")) return "rejected";
@@ -242,11 +217,11 @@ function getRequestStatus(req) {
 function updateStats() {
     let pending = 0, approved = 0, rejected = 0, partial = 0;
     allRequests.forEach(req => {
-        const status = getRequestStatus(req);
-        if(status === "pending") pending++;
-        else if(status === "approved") approved++;
-        else if(status === "rejected") rejected++;
-        else if(status === "partial") partial++;
+        const s = getStatus(req);
+        if(s === "pending") pending++;
+        else if(s === "approved") approved++;
+        else if(s === "rejected") rejected++;
+        else if(s === "partial") partial++;
     });
     document.getElementById("pendingCount").innerText = pending;
     document.getElementById("approvedCount").innerText = approved;
@@ -254,370 +229,148 @@ function updateStats() {
     document.getElementById("totalCount").innerText = allRequests.length;
 }
 
-function getKitchenClass(kitchen) {
-    const map = {
-        "Hot Kitchen": "kitchen-hot",
-        "Cold Kitchen": "kitchen-cold",
-        "Pastry": "kitchen-pastry",
-        "Butchery": "kitchen-butchery",
-        "Beach House": "kitchen-beach",
-        "Nihon Kitchen": "kitchen-nihon",
-        "Staff Kitchen": "kitchen-staff"
-    };
-    return map[kitchen] || "";
-}
-
-// ============ APPROVAL FUNCTIONS ============
-
-async function approveItem(firebaseId, itemIdx) {
-    const inputField = document.getElementById(`qty_${firebaseId}_${itemIdx}`);
-    let approvalQty = inputField ? parseFloat(inputField.value) : 0;
-    
-    if(isNaN(approvalQty) || approvalQty < 0) {
-        showToast("⚠️ Please enter a valid quantity");
-        return;
-    }
-    
-    const req = allRequests.find(r => r.firebaseId === firebaseId);
-    
+async function approveItem(reqId, itemIdx) {
+    const input = document.getElementById(`qty_${reqId}_${itemIdx}`);
+    let qty = input ? parseFloat(input.value) : 0;
+    if(isNaN(qty) || qty <= 0) { showToast("⚠️ Enter valid quantity"); return; }
+    const req = allRequests.find(r => r.firebaseId === reqId);
     if(req) {
         const item = req.items[itemIdx];
-        const maxLimit = item.maxLimit || 999;
-        
-        if(approvalQty > maxLimit) {
-            showToast(`⚠️ Cannot approve more than ${maxLimit} ${item.unit}`);
-            return;
-        }
-        
-        if(approvalQty === 0) {
-            showToast(`⚠️ Cannot approve 0 quantity. Please use Reject`);
-            return;
-        }
-        
+        if(qty > item.maxLimit) { showToast(`⚠️ Max ${item.maxLimit} ${item.unit}`); return; }
         item.status = "approved";
-        item.approvedQty = approvalQty;
+        item.approvedQty = qty;
         item.rejectionReason = null;
-        
-        const success = await updateRequestInFirebase(firebaseId, req.items);
-        if(success) {
-            showToast(`✅ Approved: ${item.name} (${approvalQty} ${item.unit})`);
-            await loadRequestsFromFirebase();
-        }
+        await updateRequest(reqId, req.items);
     }
 }
 
-async function rejectItem(firebaseId, itemIdx) {
-    const reason = prompt("Enter rejection reason:", "Out of stock");
-    if(reason !== null && reason.trim() !== "") {
-        const req = allRequests.find(r => r.firebaseId === firebaseId);
+async function rejectItem(reqId, itemIdx) {
+    const reason = prompt("Rejection reason:", "Out of stock");
+    if(reason && reason.trim()) {
+        const req = allRequests.find(r => r.firebaseId === reqId);
         if(req) {
             req.items[itemIdx].status = "rejected";
             req.items[itemIdx].rejectionReason = reason;
             req.items[itemIdx].approvedQty = 0;
-            
-            const success = await updateRequestInFirebase(firebaseId, req.items);
-            if(success) {
-                showToast(`❌ Rejected: ${req.items[itemIdx].name} - Reason: ${reason}`);
-                await loadRequestsFromFirebase();
-            }
+            await updateRequest(reqId, req.items);
         }
-    } else if(reason !== null && reason.trim() === "") {
-        showToast("⚠️ Please enter a rejection reason");
     }
 }
 
-async function approveAll(firebaseId) {
-    if(!confirm("Approve ALL items in this request?")) return;
-    
-    const req = allRequests.find(r => r.firebaseId === firebaseId);
-    
+async function approveAll(reqId) {
+    if(!confirm("Approve ALL items?")) return;
+    const req = allRequests.find(r => r.firebaseId === reqId);
     if(req) {
-        let hasError = false;
-        
         req.items.forEach((item, idx) => {
-            const inputField = document.getElementById(`qty_${firebaseId}_${idx}`);
-            let approvalQty = inputField ? parseFloat(inputField.value) : item.originalQty;
-            
-            if(isNaN(approvalQty) || approvalQty < 0) {
-                approvalQty = item.originalQty;
-            }
-            
-            if(approvalQty === 0) {
-                approvalQty = item.originalQty;
-                hasError = true;
-            }
-            
-            const maxLimit = item.maxLimit || 999;
-            if(approvalQty > maxLimit) {
-                showToast(`⚠️ ${item.name} exceeds limit (${maxLimit}), using ${maxLimit}`);
-                approvalQty = maxLimit;
-                hasError = true;
-            }
-            
+            const input = document.getElementById(`qty_${reqId}_${idx}`);
+            let qty = input ? parseFloat(input.value) : item.originalQty;
+            if(isNaN(qty) || qty <= 0) qty = item.originalQty;
+            if(qty > item.maxLimit) qty = item.maxLimit;
             item.status = "approved";
-            item.approvedQty = approvalQty;
+            item.approvedQty = qty;
             item.rejectionReason = null;
         });
-        
-        const success = await updateRequestInFirebase(firebaseId, req.items);
-        if(success) {
-            showToast(`✅ All items approved${hasError ? " (some adjusted)" : ""}`);
-            await loadRequestsFromFirebase();
-        }
+        await updateRequest(reqId, req.items);
     }
 }
 
-async function rejectAll(firebaseId) {
-    const reason = prompt("Enter rejection reason for ALL items:", "Not available");
-    if(reason !== null && reason.trim() !== "") {
-        const req = allRequests.find(r => r.firebaseId === firebaseId);
+async function rejectAll(reqId) {
+    const reason = prompt("Rejection reason for ALL items:", "Not available");
+    if(reason && reason.trim()) {
+        const req = allRequests.find(r => r.firebaseId === reqId);
         if(req) {
             req.items.forEach(item => {
                 item.status = "rejected";
                 item.rejectionReason = reason;
                 item.approvedQty = 0;
             });
-            
-            const success = await updateRequestInFirebase(firebaseId, req.items);
-            if(success) {
-                showToast(`❌ All items rejected - Reason: ${reason}`);
-                await loadRequestsFromFirebase();
-            }
+            await updateRequest(reqId, req.items);
         }
-    } else if(reason !== null && reason.trim() === "") {
-        showToast("⚠️ Please enter a rejection reason");
     }
 }
 
 async function resetOldRequests() {
-    if(confirm("⚠️ This will delete ALL approved and rejected requests. Pending requests will remain. Are you sure?")) {
-        const pendingRequests = allRequests.filter(r => getRequestStatus(r) === "pending");
-        
+    if(confirm("Delete ALL approved/rejected requests?")) {
         for (const req of allRequests) {
-            if (getRequestStatus(req) !== "pending") {
-                await deleteRequestFromFirebase(req.firebaseId);
-            }
+            if (getStatus(req) !== "pending") { await deleteRequest(req.firebaseId); }
         }
-        
-        showToast(`🗑️ Reset complete. ${pendingRequests.length} pending requests remaining.`);
-        await loadRequestsFromFirebase();
+        await loadRequests();
+        showToast("Reset complete");
     }
 }
-
-// ============ EXPORT FUNCTION ============
 
 function exportToExcel() {
-    if(allRequests.length === 0) {
-        showToast("No data to export");
-        return;
-    }
-    
-    let csv = "Request ID,Kitchen,Chef Name,Date,Item Code,Item Name,Requested Qty,Unit,Status,Approved/Rejected Qty,Rejection Reason\n";
-    
+    if(allRequests.length === 0) { showToast("No data"); return; }
+    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Reason\n";
     allRequests.forEach(req => {
         req.items.forEach(item => {
-            let status = item.status;
-            let finalQty = "";
-            let rejectionReason = "";
-            
-            if(item.status === "approved") {
-                status = "Approved";
-                finalQty = item.approvedQty;
-            } else if(item.status === "rejected") {
-                status = "Rejected";
-                finalQty = "0";
-                rejectionReason = item.rejectionReason || "";
-            } else {
-                status = "Pending";
-                finalQty = "Waiting";
-            }
-            
-            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.code}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${rejectionReason}"\n`;
+            let status = item.status, finalQty = "", reason = "";
+            if(item.status === "approved") { status = "Approved"; finalQty = item.approvedQty; }
+            else if(item.status === "rejected") { status = "Rejected"; finalQty = "0"; reason = item.rejectionReason || ""; }
+            else { status = "Pending"; finalQty = "Waiting"; }
+            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${reason}"\n`;
         });
     });
-    
     const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
     const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.href = url;
-    link.setAttribute("download", `kitchen_orders_${new Date().toISOString().slice(0,19)}.csv`);
-    document.body.appendChild(link);
+    link.href = URL.createObjectURL(blob);
+    link.download = `orders_${new Date().toISOString().slice(0,19)}.csv`;
     link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    showToast("📎 Exported to Excel");
+    showToast("Exported");
 }
 
-// ============ FILTER & RENDER FUNCTIONS ============
-
-function filterKitchen(kitchen) {
-    currentKitchenFilter = kitchen;
-    document.querySelectorAll('.kitchen-filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    refreshData();
+function getKitchenClass(kitchen) {
+    const map = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" };
+    return map[kitchen] || "";
 }
 
-function filterStatus(status) {
-    currentStatusFilter = status;
-    refreshData();
-}
-
-function showTab(tab) {
-    currentStatusFilter = tab;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    refreshData();
-}
+function filterKitchen(kitchen) { currentKitchenFilter = kitchen; document.querySelectorAll('.kitchen-filter-btn').forEach(btn => btn.classList.remove('active')); event.target.classList.add('active'); refreshData(); }
+function filterStatus(status) { currentStatusFilter = status; refreshData(); }
+function showTab(tab) { currentStatusFilter = tab; document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); event.target.classList.add('active'); refreshData(); }
 
 function refreshData() {
     let requests = [...allRequests];
-    
-    if(currentKitchenFilter !== "all") {
-        requests = requests.filter(r => r.section === currentKitchenFilter);
-    }
-    
-    if(currentStatusFilter !== "all") {
-        requests = requests.filter(r => getRequestStatus(r) === currentStatusFilter);
-    }
-    
+    if(currentKitchenFilter !== "all") requests = requests.filter(r => r.section === currentKitchenFilter);
+    if(currentStatusFilter !== "all") requests = requests.filter(r => getStatus(r) === currentStatusFilter);
     requests.reverse();
     const container = document.getElementById("requestsContainer");
-    
-    if(requests.length === 0) {
-        let message = "📭 No requests";
-        if(currentKitchenFilter !== "all") message += ` from ${currentKitchenFilter}`;
-        if(currentStatusFilter !== "all") message += ` with status ${currentStatusFilter}`;
-        container.innerHTML = `<div class="empty-state">${message}</div>`;
-        updateStats();
-        return;
-    }
-    
+    if(requests.length === 0) { container.innerHTML = `<div class="empty-state">📭 No requests</div>`; updateStats(); return; }
     container.innerHTML = "";
-    
     requests.forEach(req => {
-        const status = getRequestStatus(req);
+        const status = getStatus(req);
         const statusClass = `status-${status}`;
-        const statusText = {
-            pending: "Pending",
-            approved: "Approved",
-            rejected: "Rejected",
-            partial: "Partial"
-        }[status];
+        const statusText = { pending: "Pending", approved: "Approved", rejected: "Rejected", partial: "Partial" }[status];
         const kitchenClass = getKitchenClass(req.section);
-        
-        let itemsHtml = `
-            <table class="items-table">
-                <thead>
-                    <tr><th>Code</th><th>Item Name</th><th>Requested</th><th>Unit</th><th style="background:#e8f4fd;">✏️ Admin Qty</th><th>Action</th><th>Status</th></tr>
-                </thead>
-                <tbody>
-        `;
-        
+        let itemsHtml = `<table class="items-table"><thead><tr><th>Code</th><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
         req.items.forEach((item, idx) => {
             if(item.status === "approved") {
-                itemsHtml += `
-                    <tr style="background:#e8f5e9;">
-                        <td>${item.code}</td>
-                        <td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td>
-                        <td>${item.originalQty}</td>
-                        <td>${item.unit}</td>
-                        <td><strong style="color:#27ae60;">${item.approvedQty}</strong></td>
-                        <td>✅ Approved</td>
-                        <td><span class="status-badge status-approved">Approved</span></td>
-                    </tr>
-                `;
-            } 
-            else if(item.status === "rejected") {
-                itemsHtml += `
-                    <tr style="background:#fee2e2;">
-                        <td>${item.code}</td>
-                        <td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td>
-                        <td>${item.originalQty}</td>
-                        <td>${item.unit}</td>
-                        <td><strong style="color:#e74c3c;">0</strong></td>
-                        <td>❌ Rejected</td>
-                        <td><span class="status-badge status-rejected">${item.rejectionReason || 'No reason'}</span></td>
-                    </tr>
-                `;
-            } 
-            else {
-                const defaultValue = item.originalQty;
-                itemsHtml += `
-                    <tr>
-                        <td>${item.code}</td>
-                        <td><strong>${item.name}</strong><br><small style="color:#3498db;">Max: ${item.maxLimit}</small></td>
-                        <td>${item.originalQty}</td>
-                        <td>${item.unit}</td>
-                        <td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${defaultValue}" min="0" max="${item.maxLimit}" step="0.5"></td>
-                        <td><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></td>
-                        <td><span class="status-badge status-pending">⏳ Pending</span></td>
-                    </tr>
-                `;
+                itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}<td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small><td>${item.originalQty}<td>${item.unit}<td><strong style="color:#27ae60;">${item.approvedQty}</strong><td>✅ Approved<td><span class="status-badge status-approved">Approved</span></tr>`;
+            } else if(item.status === "rejected") {
+                itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}<td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small><td>${item.originalQty}<td>${item.unit}<td><strong style="color:#e74c3c;">0</strong><td>❌ Rejected<td><span class="status-badge status-rejected">${item.rejectionReason || 'No reason'}</span></tr>`;
+            } else {
+                itemsHtml += `<tr><td>${item.code}<td><strong>${item.name}</strong><br><small style="color:#3498db;">Max: ${item.maxLimit}</small><td>${item.originalQty}<td>${item.unit}<td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"><td><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button><td><span class="status-badge status-pending">⏳ Pending</span></tr>`;
             }
         });
-        
         itemsHtml += `</tbody></table>`;
-        
         let actions = "";
         if(status === "pending" || status === "partial") {
-            actions = `
-                <div class="request-actions">
-                    <button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All</button>
-                    <button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All</button>
-                </div>
-            `;
+            actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All</button><button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All</button></div>`;
         }
-        
-        container.innerHTML += `
-            <div class="request-card">
-                <div class="request-header">
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                        <span class="request-id">📄 ${req.requestId}</span>
-                        <span class="kitchen-badge ${kitchenClass}">${req.section}</span>
-                    </div>
-                    <span class="status-badge ${statusClass}">${statusText}</span>
-                </div>
-                <div class="request-details">
-                    <div><div class="detail-label">👨‍🍳 Chef</div><div class="detail-value">${req.chefName}</div></div>
-                    <div><div class="detail-label">📅 Submitted</div><div class="detail-value">${req.submittedAt}</div></div>
-                    <div><div class="detail-label">📦 Items</div><div class="detail-value">${req.items.length}</div></div>
-                </div>
-                ${itemsHtml}
-                ${actions}
-            </div>
-        `;
+        container.innerHTML += `<div class="request-card"><div class="request-header"><div><span class="request-id">📄 ${req.requestId}</span><span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div><span class="status-badge ${statusClass}">${statusText}</span></div><div class="request-details"><div><div class="detail-label">👨‍🍳 Chef</div><div class="detail-value">${req.chefName}</div></div><div><div class="detail-label">📅 Submitted</div><div class="detail-value">${req.submittedAt}</div></div></div>${itemsHtml}${actions}</div>`;
     });
-    
     updateStats();
 }
-
-function showToast(msg) {
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.innerText = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
-}
-
-// ============ INITIALIZATION ============
 
 function checkPassword() {
     if(document.getElementById("passwordInput").value === ADMIN_PASSWORD) {
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
-        loadRequestsFromFirebase();
-        // Set up real-time listener
-        db.collection("kitchen_requests").onSnapshot(() => {
-            loadRequestsFromFirebase();
-        });
-    } else {
-        document.getElementById("passwordError").innerHTML = "Wrong password! Try: admin123";
-    }
+        loadRequests();
+        db.collection("kitchen_requests").onSnapshot(() => { loadRequests(); });
+    } else { document.getElementById("passwordError").innerHTML = "Wrong password! Try: admin123"; }
 }
-
-window.onload = () => { 
-    document.getElementById("passwordModal").style.display = "flex"; 
-};
+function showToast(msg) { const toast = document.createElement("div"); toast.className = "toast"; toast.innerText = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2500); }
+window.onload = () => { document.getElementById("passwordModal").style.display = "flex"; };
 </script>
 </body>
 </html>
