@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>Chef Dashboard - Kitchen Order System</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fb;
+}
+
+.header {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 16px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+ justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #ffd700;
+}
+
+.logout-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.kitchen-tabs {
+    background: white;
+    padding: 0 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 70px;
+    z-index: 99;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.tabs-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    padding: 12px 0;
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    background: #f0f2f5;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.kitchen-page {
+    display: none;
+}
+
+.kitchen-page.active-page {
+    display: block;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 18px;
+    color: #1e3c72;
+    border-left: 4px solid #3498db;
+    padding-left: 12px;
+}
+
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.required {
+    color: #e74c3c;
+    margin-left: 4px;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+select, input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-primary { background: #3498db; color: white; }
+.btn-success { background: #27ae60; color: white; }
+.btn-warning { background: #f39c12; color: white; }
+.btn-danger { background: #e74c3c; color: white; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #555;
+}
+
+.remove-btn {
+    background: #fee2e2;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    color: #e74c3c;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-pending { background: #f39c12; color: white; }
+.status-approved { background: #27ae60; color: white; }
+.status-rejected { background: #e74c3c; color: white; }
+.status-partial { background: #8e44ad; color: white; }
+
+.cart-stats {
+    background: #e8f4fd;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 500;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    z-index: 1000;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+@media screen and (min-width: 769px) {
+    .search-add-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+    }
+    .search-add-row .input-group {
+        flex: 1;
+        margin-bottom: 0;
+    }
+    .admin-fab {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 99;
+    }
+    .admin-btn-mobile { display: none; }
+}
+
+@media screen and (max-width: 768px) {
+    .container { padding: 16px; }
+    .card { padding: 16px; }
+    .btn { width: 100%; }
+    .button-group { flex-direction: column; }
+    .admin-fab { display: none; }
+    .admin-btn-mobile {
+        display: block;
+        width: 100%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 30px;
+        font-weight: bold;
+        margin-top: 16px;
+        cursor: pointer;
+    }
+    .table-wrapper { overflow-x: auto; }
+    .cart-table { min-width: 500px; }
+    .kitchen-tabs { padding: 0 16px; }
+}
+
+.request-item {
+    background: #f8f9fa;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-left: 4px solid;
+}
+
+.request-item.pending { border-left-color: #f39c12; }
+.request-item.approved { border-left-color: #27ae60; }
+.request-item.rejected { border-left-color: #e74c3c; }
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.request-id { font-weight: bold; font-size: 0.85rem; }
+.request-date { font-size: 0.7rem; color: #888; margin: 6px 0; }
+
+.mobile-cards-view { display: none; }
+
+@media screen and (max-width: 768px) {
+    .desktop-table-view { display: none; }
+    .mobile-cards-view { display: block; }
+}
+
+@media screen and (min-width: 769px) {
+    .desktop-table-view { display: block; }
+    .mobile-cards-view { display: none; }
+}
+
+.approved-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.approved-items-table th {
+    background: #e8f4fd;
+    padding: 8px;
+    font-size: 0.75rem;
+    text-align: left;
+}
+
+.approved-items-table td {
+    padding: 8px;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-content">
+        <div class="logo">🍳 Kitchen Order <span>| Chef Dashboard</span></div>
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+</div>
+
+<div class="kitchen-tabs">
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchKitchen('Hot Kitchen')">🔥 Hot Kitchen</button>
+        <button class="tab-btn" onclick="switchKitchen('Cold Kitchen')">❄️ Cold Kitchen</button>
+        <button class="tab-btn" onclick="switchKitchen('Pastry')">🍰 Pastry</button>
+        <button class="tab-btn" onclick="switchKitchen('Butchery')">🥩 Butchery</button>
+        <button class="tab-btn" onclick="switchKitchen('Beach House')">🏖️ Beach House</button>
+        <button class="tab-btn" onclick="switchKitchen('Nihon Kitchen')">🍜 Nihon Kitchen</button>
+        <button class="tab-btn" onclick="switchKitchen('Staff Kitchen')">👥 Staff Kitchen</button>
+    </div>
+</div>
+
+<div id="kitchenPagesContainer"></div>
+
+<button class="admin-btn-mobile" onclick="openAdmin()">👑 Open Admin Panel</button>
+<button class="admin-fab" onclick="openAdmin()">👑 Admin Panel</button>
+
+<script>
+// ========================
+// ALL ITEMS FOR ALL KITCHENS
+// ========================
+const allItems = [
+    {code: "HOT001", name: "Tomato Peeled Tin", unit: "can", section: "Hot Kitchen", maxLimit: 12},
+    {code: "HOT002", name: "Black Pepper Corn", unit: "kg", section: "Hot Kitchen", maxLimit: 4},
+    {code: "HOT003", name: "Chicken Breast", unit: "kg", section: "Hot Kitchen", maxLimit: 15},
+    {code: "HOT004", name: "Olive Oil", unit: "bottle", section: "Hot Kitchen", maxLimit: 6},
+    {code: "CLD001", name: "French Fries", unit: "box", section: "Cold Kitchen", maxLimit: 10},
+    {code: "CLD002", name: "Spinach", unit: "box", section: "Cold Kitchen", maxLimit: 8},
+    {code: "CLD003", name: "Green Peas", unit: "box", section: "Cold Kitchen", maxLimit: 8},
+    {code: "PSY001", name: "Whipping Cream", unit: "liter", section: "Pastry", maxLimit: 5},
+    {code: "PSY002", name: "Block Butter", unit: "kg", section: "Pastry", maxLimit: 3},
+    {code: "PSY003", name: "Chocolate Chips", unit: "kg", section: "Pastry", maxLimit: 7},
+    {code: "BCH001", name: "Beef Tenderloin", unit: "kg", section: "Butchery", maxLimit: 10},
+    {code: "BCH002", name: "Lamb Chops", unit: "kg", section: "Butchery", maxLimit: 8},
+    {code: "BCH003", name: "Chicken Wings", unit: "kg", section: "Butchery", maxLimit: 12},
+    {code: "BCHH01", name: "Fresh Salmon", unit: "kg", section: "Beach House", maxLimit: 8},
+    {code: "BCHH02", name: "Large Shrimp", unit: "kg", section: "Beach House", maxLimit: 12},
+    {code: "BCHH03", name: "Lobster Tail", unit: "piece", section: "Beach House", maxLimit: 20},
+    {code: "NIH001", name: "Sushi Rice", unit: "kg", section: "Nihon Kitchen", maxLimit: 15},
+    {code: "NIH002", name: "Nori Seaweed", unit: "sheet", section: "Nihon Kitchen", maxLimit: 100},
+    {code: "NIH003", name: "Soy Sauce", unit: "liter", section: "Nihon Kitchen", maxLimit: 10},
+    {code: "STF001", name: "Basmati Rice", unit: "bag", section: "Staff Kitchen", maxLimit: 20},
+    {code: "STF002", name: "Cooking Oil", unit: "liter", section: "Staff Kitchen", maxLimit: 10},
+    {code: "STF003", name: "Tea Bags", unit: "box", section: "Staff Kitchen", maxLimit: 10}
+];
+
+let currentKitchen = "Hot Kitchen";
+let kitchenData = {};
+
+const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
+
+kitchens.forEach(kitchen => {
+    kitchenData[kitchen] = { cart: [], chefName: "" };
+});
+
+function getAllRequests() {
+    let requests = localStorage.getItem("kitchen_requests");
+    if(!requests) {
+        localStorage.setItem("kitchen_requests", JSON.stringify([]));
+        return [];
+    }
+    return JSON.parse(requests);
+}
+
+function saveAllRequests(requests) {
+    localStorage.setItem("kitchen_requests", JSON.stringify(requests));
+    console.log("Saved requests:", requests.length);
+}
+
+function getItemsForKitchen(kitchen) {
+    return allItems.filter(i => i.section === kitchen);
+}
+
+function loadItems(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefName = document.getElementById(`chefName_${kitchenId}`).value.trim();
+    const select = document.getElementById(`itemSelect_${kitchenId}`);
+    const search = document.getElementById(`searchItem_${kitchenId}`).value.toLowerCase();
+    
+    if(!chefName) {
+        select.innerHTML = "<option>Please enter chef name first</option>";
+        return;
+    }
+    
+    let items = getItemsForKitchen(kitchen);
+    let filtered = search ? items.filter(i => i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search)) : items;
+    
+    select.innerHTML = "";
+    if(filtered.length === 0) {
+        select.innerHTML = "<option>No items found</option>";
+        return;
+    }
+    
+    filtered.forEach(i => {
+        select.innerHTML += `<option value="${i.code}">${i.code} - ${i.name} (${i.unit}) - Max: ${i.maxLimit}</option>`;
+    });
+}
+
+function filterItems(kitchen) { loadItems(kitchen); }
+
+function addItem(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefName = document.getElementById(`chefName_${kitchenId}`).value.trim();
+    
+    if(!chefName) {
+        document.getElementById(`chefNameError_${kitchenId}`).innerHTML = "Chef name is required";
+        showToast("⚠️ Please enter chef name");
+        return;
+    } else {
+        document.getElementById(`chefNameError_${kitchenId}`).innerHTML = "";
+    }
+    
+    const code = document.getElementById(`itemSelect_${kitchenId}`).value;
+    const qty = parseFloat(document.getElementById(`qty_${kitchenId}`).value);
+    
+    if(!code || code === "No items found" || code === "Please enter chef name first") {
+        showToast("Please select an item");
+        return;
+    }
+    
+    const items = getItemsForKitchen(kitchen);
+    const item = items.find(i => i.code === code);
+    if(!item) return;
+    
+    if(qty > item.maxLimit) {
+        showToast(`⚠️ Cannot order more than ${item.maxLimit} ${item.unit}`);
+        return;
+    }
+    
+    const existing = kitchenData[kitchen].cart.find(i => i.code === code);
+    if(existing) {
+        existing.qty += qty;
+        showToast(`✓ Updated ${item.name}: ${existing.qty}/${item.maxLimit}`);
+    } else {
+        kitchenData[kitchen].cart.push({
+            code: item.code, name: item.name, unit: item.unit, 
+            qty: qty, maxLimit: item.maxLimit
+        });
+        showToast(`✓ Added ${item.name} (${qty}/${item.maxLimit})`);
+    }
+    
+    document.getElementById(`qty_${kitchenId}`).value = "1";
+    renderCart(kitchen);
+}
+
+function renderCart(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const cart = kitchenData[kitchen].cart;
+    const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
+    
+    document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty;
+    document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
+    
+    const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
+    if(desktopBody) {
+        if(cart.length === 0) {
+            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</td></tr>';
+        } else {
+            desktopBody.innerHTML = "";
+            cart.forEach((item, index) => {
+                desktopBody.innerHTML += `
+                    <tr>
+                        <td>${item.code}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.qty}</td>
+                        <td>${item.unit}</td>
+                        <td>${item.qty}/${item.maxLimit}</td>
+                        <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button></td>
+                    </tr>
+                `;
+            });
+        }
+    }
+}
+
+function removeItem(kitchen, index) {
+    kitchenData[kitchen].cart.splice(index, 1);
+    renderCart(kitchen);
+    showToast("Item removed");
+}
+
+function clearCart(kitchen) {
+    if(confirm("Clear all items?")) {
+        kitchenData[kitchen].cart = [];
+        renderCart(kitchen);
+        showToast("Cart cleared");
+    }
+}
+
+function submitRequest(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefName = document.getElementById(`chefName_${kitchenId}`).value.trim();
+    const cart = kitchenData[kitchen].cart;
+    
+    if(!chefName) {
+        showToast("⚠️ Please enter chef name");
+        return;
+    }
+    
+    if(cart.length === 0) {
+        showToast("No items to submit");
+        return;
+    }
+    
+    const requests = getAllRequests();
+    const newRequest = {
+        id: Date.now(),
+        requestId: "REQ-" + (Date.now()).toString().slice(-6),
+        chefName: chefName,
+        section: kitchen,
+        items: cart.map(i => ({
+            code: i.code, name: i.name, unit: i.unit,
+            originalQty: i.qty, maxLimit: i.maxLimit,
+            status: "pending", approvedQty: 0, rejectionReason: null
+        })),
+        submittedAt: new Date().toLocaleString(),
+        timestamp: Date.now()
+    };
+    
+    requests.push(newRequest);
+    saveAllRequests(requests);
+    showToast(`✅ Request ${newRequest.requestId} submitted to admin!`);
+    console.log("Request submitted:", newRequest);
+    
+    kitchenData[kitchen].cart = [];
+    renderCart(kitchen);
+    loadMyRequests(kitchen);
+}
+
+function getOverallStatus(items) {
+    if(items.every(i => i.status === "approved")) return "approved";
+    if(items.every(i => i.status === "rejected")) return "rejected";
+    if(items.some(i => i.status === "approved") && items.some(i => i.status === "rejected")) return "partial";
+    return "pending";
+}
+
+function loadMyRequests(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefName = document.getElementById(`chefName_${kitchenId}`).value.trim();
+    
+    if(!chefName) {
+        document.getElementById(`myRequestsDesktop_${kitchenId}`).innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
+        return;
+    }
+    
+    const requests = getAllRequests();
+    const myRequests = requests.filter(r => r.chefName === chefName && r.section === kitchen);
+    
+    const container = document.getElementById(`myRequestsDesktop_${kitchenId}`);
+    if(myRequests.length === 0) {
+        container.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
+        return;
+    }
+    
+    container.innerHTML = "";
+    [...myRequests].reverse().forEach(req => {
+        const status = getOverallStatus(req.items);
+        const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
+        const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+        
+        let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
+        
+        req.items.forEach(item => {
+            let itemStatus = "";
+            let itemValue = "";
+            if(item.status === "approved") {
+                itemStatus = "✅ Approved";
+                itemValue = `${item.approvedQty} ${item.unit}`;
+            } else if(item.status === "rejected") {
+                itemStatus = "❌ Rejected";
+                itemValue = item.rejectionReason || "No stock";
+            } else {
+                itemStatus = "⏳ Pending";
+                itemValue = "Waiting...";
+            }
+            itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+        });
+        itemsHtml += `</tbody></table>`;
+        
+        container.innerHTML += `
+            <div style="border:1px solid #e0e0e0; border-radius:12px; padding:16px; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap;">
+                    <span style="font-weight:bold;">📄 ${req.requestId}</span>
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </div>
+                <div style="background:#f8f9fa; padding:10px; border-radius:8px; margin-bottom:10px;">
+                    <span>📅 ${req.submittedAt}</span>
+                </div>
+                ${itemsHtml}
+            </div>
+        `;
+    });
+}
+
+function exportToExcel(kitchen) {
+    const cart = kitchenData[kitchen].cart;
+    if(cart.length === 0) { showToast("No items to export"); return; }
+    
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chef = document.getElementById(`chefName_${kitchenId}`).value;
+    
+    let tableData = `<html><head><meta charset="UTF-8"></head><body>
+        <h2>Kitchen Order - ${kitchen}</h2>
+        <p>Chef: ${chef} | Date: ${new Date().toLocaleString()}</p>
+        <table border="1"><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th></tr>`;
+    cart.forEach(item => {
+        tableData += `<tr><td>${item.code}</td><td>${item.name}</td><td>${item.qty}</td><td>${item.unit}</td><td>${item.maxLimit}</td></tr>`;
+    });
+    tableData += `</table></body></html>`;
+    
+    const blob = new Blob([tableData], {type: "application/vnd.ms-excel"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `kitchen_order_${kitchen}_${chef}.xls`;
+    link.click();
+    showToast("Exporting...");
+}
+
+function openAdmin() { window.open("admin.html", "_blank"); }
+
+function showToast(msg) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+}
+
+function logout() {
+    if(confirm("Logout?")) {
+        kitchens.forEach(k => { kitchenData[k].cart = []; renderCart(k); });
+        showToast("Logged out");
+    }
+}
+
+function switchKitchen(kitchen) {
+    currentKitchen = kitchen;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
+    document.getElementById(`page_${kitchen.replace(/\s/g, '_')}`).classList.add('active-page');
+    loadItems(kitchen);
+    renderCart(kitchen);
+    loadMyRequests(kitchen);
+}
+
+function createKitchenPage(kitchen) {
+    const id = kitchen.replace(/\s/g, '_');
+    return `
+        <div class="kitchen-page" id="page_${id}">
+            <div class="card">
+                <h3>👨‍🍳 Chef Information - ${kitchen}</h3>
+                <div class="input-group">
+                    <label>Chef Name <span class="required">*</span></label>
+                    <input type="text" id="chefName_${id}" placeholder="Enter chef name">
+                    <div id="chefNameError_${id}" class="error-message"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>📦 Add Store Items</h3>
+                <div class="search-add-row">
+                    <div class="input-group"><label>🔍 Search</label><input type="text" id="searchItem_${id}" onkeyup="filterItems('${kitchen}')"></div>
+                    <div class="input-group"><label>Select Item</label><select id="itemSelect_${id}"></select></div>
+                    <div class="input-group"><label>Quantity</label><input type="number" id="qty_${id}" min="1" value="1"></div>
+                    <button class="btn btn-primary" onclick="addItem('${kitchen}')">+ Add</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>🛒 Current Request</h3>
+                <div class="cart-stats"><span>Total: <strong id="totalItems_${id}">0</strong></span><span>Items: <strong id="lineCount_${id}">0</strong></span></div>
+                <div class="desktop-table-view"><div class="table-wrapper"><table class="cart-table"><thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead><tbody id="cartTableDesktop_${id}"></tbody></table></div></div>
+                <div class="mobile-cards-view" id="cartMobile_${id}"></div>
+                <div class="button-group"><button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 Submit</button><button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 Export</button><button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ Clear</button></div>
+            </div>
+            <div class="card">
+                <h3>📜 My Requests</h3>
+                <div class="desktop-table-view" id="myRequestsDesktop_${id}"></div>
+                <div class="mobile-cards-view" id="myRequestsMobile_${id}"></div>
+            </div>
+        </div>
+    `;
+}
+
+function generatePages() {
+    const container = document.getElementById("kitchenPagesContainer");
+    container.innerHTML = "";
+    kitchens.forEach(k => { container.innerHTML += createKitchenPage(k); });
+    
+    kitchens.forEach(k => {
+        const id = k.replace(/\s/g, '_');
+        document.getElementById(`chefName_${id}`).addEventListener("input", () => { loadItems(k); loadMyRequests(k); });
+        document.getElementById(`qty_${id}`).addEventListener("input", function() {});
+    });
+    switchKitchen("Hot Kitchen");
+}
+
+generatePages();
+setInterval(() => { if(currentKitchen) loadMyRequests(currentKitchen); }, 3000);
+</script>
+</body>
+</html>

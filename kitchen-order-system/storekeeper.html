@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Storekeeper Dashboard - Inventory Management</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; }
+
+.header { background: linear-gradient(135deg, #1e5c3c, #2a8a50); color: white; padding: 16px 24px; }
+.header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.logo { font-size: 1.4rem; font-weight: bold; }
+.logo span { color: #ffd700; }
+.btn-back { background: rgba(255,255,255,0.2); border: none; padding: 8px 20px; border-radius: 25px; color: white; cursor: pointer; }
+.btn-back:hover { background: rgba(255,255,255,0.3); }
+
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
+.stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.stat-number { font-size: 2rem; font-weight: bold; color: #27ae60; }
+.stat-label { color: #666; margin-top: 5px; }
+
+.card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.card h3 { font-size: 1.2rem; margin-bottom: 18px; color: #1e5c3c; border-left: 4px solid #27ae60; padding-left: 12px; }
+
+.inventory-table { width: 100%; border-collapse: collapse; }
+.inventory-table th, .inventory-table td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+.inventory-table th { background: #f8f9fa; font-weight: 600; color: #555; }
+
+.status-low { color: #e74c3c; font-weight: bold; }
+.status-medium { color: #f39c12; font-weight: bold; }
+.status-good { color: #27ae60; font-weight: bold; }
+
+.edit-stock { width: 80px; padding: 6px 10px; border: 1px solid #ddd; border-radius: 8px; text-align: center; }
+.btn-save { background: #27ae60; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+.btn-save:hover { background: #219a52; }
+
+.search-box { width: 300px; padding: 10px 16px; border: 1px solid #ddd; border-radius: 25px; margin-bottom: 20px; font-size: 14px; }
+.search-box:focus { outline: none; border-color: #27ae60; }
+
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 30px; z-index: 1000; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+@media (max-width: 768px) {
+    .container { padding: 16px; }
+    .stats-grid { gap: 10px; }
+    .stat-card { padding: 12px; }
+    .stat-number { font-size: 1.5rem; }
+    .inventory-table { font-size: 0.8rem; }
+    .inventory-table th, .inventory-table td { padding: 8px; }
+    .edit-stock { width: 60px; }
+    .search-box { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-content">
+        <div class="logo">📦 Storekeeper Dashboard <span>| Inventory Management</span></div>
+        <button class="btn-back" onclick="window.location.href='index.html'">← Back to Home</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-number" id="totalItems">0</div><div class="stat-label">Total Items</div></div>
+        <div class="stat-card"><div class="stat-number" id="lowStock">0</div><div class="stat-label">Low Stock Items</div></div>
+        <div class="stat-card"><div class="stat-number" id="totalOrders">0</div><div class="stat-label">Total Orders</div></div>
+        <div class="stat-card"><div class="stat-number" id="pendingOrders">0</div><div class="stat-label">Pending Orders</div></div>
+    </div>
+
+    <div class="card">
+        <h3>📋 Inventory Management</h3>
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search items..." onkeyup="filterInventory()">
+        <div style="overflow-x: auto;">
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Item Name</th>
+                        <th>Kitchen</th>
+                        <th>Unit</th>
+                        <th>Current Stock</th>
+                        <th>Max Limit</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>📜 Recent Approved Orders (Ready for Store)</h3>
+        <div style="overflow-x: auto;">
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Kitchen</th>
+                        <th>Chef</th>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="approvedOrdersBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// Inventory data (stock levels)
+let inventory = [
+    {code: "HOT001", name: "Tomato Peeled Tin", kitchen: "Hot Kitchen", unit: "can", stock: 45, maxLimit: 12},
+    {code: "HOT002", name: "Black Pepper Corn", kitchen: "Hot Kitchen", unit: "kg", stock: 8, maxLimit: 4},
+    {code: "HOT003", name: "Chicken Breast", kitchen: "Hot Kitchen", unit: "kg", stock: 30, maxLimit: 15},
+    {code: "HOT004", name: "Olive Oil", kitchen: "Hot Kitchen", unit: "bottle", stock: 12, maxLimit: 6},
+    {code: "CLD001", name: "French Fries", kitchen: "Cold Kitchen", unit: "box", stock: 25, maxLimit: 10},
+    {code: "CLD002", name: "Spinach", kitchen: "Cold Kitchen", unit: "box", stock: 15, maxLimit: 8},
+    {code: "CLD003", name: "Green Peas", kitchen: "Cold Kitchen", unit: "box", stock: 18, maxLimit: 8},
+    {code: "PSY001", name: "Whipping Cream", kitchen: "Pastry", unit: "liter", stock: 10, maxLimit: 5},
+    {code: "PSY002", name: "Block Butter", kitchen: "Pastry", unit: "kg", stock: 6, maxLimit: 3},
+    {code: "BCH001", name: "Beef Tenderloin", kitchen: "Butchery", unit: "kg", stock: 20, maxLimit: 10},
+    {code: "BEH001", name: "Fresh Salmon", kitchen: "Beach House", unit: "kg", stock: 12, maxLimit: 8},
+    {code: "NIH001", name: "Sushi Rice", kitchen: "Nihon Kitchen", unit: "kg", stock: 25, maxLimit: 15},
+    {code: "STF001", name: "Basmati Rice", kitchen: "Staff Kitchen", unit: "bag", stock: 40, maxLimit: 20}
+];
+
+function getRequests() {
+    let data = localStorage.getItem("kitchen_requests");
+    return data ? JSON.parse(data) : [];
+}
+
+function updateStats() {
+    const requests = getRequests();
+    const totalOrders = requests.length;
+    const pendingOrders = requests.filter(r => r.items.some(i => i.status === "pending")).length;
+    
+    document.getElementById("totalItems").innerText = inventory.length;
+    document.getElementById("lowStock").innerText = inventory.filter(i => i.stock < i.maxLimit * 0.3).length;
+    document.getElementById("totalOrders").innerText = totalOrders;
+    document.getElementById("pendingOrders").innerText = pendingOrders;
+}
+
+function getStockStatus(stock, maxLimit) {
+    const percentage = (stock / maxLimit) * 100;
+    if(percentage < 30) return { class: "status-low", text: "⚠️ Low Stock" };
+    if(percentage < 70) return { class: "status-medium", text: "📦 Medium" };
+    return { class: "status-good", text: "✅ Good" };
+}
+
+function updateStock(itemCode, newStock) {
+    const item = inventory.find(i => i.code === itemCode);
+    if(item) {
+        item.stock = Math.max(0, newStock);
+        filterInventory();
+        showToast(`✓ Updated ${item.name} stock to ${item.stock} ${item.unit}`);
+        updateStats();
+    }
+}
+
+function filterInventory() {
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    const filtered = inventory.filter(i => 
+        i.name.toLowerCase().includes(search) || 
+        i.code.toLowerCase().includes(search) ||
+        i.kitchen.toLowerCase().includes(search)
+    );
+    renderInventoryTable(filtered);
+}
+
+function renderInventoryTable(items) {
+    const tbody = document.getElementById("inventoryTableBody");
+    tbody.innerHTML = "";
+    
+    items.forEach(item => {
+        const status = getStockStatus(item.stock, item.maxLimit);
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.code}</td>
+                <td><strong>${item.name}</strong></td>
+                <td>${item.kitchen}</td>
+                <td>${item.unit}</td>
+                <td>
+                    <input type="number" id="stock_${item.code}" class="edit-stock" value="${item.stock}" min="0" step="1">
+                </td>
+                <td>${item.maxLimit}</td>
+                <td class="${status.class}">${status.text}</td>
+                <td><button class="btn-save" onclick="updateStock('${item.code}', document.getElementById('stock_${item.code}').value)">💾 Save</button></td>
+            </tr>
+        `;
+    });
+}
+
+function renderApprovedOrders() {
+    const requests = getRequests();
+    const approvedRequests = requests.filter(r => r.items.every(i => i.status === "approved"));
+    const tbody = document.getElementById("approvedOrdersBody");
+    
+    if(approvedRequests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No approved orders yet</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = "";
+    approvedRequests.reverse().slice(0, 20).forEach(req => {
+        const itemsList = req.items.map(i => `${i.name} (${i.approvedQty} ${i.unit})`).join(", ");
+        tbody.innerHTML += `
+            <tr>
+                <td><strong>${req.requestId}</strong></td>
+                <td>${req.section}</td>
+                <td>${req.chefName}</td>
+                <td>${req.submittedAt}</td>
+                <td style="font-size:0.85rem;">${itemsList.substring(0, 60)}${itemsList.length > 60 ? "..." : ""}</td>
+                <td><span class="status-good">✅ Ready for pickup</span></td>
+            </tr>
+        `;
+    });
+}
+
+function showToast(msg) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
+
+// Load saved inventory from localStorage
+function loadInventory() {
+    const saved = localStorage.getItem("storekeeper_inventory");
+    if(saved) {
+        const savedInv = JSON.parse(saved);
+        inventory.forEach(item => {
+            const savedItem = savedInv.find(i => i.code === item.code);
+            if(savedItem) item.stock = savedItem.stock;
+        });
+    }
+}
+
+function saveInventory() {
+    localStorage.setItem("storekeeper_inventory", JSON.stringify(inventory));
+}
+
+// Save inventory before page unload
+window.addEventListener("beforeunload", () => {
+    saveInventory();
+});
+
+// Initial load
+loadInventory();
+updateStats();
+renderInventoryTable(inventory);
+renderApprovedOrders();
+setInterval(() => {
+    renderApprovedOrders();
+    updateStats();
+}, 5000);
+</script>
+</body>
+</html>

@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Admin Dashboard - Approve Orders</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; }
+
+.header { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; padding: 16px 24px; }
+.header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.header h1 { font-size: 1.4rem; }
+.header span { color: #e94560; }
+.header-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.btn-header { background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 25px; color: white; cursor: pointer; font-weight: 600; }
+.btn-header:hover { background: rgba(255,255,255,0.3); }
+.btn-danger { background: #e74c3c; }
+.btn-danger:hover { background: #c0392b; }
+
+.container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
+.stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.stat-number { font-size: 2rem; font-weight: bold; color: #e94560; }
+.stat-label { color: #666; margin-top: 5px; }
+
+.kitchen-filters { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; background: white; padding: 12px; border-radius: 16px; }
+.kitchen-filter-btn { padding: 8px 16px; background: #f0f2f5; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 13px; }
+.kitchen-filter-btn:hover { background: #e0e0e0; }
+.kitchen-filter-btn.active { background: #1e3c72; color: white; }
+
+.tabs { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.tab-btn { padding: 10px 24px; background: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; }
+.tab-btn.active { background: #e94560; color: white; }
+
+.request-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+.request-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; flex-wrap: wrap; gap: 10px; }
+.request-id { font-weight: bold; font-size: 1.1rem; }
+.kitchen-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+.kitchen-hot { background: #e74c3c; color: white; }
+.kitchen-cold { background: #3498db; color: white; }
+.kitchen-pastry { background: #f39c12; color: white; }
+.kitchen-butchery { background: #8e44ad; color: white; }
+.kitchen-beach { background: #1abc9c; color: white; }
+.kitchen-nihon { background: #e91e63; color: white; }
+.kitchen-staff { background: #95a5a6; color: white; }
+
+.status-badge { padding: 5px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.status-pending { background: #f39c12; color: white; }
+.status-approved { background: #27ae60; color: white; }
+.status-rejected { background: #e74c3c; color: white; }
+.status-partial { background: #8e44ad; color: white; }
+
+.request-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px; padding: 12px; background: #f8f9fa; border-radius: 12px; }
+.detail-label { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+.detail-value { font-weight: 600; margin-top: 4px; }
+
+.items-table { width: 100%; margin: 16px 0; border-collapse: collapse; }
+.items-table th { background: #f8f9fa; padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #e0e0e0; }
+.items-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+
+.requested-qty { background: #f0f0f0; padding: 6px 12px; border-radius: 20px; display: inline-block; font-weight: 600; }
+.approval-input { 
+    width: 100px; 
+    padding: 10px 12px; 
+    border: 2px solid #3498db; 
+    border-radius: 8px; 
+    text-align: center; 
+    font-size: 14px; 
+    font-weight: 600;
+    background: white;
+}
+.approval-input:focus { outline: none; border-color: #27ae60; }
+
+.btn-approve { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 5px; }
+.btn-approve:hover { background: #219a52; }
+.btn-reject { background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.btn-reject:hover { background: #c0392b; }
+
+.request-actions { display: flex; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 2px solid #f0f0f0; }
+.btn-approve-all { flex: 1; background: #27ae60; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+.btn-reject-all { flex: 1; background: #e74c3c; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+
+.empty-state { text-align: center; padding: 60px; background: white; border-radius: 16px; color: #999; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 12px 24px; border-radius: 30px; z-index: 1000; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.floating-refresh { position: fixed; bottom: 20px; right: 20px; background: #3498db; color: white; border: none; width: 50px; height: 50px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+
+.modal { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+.modal-content { background: white; padding: 30px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%; }
+.modal-content h2 { margin-bottom: 20px; color: #1a1a2e; }
+.modal-content input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 10px; font-size: 16px; }
+.modal-content button { background: #3498db; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; width: 100%; }
+.error-msg { color: #e74c3c; margin-top: 10px; }
+
+@media (max-width: 768px) {
+    .container { padding: 16px; }
+    .stats-grid { gap: 10px; }
+    .stat-card { padding: 12px; }
+    .stat-number { font-size: 1.5rem; }
+    .items-table { font-size: 0.8rem; }
+    .approval-input { width: 70px; padding: 6px 8px; }
+    .btn-approve, .btn-reject { padding: 6px 10px; font-size: 0.7rem; }
+    .kitchen-filters { overflow-x: auto; flex-wrap: nowrap; }
+}
+
+@media print {
+    .header-buttons, .kitchen-filters, .tabs, .floating-refresh, .btn-approve, .btn-reject, .request-actions, .toast {
+        display: none !important;
+    }
+    .request-card { break-inside: avoid; page-break-inside: avoid; }
+    body { background: white; }
+    .container { padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <h2>🔐 Admin Access</h2>
+        <p>Enter password to continue</p>
+        <input type="password" id="passwordInput" placeholder="Enter password">
+        <button onclick="checkPassword()">Login</button>
+        <div id="passwordError" class="error-msg"></div>
+    </div>
+</div>
+
+<div id="mainContent" style="display: none;">
+    <div class="header">
+        <div class="header-content">
+            <h1>👑 Admin Dashboard <span>| Approve Items</span></h1>
+            <div class="header-buttons">
+                <button class="btn-header" onclick="window.open('analytics.html', '_blank')">📊 Analytics</button>
+                <button class="btn-header" onclick="exportToExcel()">📎 Export Excel</button>
+                <button class="btn-header" onclick="window.print()">🖨️ Print</button>
+                <button class="btn-header btn-danger" onclick="resetOldRequests()">🗑️ Reset Old</button>
+                <button class="btn-header" onclick="refreshData()">🔄 Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card" onclick="filterStatus('pending')"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">⏳ Pending</div></div>
+            <div class="stat-card" onclick="filterStatus('approved')"><div class="stat-number" id="approvedCount">0</div><div class="stat-label">✅ Approved</div></div>
+            <div class="stat-card" onclick="filterStatus('rejected')"><div class="stat-number" id="rejectedCount">0</div><div class="stat-label">❌ Rejected</div></div>
+            <div class="stat-card" onclick="filterStatus('all')"><div class="stat-number" id="totalCount">0</div><div class="stat-label">📦 Total</div></div>
+        </div>
+
+        <div class="kitchen-filters">
+            <button class="kitchen-filter-btn active" onclick="filterKitchen('all')">📋 All Kitchens</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Hot Kitchen')">🔥 Hot</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Cold Kitchen')">❄️ Cold</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Pastry')">🍰 Pastry</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Butchery')">🥩 Butchery</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Beach House')">🏖️ Beach</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Nihon Kitchen')">🍜 Nihon</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Staff Kitchen')">👥 Staff</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('pending')">⏳ Pending</button>
+            <button class="tab-btn" onclick="showTab('approved')">✅ Approved</button>
+            <button class="tab-btn" onclick="showTab('rejected')">❌ Rejected</button>
+            <button class="tab-btn" onclick="showTab('partial')">🟣 Partial</button>
+            <button class="tab-btn" onclick="showTab('all')">📋 All</button>
+        </div>
+
+        <div id="requestsContainer"></div>
+    </div>
+
+    <button class="floating-refresh" onclick="refreshData()">⟳</button>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "admin123";
+let currentKitchenFilter = "all";
+let currentStatusFilter = "pending";
+
+function checkPassword() {
+    if(document.getElementById("passwordInput").value === ADMIN_PASSWORD) {
+        document.getElementById("passwordModal").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+        refreshData();
+        setInterval(refreshData, 5000);
+    } else {
+        document.getElementById("passwordError").innerHTML = "Wrong password! Try: admin123";
+    }
+}
+
+function getRequests() {
+    let data = localStorage.getItem("kitchen_requests");
+    return data ? JSON.parse(data) : [];
+}
+
+function saveRequests(requests) {
+    localStorage.setItem("kitchen_requests", JSON.stringify(requests));
+    console.log("Saved requests:", requests.length);
+}
+
+function getRequestStatus(req) {
+    if(!req.items || req.items.length === 0) return "pending";
+    if(req.items.every(i => i.status === "approved")) return "approved";
+    if(req.items.every(i => i.status === "rejected")) return "rejected";
+    if(req.items.some(i => i.status === "approved") && req.items.some(i => i.status === "rejected")) return "partial";
+    return "pending";
+}
+
+function updateStats() {
+    const requests = getRequests();
+    let pending = 0, approved = 0, rejected = 0, partial = 0;
+    requests.forEach(req => {
+        const status = getRequestStatus(req);
+        if(status === "pending") pending++;
+        else if(status === "approved") approved++;
+        else if(status === "rejected") rejected++;
+        else if(status === "partial") partial++;
+    });
+    document.getElementById("pendingCount").innerText = pending;
+    document.getElementById("approvedCount").innerText = approved;
+    document.getElementById("rejectedCount").innerText = rejected;
+    document.getElementById("totalCount").innerText = requests.length;
+}
+
+function approveItem(reqId, itemIdx) {
+    const inputField = document.getElementById(`qty_${reqId}_${itemIdx}`);
+    let approvalQty = inputField ? parseFloat(inputField.value) : 0;
+    
+    if(isNaN(approvalQty) || approvalQty < 0) {
+        showToast("⚠️ Please enter a valid quantity");
+        return;
+    }
+    
+    const requests = getRequests();
+    const req = requests.find(r => r.id == reqId);
+    
+    if(req) {
+        const item = req.items[itemIdx];
+        const maxLimit = item.maxLimit || 999;
+        
+        if(approvalQty > maxLimit) {
+            showToast(`⚠️ Cannot approve more than ${maxLimit} ${item.unit}`);
+            return;
+        }
+        
+        if(approvalQty === 0) {
+            showToast(`⚠️ Cannot approve 0 quantity. Please use Reject`);
+            return;
+        }
+        
+        item.status = "approved";
+        item.approvedQty = approvalQty;
+        item.rejectionReason = null;
+        
+        saveRequests(requests);
+        showToast(`✅ Approved: ${item.name} (${approvalQty} ${item.unit})`);
+        refreshData();
+    }
+}
+
+function rejectItem(reqId, itemIdx) {
+    const reason = prompt("Enter rejection reason:", "Out of stock");
+    if(reason !== null && reason.trim() !== "") {
+        const requests = getRequests();
+        const req = requests.find(r => r.id == reqId);
+        if(req) {
+            req.items[itemIdx].status = "rejected";
+            req.items[itemIdx].rejectionReason = reason;
+            req.items[itemIdx].approvedQty = 0;
+            saveRequests(requests);
+            showToast(`❌ Rejected: ${req.items[itemIdx].name} - Reason: ${reason}`);
+            refreshData();
+        }
+    } else if(reason !== null && reason.trim() === "") {
+        showToast("⚠️ Please enter a rejection reason");
+    }
+}
+
+function approveAll(reqId) {
+    if(!confirm("Approve ALL items in this request?")) return;
+    
+    const requests = getRequests();
+    const req = requests.find(r => r.id == reqId);
+    
+    if(req) {
+        let hasError = false;
+        
+        req.items.forEach((item, idx) => {
+            const inputField = document.getElementById(`qty_${reqId}_${idx}`);
+            let approvalQty = inputField ? parseFloat(inputField.value) : item.originalQty;
+            
+            if(isNaN(approvalQty) || approvalQty < 0) {
+                approvalQty = item.originalQty;
+            }
+            
+            if(approvalQty === 0) {
+                approvalQty = item.originalQty;
+                hasError = true;
+            }
+            
+            const maxLimit = item.maxLimit || 999;
+            if(approvalQty > maxLimit) {
+                showToast(`⚠️ ${item.name} exceeds limit (${maxLimit}), using ${maxLimit}`);
+                approvalQty = maxLimit;
+                hasError = true;
+            }
+            
+            item.status = "approved";
+            item.approvedQty = approvalQty;
+            item.rejectionReason = null;
+        });
+        
+        saveRequests(requests);
+        showToast(`✅ All items approved${hasError ? " (some adjusted)" : ""}`);
+        refreshData();
+    }
+}
+
+function rejectAll(reqId) {
+    const reason = prompt("Enter rejection reason for ALL items:", "Not available");
+    if(reason !== null && reason.trim() !== "") {
+        const requests = getRequests();
+        const req = requests.find(r => r.id == reqId);
+        if(req) {
+            req.items.forEach(item => {
+                item.status = "rejected";
+                item.rejectionReason = reason;
+                item.approvedQty = 0;
+            });
+            saveRequests(requests);
+            showToast(`❌ All items rejected - Reason: ${reason}`);
+            refreshData();
+        }
+    } else if(reason !== null && reason.trim() === "") {
+        showToast("⚠️ Please enter a rejection reason");
+    }
+}
+
+function resetOldRequests() {
+    if(confirm("⚠️ This will delete ALL approved and rejected requests. Pending requests will remain. Are you sure?")) {
+        let requests = getRequests();
+        // Keep only pending requests
+        const pendingRequests = requests.filter(r => getRequestStatus(r) === "pending");
+        saveRequests(pendingRequests);
+        showToast(`🗑️ Reset complete. ${pendingRequests.length} pending requests remaining.`);
+        refreshData();
+    }
+}
+
+function exportToExcel() {
+    const requests = getRequests();
+    if(requests.length === 0) {
+        showToast("No data to export");
+        return;
+    }
+    
+    let csv = "Request ID,Kitchen,Chef Name,Date,Item Code,Item Name,Requested Qty,Unit,Status,Approved/Rejected Qty,Rejection Reason\n";
+    
+    requests.forEach(req => {
+        req.items.forEach(item => {
+            let status = item.status;
+            let finalQty = "";
+            let rejectionReason = "";
+            
+            if(item.status === "approved") {
+                status = "Approved";
+                finalQty = item.approvedQty;
+            } else if(item.status === "rejected") {
+                status = "Rejected";
+                finalQty = "0";
+                rejectionReason = item.rejectionReason || "";
+            } else {
+                status = "Pending";
+                finalQty = "Waiting";
+            }
+            
+            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.code}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${rejectionReason}"\n`;
+        });
+    });
+    
+    const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.setAttribute("download", `kitchen_orders_${new Date().toISOString().slice(0,19)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast("📎 Exported to Excel");
+}
+
+function filterKitchen(kitchen) {
+    currentKitchenFilter = kitchen;
+    document.querySelectorAll('.kitchen-filter-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    refreshData();
+}
+
+function filterStatus(status) {
+    currentStatusFilter = status;
+    refreshData();
+}
+
+function showTab(tab) {
+    currentStatusFilter = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    refreshData();
+}
+
+function getKitchenClass(kitchen) {
+    const map = {
+        "Hot Kitchen": "kitchen-hot",
+        "Cold Kitchen": "kitchen-cold",
+        "Pastry": "kitchen-pastry",
+        "Butchery": "kitchen-butchery",
+        "Beach House": "kitchen-beach",
+        "Nihon Kitchen": "kitchen-nihon",
+        "Staff Kitchen": "kitchen-staff"
+    };
+    return map[kitchen] || "";
+}
+
+function refreshData() {
+    let requests = getRequests();
+    
+    if(currentKitchenFilter !== "all") {
+        requests = requests.filter(r => r.section === currentKitchenFilter);
+    }
+    
+    if(currentStatusFilter !== "all") {
+        requests = requests.filter(r => getRequestStatus(r) === currentStatusFilter);
+    }
+    
+    requests.reverse();
+    const container = document.getElementById("requestsContainer");
+    
+    if(requests.length === 0) {
+        let message = "📭 No requests";
+        if(currentKitchenFilter !== "all") message += ` from ${currentKitchenFilter}`;
+        if(currentStatusFilter !== "all") message += ` with status ${currentStatusFilter}`;
+        container.innerHTML = `<div class="empty-state">${message}</div>`;
+        updateStats();
+        return;
+    }
+    
+    container.innerHTML = "";
+    
+    requests.forEach(req => {
+        const status = getRequestStatus(req);
+        const statusClass = `status-${status}`;
+        const statusText = {
+            pending: "Pending",
+            approved: "Approved",
+            rejected: "Rejected",
+            partial: "Partial"
+        }[status];
+        const kitchenClass = getKitchenClass(req.section);
+        
+        let itemsHtml = `
+            <table class="items-table">
+                <thead>
+                    <tr><th>Code</th><th>Item Name</th><th>Requested</th><th>Unit</th><th style="background:#e8f4fd;">✏️ Admin Qty</th><th>Action</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+        `;
+        
+        req.items.forEach((item, idx) => {
+            if(item.status === "approved") {
+                itemsHtml += `
+                    <tr style="background:#e8f5e9;">
+                        <td>${item.code}</td>
+                        <td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td>
+                        <td>${item.originalQty}</td></td>
+                        <td>${item.unit}</td></td>
+                        <td><strong style="color:#27ae60;">${item.approvedQty}</strong></td>
+                        <td>✅ Approved</td></td>
+                        <td><span class="status-badge status-approved">Approved</span></td>
+                    </tr>
+                `;
+            } 
+            else if(item.status === "rejected") {
+                itemsHtml += `
+                    <tr style="background:#fee2e2;">
+                        <td>${item.code}</td></td>
+                        <td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td></td>
+                        <td>${item.originalQty}</td></td>
+                        <td>${item.unit}</td></td>
+                        <td><strong style="color:#e74c3c;">0</strong></td></td>
+                        <td>❌ Rejected</td></td>
+                        <td><span class="status-badge status-rejected">${item.rejectionReason || 'No reason'}</span></td>
+                    </tr>
+                `;
+            } 
+            else {
+                const defaultValue = item.originalQty;
+                itemsHtml += `
+                    <tr>
+                        <td>${item.code}</td></td>
+                        <td><strong>${item.name}</strong><br><small style="color:#3498db;">Max: ${item.maxLimit}</small></td></td>
+                        <td>${item.originalQty}</td></td>
+                        <td>${item.unit}</td></td>
+                        <td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${defaultValue}" min="0" max="${item.maxLimit}" step="0.5"></td>
+                        <td><button class="btn-approve" onclick="approveItem(${req.id}, ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem(${req.id}, ${idx})">❌ Reject</button></td>
+                        <td><span class="status-badge status-pending">⏳ Pending</span></td>
+                    </tr>
+                `;
+            }
+        });
+        
+        itemsHtml += `</tbody></table>`;
+        
+        let actions = "";
+        if(status === "pending" || status === "partial") {
+            actions = `
+                <div class="request-actions">
+                    <button class="btn-approve-all" onclick="approveAll(${req.id})">✅ Approve All</button>
+                    <button class="btn-reject-all" onclick="rejectAll(${req.id})">❌ Reject All</button>
+                </div>
+            `;
+        }
+        
+        container.innerHTML += `
+            <div class="request-card">
+                <div class="request-header">
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <span class="request-id">📄 ${req.requestId}</span>
+                        <span class="kitchen-badge ${kitchenClass}">${req.section}</span>
+                    </div>
+                    <span class="status-badge ${statusClass}">${statusText}</span>
+                </div>
+                <div class="request-details">
+                    <div><div class="detail-label">👨‍🍳 Chef</div><div class="detail-value">${req.chefName}</div></div>
+                    <div><div class="detail-label">📅 Submitted</div><div class="detail-value">${req.submittedAt}</div></div>
+                    <div><div class="detail-label">📦 Items</div><div class="detail-value">${req.items.length}</div></div>
+                </div>
+                ${itemsHtml}
+                ${actions}
+            </div>
+        `;
+    });
+    
+    updateStats();
+}
+
+function showToast(msg) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+}
+
+window.onload = () => { 
+    document.getElementById("passwordModal").style.display = "flex"; 
+};
+</script>
+</body>
+</html>

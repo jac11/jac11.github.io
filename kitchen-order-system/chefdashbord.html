@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>Chef Dashboard - Kitchen Order System</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fb;
+}
+
+.header {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    padding: 16px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #ffd700;
+}
+
+.logout-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Kitchen Tabs Navigation */
+.kitchen-tabs {
+    background: white;
+    padding: 0 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 70px;
+    z-index: 99;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.tabs-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    padding: 12px 0;
+}
+
+.tab-btn {
+    padding: 12px 24px;
+    background: #f0f2f5;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.tab-btn[data-kitchen="Hot Kitchen"] { border-left: 4px solid #e74c3c; }
+.tab-btn[data-kitchen="Cold Kitchen"] { border-left: 4px solid #3498db; }
+.tab-btn[data-kitchen="Pastry"] { border-left: 4px solid #f39c12; }
+.tab-btn[data-kitchen="Butchery"] { border-left: 4px solid #8e44ad; }
+.tab-btn[data-kitchen="Beach House"] { border-left: 4px solid #1abc9c; }
+.tab-btn[data-kitchen="Nihon Kitchen"] { border-left: 4px solid #e91e63; }
+.tab-btn[data-kitchen="Staff Kitchen"] { border-left: 4px solid #95a5a6; }
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.kitchen-page {
+    display: none;
+}
+
+.kitchen-page.active-page {
+    display: block;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 18px;
+    color: #1e3c72;
+    border-left: 4px solid #3498db;
+    padding-left: 12px;
+}
+
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.required {
+    color: #e74c3c;
+    margin-left: 4px;
+}
+
+.error-border {
+    border-color: #e74c3c !important;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+select, input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-primary { background: #3498db; color: white; }
+.btn-success { background: #27ae60; color: white; }
+.btn-warning { background: #f39c12; color: white; }
+.btn-danger { background: #e74c3c; color: white; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #555;
+}
+
+.remove-btn {
+    background: #fee2e2;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    color: #e74c3c;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-pending { background: #f39c12; color: white; }
+.status-approved { background: #27ae60; color: white; }
+.status-rejected { background: #e74c3c; color: white; }
+.status-partial { background: #8e44ad; color: white; }
+
+.cart-stats {
+    background: #e8f4fd;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: 500;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    z-index: 1000;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.limit-warning {
+    font-size: 12px;
+    color: #e74c3c;
+    margin-top: 5px;
+}
+
+@media screen and (min-width: 769px) {
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+    
+    .search-add-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+    }
+    
+    .search-add-row .input-group {
+        flex: 1;
+        margin-bottom: 0;
+    }
+    
+    .admin-fab {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 14px 28px;
+        border-radius: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 99;
+    }
+    
+    .admin-btn-mobile {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 16px;
+    }
+    
+    .card {
+        padding: 16px;
+    }
+    
+    .card h3 {
+        font-size: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .admin-fab {
+        display: none;
+    }
+    
+    .admin-btn-mobile {
+        display: block;
+        width: 100%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 30px;
+        font-weight: bold;
+        margin-top: 16px;
+        cursor: pointer;
+    }
+    
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    
+    .cart-table {
+        min-width: 500px;
+    }
+    
+    .kitchen-tabs {
+        padding: 0 16px;
+    }
+}
+
+.request-item {
+    background: #f8f9fa;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    border-left: 4px solid;
+}
+
+.request-item.pending { border-left-color: #f39c12; }
+.request-item.approved { border-left-color: #27ae60; }
+.request-item.rejected { border-left-color: #e74c3c; }
+.request-item.partial { border-left-color: #8e44ad; }
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.request-id {
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.request-date {
+    font-size: 0.7rem;
+    color: #888;
+    margin: 6px 0;
+}
+
+.request-items-list {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.request-item-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.request-item-name {
+    font-weight: 500;
+}
+
+.request-item-qty {
+    color: #333;
+}
+
+.mobile-cards-view {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    .desktop-table-view {
+        display: none;
+    }
+    
+    .mobile-cards-view {
+        display: block;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .desktop-table-view {
+        display: block;
+    }
+    
+    .mobile-cards-view {
+        display: none;
+    }
+}
+
+.approved-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.approved-items-table th {
+    background: #e8f4fd;
+    padding: 8px;
+    font-size: 0.75rem;
+    text-align: left;
+}
+
+.approved-items-table td {
+    padding: 8px;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-content">
+        <div class="logo">🍳 Kitchen Order <span>| Chef Dashboard</span></div>
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+    </div>
+</div>
+
+<div class="kitchen-tabs">
+    <div class="tabs-container">
+        <button class="tab-btn active" data-kitchen="Hot Kitchen" onclick="switchKitchen('Hot Kitchen')">🔥 Hot Kitchen</button>
+        <button class="tab-btn" data-kitchen="Cold Kitchen" onclick="switchKitchen('Cold Kitchen')">❄️ Cold Kitchen</button>
+        <button class="tab-btn" data-kitchen="Pastry" onclick="switchKitchen('Pastry')">🍰 Pastry</button>
+        <button class="tab-btn" data-kitchen="Butchery" onclick="switchKitchen('Butchery')">🥩 Butchery</button>
+        <button class="tab-btn" data-kitchen="Beach House" onclick="switchKitchen('Beach House')">🏖️ Beach House</button>
+        <button class="tab-btn" data-kitchen="Nihon Kitchen" onclick="switchKitchen('Nihon Kitchen')">🍜 Nihon Kitchen</button>
+        <button class="tab-btn" data-kitchen="Staff Kitchen" onclick="switchKitchen('Staff Kitchen')">👥 Staff Kitchen</button>
+    </div>
+</div>
+
+<div id="kitchenPagesContainer"></div>
+
+<button class="admin-btn-mobile" onclick="openAdmin()">👑 Open Admin Panel</button>
+<button class="admin-fab" onclick="openAdmin()">👑 Admin Panel</button>
+
+<script>
+// ========================
+// ALL ITEMS FOR ALL KITCHENS
+// ========================
+const allItems = [
+    // Hot Kitchen Items
+    {code: "HOT001", name: "Tomato Peeled Tin 2.5 KG", unit: "can", section: "Hot Kitchen", maxLimit: 12},
+    {code: "HOT002", name: "Black Pepper Corn", unit: "kg", section: "Hot Kitchen", maxLimit: 4},
+    {code: "HOT003", name: "Chicken Breast", unit: "kg", section: "Hot Kitchen", maxLimit: 15},
+    {code: "HOT004", name: "Olive Oil 5L", unit: "bottle", section: "Hot Kitchen", maxLimit: 6},
+    {code: "HOT005", name: "Garlic Paste", unit: "kg", section: "Hot Kitchen", maxLimit: 5},
+    {code: "HOT006", name: "Ginger Paste", unit: "kg", section: "Hot Kitchen", maxLimit: 5},
+    {code: "HOT007", name: "Red Chili Sauce", unit: "bottle", section: "Hot Kitchen", maxLimit: 8},
+    
+    // Cold Kitchen Items
+    {code: "CLD001", name: "French Fries", unit: "box", section: "Cold Kitchen", maxLimit: 10},
+    {code: "CLD002", name: "Spinach Americana", unit: "box", section: "Cold Kitchen", maxLimit: 8},
+    {code: "CLD003", name: "Green Peas Americana", unit: "box", section: "Cold Kitchen", maxLimit: 8},
+    {code: "CLD004", name: "Capers Jar", unit: "jar", section: "Cold Kitchen", maxLimit: 6},
+    {code: "CLD005", name: "Lettuce Fresh", unit: "kg", section: "Cold Kitchen", maxLimit: 10},
+    {code: "CLD006", name: "Cucumber", unit: "kg", section: "Cold Kitchen", maxLimit: 8},
+    {code: "CLD007", name: "Tomato Fresh", unit: "kg", section: "Cold Kitchen", maxLimit: 10},
+    
+    // Pastry Items
+    {code: "PSY001", name: "Whipping Cream", unit: "liter", section: "Pastry", maxLimit: 5},
+    {code: "PSY002", name: "Block Butter", unit: "kg", section: "Pastry", maxLimit: 3},
+    {code: "PSY003", name: "Chocolate Chips", unit: "kg", section: "Pastry", maxLimit: 7},
+    {code: "PSY004", name: "Vanilla Extract", unit: "liter", section: "Pastry", maxLimit: 2},
+    {code: "PSY005", name: "Baking Powder", unit: "kg", section: "Pastry", maxLimit: 5},
+    {code: "PSY006", name: "White Flour", unit: "kg", section: "Pastry", maxLimit: 20},
+    {code: "PSY007", name: "Powder Sugar", unit: "kg", section: "Pastry", maxLimit: 15},
+    
+    // Butchery Items
+    {code: "BCH001", name: "Beef Tenderloin", unit: "kg", section: "Butchery", maxLimit: 10},
+    {code: "BCH002", name: "Lamb Chops", unit: "kg", section: "Butchery", maxLimit: 8},
+    {code: "BCH003", name: "Veal Cutlets", unit: "kg", section: "Butchery", maxLimit: 7},
+    {code: "BCH004", name: "Chicken Wings", unit: "kg", section: "Butchery", maxLimit: 12},
+    {code: "BCH005", name: "Minced Beef", unit: "kg", section: "Butchery", maxLimit: 10},
+    {code: "BCH006", name: "Pork Belly", unit: "kg", section: "Butchery", maxLimit: 8},
+    
+    // Beach House Items
+    {code: "BCHH01", name: "Fresh Salmon", unit: "kg", section: "Beach House", maxLimit: 8},
+    {code: "BCHH02", name: "Sea Bass", unit: "kg", section: "Beach House", maxLimit: 10},
+    {code: "BCHH03", name: "Large Shrimp", unit: "kg", section: "Beach House", maxLimit: 12},
+    {code: "BCHH04", name: "Lobster Tail", unit: "piece", section: "Beach House", maxLimit: 20},
+    {code: "BCHH05", name: "Calamari Rings", unit: "kg", section: "Beach House", maxLimit: 8},
+    {code: "BCHH06", name: "Fresh Mussels", unit: "kg", section: "Beach House", maxLimit: 10},
+    {code: "BCHH07", name: "White Fish Fillet", unit: "kg", section: "Beach House", maxLimit: 12},
+    
+    // Nihon Kitchen (Japanese) Items
+    {code: "NIH001", name: "Sushi Rice", unit: "kg", section: "Nihon Kitchen", maxLimit: 15},
+    {code: "NIH002", name: "Nori Seaweed", unit: "sheet", section: "Nihon Kitchen", maxLimit: 100},
+    {code: "NIH003", name: "Soy Sauce", unit: "liter", section: "Nihon Kitchen", maxLimit: 10},
+    {code: "NIH004", name: "Miso Paste", unit: "kg", section: "Nihon Kitchen", maxLimit: 5},
+    {code: "NIH005", name: "Wasabi Paste", unit: "kg", section: "Nihon Kitchen", maxLimit: 2},
+    {code: "NIH006", name: "Pickled Ginger", unit: "kg", section: "Nihon Kitchen", maxLimit: 4},
+    {code: "NIH007", name: "Fresh Tofu", unit: "kg", section: "Nihon Kitchen", maxLimit: 8},
+    {code: "NIH008", name: "Tempura Flour", unit: "kg", section: "Nihon Kitchen", maxLimit: 10},
+    
+    // Staff Kitchen Items
+    {code: "STF001", name: "Basmati Rice", unit: "bag", section: "Staff Kitchen", maxLimit: 20},
+    {code: "STF002", name: "Lentils", unit: "kg", section: "Staff Kitchen", maxLimit: 15},
+    {code: "STF003", name: "Cooking Oil", unit: "liter", section: "Staff Kitchen", maxLimit: 10},
+    {code: "STF004", name: "Table Salt", unit: "kg", section: "Staff Kitchen", maxLimit: 5},
+    {code: "STF005", name: "Tea Bags", unit: "box", section: "Staff Kitchen", maxLimit: 10},
+    {code: "STF006", name: "Coffee Powder", unit: "kg", section: "Staff Kitchen", maxLimit: 5},
+    {code: "STF007", name: "Milk Powder", unit: "kg", section: "Staff Kitchen", maxLimit: 8}
+];
+
+let currentKitchen = "Hot Kitchen";
+let kitchenData = {};
+
+const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
+
+// Initialize kitchen data
+kitchens.forEach(kitchen => {
+    kitchenData[kitchen] = {
+        cart: [],
+        chefName: "",
+        lastUpdated: null
+    };
+});
+
+function getAllRequests() {
+    let requests = localStorage.getItem("kitchen_requests");
+    return requests ? JSON.parse(requests) : [];
+}
+
+function saveAllRequests(requests) {
+    localStorage.setItem("kitchen_requests", JSON.stringify(requests));
+}
+
+function getItemsForKitchen(kitchen) {
+    return allItems.filter(i => i.section === kitchen);
+}
+
+function loadItems(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefNameInput = document.getElementById(`chefName_${kitchenId}`);
+    const select = document.getElementById(`itemSelect_${kitchenId}`);
+    const searchInput = document.getElementById(`searchItem_${kitchenId}`);
+    
+    if(!select) return;
+    
+    const chefName = chefNameInput ? chefNameInput.value.trim() : "";
+    const search = searchInput ? searchInput.value.toLowerCase() : "";
+    
+    if(!chefName) {
+        select.innerHTML = "<option value=''>Please enter chef name first</option>";
+        return;
+    }
+    
+    let items = getItemsForKitchen(kitchen);
+    select.innerHTML = "";
+    
+    let filtered = items;
+    if(search) {
+        filtered = items.filter(i => i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search));
+    }
+    
+    if(filtered.length === 0) {
+        select.innerHTML = "<option value=''>No items found</option>";
+        return;
+    }
+    
+    filtered.forEach(i => {
+        select.innerHTML += `<option value="${i.code}">${i.code} - ${i.name} (${i.unit}) - Max: ${i.maxLimit}</option>`;
+    });
+    
+    // Update max limit display
+    if(select.value) {
+        updateQuantityLimit(kitchen);
+    }
+}
+
+function updateQuantityLimit(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const select = document.getElementById(`itemSelect_${kitchenId}`);
+    if(!select) return;
+    
+    const code = select.value;
+    if(!code || code === "") return;
+    
+    const items = getItemsForKitchen(kitchen);
+    const item = items.find(i => i.code === code);
+    
+    if(item) {
+        const maxLabel = document.getElementById(`maxQtyLabel_${kitchenId}`);
+        if(maxLabel) maxLabel.innerText = item.maxLimit;
+        
+        const qtyInput = document.getElementById(`qty_${kitchenId}`);
+        if(qtyInput) {
+            qtyInput.max = item.maxLimit;
+            if(parseFloat(qtyInput.value) > item.maxLimit) {
+                qtyInput.value = item.maxLimit;
+                const warning = document.getElementById(`qtyWarning_${kitchenId}`);
+                if(warning) warning.innerHTML = `⚠️ Maximum ${item.maxLimit} ${item.unit} allowed`;
+            }
+        }
+    }
+}
+
+function filterItems(kitchen) { 
+    loadItems(kitchen); 
+}
+
+function addItem(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefNameInput = document.getElementById(`chefName_${kitchenId}`);
+    const chefName = chefNameInput ? chefNameInput.value.trim() : "";
+    
+    if(!chefName) {
+        const errorDiv = document.getElementById(`chefNameError_${kitchenId}`);
+        if(errorDiv) errorDiv.innerHTML = "Chef name is required";
+        if(chefNameInput) chefNameInput.classList.add("error-border");
+        showToast("⚠️ Please enter chef name");
+        return;
+    } else {
+        const errorDiv = document.getElementById(`chefNameError_${kitchenId}`);
+        if(errorDiv) errorDiv.innerHTML = "";
+        if(chefNameInput) chefNameInput.classList.remove("error-border");
+    }
+    
+    const select = document.getElementById(`itemSelect_${kitchenId}`);
+    const code = select ? select.value : "";
+    const qtyInput = document.getElementById(`qty_${kitchenId}`);
+    const qty = qtyInput ? parseFloat(qtyInput.value) : 0;
+    
+    if(!code || code === "" || code === "Please enter chef name first" || code === "No items found") {
+        showToast("Please select an item");
+        return;
+    }
+    
+    const items = getItemsForKitchen(kitchen);
+    const item = items.find(i => i.code === code);
+    if(!item) return;
+    
+    if(qty > item.maxLimit) {
+        showToast(`⚠️ Cannot order more than ${item.maxLimit} ${item.unit} of ${item.name}`);
+        return;
+    }
+    
+    if(!qty || qty <= 0) {
+        showToast("Please enter valid quantity");
+        return;
+    }
+    
+    const existing = kitchenData[kitchen].cart.find(i => i.code === code);
+    const newTotalQty = (existing ? existing.qty : 0) + qty;
+    
+    if(newTotalQty > item.maxLimit) {
+        showToast(`⚠️ Total would exceed limit of ${item.maxLimit} ${item.unit}`);
+        return;
+    }
+    
+    if(existing) {
+        existing.qty += qty;
+        showToast(`✓ Updated ${item.name}: ${existing.qty}/${item.maxLimit} ${item.unit}`);
+    } else {
+        kitchenData[kitchen].cart.push({
+            code: item.code,
+            name: item.name,
+            unit: item.unit,
+            qty: qty,
+            maxLimit: item.maxLimit
+        });
+        showToast(`✓ Added ${item.name} (${qty}/${item.maxLimit} ${item.unit})`);
+    }
+    
+    if(qtyInput) qtyInput.value = "1";
+    renderCart(kitchen);
+}
+
+function renderCart(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const cart = kitchenData[kitchen].cart;
+    const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
+    
+    const totalSpan = document.getElementById(`totalItems_${kitchenId}`);
+    if(totalSpan) totalSpan.innerText = totalQty;
+    
+    const lineSpan = document.getElementById(`lineCount_${kitchenId}`);
+    if(lineSpan) lineSpan.innerText = cart.length;
+    
+    // Desktop table view
+    const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
+    if(desktopBody) {
+        if(cart.length === 0) {
+            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</td></tr>';
+        } else {
+            desktopBody.innerHTML = "";
+            cart.forEach((item, index) => {
+                const remaining = item.maxLimit - item.qty;
+                desktopBody.innerHTML += `
+                    <tr>
+                        <td>${item.code}</td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.qty}</td>
+                        <td>${item.unit}</td>
+                        <td style="color: ${remaining < 3 ? '#e74c3c' : '#27ae60'}">${item.qty}/${item.maxLimit}</td>
+                        <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button></td>
+                    </tr>
+                `;
+            });
+        }
+    }
+    
+    // Mobile card view
+    const mobileContainer = document.getElementById(`cartMobile_${kitchenId}`);
+    if(mobileContainer) {
+        if(cart.length === 0) {
+            mobileContainer.innerHTML = '<div class="empty-state">📭 No items added yet</div>';
+        } else {
+            mobileContainer.innerHTML = "";
+            cart.forEach((item, index) => {
+                mobileContainer.innerHTML += `
+                    <div class="request-item pending">
+                        <div class="request-header">
+                            <span class="request-id">${item.code}</span>
+                            <button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button>
+                        </div>
+                        <div><strong>${item.name}</strong></div>
+                        <div class="request-date">Quantity: ${item.qty} / ${item.maxLimit} ${item.unit}</div>
+                    </div>
+                `;
+            });
+        }
+    }
+}
+
+function removeItem(kitchen, index) {
+    kitchenData[kitchen].cart.splice(index, 1);
+    renderCart(kitchen);
+    showToast("Item removed");
+}
+
+function clearCart(kitchen) {
+    if(confirm("Clear all items from cart?")) {
+        kitchenData[kitchen].cart = [];
+        renderCart(kitchen);
+        showToast("Cart cleared");
+    }
+}
+
+function getOverallStatus(items) {
+    if(!items || items.length === 0) return "pending";
+    if(items.every(i => i.status === "approved")) return "approved";
+    if(items.every(i => i.status === "rejected")) return "rejected";
+    if(items.some(i => i.status === "approved") && items.some(i => i.status === "rejected")) return "partial";
+    return "pending";
+}
+
+function submitRequest(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefNameInput = document.getElementById(`chefName_${kitchenId}`);
+    const chefName = chefNameInput ? chefNameInput.value.trim() : "";
+    const cart = kitchenData[kitchen].cart;
+    
+    if(!chefName) {
+        showToast("⚠️ Please enter chef name");
+        return;
+    }
+    
+    if(cart.length === 0) {
+        showToast("No items to submit");
+        return;
+    }
+    
+    const requests = getAllRequests();
+    const newRequest = {
+        id: Date.now(),
+        requestId: "REQ-" + (requests.length + 1001),
+        chefName: chefName,
+        section: kitchen,
+        items: cart.map(i => ({
+            code: i.code,
+            name: i.name,
+            unit: i.unit,
+            originalQty: i.qty,
+            maxLimit: i.maxLimit,
+            status: "pending",
+            approvedQty: 0,
+            rejectionReason: null
+        })),
+        submittedAt: new Date().toLocaleString(),
+        timestamp: Date.now()
+    };
+    
+    requests.push(newRequest);
+    saveAllRequests(requests);
+    showToast(`✓ Request ${newRequest.requestId} submitted to admin!`);
+    kitchenData[kitchen].cart = [];
+    renderCart(kitchen);
+    loadMyRequests(kitchen);
+}
+
+function loadMyRequests(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefNameInput = document.getElementById(`chefName_${kitchenId}`);
+    const chefName = chefNameInput ? chefNameInput.value.trim() : "";
+    const requests = getAllRequests();
+    const myRequests = requests.filter(r => r.chefName === chefName && r.section === kitchen);
+    
+    const desktopContainer = document.getElementById(`myRequestsDesktop_${kitchenId}`);
+    if(desktopContainer) {
+        if(myRequests.length === 0) {
+            desktopContainer.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
+        } else {
+            desktopContainer.innerHTML = "";
+            [...myRequests].reverse().forEach(req => {
+                const overallStatus = getOverallStatus(req.items);
+                const statusClass = overallStatus === "pending" ? "status-pending" : (overallStatus === "approved" ? "status-approved" : (overallStatus === "partial" ? "status-partial" : "status-rejected"));
+                const statusText = overallStatus === "pending" ? "⏳ Pending" : (overallStatus === "approved" ? "✅ Approved" : (overallStatus === "partial" ? "🟣 Partial" : "❌ Rejected"));
+                
+                let requestedItemsHtml = `
+                    <table class="approved-items-table">
+                        <thead><tr><th>Item</th><th>Requested</th><th>Unit</th><th>Status</th><th>Approved/Rejected</th></tr></thead>
+                        <tbody>
+                `;
+                
+                req.items.forEach(item => {
+                    let statusDisplay = "";
+                    let approvedDisplay = "";
+                    if(item.status === "approved") {
+                        statusDisplay = "<span class='status-badge status-approved'>✅ Approved</span>";
+                        approvedDisplay = `${item.approvedQty} ${item.unit}`;
+                    } else if(item.status === "rejected") {
+                        statusDisplay = "<span class='status-badge status-rejected'>❌ Rejected</span>";
+                        approvedDisplay = `0 ${item.unit}`;
+                        if(item.rejectionReason) approvedDisplay += `<br><small style="color:#e74c3c;">${item.rejectionReason}</small>`;
+                    } else {
+                        statusDisplay = "<span class='status-badge status-pending'>⏳ Pending</span>";
+                        approvedDisplay = "Waiting...";
+                    }
+                    
+                    requestedItemsHtml += `
+                        <tr>
+                            <td><strong>${item.name}</strong><br><small>${item.code}</small></td>
+                            <td>${item.originalQty}</td>
+                            <td>${item.unit}</td>
+                            <td>${statusDisplay}</td>
+                            <td>${approvedDisplay}</td>
+                        </tr>
+                    `;
+                });
+                requestedItemsHtml += `</tbody>}</div>`;
+                
+                desktopContainer.innerHTML += `
+                    <div class="request-card" style="margin-bottom: 20px; border: 1px solid #e0e0e0; border-radius: 12px; padding: 16px;">
+                        <div class="request-header">
+                            <span class="request-id">📄 ${req.requestId}</span>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div style="display: flex; gap: 20px; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; flex-wrap: wrap;">
+                            <div><strong>👨‍🍳 Chef:</strong> ${req.chefName}</div>
+                            <div><strong>📅 Submitted:</strong> ${req.submittedAt}</div>
+                        </div>
+                        ${requestedItemsHtml}
+                    </div>
+                `;
+            });
+        }
+    }
+}
+
+function exportToExcel(kitchen) {
+    const cart = kitchenData[kitchen].cart;
+    if(cart.length === 0) {
+        showToast("No items to export");
+        return;
+    }
+    
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    const chefInput = document.getElementById(`chefName_${kitchenId}`);
+    const chef = chefInput ? chefInput.value : "Unknown";
+    
+    let tableData = `<html><head><meta charset="UTF-8"></head><body>
+        <h2>🍳 Kitchen Store Request - ${kitchen}</h2>
+        <p><strong>Chef:</strong> ${chef}</p>
+        <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+        <table border="1" cellpadding="8">
+            <tr><th>Code</th><th>Item Name</th><th>Quantity</th><th>Unit</th><th>Max Limit</th></tr>`;
+    
+    cart.forEach(item => {
+        tableData += `<tr><td>${item.code}</td><td>${item.name}</td><td>${item.qty}</td><td>${item.unit}</td><td>${item.maxLimit}</td></tr>`;
+    });
+    
+    tableData += `</table></body></html>`;
+    
+    const blob = new Blob([tableData], {type: "application/vnd.ms-excel"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `kitchen_order_${kitchen}_${chef}_${Date.now()}.xls`;
+    link.click();
+    showToast("📎 Exporting to Excel...");
+}
+
+function openAdmin() {
+    window.open("admin.html", "_blank");
+}
+
+function showToast(msg) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+}
+
+function logout() {
+    if(confirm("Are you sure you want to logout?")) {
+        kitchens.forEach(kitchen => {
+            kitchenData[kitchen].cart = [];
+            renderCart(kitchen);
+        });
+        showToast("Logged out");
+    }
+}
+
+function switchKitchen(kitchen) {
+    currentKitchen = kitchen;
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.getAttribute('data-kitchen') === kitchen) {
+            btn.classList.add('active');
+        }
+    });
+    
+    document.querySelectorAll('.kitchen-page').forEach(page => {
+        page.classList.remove('active-page');
+    });
+    const pageId = `page_${kitchen.replace(/\s/g, '_')}`;
+    const targetPage = document.getElementById(pageId);
+    if(targetPage) targetPage.classList.add('active-page');
+    
+    loadItems(kitchen);
+    renderCart(kitchen);
+    loadMyRequests(kitchen);
+}
+
+function createKitchenPage(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_');
+    
+    return `
+        <div class="kitchen-page" id="page_${kitchenId}">
+            <div class="card">
+                <h3>👨‍🍳 Chef Information - ${kitchen}</h3>
+                <div class="input-group">
+                    <label>Chef Name <span class="required">*</span></label>
+                    <input type="text" id="chefName_${kitchenId}" placeholder="Enter chef name">
+                    <div id="chefNameError_${kitchenId}" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📦 Add Store Items</h3>
+                <div class="search-add-row">
+                    <div class="input-group">
+                        <label>🔍 Search Item</label>
+                        <input type="text" id="searchItem_${kitchenId}" placeholder="Search by name or code..." onkeyup="filterItems('${kitchen}')">
+                    </div>
+                    <div class="input-group">
+                        <label>Select Item</label>
+                        <select id="itemSelect_${kitchenId}" onchange="updateQuantityLimit('${kitchen}')"></select>
+                    </div>
+                    <div class="input-group">
+                        <label>Quantity (Max: <span id="maxQtyLabel_${kitchenId}">10</span>)</label>
+                        <input type="number" id="qty_${kitchenId}" min="1" value="1">
+                        <div id="qtyWarning_${kitchenId}" class="limit-warning"></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addItem('${kitchen}')">+ Add Item</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🛒 Current Request List</h3>
+                <div class="cart-stats">
+                    <span>📦 Total Quantity: <strong id="totalItems_${kitchenId}">0</strong></span>
+                    <span>📋 Line Items: <strong id="lineCount_${kitchenId}">0</strong></span>
+                </div>
+                
+                <div class="desktop-table-view">
+                    <div class="table-wrapper">
+                        <table class="cart-table">
+                            <thead><tr><th>Code</th><th>Item Name</th><th>Quantity</th><th>Unit</th><th>Max Limit</th><th>Action</th></tr></thead>
+                            <tbody id="cartTableDesktop_${kitchenId}"><tr><td colspan="6" style="text-align:center;">No items added</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="mobile-cards-view" id="cartMobile_${kitchenId}"></div>
+                
+                <div class="button-group">
+                    <button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 Submit Request</button>
+                    <button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 Export to Excel</button>
+                    <button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ Clear All</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📜 My Submitted Requests</h3>
+                <div class="desktop-table-view" id="myRequestsDesktop_${kitchenId}"></div>
+                <div class="mobile-cards-view" id="myRequestsMobile_${kitchenId}"></div>
+            </div>
+        </div>
+    `;
+}
+
+function generatePages() {
+    const container = document.getElementById("kitchenPagesContainer");
+    container.innerHTML = "";
+    kitchens.forEach(kitchen => {
+        container.innerHTML += createKitchenPage(kitchen);
+    });
+    
+    kitchens.forEach(kitchen => {
+        const kitchenId = kitchen.replace(/\s/g, '_');
+        const chefInput = document.getElementById(`chefName_${kitchenId}`);
+        if(chefInput) {
+            chefInput.addEventListener("input", function() {
+                loadItems(kitchen);
+                loadMyRequests(kitchen);
+            });
+        }
+        
+        const qtyInput = document.getElementById(`qty_${kitchenId}`);
+        if(qtyInput) {
+            qtyInput.addEventListener("input", function() {
+                const maxLabel = document.getElementById(`maxQtyLabel_${kitchenId}`);
+                const max = maxLabel ? parseInt(maxLabel.innerText) : 999;
+                if(parseFloat(this.value) > max) {
+                    this.value = max;
+                    const warning = document.getElementById(`qtyWarning_${kitchenId}`);
+                    if(warning) warning.innerHTML = `⚠️ Maximum ${max} allowed`;
+                } else {
+                    const warning = document.getElementById(`qtyWarning_${kitchenId}`);
+                    if(warning) warning.innerHTML = "";
+                }
+            });
+        }
+    });
+    
+    switchKitchen("Hot Kitchen");
+}
+
+generatePages();
+setInterval(() => {
+    if(currentKitchen) {
+        loadMyRequests(currentKitchen);
+    }
+}, 5000);
+</script>
+</body>
+</html>
