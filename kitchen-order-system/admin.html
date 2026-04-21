@@ -4,28 +4,9 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Admin Dashboard - Approve Orders</title>
-
-<script>
-// FIREBASE CONFIGURATION
-const firebaseConfig = {
-    apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
-    authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
-    projectId: "kitchenordersystem-66eb2",
-    storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
-    messagingSenderId: "786074432195",
-    appId: "1:786074432195:web:8381f2cba8f43002232876"
-};
-
-// Initialize Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.firestore();
-console.log("✅ Firebase initialized successfully");
-</script>
-
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; }
@@ -348,7 +329,7 @@ function refreshData() {
             } else if(item.status === "rejected") {
                 itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}<td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small><td>${item.originalQty}<td>${item.unit}<td><strong style="color:#e74c3c;">0</strong><td>❌ Rejected<td><span class="status-badge status-rejected">${item.rejectionReason || 'No reason'}</span></tr>`;
             } else {
-                itemsHtml += `<tr><td>${item.code}<td><strong>${item.name}</strong><br><small style="color:#3498db;">Max: ${item.maxLimit}</small><td>${item.originalQty}<td>${item.unit}<td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"><td><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button><td><span class="status-badge status-pending">⏳ Pending</span></tr>`;
+                itemsHtml += `<tr><td>${item.code}<td><strong>${item.name}</strong><br><small style="color:#3498db;">Max: ${item.maxLimit}</small><td>${item.originalQty}<td>${item.unit}<td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"><td><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button><td><span class="status-badge status-pending">⏳ Pending</span><tr>`;
             }
         });
         itemsHtml += `</tbody></table>`;
