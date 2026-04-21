@@ -40,6 +40,8 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 .filters label { font-weight: 600; color: #555; }
 .filters select, .filters input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; }
 
+.sync-status { font-size: 12px; text-align: center; margin-top: 20px; padding: 10px; color: #27ae60; }
+
 @media (max-width: 768px) {
     .container { padding: 16px; }
     .charts-grid { grid-template-columns: 1fr; }
@@ -54,7 +56,7 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 <div class="header">
     <div class="header-content">
         <h1>📊 Analytics Dashboard <span>| Kitchen Orders</span></h1>
-        <button class="btn-back" onclick="window.close()">← Back to Admin</button>
+        <button class="btn-back" onclick="window.location.href='admin.html'">← Back to Admin</button>
     </div>
 </div>
 
@@ -118,16 +120,34 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
             </table>
         </div>
     </div>
+    <div class="sync-status" id="syncStatus">🔄 Loading data from cloud...</div>
 </div>
 
 <script>
 let topItemsChart, kitchenChart, statusChart, timelineChart;
+let allRequests = [];
 
-function getRequests() {
-    let data = localStorage.getItem("kitchen_requests");
-    return data ? JSON.parse(data) : [];
+// ============ LOAD FROM FIREBASE ============
+async function loadRequestsFromFirebase() {
+    try {
+        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
+        allRequests = [];
+        snapshot.forEach(doc => {
+            allRequests.push({ id: doc.id, ...doc.data() });
+        });
+        console.log("✅ Loaded from Firebase:", allRequests.length, "requests");
+        document.getElementById("syncStatus").innerHTML = "✅ Connected to cloud • Real-time data";
+        document.getElementById("syncStatus").style.color = "#27ae60";
+        refreshAnalytics();
+    } catch (error) {
+        console.error("Firebase error:", error);
+        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode • Using cached data";
+        document.getElementById("syncStatus").style.color = "#e74c3c";
+        refreshAnalytics();
+    }
 }
 
+// ============ FILTER FUNCTIONS ============
 function filterByDate(requests, fromDate, toDate) {
     if(!fromDate && !toDate) return requests;
     return requests.filter(req => {
@@ -143,17 +163,17 @@ function filterByDate(requests, fromDate, toDate) {
 }
 
 function refreshAnalytics() {
-    let requests = getRequests();
-    
+    let requests = [...allRequests];
+
     const kitchenFilter = document.getElementById("kitchenFilter").value;
     if(kitchenFilter !== "all") {
         requests = requests.filter(r => r.section === kitchenFilter);
     }
-    
+
     const dateFrom = document.getElementById("dateFrom").value;
     const dateTo = document.getElementById("dateTo").value;
     requests = filterByDate(requests, dateFrom, dateTo);
-    
+
     updateStats(requests);
     updateTopItemsChart(requests);
     updateKitchenChart(requests);
@@ -162,20 +182,23 @@ function refreshAnalytics() {
     updateDetailsTable(requests);
 }
 
+// ============ CHART FUNCTIONS ============
 function updateStats(requests) {
     let totalRequests = requests.length;
     let totalItems = 0;
     let totalApproved = 0;
     let totalRejected = 0;
-    
+
     requests.forEach(req => {
-        req.items.forEach(item => {
-            totalItems += item.originalQty;
-            if(item.status === "approved") totalApproved += item.approvedQty || 0;
-            if(item.status === "rejected") totalRejected += item.originalQty;
-        });
+        if(req.items) {
+            req.items.forEach(item => {
+                totalItems += item.originalQty;
+                if(item.status === "approved") totalApproved += item.approvedQty || 0;
+                if(item.status === "rejected") totalRejected += item.originalQty;
+            });
+        }
     });
-    
+
     document.getElementById("statsGrid").innerHTML = `
         <div class="stat-card"><div class="stat-number">${totalRequests}</div><div class="stat-label">Total Requests</div></div>
         <div class="stat-card"><div class="stat-number">${totalItems}</div><div class="stat-label">Total Items Requested</div></div>
@@ -187,16 +210,18 @@ function updateStats(requests) {
 function updateTopItemsChart(requests) {
     const itemMap = new Map();
     requests.forEach(req => {
-        req.items.forEach(item => {
-            const current = itemMap.get(item.name) || 0;
-            itemMap.set(item.name, current + item.originalQty);
-        });
+        if(req.items) {
+            req.items.forEach(item => {
+                const current = itemMap.get(item.name) || 0;
+                itemMap.set(item.name, current + item.originalQty);
+            });
+        }
     });
-    
+
     const sorted = Array.from(itemMap.entries()).sort((a,b) => b[1] - a[1]).slice(0, 10);
     const labels = sorted.map(i => i[0]);
     const data = sorted.map(i => i[1]);
-    
+
     if(topItemsChart) topItemsChart.destroy();
     const ctx = document.getElementById('topItemsChart').getContext('2d');
     topItemsChart = new Chart(ctx, {
@@ -212,11 +237,11 @@ function updateKitchenChart(requests) {
         const current = kitchenMap.get(req.section) || 0;
         kitchenMap.set(req.section, current + 1);
     });
-    
+
     const labels = Array.from(kitchenMap.keys());
     const data = Array.from(kitchenMap.values());
     const colors = ['#e74c3c', '#3498db', '#f39c12', '#8e44ad', '#1abc9c', '#e91e63', '#95a5a6'];
-    
+
     if(kitchenChart) kitchenChart.destroy();
     const ctx = document.getElementById('kitchenChart').getContext('2d');
     kitchenChart = new Chart(ctx, {
@@ -229,13 +254,15 @@ function updateKitchenChart(requests) {
 function updateStatusChart(requests) {
     let approved = 0, rejected = 0, pending = 0;
     requests.forEach(req => {
-        req.items.forEach(item => {
-            if(item.status === "approved") approved++;
-            else if(item.status === "rejected") rejected++;
-            else pending++;
-        });
+        if(req.items) {
+            req.items.forEach(item => {
+                if(item.status === "approved") approved++;
+                else if(item.status === "rejected") rejected++;
+                else pending++;
+            });
+        }
     });
-    
+
     if(statusChart) statusChart.destroy();
     const ctx = document.getElementById('statusChart').getContext('2d');
     statusChart = new Chart(ctx, {
@@ -248,15 +275,15 @@ function updateStatusChart(requests) {
 function updateTimelineChart(requests) {
     const dateMap = new Map();
     requests.forEach(req => {
-        const date = req.submittedAt.split(',')[0];
+        const date = req.submittedAt ? req.submittedAt.split(',')[0] : new Date(req.timestamp).toLocaleDateString();
         const current = dateMap.get(date) || 0;
         dateMap.set(date, current + 1);
     });
-    
+
     const sorted = Array.from(dateMap.entries()).sort((a,b) => new Date(a[0]) - new Date(b[0]));
     const labels = sorted.map(d => d[0]);
     const data = sorted.map(d => d[1]);
-    
+
     if(timelineChart) timelineChart.destroy();
     const ctx = document.getElementById('timelineChart').getContext('2d');
     timelineChart = new Chart(ctx, {
@@ -269,32 +296,38 @@ function updateTimelineChart(requests) {
 function updateDetailsTable(requests) {
     const itemMap = new Map();
     requests.forEach(req => {
-        req.items.forEach(item => {
-            if(!itemMap.has(item.name)) {
-                itemMap.set(item.name, { requested: 0, approved: 0, rejected: 0 });
-            }
-            const stats = itemMap.get(item.name);
-            stats.requested += item.originalQty;
-            if(item.status === "approved") stats.approved += item.approvedQty || 0;
-            if(item.status === "rejected") stats.rejected += item.originalQty;
-        });
+        if(req.items) {
+            req.items.forEach(item => {
+                if(!itemMap.has(item.name)) {
+                    itemMap.set(item.name, { requested: 0, approved: 0, rejected: 0 });
+                }
+                const stats = itemMap.get(item.name);
+                stats.requested += item.originalQty;
+                if(item.status === "approved") stats.approved += item.approvedQty || 0;
+                if(item.status === "rejected") stats.rejected += item.originalQty;
+            });
+        }
     });
-    
+
     const sorted = Array.from(itemMap.entries()).sort((a,b) => b[1].requested - a[1].requested);
     const tbody = document.getElementById("detailsTableBody");
     tbody.innerHTML = "";
-    sorted.forEach(([name, stats]) => {
-        const rate = stats.requested > 0 ? ((stats.approved / stats.requested) * 100).toFixed(1) : 0;
-        tbody.innerHTML += `
-            <tr>
-                <td><strong>${name}</strong></td>
-                <td>${stats.requested}</td>
-                <td><span style="color:#27ae60;">${stats.approved}</span></td>
-                <td><span style="color:#e74c3c;">${stats.rejected}</span></td>
-                <td><span style="color:#3498db;">${rate}%</span></td>
-            </tr>
-        `;
-    });
+    if(sorted.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data available</td></tr>';
+    } else {
+        sorted.forEach(([name, stats]) => {
+            const rate = stats.requested > 0 ? ((stats.approved / stats.requested) * 100).toFixed(1) : 0;
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${name}</strong></td>
+                    <td>${stats.requested}</td>
+                    <td><span style="color:#27ae60;">${stats.approved}</span></td>
+                    <td><span style="color:#e74c3c;">${stats.rejected}</span></td>
+                    <td><span style="color:#3498db;">${rate}%</span></td>
+                </tr>
+            `;
+        });
+    }
 }
 
 // Set default dates (last 30 days)
@@ -307,8 +340,13 @@ function setDefaultDates() {
 }
 
 setDefaultDates();
-refreshAnalytics();
-setInterval(refreshAnalytics, 10000);
+loadRequestsFromFirebase();
+
+// Real-time listener
+db.collection("kitchen_requests").onSnapshot(() => {
+    console.log("🔄 Real-time update detected!");
+    loadRequestsFromFirebase();
+});
 </script>
 </body>
 </html>
