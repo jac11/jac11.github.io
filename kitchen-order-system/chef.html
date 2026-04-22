@@ -552,7 +552,7 @@ function saveUnlockedKitchens() {
 }
 
 function checkKitchenPassword(kitchen) {
-    // Check if already unlocked in this session
+    // Check if already unlocked
     if(unlockedKitchens[kitchen]) {
         return true;
     }
@@ -655,6 +655,7 @@ function saveCart() {
 // Initialize
 loadChefNames();
 loadSavedCart();
+loadUnlockedKitchens();
 
 // ============ FIREBASE FUNCTIONS ============
 
@@ -775,7 +776,7 @@ function renderCart(kitchen) {
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
-            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</td><tr>';
+            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</td></tr>';
         } else {
             desktopBody.innerHTML = "";
             cart.forEach((item, index) => {
@@ -878,7 +879,8 @@ function loadMyRequests(kitchen) {
     const chefName = chefNames[kitchen];
     
     if(!chefName) {
-        document.getElementById(`myRequestsDesktop_${kitchenId}`).innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
+        const desktopContainer = document.getElementById(`myRequestsDesktop_${kitchenId}`);
+        if(desktopContainer) desktopContainer.innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
         return;
     }
     
@@ -894,7 +896,7 @@ function loadMyRequests(kitchen) {
             [...myRequests].reverse().forEach(req => {
                 const status = getOverallStatus(req.items);
                 const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
-                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Done");
+                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
                 
                 let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
                 
@@ -913,7 +915,7 @@ function loadMyRequests(kitchen) {
                     }
                     itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
                 });
-                itemsHtml += `</tbody></tr>`;
+                itemsHtml += `</tbody></table>`;
                 
                 desktopContainer.innerHTML += `
                     <div style="border:1px solid #e0e0e0; border-radius:12px; padding:14px; margin-bottom:16px;">
@@ -941,7 +943,7 @@ function loadMyRequests(kitchen) {
             [...myRequests].reverse().forEach(req => {
                 const status = getOverallStatus(req.items);
                 const statusClass = status === "pending" ? "pending" : (status === "approved" ? "approved" : "rejected");
-                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Done");
+                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
                 const statusBadgeClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
                 
                 let itemsHtml = '<div class="request-items-list">';
@@ -1016,17 +1018,29 @@ function logout() {
 function switchKitchen(kitchen) {
     // Check password before switching
     if(!checkKitchenPassword(kitchen)) {
+        // Stay on current kitchen, don't switch
         return;
     }
     
     currentKitchen = kitchen;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    
+    // Update tab active state
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.innerText.includes(kitchen.replace(' Kitchen', '')) || btn.innerText === kitchen) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Update page visibility
     document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
-    document.getElementById(`page_${kitchen.replace(/\s/g, '_')}`).classList.add('active-page');
+    const pageId = `page_${kitchen.replace(/\s/g, '_')}`;
+    const targetPage = document.getElementById(pageId);
+    if(targetPage) targetPage.classList.add('active-page');
     
     // Load saved chef name for this kitchen
-    document.getElementById(`chefName_${kitchen.replace(/\s/g, '_')}`).value = chefNames[kitchen] || "";
+    const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_')}`);
+    if(chefInput) chefInput.value = chefNames[kitchen] || "";
     
     loadItems(kitchen);
     renderCart(kitchen);
@@ -1115,7 +1129,6 @@ function generatePages() {
 
 generatePages();
 loadRequestsFromFirebase();
-loadUnlockedKitchens();
 
 // REAL-TIME LISTENER - Auto updates when admin approves
 db.collection("kitchen_requests").onSnapshot(() => {
