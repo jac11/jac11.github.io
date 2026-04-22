@@ -67,14 +67,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 .requested-qty { background: #f0f0f0; padding: 6px 12px; border-radius: 20px; display: inline-block; font-weight: 600; }
 .approval-input { width: 100px; padding: 10px 12px; border: 2px solid #3498db; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 600; background: white; }
-.approval-input:focus { outline: none; border-color: #27ae60; }
-.approval-input:disabled { background: #f0f0f0; border-color: #ccc; cursor: not-allowed; }
 
 .btn-approve { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 5px; }
 .btn-approve:hover { background: #219a52; }
 .btn-reject { background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
 .btn-reject:hover { background: #c0392b; }
-.btn-reject:disabled, .btn-approve:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-reject:disabled, .btn-approve:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .request-actions { display: flex; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 2px solid #f0f0f0; }
 .btn-approve-all { flex: 1; background: #27ae60; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
@@ -122,7 +120,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 <div id="mainContent" style="display: none;">
     <div class="header">
         <div class="header-content">
-            <h1>👑 Admin Dashboard <span>| Approve Items</span></h1>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.8rem;">👑</span>
+                <h1>Admin Dashboard <span>| Approve Items</span></h1>
+            </div>
             <div class="header-buttons">
                 <button class="btn-header btn-analytics" onclick="window.open('analytics.html', '_blank')">📊 Analytics</button>
                 <button class="btn-header" onclick="exportToExcel()">📎 Export Excel</button>
@@ -274,16 +275,14 @@ async function rejectAll(reqId) {
 async function resetOldRequests() {
     if(confirm("Delete ALL approved/rejected requests?")) {
         for (const req of allRequests) {
-            if (getStatus(req) !== "pending") { await deleteRequest(req.firebaseId); }
+            if (getStatus(req) !== "pending") { 
+                try { await db.collection("kitchen_requests").doc(req.firebaseId).delete(); }
+                catch(e) { console.error(e); }
+            }
         }
         await loadRequests();
         showToast("Reset complete");
     }
-}
-
-async function deleteRequest(reqId) {
-    try { await db.collection("kitchen_requests").doc(reqId).delete(); }
-    catch (error) { console.error("Delete error:", error); }
 }
 
 function exportToExcel() {
@@ -335,7 +334,7 @@ function refreshData() {
             } else if(item.status === "rejected") {
                 itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}<td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small><td>${item.originalQty}<td>${item.unit}<td><strong style="color:#e74c3c;">0</strong><td>❌ Rejected<td><span class="status-badge status-rejected">${item.rejectionReason || 'Rejected'}</span></tr>`;
             } else {
-                itemsHtml += `<tr><td colspan="7" style="text-align:center;">This item has been processed</tr>`;
+                itemsHtml += `<tr style="background:#fff3e0;"><td>${item.code}<td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small><td>${item.originalQty}<td>${item.unit}<td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"><td><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button><td><span class="status-badge status-pending">Pending</span></td>`;
             }
         });
         itemsHtml += `</tbody></table>`;
