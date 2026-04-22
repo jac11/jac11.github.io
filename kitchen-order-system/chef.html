@@ -1015,11 +1015,14 @@ function logout() {
     }
 }
 
+// ============ SWITCH KITCHEN - PASSWORD ONLY ON USER CLICK ============
 function switchKitchen(kitchen) {
-    // Check password before switching
-    if(!checkKitchenPassword(kitchen)) {
-        // Stay on current kitchen, don't switch
-        return;
+    // Only check password when user actually clicks a kitchen (not during initial load)
+    // Skip password check if this is the same kitchen
+    if (currentKitchen !== kitchen) {
+        if(!checkKitchenPassword(kitchen)) {
+            return;
+        }
     }
     
     currentKitchen = kitchen;
@@ -1124,7 +1127,25 @@ function generatePages() {
     const container = document.getElementById("kitchenPagesContainer");
     container.innerHTML = "";
     kitchens.forEach(k => { container.innerHTML += createKitchenPage(k); });
-    switchKitchen("Hot Kitchen");
+    
+    // Set first page as active WITHOUT password check
+    currentKitchen = "Hot Kitchen";
+    document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
+    const firstPage = document.getElementById(`page_Hot_Kitchen`);
+    if(firstPage) firstPage.classList.add('active-page');
+    
+    // Set active tab style
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.innerText.includes('Hot')) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Load data for first kitchen without password
+    loadItems("Hot Kitchen");
+    renderCart("Hot Kitchen");
+    loadMyRequests("Hot Kitchen");
 }
 
 generatePages();
