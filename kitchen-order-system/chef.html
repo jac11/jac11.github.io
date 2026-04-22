@@ -13,12 +13,15 @@
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fb; }
 
 .header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 16px 24px; position: sticky; top: 0; z-index: 100; }
-.header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
-.logo { font-size: 1.4rem; font-weight: bold; }
+.header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; flex-wrap: wrap; gap: 10px; }
+.logo { font-size: 1.4rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+.logo-icon { font-size: 1.8rem; }
 .logo span { color: #ffd700; }
 .header-buttons { display: flex; gap: 10px; }
-.refresh-btn { background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 25px; color: white; font-weight: 600; cursor: pointer; }
-.logout-btn { background: rgba(255,255,255,0.2); border: none; padding: 8px 20px; border-radius: 25px; color: white; font-weight: 600; cursor: pointer; }
+.refresh-btn { background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 25px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.refresh-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.02); }
+.logout-btn { background: rgba(255,255,255,0.2); border: none; padding: 8px 20px; border-radius: 25px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.logout-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.02); }
 
 .kitchen-tabs { background: white; padding: 0 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: sticky; top: 70px; z-index: 99; overflow-x: auto; white-space: nowrap; }
 .tabs-container { max-width: 1400px; margin: 0 auto; display: flex; gap: 8px; padding: 12px 0; }
@@ -106,7 +109,10 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 
 <div class="header">
     <div class="header-content">
-        <div class="logo">🍳 Kitchen Order <span>| Chef Dashboard</span></div>
+        <div class="logo">
+            <span class="logo-icon">🍳</span>
+            <span>Kitchen Order <span>| Chef Dashboard</span></span>
+        </div>
         <div class="header-buttons">
             <button class="refresh-btn" onclick="manualRefresh()">🔄 Refresh</button>
             <button class="logout-btn" onclick="logout()">🚪 Logout</button>
@@ -133,6 +139,35 @@ th { background: #f8f9fa; font-weight: 600; color: #555; }
 <div class="sync-status" id="syncStatus">🔄 Connecting to cloud...</div>
 
 <script>
+// ========================
+// PASSWORD PROTECTION FOR EACH KITCHEN
+// ========================
+const kitchenPasswords = {
+    "Hot Kitchen": "hot123",
+    "Cold Kitchen": "cold123", 
+    "Pastry": "pastry123",
+    "Butchery": "butchery123",
+    "Beach House": "beach123",
+    "Nihon Kitchen": "nihon123",
+    "Staff Kitchen": "staff123"
+};
+
+function checkKitchenPassword(kitchen) {
+    const savedPassword = localStorage.getItem(`kitchen_password_${kitchen}`);
+    if(savedPassword === kitchenPasswords[kitchen]) {
+        return true;
+    }
+    
+    const enteredPassword = prompt(`🔐 Enter password for ${kitchen}:`);
+    if(enteredPassword === kitchenPasswords[kitchen]) {
+        localStorage.setItem(`kitchen_password_${kitchen}`, enteredPassword);
+        return true;
+    } else {
+        alert("❌ Wrong password! Access denied.");
+        return false;
+    }
+}
+
 // ========================
 // ALL ITEMS FOR ALL KITCHENS
 // ========================
@@ -380,9 +415,9 @@ function loadMyRequests(kitchen) {
     [...myRequests].reverse().forEach(req => {
         const status = getOverallStatus(req.items);
         const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
-        const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+        const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Done");
         
-        let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th><tr></thead><tbody>`;
+        let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
         
         req.items.forEach(item => {
             let itemStatus = "";
@@ -426,7 +461,7 @@ function exportToExcel(kitchen) {
     let tableData = `<html><head><meta charset="UTF-8"></head><body>
         <h2>Kitchen Order - ${kitchen}</h2>
         <p>Chef: ${chef} | Date: ${new Date().toLocaleString()}</p>
-        <table border="1"><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th></tr>`;
+        <table border="1"><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><tr>`;
     cart.forEach(item => {
         tableData += `<tr><td>${item.code}</td><td>${item.name}</td><td>${item.qty}</td><td>${item.unit}</td><td>${item.maxLimit}</td></tr>`;
     });
@@ -458,6 +493,11 @@ function logout() {
 }
 
 function switchKitchen(kitchen) {
+    // Check password before switching
+    if(!checkKitchenPassword(kitchen)) {
+        return;
+    }
+    
     currentKitchen = kitchen;
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
