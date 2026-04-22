@@ -507,13 +507,13 @@ select:focus, input:focus {
 
 <div class="kitchen-tabs">
     <div class="tabs-container">
-        <button class="tab-btn active" onclick="switchKitchen('Hot Kitchen')">🔥 Hot</button>
-        <button class="tab-btn" onclick="switchKitchen('Cold Kitchen')">❄️ Cold</button>
-        <button class="tab-btn" onclick="switchKitchen('Pastry')">🍰 Pastry</button>
-        <button class="tab-btn" onclick="switchKitchen('Butchery')">🥩 Butchery</button>
-        <button class="tab-btn" onclick="switchKitchen('Beach House')">🏖️ Beach</button>
-        <button class="tab-btn" onclick="switchKitchen('Nihon Kitchen')">🍜 Nihon</button>
-        <button class="tab-btn" onclick="switchKitchen('Staff Kitchen')">👥 Staff</button>
+        <button class="tab-btn" onclick="selectKitchen('Hot Kitchen')">🔥 Hot Kitchen</button>
+        <button class="tab-btn" onclick="selectKitchen('Cold Kitchen')">❄️ Cold Kitchen</button>
+        <button class="tab-btn" onclick="selectKitchen('Pastry')">🍰 Pastry</button>
+        <button class="tab-btn" onclick="selectKitchen('Butchery')">🥩 Butchery</button>
+        <button class="tab-btn" onclick="selectKitchen('Beach House')">🏖️ Beach House</button>
+        <button class="tab-btn" onclick="selectKitchen('Nihon Kitchen')">🍜 Nihon Kitchen</button>
+        <button class="tab-btn" onclick="selectKitchen('Staff Kitchen')">👥 Staff Kitchen</button>
     </div>
 </div>
 
@@ -538,6 +538,8 @@ const kitchenPasswords = {
 };
 
 let unlockedKitchens = {};
+let currentKitchen = null; // Start with no kitchen selected
+let selectedKitchen = null;
 
 // Load saved unlocked kitchens from localStorage
 function loadUnlockedKitchens() {
@@ -604,7 +606,6 @@ const allItems = [
     {code: "STF003", name: "Tea Bags", unit: "box", section: "Staff Kitchen", maxLimit: 10}
 ];
 
-let currentKitchen = "Hot Kitchen";
 let kitchenData = {};
 let allRequests = [];
 let chefNames = {};
@@ -1015,22 +1016,20 @@ function logout() {
     }
 }
 
-// ============ SWITCH KITCHEN - PASSWORD ONLY ON USER CLICK ============
-function switchKitchen(kitchen) {
-    // Only check password when user actually clicks a kitchen (not during initial load)
-    // Skip password check if this is the same kitchen
-    if (currentKitchen !== kitchen) {
-        if(!checkKitchenPassword(kitchen)) {
-            return;
-        }
+// ============ SELECT KITCHEN - PASSWORD ONLY WHEN CLICKING ============
+async function selectKitchen(kitchen) {
+    // Check password first
+    if(!checkKitchenPassword(kitchen)) {
+        return;
     }
     
+    // If password is correct, switch to the kitchen
     currentKitchen = kitchen;
     
     // Update tab active state
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
-        if(btn.innerText.includes(kitchen.replace(' Kitchen', '')) || btn.innerText === kitchen) {
+        if(btn.innerText.includes(kitchen)) {
             btn.classList.add('active');
         }
     });
@@ -1128,24 +1127,9 @@ function generatePages() {
     container.innerHTML = "";
     kitchens.forEach(k => { container.innerHTML += createKitchenPage(k); });
     
-    // Set first page as active WITHOUT password check
-    currentKitchen = "Hot Kitchen";
-    document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
-    const firstPage = document.getElementById(`page_Hot_Kitchen`);
-    if(firstPage) firstPage.classList.add('active-page');
-    
-    // Set active tab style
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if(btn.innerText.includes('Hot')) {
-            btn.classList.add('active');
-        }
-    });
-    
-    // Load data for first kitchen without password
-    loadItems("Hot Kitchen");
-    renderCart("Hot Kitchen");
-    loadMyRequests("Hot Kitchen");
+    // Don't auto-select any kitchen - show a welcome message or first kitchen without password?
+    // For now, we'll show the Hot Kitchen page but NOT mark it as active/selected
+    // This means no kitchen content is visible until user clicks a tab
 }
 
 generatePages();
