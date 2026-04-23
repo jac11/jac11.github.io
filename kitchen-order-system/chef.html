@@ -424,7 +424,7 @@ select:focus, input:focus {
     display: none;
 }
 
-/* Requests List */
+/* Clean Submitted Requests Cards */
 .requests-list {
     display: flex;
     flex-direction: column;
@@ -442,58 +442,51 @@ select:focus, input:focus {
 .request-card.approved { border-left-color: #27ae60; }
 .request-card.rejected { border-left-color: #e74c3c; }
 
-.request-card-header {
+.request-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     padding-bottom: 8px;
     border-bottom: 1px solid #e0e0e0;
 }
 
-.request-card-id {
+.request-id {
     font-weight: bold;
     font-size: 0.9rem;
 }
 
-.request-card-date {
+.request-date {
     font-size: 0.7rem;
     color: #888;
 }
 
-.request-card-items {
+.items-table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+.items-table th {
+    text-align: left;
+    padding: 6px 0;
+    font-size: 0.7rem;
+    color: #888;
+    font-weight: normal;
+}
+
+.items-table td {
+    padding: 6px 0;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.request-status {
     margin-top: 12px;
+    text-align: right;
 }
-
-.request-item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px dashed #e0e0e0;
-}
-
-.request-item-row:last-child {
-    border-bottom: none;
-}
-
-.request-item-name {
-    font-weight: 500;
-    font-size: 0.85rem;
-}
-
-.request-item-status {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-}
-
-.status-approved-badge { background: #27ae60; color: white; }
-.status-rejected-badge { background: #e74c3c; color: white; }
-.status-pending-badge { background: #f39c12; color: white; }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
@@ -568,7 +561,7 @@ select:focus, input:focus {
         min-width: 500px;
     }
     
-    .request-card-header {
+    .request-header {
         flex-direction: column;
         align-items: flex-start;
     }
@@ -826,8 +819,8 @@ function loadItems(kitchen) {
     
     let items = getItemsForKitchen(kitchen);
     let filtered = search ? items.filter(i => i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search)) : items;
-    select.innerHTML = "";
-    if(filtered.length === 0) { select.innerHTML = "<option>❌ No items found</option>"; return; }
+    select.innerHTML = "<option value=''>-- Select an item --</option>";
+    if(filtered.length === 0) { select.innerHTML = "<option>No items found</option>"; return; }
     filtered.forEach(i => { select.innerHTML += `<option value="${i.code}">${i.code} - ${i.name} (${i.unit}) - Max: ${i.maxLimit}</option>`; });
 }
 
@@ -849,7 +842,7 @@ function addItem(kitchen) {
     const code = selectElement.value;
     const qty = parseFloat(document.getElementById(`qty_${kitchenId}`).value);
     
-    if(!code || code === "No items found" || code === "Enter chef name first" || code === "❌ No items found") {
+    if(!code || code === "" || code === "No items found" || code === "-- Select an item --") {
         showToast("Please select an item");
         return;
     }
@@ -898,7 +891,7 @@ function renderCart(kitchen) {
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
-            desktopBody.innerHTML = '<td><td colspan="6" style="text-align:center; color:#999;">📭 No items added</div>';
+            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</div>';
         } else {
             desktopBody.innerHTML = "";
             cart.forEach((item, index) => {
@@ -996,55 +989,61 @@ function loadMyRequests(kitchen) {
     container.innerHTML = '<div class="requests-list">';
     
     myRequests.reverse().forEach(req => {
-        const allApproved = req.items.every(i => i.status === "approved");
-        const allRejected = req.items.every(i => i.status === "rejected");
+        const status = getOverallStatus(req.items);
         let borderClass = "pending";
         let statusText = "⏳ Pending";
         let statusBadgeClass = "status-pending";
         
-        if(allApproved) { 
+        if(status === "approved") { 
             borderClass = "approved"; 
             statusText = "✅ Approved"; 
             statusBadgeClass = "status-approved";
-        } else if(allRejected) { 
+        } else if(status === "rejected") { 
             borderClass = "rejected"; 
             statusText = "❌ Rejected"; 
             statusBadgeClass = "status-rejected";
         }
         
-        let itemsHtml = '<div class="request-card-items">';
+        let itemsHtml = `<table class="items-table">`;
+        itemsHtml += `<thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
         
         req.items.forEach(item => {
-            let itemStatusClass = "";
-            let itemStatusText = "";
+            let itemStatus = "";
+            let itemValue = "";
+            let statusColor = "";
             if(item.status === "approved") {
-                itemStatusClass = "status-approved-badge";
-                itemStatusText = `✅ ${item.approvedQty} ${item.unit}`;
+                itemStatus = "✅ Approved";
+                itemValue = `${item.approvedQty} ${item.unit}`;
+                statusColor = "style='color:#27ae60;'";
             } else if(item.status === "rejected") {
-                itemStatusClass = "status-rejected-badge";
-                itemStatusText = `❌ ${item.rejectionReason || "Rejected"}`;
+                itemStatus = "❌ Rejected";
+                itemValue = item.rejectionReason || "No stock";
+                statusColor = "style='color:#e74c3c;'";
             } else {
-                itemStatusClass = "status-pending-badge";
-                itemStatusText = "⏳ Waiting";
+                itemStatus = "⏳ Pending";
+                itemValue = "Waiting...";
+                statusColor = "style='color:#f39c12;'";
             }
             
             itemsHtml += `
-                <div class="request-item-row">
-                    <span class="request-item-name">${item.name} (${item.code})</span>
-                    <span class="request-item-status ${itemStatusClass}">${itemStatusText}</span>
-                </div>
+                <tr>
+                    <td><strong>${item.name}</strong><br><small>${item.code}</small></td>
+                    <td>${item.originalQty} ${item.unit}</td>
+                    <td ${statusColor}>${itemStatus}</td>
+                    <td ${statusColor}>${itemValue}</td>
+                </tr>
             `;
         });
-        itemsHtml += '</div>';
+        itemsHtml += `</tbody></table>`;
         
         container.innerHTML += `
             <div class="request-card ${borderClass}">
-                <div class="request-card-header">
-                    <span class="request-card-id">📄 ${req.requestId}</span>
-                    <span class="request-card-date">📅 ${req.submittedAt}</span>
+                <div class="request-header">
+                    <span class="request-id">📄 ${req.requestId}</span>
+                    <span class="request-date">📅 ${req.submittedAt}</span>
                 </div>
                 ${itemsHtml}
-                <div style="margin-top: 10px; text-align: right;">
+                <div class="request-status">
                     <span class="status-badge ${statusBadgeClass}">${statusText}</span>
                 </div>
             </div>
@@ -1160,7 +1159,7 @@ function createKitchenPage(kitchen) {
                 </div>
                 <div class="table-wrapper">
                     <table class="cart-table">
-                        <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th><tr></thead>
+                        <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
                         <tbody id="cartTableDesktop_${id}"></tbody>
                     </table>
                 </div>
