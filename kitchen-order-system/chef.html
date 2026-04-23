@@ -810,7 +810,7 @@ function loadItems(kitchen) {
     
     let items = getItemsForKitchen(kitchen);
     let filtered = search ? items.filter(i => i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search)) : items;
-    select.innerHTML = "";
+    select.innerHTML = "<option value=''>-- Select an item --</option>";
     if(filtered.length === 0) { select.innerHTML = "<option>No items found</option>"; return; }
     filtered.forEach(i => { select.innerHTML += `<option value="${i.code}">${i.code} - ${i.name} (${i.unit}) - Max: ${i.maxLimit}</option>`; });
 }
@@ -832,7 +832,7 @@ function addItem(kitchen) {
     const code = document.getElementById(`itemSelect_${kitchenId}`).value;
     const qty = parseFloat(document.getElementById(`qty_${kitchenId}`).value);
     
-    if(!code || code === "No items found" || code === "Enter chef name first") {
+    if(!code || code === "" || code === "No items found" || code === "Enter chef name first" || code === "-- Select an item --") {
         showToast("Please select an item");
         return;
     }
@@ -1112,9 +1112,11 @@ function showToast(msg) {
 
 function logout() {
     if(confirm("Logout?")) {
+        // Clear cart data
         kitchens.forEach(k => { kitchenData[k].cart = []; renderCart(k); });
         saveCart();
-        showToast("Logged out");
+        // Redirect to index.html
+        window.location.href = "index.html";
     }
 }
 
@@ -1190,7 +1192,7 @@ function createKitchenPage(kitchen) {
                 <div class="desktop-table-view">
                     <div class="table-wrapper">
                         <table class="cart-table">
-                            <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
+                            <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></td></thead>
                             <tbody id="cartTableDesktop_${id}"></tbody>
                         </table>
                     </div>
