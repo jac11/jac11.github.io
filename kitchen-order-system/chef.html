@@ -5,12 +5,11 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
-<!-- Include the database.js file with all your items -->
-<script src="database.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>Chef Dashboard - Kitchen Order System</title>
 
 <style>
+/* Same styles as before - keep your existing CSS */
 * {
     margin: 0;
     padding: 0;
@@ -589,11 +588,11 @@ select:focus, input:focus {
     <div class="tabs-container">
         <button class="tab-btn" onclick="showKitchenPasswordModal('Hot Kitchen')">🔥 Hot Kitchen</button>
         <button class="tab-btn" onclick="showKitchenPasswordModal('Cold Kitchen')">❄️ Cold Kitchen</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Pastry / Bakery')">🍰 Pastry / Bakery</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Pastry / Bakery')">🍰 Pastry</button>
         <button class="tab-btn" onclick="showKitchenPasswordModal('Butchery')">🥩 Butchery</button>
         <button class="tab-btn" onclick="showKitchenPasswordModal('Beach House')">🏖️ Beach House</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Nihon Kitchen')">🍜 Nihon Kitchen</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Staff Kitchen')">👥 Staff Kitchen</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Nihon Kitchen')">🍜 Nihon</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Staff Kitchen')">👥 Staff</button>
     </div>
 </div>
 
@@ -605,7 +604,7 @@ select:focus, input:focus {
 
 <script>
 // ========================
-// KITCHEN PASSWORD PROTECTION - MODAL STYLE (SAME AS ADMIN)
+// KITCHEN PASSWORD PROTECTION
 // ========================
 const kitchenPasswords = {
     "Hot Kitchen": "hot123",
@@ -620,8 +619,88 @@ const kitchenPasswords = {
 let unlockedKitchens = {};
 let currentKitchen = null;
 let pendingKitchen = null;
+let allItems = null; // Will load lazily
+let kitchenData = {};
+let allRequests = [];
+let chefNames = {};
+let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
-// Load saved unlocked kitchens from localStorage
+// Load items from external file dynamically (lazy loading)
+async function loadItemsDatabase() {
+    return new Promise((resolve, reject) => {
+        if (allItems) {
+            resolve(allItems);
+            return;
+        }
+        
+        const script = document.createElement('script');
+        script.src = 'database.js';
+        script.onload = () => {
+            // Wait a bit for the variable to be available
+            setTimeout(() => {
+                if (typeof window.allItems !== 'undefined') {
+                    allItems = window.allItems;
+                    console.log(`✅ Loaded ${allItems.length} items`);
+                    resolve(allItems);
+                } else {
+                    reject(new Error('allItems not found'));
+                }
+            }, 100);
+        };
+        script.onerror = () => reject(new Error('Failed to load database.js'));
+        document.head.appendChild(script);
+    });
+}
+
+// Load saved chef names from localStorage
+function loadChefNames() {
+    const saved = localStorage.getItem("chefNames");
+    if(saved) {
+        const parsed = JSON.parse(saved);
+        kitchens.forEach(kitchen => {
+            chefNames[kitchen] = parsed[kitchen] || "";
+        });
+    }
+}
+
+function saveChefNames() {
+    localStorage.setItem("chefNames", JSON.stringify(chefNames));
+}
+
+// Load saved cart from localStorage
+function loadSavedCart() {
+    const saved = localStorage.getItem("kitchenCart");
+    if(saved) {
+        const parsed = JSON.parse(saved);
+        kitchens.forEach(kitchen => {
+            if(parsed[kitchen]) {
+                kitchenData[kitchen] = { cart: parsed[kitchen], chefName: chefNames[kitchen] };
+            } else {
+                kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
+            }
+        });
+    } else {
+        kitchens.forEach(kitchen => {
+            kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
+        });
+    }
+}
+
+function saveCart() {
+    const cartToSave = {};
+    kitchens.forEach(kitchen => {
+        cartToSave[kitchen] = kitchenData[kitchen].cart;
+    });
+    localStorage.setItem("kitchenCart", JSON.stringify(cartToSave));
+}
+
+// Initialize
+loadChefNames();
+loadSavedCart();
+loadUnlockedKitchens();
+
+// ============ PASSWORD MODAL FUNCTIONS ============
+
 function loadUnlockedKitchens() {
     const saved = localStorage.getItem("unlockedKitchens");
     if(saved) {
@@ -678,64 +757,6 @@ function verifyKitchenPassword() {
     }
 }
 
-// ========================
-// NOTE: allItems is loaded from database.js file
-// The file contains over 500 items across all kitchens
-// ========================
-
-let kitchenData = {};
-let allRequests = [];
-let chefNames = {};
-// Get kitchen sections from the allItems array
-const kitchens = [...new Set(allItems.map(item => item.section))];
-
-// Load saved chef names from localStorage
-function loadChefNames() {
-    const saved = localStorage.getItem("chefNames");
-    if(saved) {
-        const parsed = JSON.parse(saved);
-        kitchens.forEach(kitchen => {
-            chefNames[kitchen] = parsed[kitchen] || "";
-        });
-    }
-}
-
-function saveChefNames() {
-    localStorage.setItem("chefNames", JSON.stringify(chefNames));
-}
-
-// Load saved cart from localStorage
-function loadSavedCart() {
-    const saved = localStorage.getItem("kitchenCart");
-    if(saved) {
-        const parsed = JSON.parse(saved);
-        kitchens.forEach(kitchen => {
-            if(parsed[kitchen]) {
-                kitchenData[kitchen] = { cart: parsed[kitchen], chefName: chefNames[kitchen] };
-            } else {
-                kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
-            }
-        });
-    } else {
-        kitchens.forEach(kitchen => {
-            kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
-        });
-    }
-}
-
-function saveCart() {
-    const cartToSave = {};
-    kitchens.forEach(kitchen => {
-        cartToSave[kitchen] = kitchenData[kitchen].cart;
-    });
-    localStorage.setItem("kitchenCart", JSON.stringify(cartToSave));
-}
-
-// Initialize
-loadChefNames();
-loadSavedCart();
-loadUnlockedKitchens();
-
 // ============ FIREBASE FUNCTIONS ============
 
 async function loadRequestsFromFirebase() {
@@ -776,25 +797,53 @@ async function manualRefresh() {
     }
 }
 
-// ============ HELPER FUNCTIONS ============
+// ============ ITEM FUNCTIONS WITH LAZY LOADING ============
 
 function getItemsForKitchen(kitchen) { 
+    if (!allItems) return [];
     return allItems.filter(i => i.section === kitchen); 
 }
 
-function loadItems(kitchen) {
+async function loadItems(kitchen) {
+    // Load database if not loaded yet
+    if (!allItems) {
+        showToast("📦 Loading inventory...");
+        await loadItemsDatabase();
+        showToast("✅ Inventory loaded!");
+    }
+    
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const chefName = chefNames[kitchen];
     const select = document.getElementById(`itemSelect_${kitchenId}`);
     const search = document.getElementById(`searchItem_${kitchenId}`).value.toLowerCase();
     
-    if(!chefName) { select.innerHTML = "<option>Enter chef name first</option>"; return; }
+    if(!chefName) { 
+        select.innerHTML = "<option>Enter chef name first</option>"; 
+        return; 
+    }
     
     let items = getItemsForKitchen(kitchen);
+    if (!items || items.length === 0) {
+        select.innerHTML = "<option>No items found for this kitchen</option>";
+        return;
+    }
+    
     let filtered = search ? items.filter(i => i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search)) : items;
     select.innerHTML = "<option value=''>-- Select an item --</option>";
-    if(filtered.length === 0) { select.innerHTML = "<option>No items found</option>"; return; }
-    filtered.forEach(i => { select.innerHTML += `<option value="${i.code}">${i.code} - ${i.name} (${i.unit}) - Max: ${i.maxLimit}</option>`; });
+    if(filtered.length === 0) { 
+        select.innerHTML = "<option>No items found</option>"; 
+        return; 
+    }
+    
+    // Limit to 100 items for faster loading (add virtual scroll later if needed)
+    const displayItems = filtered.slice(0, 100);
+    displayItems.forEach(i => { 
+        select.innerHTML += `<option value="${i.code}">${i.code} - ${i.name.substring(0, 50)} (${i.unit}) - Max: ${i.maxLimit}</option>`; 
+    });
+    
+    if (filtered.length > 100) {
+        select.innerHTML += `<option disabled>--- + ${filtered.length - 100} more items (use search) ---</option>`;
+    }
 }
 
 function filterItems(kitchen) { loadItems(kitchen); }
@@ -814,7 +863,7 @@ function addItem(kitchen) {
     const code = document.getElementById(`itemSelect_${kitchenId}`).value;
     const qty = parseFloat(document.getElementById(`qty_${kitchenId}`).value);
     
-    if(!code || code === "" || code === "No items found" || code === "Enter chef name first" || code === "-- Select an item --") {
+    if(!code || code === "" || code === "No items found" || code === "-- Select an item --") {
         showToast("Please select an item");
         return;
     }
@@ -873,7 +922,7 @@ function renderCart(kitchen) {
                         <td>${item.code}</td>
                         <td><strong>${item.name}</strong></td>
                         <td>${item.qty}</td>
-                        <td>${item.unit}<td>
+                        <td>${item.unit}</td>
                         <td>${item.qty}/${item.maxLimit}</td>
                         <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button></td>
                     </tr>
@@ -984,7 +1033,7 @@ function loadMyRequests(kitchen) {
                 const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
                 const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
                 
-                let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th><tr></thead><tbody>`;
+                let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
                 
                 req.items.forEach(item => {
                     let itemStatus = "";
@@ -999,7 +1048,7 @@ function loadMyRequests(kitchen) {
                         itemStatus = "⏳ Pending";
                         itemValue = "Waiting...";
                     }
-                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}<tr></tr>`;
+                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
                 });
                 itemsHtml += `</tbody></table>`;
                 
@@ -1118,7 +1167,7 @@ function logout() {
 }
 
 // ============ SELECT KITCHEN AFTER PASSWORD VERIFICATION ============
-function selectKitchen(kitchen) {
+async function selectKitchen(kitchen) {
     currentKitchen = kitchen;
     
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1136,7 +1185,8 @@ function selectKitchen(kitchen) {
     const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`);
     if(chefInput) chefInput.value = chefNames[kitchen] || "";
     
-    loadItems(kitchen);
+    // Load items (will load database if needed)
+    await loadItems(kitchen);
     renderCart(kitchen);
     loadMyRequests(kitchen);
 }
