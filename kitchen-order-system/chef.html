@@ -5,6 +5,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
+<!-- Include the database.js file with all your items -->
+<script src="database.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>Chef Dashboard - Kitchen Order System</title>
 
@@ -587,7 +589,7 @@ select:focus, input:focus {
     <div class="tabs-container">
         <button class="tab-btn" onclick="showKitchenPasswordModal('Hot Kitchen')">🔥 Hot Kitchen</button>
         <button class="tab-btn" onclick="showKitchenPasswordModal('Cold Kitchen')">❄️ Cold Kitchen</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Pastry')">🍰 Pastry</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Pastry / Bakery')">🍰 Pastry / Bakery</button>
         <button class="tab-btn" onclick="showKitchenPasswordModal('Butchery')">🥩 Butchery</button>
         <button class="tab-btn" onclick="showKitchenPasswordModal('Beach House')">🏖️ Beach House</button>
         <button class="tab-btn" onclick="showKitchenPasswordModal('Nihon Kitchen')">🍜 Nihon Kitchen</button>
@@ -608,7 +610,7 @@ select:focus, input:focus {
 const kitchenPasswords = {
     "Hot Kitchen": "hot123",
     "Cold Kitchen": "cold123", 
-    "Pastry": "pastry123",
+    "Pastry / Bakery": "pastry123",
     "Butchery": "butchery123",
     "Beach House": "beach123",
     "Nihon Kitchen": "nihon123",
@@ -677,37 +679,15 @@ function verifyKitchenPassword() {
 }
 
 // ========================
-// ALL ITEMS FOR ALL KITCHENS
+// NOTE: allItems is loaded from database.js file
+// The file contains over 500 items across all kitchens
 // ========================
-const allItems = [
-    {code: "HOT001", name: "Tomato Peeled Tin", unit: "can", section: "Hot Kitchen", maxLimit: 12},
-    {code: "HOT002", name: "Black Pepper Corn", unit: "kg", section: "Hot Kitchen", maxLimit: 4},
-    {code: "HOT003", name: "Chicken Breast", unit: "kg", section: "Hot Kitchen", maxLimit: 15},
-    {code: "HOT004", name: "Olive Oil", unit: "bottle", section: "Hot Kitchen", maxLimit: 6},
-    {code: "CLD001", name: "French Fries", unit: "box", section: "Cold Kitchen", maxLimit: 10},
-    {code: "CLD002", name: "Spinach", unit: "box", section: "Cold Kitchen", maxLimit: 8},
-    {code: "CLD003", name: "Green Peas", unit: "box", section: "Cold Kitchen", maxLimit: 8},
-    {code: "PSY001", name: "Whipping Cream", unit: "liter", section: "Pastry", maxLimit: 5},
-    {code: "PSY002", name: "Block Butter", unit: "kg", section: "Pastry", maxLimit: 3},
-    {code: "PSY003", name: "Chocolate Chips", unit: "kg", section: "Pastry", maxLimit: 7},
-    {code: "BCH001", name: "Beef Tenderloin", unit: "kg", section: "Butchery", maxLimit: 10},
-    {code: "BCH002", name: "Lamb Chops", unit: "kg", section: "Butchery", maxLimit: 8},
-    {code: "BCH003", name: "Chicken Wings", unit: "kg", section: "Butchery", maxLimit: 12},
-    {code: "BCHH01", name: "Fresh Salmon", unit: "kg", section: "Beach House", maxLimit: 8},
-    {code: "BCHH02", name: "Large Shrimp", unit: "kg", section: "Beach House", maxLimit: 12},
-    {code: "BCHH03", name: "Lobster Tail", unit: "piece", section: "Beach House", maxLimit: 20},
-    {code: "NIH001", name: "Sushi Rice", unit: "kg", section: "Nihon Kitchen", maxLimit: 15},
-    {code: "NIH002", name: "Nori Seaweed", unit: "sheet", section: "Nihon Kitchen", maxLimit: 100},
-    {code: "NIH003", name: "Soy Sauce", unit: "liter", section: "Nihon Kitchen", maxLimit: 10},
-    {code: "STF001", name: "Basmati Rice", unit: "bag", section: "Staff Kitchen", maxLimit: 20},
-    {code: "STF002", name: "Cooking Oil", unit: "liter", section: "Staff Kitchen", maxLimit: 10},
-    {code: "STF003", name: "Tea Bags", unit: "box", section: "Staff Kitchen", maxLimit: 10}
-];
 
 let kitchenData = {};
 let allRequests = [];
 let chefNames = {};
-const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
+// Get kitchen sections from the allItems array
+const kitchens = [...new Set(allItems.map(item => item.section))];
 
 // Load saved chef names from localStorage
 function loadChefNames() {
@@ -798,10 +778,12 @@ async function manualRefresh() {
 
 // ============ HELPER FUNCTIONS ============
 
-function getItemsForKitchen(kitchen) { return allItems.filter(i => i.section === kitchen); }
+function getItemsForKitchen(kitchen) { 
+    return allItems.filter(i => i.section === kitchen); 
+}
 
 function loadItems(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_');
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const chefName = chefNames[kitchen];
     const select = document.getElementById(`itemSelect_${kitchenId}`);
     const search = document.getElementById(`searchItem_${kitchenId}`).value.toLowerCase();
@@ -818,7 +800,7 @@ function loadItems(kitchen) {
 function filterItems(kitchen) { loadItems(kitchen); }
 
 function addItem(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_');
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const chefName = chefNames[kitchen];
     
     if(!chefName) {
@@ -872,7 +854,7 @@ function addItem(kitchen) {
 }
 
 function renderCart(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_');
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const cart = kitchenData[kitchen].cart;
     const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
     
@@ -891,7 +873,7 @@ function renderCart(kitchen) {
                         <td>${item.code}</td>
                         <td><strong>${item.name}</strong></td>
                         <td>${item.qty}</td>
-                        <td>${item.unit}</td>
+                        <td>${item.unit}<td>
                         <td>${item.qty}/${item.maxLimit}</td>
                         <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button></td>
                     </tr>
@@ -980,7 +962,7 @@ function getOverallStatus(items) {
 }
 
 function loadMyRequests(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_');
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const chefName = chefNames[kitchen];
     
     if(!chefName) {
@@ -1002,7 +984,7 @@ function loadMyRequests(kitchen) {
                 const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
                 const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
                 
-                let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
+                let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th><tr></thead><tbody>`;
                 
                 req.items.forEach(item => {
                     let itemStatus = "";
@@ -1017,9 +999,9 @@ function loadMyRequests(kitchen) {
                         itemStatus = "⏳ Pending";
                         itemValue = "Waiting...";
                     }
-                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}<tr></tr>`;
                 });
-                itemsHtml += `</tbody><tr>`;
+                itemsHtml += `</tbody></table>`;
                 
                 desktopContainer.innerHTML += `
                     <div style="border:1px solid #e0e0e0; border-radius:12px; padding:14px; margin-bottom:16px;">
@@ -1086,7 +1068,7 @@ function exportToExcel(kitchen) {
     const cart = kitchenData[kitchen].cart;
     if(cart.length === 0) { showToast("No items to export"); return; }
     
-    const kitchenId = kitchen.replace(/\s/g, '_');
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const chef = chefNames[kitchen];
     
     let csv = "Code,Item,Quantity,Unit,Max Limit\n";
@@ -1112,32 +1094,23 @@ function showToast(msg) {
 
 function logout() {
     if(confirm("Are you sure you want to logout? This will clear all unlocked kitchens and you will need to enter passwords again.")) {
-        // Clear all unlocked kitchens
         unlockedKitchens = {};
         localStorage.removeItem("unlockedKitchens");
         
-        // Clear individual kitchen passwords from localStorage
         kitchens.forEach(kitchen => {
             localStorage.removeItem(`kitchen_password_${kitchen}`);
         });
         
-        // Clear cart data
         kitchens.forEach(k => { kitchenData[k].cart = []; renderCart(k); });
         saveCart();
         
-        // Clear current kitchen
         currentKitchen = null;
         
-        // Reset all kitchen pages to inactive
         document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
-        
-        // Reset all tab buttons to inactive
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         
-        // Show toast message
         showToast("Logged out. All passwords cleared.");
         
-        // Redirect to index.html after short delay
         setTimeout(() => {
             window.location.href = "index.html";
         }, 1500);
@@ -1156,11 +1129,11 @@ function selectKitchen(kitchen) {
     });
     
     document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
-    const pageId = `page_${kitchen.replace(/\s/g, '_')}`;
+    const pageId = `page_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`;
     const targetPage = document.getElementById(pageId);
     if(targetPage) targetPage.classList.add('active-page');
     
-    const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_')}`);
+    const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`);
     if(chefInput) chefInput.value = chefNames[kitchen] || "";
     
     loadItems(kitchen);
@@ -1169,7 +1142,7 @@ function selectKitchen(kitchen) {
 }
 
 function onChefNameChange(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_');
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const newName = document.getElementById(`chefName_${kitchenId}`).value.trim();
     chefNames[kitchen] = newName;
     saveChefNames();
@@ -1178,11 +1151,12 @@ function onChefNameChange(kitchen) {
 }
 
 function createKitchenPage(kitchen) {
-    const id = kitchen.replace(/\s/g, '_');
+    const id = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const displayName = kitchen;
     return `
         <div class="kitchen-page" id="page_${id}">
             <div class="card">
-                <h3>👨‍🍳 Chef Information - ${kitchen}</h3>
+                <h3>👨‍🍳 Chef Information - ${displayName}</h3>
                 <div class="input-group">
                     <label>Chef Name <span class="required">*</span></label>
                     <input type="text" id="chefName_${id}" placeholder="Enter chef name" onchange="onChefNameChange('${kitchen}')">
@@ -1216,7 +1190,7 @@ function createKitchenPage(kitchen) {
                 <div class="desktop-table-view">
                     <div class="table-wrapper">
                         <table class="cart-table">
-                            <thead><td><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
+                            <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
                             <tbody id="cartTableDesktop_${id}"></tbody>
                         </table>
                     </div>
@@ -1246,7 +1220,7 @@ function generatePages() {
 generatePages();
 loadRequestsFromFirebase();
 
-// REAL-TIME LISTENER - Auto updates when admin approves
+// REAL-TIME LISTENER
 db.collection("kitchen_requests").onSnapshot(() => {
     console.log("🔄 Real-time update detected! Refreshing chef dashboard...");
     loadRequestsFromFirebase();
