@@ -457,6 +457,84 @@ select:focus, input:focus {
     border-bottom: 1px solid #f0f0f0;
 }
 
+/* Password Modal - Same as Admin */
+.modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    color: #1a1a2e;
+    font-size: 1.3rem;
+}
+
+.modal-content p {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+.modal-content button {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.modal-content button:hover {
+    background: #2980b9;
+    transform: scale(1.02);
+}
+
+.error-msg {
+    color: #e74c3c;
+    margin-top: 12px;
+    font-size: 0.85rem;
+}
+
+.close-modal {
+    background: #95a5a6;
+    margin-top: 10px;
+}
+
+.close-modal:hover {
+    background: #7f8c8d;
+}
+
 /* Desktop View */
 @media screen and (min-width: 769px) {
     .search-add-row {
@@ -507,13 +585,13 @@ select:focus, input:focus {
 
 <div class="kitchen-tabs">
     <div class="tabs-container">
-        <button class="tab-btn" onclick="selectKitchen('Hot Kitchen')">🔥 Hot Kitchen</button>
-        <button class="tab-btn" onclick="selectKitchen('Cold Kitchen')">❄️ Cold Kitchen</button>
-        <button class="tab-btn" onclick="selectKitchen('Pastry')">🍰 Pastry</button>
-        <button class="tab-btn" onclick="selectKitchen('Butchery')">🥩 Butchery</button>
-        <button class="tab-btn" onclick="selectKitchen('Beach House')">🏖️ Beach House</button>
-        <button class="tab-btn" onclick="selectKitchen('Nihon Kitchen')">🍜 Nihon Kitchen</button>
-        <button class="tab-btn" onclick="selectKitchen('Staff Kitchen')">👥 Staff Kitchen</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Hot Kitchen')">🔥 Hot Kitchen</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Cold Kitchen')">❄️ Cold Kitchen</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Pastry')">🍰 Pastry</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Butchery')">🥩 Butchery</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Beach House')">🏖️ Beach House</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Nihon Kitchen')">🍜 Nihon Kitchen</button>
+        <button class="tab-btn" onclick="showKitchenPasswordModal('Staff Kitchen')">👥 Staff Kitchen</button>
     </div>
 </div>
 
@@ -525,7 +603,7 @@ select:focus, input:focus {
 
 <script>
 // ========================
-// KITCHEN PASSWORD PROTECTION
+// KITCHEN PASSWORD PROTECTION - MODAL STYLE (SAME AS ADMIN)
 // ========================
 const kitchenPasswords = {
     "Hot Kitchen": "hot123",
@@ -538,8 +616,8 @@ const kitchenPasswords = {
 };
 
 let unlockedKitchens = {};
-let currentKitchen = null; // Start with no kitchen selected
-let selectedKitchen = null;
+let currentKitchen = null;
+let pendingKitchen = null;
 
 // Load saved unlocked kitchens from localStorage
 function loadUnlockedKitchens() {
@@ -553,28 +631,48 @@ function saveUnlockedKitchens() {
     localStorage.setItem("unlockedKitchens", JSON.stringify(unlockedKitchens));
 }
 
-function checkKitchenPassword(kitchen) {
-    // Check if already unlocked
+function showKitchenPasswordModal(kitchen) {
     if(unlockedKitchens[kitchen]) {
-        return true;
+        selectKitchen(kitchen);
+        return;
     }
     
-    const savedPassword = localStorage.getItem(`kitchen_password_${kitchen}`);
-    if(savedPassword === kitchenPasswords[kitchen]) {
-        unlockedKitchens[kitchen] = true;
-        saveUnlockedKitchens();
-        return true;
-    }
+    pendingKitchen = kitchen;
     
-    const enteredPassword = prompt(`🔐 Enter password for ${kitchen}:`);
-    if(enteredPassword === kitchenPasswords[kitchen]) {
-        localStorage.setItem(`kitchen_password_${kitchen}`, enteredPassword);
+    const modal = document.createElement("div");
+    modal.className = "modal";
+    modal.id = "kitchenPasswordModal";
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h2>🔐 Kitchen Access</h2>
+            <p>Enter password for ${kitchen}</p>
+            <input type="password" id="kitchenPasswordInput" placeholder="Enter password">
+            <button onclick="verifyKitchenPassword()">Unlock</button>
+            <div id="kitchenPasswordError" class="error-msg"></div>
+            <button class="close-modal" onclick="closePasswordModal()">← Go Back</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function closePasswordModal() {
+    const modal = document.getElementById("kitchenPasswordModal");
+    if(modal) modal.remove();
+    pendingKitchen = null;
+}
+
+function verifyKitchenPassword() {
+    const inputPassword = document.getElementById("kitchenPasswordInput").value;
+    const kitchen = pendingKitchen;
+    
+    if(inputPassword === kitchenPasswords[kitchen]) {
+        localStorage.setItem(`kitchen_password_${kitchen}`, inputPassword);
         unlockedKitchens[kitchen] = true;
         saveUnlockedKitchens();
-        return true;
+        closePasswordModal();
+        selectKitchen(kitchen);
     } else {
-        alert("❌ Wrong password! Access denied.");
-        return false;
+        document.getElementById("kitchenPasswordError").innerHTML = "Wrong password!";
     }
 }
 
@@ -719,7 +817,6 @@ function loadItems(kitchen) {
 
 function filterItems(kitchen) { loadItems(kitchen); }
 
-// FIXED: addItem function with proper quantity limit validation
 function addItem(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_');
     const chefName = chefNames[kitchen];
@@ -744,7 +841,6 @@ function addItem(kitchen) {
     const item = items.find(i => i.code === code);
     if(!item) return;
     
-    // Check if single addition exceeds max limit
     if(qty > item.maxLimit) {
         showToast(`⚠️ Cannot add more than ${item.maxLimit} ${item.unit} at once`);
         return;
@@ -753,7 +849,6 @@ function addItem(kitchen) {
     const existing = kitchenData[kitchen].cart.find(i => i.code === code);
     let newTotalQty = (existing ? existing.qty : 0) + qty;
     
-    // Check if total would exceed max limit
     if(newTotalQty > item.maxLimit) {
         const remaining = item.maxLimit - (existing ? existing.qty : 0);
         showToast(`⚠️ Cannot add ${qty} ${item.unit}. Only ${remaining} ${item.unit} remaining (Max: ${item.maxLimit})`);
@@ -784,7 +879,6 @@ function renderCart(kitchen) {
     document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty;
     document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
     
-    // Desktop table view
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
@@ -806,7 +900,6 @@ function renderCart(kitchen) {
         }
     }
     
-    // Mobile card view
     const mobileContainer = document.getElementById(`cartMobile_${kitchenId}`);
     if(mobileContainer) {
         if(cart.length === 0) {
@@ -898,7 +991,6 @@ function loadMyRequests(kitchen) {
     
     const myRequests = allRequests.filter(r => r.chefName === chefName && r.section === kitchen);
     
-    // Desktop view
     const desktopContainer = document.getElementById(`myRequestsDesktop_${kitchenId}`);
     if(desktopContainer) {
         if(myRequests.length === 0) {
@@ -925,7 +1017,7 @@ function loadMyRequests(kitchen) {
                         itemStatus = "⏳ Pending";
                         itemValue = "Waiting...";
                     }
-                    itemsHtml += `</td><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
                 });
                 itemsHtml += `</tbody></table>`;
                 
@@ -945,7 +1037,6 @@ function loadMyRequests(kitchen) {
         }
     }
     
-    // Mobile view
     const mobileContainer = document.getElementById(`myRequestsMobile_${kitchenId}`);
     if(mobileContainer) {
         if(myRequests.length === 0) {
@@ -1027,17 +1118,10 @@ function logout() {
     }
 }
 
-// ============ SELECT KITCHEN - PASSWORD ONLY WHEN CLICKING ============
-async function selectKitchen(kitchen) {
-    // Check password first
-    if(!checkKitchenPassword(kitchen)) {
-        return;
-    }
-    
-    // If password is correct, switch to the kitchen
+// ============ SELECT KITCHEN AFTER PASSWORD VERIFICATION ============
+function selectKitchen(kitchen) {
     currentKitchen = kitchen;
     
-    // Update tab active state
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
         if(btn.innerText.includes(kitchen)) {
@@ -1045,13 +1129,11 @@ async function selectKitchen(kitchen) {
         }
     });
     
-    // Update page visibility
     document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
     const pageId = `page_${kitchen.replace(/\s/g, '_')}`;
     const targetPage = document.getElementById(pageId);
     if(targetPage) targetPage.classList.add('active-page');
     
-    // Load saved chef name for this kitchen
     const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_')}`);
     if(chefInput) chefInput.value = chefNames[kitchen] || "";
     
@@ -1105,7 +1187,6 @@ function createKitchenPage(kitchen) {
                     <span>📦 Total: <strong id="totalItems_${id}">0</strong></span>
                     <span>📋 Items: <strong id="lineCount_${id}">0</strong></span>
                 </div>
-                <!-- Desktop Table View -->
                 <div class="desktop-table-view">
                     <div class="table-wrapper">
                         <table class="cart-table">
@@ -1114,7 +1195,6 @@ function createKitchenPage(kitchen) {
                         </table>
                     </div>
                 </div>
-                <!-- Mobile Card View -->
                 <div class="mobile-cards-view" id="cartMobile_${id}"></div>
                 <div class="button-group">
                     <button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 Submit Request</button>
@@ -1124,9 +1204,7 @@ function createKitchenPage(kitchen) {
             </div>
             <div class="card">
                 <h3>📜 My Requests</h3>
-                <!-- Desktop Table View -->
                 <div class="desktop-table-view" id="myRequestsDesktop_${id}"></div>
-                <!-- Mobile Card View -->
                 <div class="mobile-cards-view" id="myRequestsMobile_${id}"></div>
             </div>
         </div>
@@ -1137,10 +1215,6 @@ function generatePages() {
     const container = document.getElementById("kitchenPagesContainer");
     container.innerHTML = "";
     kitchens.forEach(k => { container.innerHTML += createKitchenPage(k); });
-    
-    // Don't auto-select any kitchen - show a welcome message or first kitchen without password?
-    // For now, we'll show the Hot Kitchen page but NOT mark it as active/selected
-    // This means no kitchen content is visible until user clicks a tab
 }
 
 generatePages();
