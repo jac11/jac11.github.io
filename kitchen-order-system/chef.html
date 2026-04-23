@@ -424,68 +424,24 @@ select:focus, input:focus {
     display: none;
 }
 
-/* Clean Submitted Requests Cards */
-.requests-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.request-card {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 16px;
-    border-left: 4px solid;
-}
-
-.request-card.pending { border-left-color: #f39c12; }
-.request-card.approved { border-left-color: #27ae60; }
-.request-card.rejected { border-left-color: #e74c3c; }
-
-.request-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.request-id {
-    font-weight: bold;
-    font-size: 0.9rem;
-}
-
-.request-date {
-    font-size: 0.7rem;
-    color: #888;
-}
-
-.items-table {
+/* Approved Items Table */
+.approved-items-table {
     width: 100%;
-    margin-top: 10px;
     border-collapse: collapse;
+    margin-top: 10px;
 }
 
-.items-table th {
+.approved-items-table th {
+    background: #e8f4fd;
+    padding: 8px;
+    font-size: 0.75rem;
     text-align: left;
-    padding: 6px 0;
-    font-size: 0.7rem;
-    color: #888;
-    font-weight: normal;
 }
 
-.items-table td {
-    padding: 6px 0;
+.approved-items-table td {
+    padding: 8px;
     font-size: 0.8rem;
     border-bottom: 1px solid #f0f0f0;
-}
-
-.request-status {
-    margin-top: 12px;
-    text-align: right;
 }
 
 /* Mobile Responsive */
@@ -559,11 +515,6 @@ select:focus, input:focus {
     
     .cart-table {
         min-width: 500px;
-    }
-    
-    .request-header {
-        flex-direction: column;
-        align-items: flex-start;
     }
 }
 
@@ -970,86 +921,106 @@ function getOverallStatus(items) {
 function loadMyRequests(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_');
     const chefName = chefNames[kitchen];
-    const container = document.getElementById(`myRequestsContainer_${kitchenId}`);
     
     if(!chefName) {
-        if(container) container.innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
+        const desktopContainer = document.getElementById(`myRequestsDesktop_${kitchenId}`);
+        if(desktopContainer) desktopContainer.innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
         return;
     }
     
     const myRequests = allRequests.filter(r => r.chefName === chefName && r.section === kitchen);
     
-    if(!container) return;
-    
-    if(myRequests.length === 0) {
-        container.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
-        return;
+    // Desktop view
+    const desktopContainer = document.getElementById(`myRequestsDesktop_${kitchenId}`);
+    if(desktopContainer) {
+        if(myRequests.length === 0) {
+            desktopContainer.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
+        } else {
+            desktopContainer.innerHTML = "";
+            [...myRequests].reverse().forEach(req => {
+                const status = getOverallStatus(req.items);
+                const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
+                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+                
+                let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
+                
+                req.items.forEach(item => {
+                    let itemStatus = "";
+                    let itemValue = "";
+                    if(item.status === "approved") {
+                        itemStatus = "✅ Approved";
+                        itemValue = `${item.approvedQty} ${item.unit}`;
+                    } else if(item.status === "rejected") {
+                        itemStatus = "❌ Rejected";
+                        itemValue = item.rejectionReason || "No stock";
+                    } else {
+                        itemStatus = "⏳ Pending";
+                        itemValue = "Waiting...";
+                    }
+                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+                });
+                itemsHtml += `</tbody></td>`;
+                
+                desktopContainer.innerHTML += `
+                    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:14px; margin-bottom:16px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap;">
+                            <span style="font-weight:bold; font-size:0.85rem;">📄 ${req.requestId}</span>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div style="background:#f8f9fa; padding:8px; border-radius:8px; margin-bottom:10px; font-size:0.7rem;">
+                            <span>📅 ${req.submittedAt}</span>
+                        </div>
+                        ${itemsHtml}
+                    </div>
+                `;
+            });
+        }
     }
     
-    container.innerHTML = '<div class="requests-list">';
-    
-    myRequests.reverse().forEach(req => {
-        const status = getOverallStatus(req.items);
-        let borderClass = "pending";
-        let statusText = "⏳ Pending";
-        let statusBadgeClass = "status-pending";
-        
-        if(status === "approved") { 
-            borderClass = "approved"; 
-            statusText = "✅ Approved"; 
-            statusBadgeClass = "status-approved";
-        } else if(status === "rejected") { 
-            borderClass = "rejected"; 
-            statusText = "❌ Rejected"; 
-            statusBadgeClass = "status-rejected";
+    // Mobile view
+    const mobileContainer = document.getElementById(`myRequestsMobile_${kitchenId}`);
+    if(mobileContainer) {
+        if(myRequests.length === 0) {
+            mobileContainer.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
+        } else {
+            mobileContainer.innerHTML = "";
+            [...myRequests].reverse().forEach(req => {
+                const status = getOverallStatus(req.items);
+                const statusClass = status === "pending" ? "pending" : (status === "approved" ? "approved" : "rejected");
+                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+                const statusBadgeClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
+                
+                let itemsHtml = '<div class="request-items-list">';
+                req.items.forEach(item => {
+                    let statusIcon = "";
+                    let approvedText = "";
+                    if(item.status === "approved") {
+                        statusIcon = "✅";
+                        approvedText = ` → ${item.approvedQty} ${item.unit} approved`;
+                    } else if(item.status === "rejected") {
+                        statusIcon = "❌";
+                        approvedText = ` → ${item.rejectionReason || "Rejected"}`;
+                    } else {
+                        statusIcon = "⏳";
+                        approvedText = ` → Waiting`;
+                    }
+                    itemsHtml += `<div class="request-item-detail"><span class="request-item-name">${item.name}</span><span class="request-item-qty">${item.originalQty} ${item.unit}${approvedText} ${statusIcon}</span></div>`;
+                });
+                itemsHtml += '</div>';
+                
+                mobileContainer.innerHTML += `
+                    <div class="request-item ${statusClass}">
+                        <div class="request-header">
+                            <span class="request-id">${req.requestId}</span>
+                            <span class="status-badge ${statusBadgeClass}">${statusText}</span>
+                        </div>
+                        <div class="request-date">📅 ${req.submittedAt}</div>
+                        ${itemsHtml}
+                    </div>
+                `;
+            });
         }
-        
-        let itemsHtml = `<table class="items-table">`;
-        itemsHtml += `<thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
-        
-        req.items.forEach(item => {
-            let itemStatus = "";
-            let itemValue = "";
-            let statusColor = "";
-            if(item.status === "approved") {
-                itemStatus = "✅ Approved";
-                itemValue = `${item.approvedQty} ${item.unit}`;
-                statusColor = "style='color:#27ae60;'";
-            } else if(item.status === "rejected") {
-                itemStatus = "❌ Rejected";
-                itemValue = item.rejectionReason || "No stock";
-                statusColor = "style='color:#e74c3c;'";
-            } else {
-                itemStatus = "⏳ Pending";
-                itemValue = "Waiting...";
-            }
-            
-            itemsHtml += `
-                <tr>
-                    <td><strong>${item.name}</strong><br><small>${item.code}</small></td>
-                    <td>${item.originalQty} ${item.unit}</td>
-                    <td ${statusColor}>${itemStatus}</td>
-                    <td ${statusColor}>${itemValue}</td>
-                </tr>
-            `;
-        });
-        itemsHtml += `</tbody></table>`;
-        
-        container.innerHTML += `
-            <div class="request-card ${borderClass}">
-                <div class="request-header">
-                    <span class="request-id">📄 ${req.requestId}</span>
-                    <span class="request-date">📅 ${req.submittedAt}</span>
-                </div>
-                ${itemsHtml}
-                <div class="request-status">
-                    <span class="status-badge ${statusBadgeClass}">${statusText}</span>
-                </div>
-            </div>
-        `;
-    });
-    
-    container.innerHTML += '</div>';
+    }
 }
 
 function exportToExcel(kitchen) {
@@ -1169,8 +1140,9 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📜 My Submitted Requests</h3>
-                <div id="myRequestsContainer_${id}"></div>
+                <h3>📜 My Requests</h3>
+                <div class="desktop-table-view" id="myRequestsDesktop_${id}"></div>
+                <div class="mobile-cards-view" id="myRequestsMobile_${id}"></div>
             </div>
         </div>
     `;
