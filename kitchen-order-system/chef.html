@@ -13,7 +13,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -25,32 +24,32 @@ body {
 .header {
     background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: white;
-    padding: 16px 24px;
+    padding: 12px 16px;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
 .header-content {
-    max-width: 1400px;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
     flex-wrap: wrap;
-    gap: 15px;
-}
-
-.logo {
-    font-size: 1.4rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
     gap: 10px;
 }
 
+.logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .logo-icon {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 .logo span {
@@ -59,53 +58,57 @@ body {
 
 .header-buttons {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .refresh-btn, .logout-btn {
     background: rgba(255,255,255,0.2);
     border: none;
-    padding: 8px 20px;
+    padding: 6px 12px;
     border-radius: 25px;
     color: white;
     font-weight: 600;
     cursor: pointer;
+    font-size: 12px;
     transition: all 0.3s;
 }
 
 .refresh-btn:hover, .logout-btn:hover {
     background: rgba(255,255,255,0.3);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 
-/* Kitchen Tabs */
+/* Kitchen Tabs - Horizontal Scroll */
 .kitchen-tabs {
     background: white;
-    padding: 0 24px;
+    padding: 0 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     position: sticky;
-    top: 70px;
+    top: 60px;
     z-index: 99;
     overflow-x: auto;
     white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
 }
 
 .tabs-container {
     max-width: 1400px;
     margin: 0 auto;
     display: inline-flex;
-    gap: 10px;
-    padding: 12px 0;
+    gap: 6px;
+    padding: 10px 0;
 }
 
 .tab-btn {
-    padding: 10px 24px;
+    padding: 8px 14px;
     background: #f0f2f5;
     border: none;
     border-radius: 30px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    font-size: 12px;
+    white-space: nowrap;
 }
 
 .tab-btn:hover {
@@ -122,7 +125,7 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 16px;
 }
 
 .kitchen-page {
@@ -136,32 +139,33 @@ body {
 /* Cards */
 .card {
     background: white;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 18px;
+    font-size: 1rem;
+    margin-bottom: 14px;
     color: #1e3c72;
     border-left: 4px solid #3498db;
-    padding-left: 12px;
+    padding-left: 10px;
 }
 
 /* Input Groups */
 .input-group {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .input-group label {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: #555;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .required {
@@ -171,16 +175,16 @@ body {
 
 .error-message {
     color: #e74c3c;
-    font-size: 12px;
-    margin-top: 5px;
+    font-size: 11px;
+    margin-top: 4px;
 }
 
 select, input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 12px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 16px;
+    font-size: 14px;
     background: white;
 }
 
@@ -191,12 +195,13 @@ select:focus, input:focus {
 
 /* Buttons */
 .btn {
-    padding: 12px 24px;
+    padding: 10px 16px;
     border: none;
     border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 13px;
 }
 
 .btn:hover {
@@ -207,66 +212,72 @@ select:focus, input:focus {
 .btn-primary { background: #3498db; color: white; }
 .btn-success { background: #27ae60; color: white; }
 .btn-danger { background: #e74c3c; color: white; }
-.btn-warning { background: #f39c12; color: white; }
 
-/* Search Add Row */
+/* Search Add Row - Stack on mobile */
 .search-add-row {
     display: flex;
-    gap: 12px;
-    align-items: flex-end;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .search-add-row .input-group {
-    flex: 1;
     margin-bottom: 0;
 }
 
 /* Button Group */
 .button-group {
     display: flex;
-    gap: 12px;
+    flex-direction: column;
+    gap: 10px;
     margin-top: 16px;
-    flex-wrap: wrap;
 }
 
-/* Tables */
+.button-group .btn {
+    width: 100%;
+}
+
+/* Table - Horizontal Scroll */
 .table-wrapper {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .cart-table {
+    min-width: 500px;
     width: 100%;
     border-collapse: collapse;
 }
 
 .cart-table th, .cart-table td {
-    padding: 12px;
+    padding: 10px;
     text-align: left;
     border-bottom: 1px solid #eee;
+    font-size: 12px;
 }
 
 .cart-table th {
     background: #f8f9fa;
     font-weight: 600;
+    color: #555;
 }
 
 .remove-btn {
     background: #fee2e2;
     border: none;
-    padding: 6px 14px;
+    padding: 5px 10px;
     border-radius: 20px;
     color: #e74c3c;
     font-weight: 600;
     cursor: pointer;
+    font-size: 11px;
 }
 
-/* Status Badges */
+/* Status Badge */
 .status-badge {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
 }
 
@@ -277,18 +288,20 @@ select:focus, input:focus {
 /* Cart Stats */
 .cart-stats {
     background: #e8f4fd;
-    padding: 12px 16px;
+    padding: 10px 12px;
     border-radius: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
     font-weight: 500;
+    font-size: 12px;
 }
 
 .empty-state {
     text-align: center;
-    padding: 40px;
+    padding: 30px;
     color: #999;
+    font-size: 13px;
 }
 
 /* Toast */
@@ -299,111 +312,41 @@ select:focus, input:focus {
     transform: translateX(-50%);
     background: #333;
     color: white;
-    padding: 12px 24px;
+    padding: 10px 20px;
     border-radius: 30px;
+    font-size: 12px;
     z-index: 1000;
     animation: slideUp 0.3s ease;
+    white-space: nowrap;
 }
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
 
 /* Sync Status */
 .sync-status {
-    font-size: 12px;
-    text-align: right;
+    font-size: 10px;
+    text-align: center;
     margin-top: 10px;
     padding: 5px 10px;
     border-radius: 10px;
-    display: inline-block;
-    float: right;
-}
-
-/* Password Modal - Same as Admin */
-.modal {
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 24px;
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-}
-
-.modal-content h2 {
-    margin-bottom: 15px;
-    color: #1a1a2e;
-    font-size: 1.3rem;
-}
-
-.modal-content p {
-    color: #666;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    font-size: 16px;
-}
-
-.modal-content button {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    transition: all 0.3s;
-}
-
-.modal-content button:hover {
-    background: #2980b9;
-    transform: scale(1.02);
-}
-
-.error-msg {
-    color: #e74c3c;
-    margin-top: 12px;
-    font-size: 0.85rem;
-}
-
-.close-modal {
-    background: #95a5a6;
-    margin-top: 10px;
-}
-
-.close-modal:hover {
-    background: #7f8c8d;
+    background: #e8f5e9;
+    color: #27ae60;
 }
 
 /* Admin Buttons */
 .admin-fab {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 20px;
+    right: 20px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     border: none;
@@ -415,13 +358,84 @@ select:focus, input:focus {
     cursor: pointer;
     z-index: 99;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .admin-btn-mobile {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 30px;
+    font-weight: bold;
+    margin-top: 16px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Mobile Cards View */
+.mobile-cards-view {
+    display: block;
+}
+
+.desktop-table-view {
     display: none;
+}
+
+.request-item {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-left: 4px solid;
+}
+
+.request-item.pending { border-left-color: #f39c12; }
+.request-item.approved { border-left-color: #27ae60; }
+.request-item.rejected { border-left-color: #e74c3c; }
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.request-id {
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.request-date {
+    font-size: 0.65rem;
+    color: #888;
+    margin: 6px 0;
+}
+
+.request-items-list {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.request-item-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.request-item-name {
+    font-weight: 500;
+}
+
+.request-item-qty {
+    color: #333;
 }
 
 /* Approved Items Table */
@@ -429,102 +443,49 @@ select:focus, input:focus {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    font-size: 11px;
 }
 
 .approved-items-table th {
     background: #e8f4fd;
-    padding: 8px;
-    font-size: 0.75rem;
+    padding: 6px;
     text-align: left;
 }
 
 .approved-items-table td {
-    padding: 8px;
-    font-size: 0.8rem;
+    padding: 6px;
     border-bottom: 1px solid #f0f0f0;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .header {
-        padding: 12px 16px;
-    }
-    
-    .logo {
-        font-size: 1.1rem;
-    }
-    
-    .logo-icon {
-        font-size: 1.3rem;
-    }
-    
-    .container {
-        padding: 16px;
-    }
-    
-    .card {
-        padding: 16px;
-    }
-    
-    .card h3 {
-        font-size: 1rem;
-    }
-    
+/* Desktop View */
+@media screen and (min-width: 769px) {
     .search-add-row {
-        flex-direction: column;
-    }
-    
-    .search-add-row .input-group {
-        width: 100%;
+        flex-direction: row;
+        align-items: flex-end;
     }
     
     .button-group {
-        flex-direction: column;
+        flex-direction: row;
     }
     
     .button-group .btn {
-        width: 100%;
+        width: auto;
     }
     
-    .kitchen-tabs {
-        padding: 0 16px;
-        top: 60px;
-    }
-    
-    .tab-btn {
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-    
-    .admin-fab {
+    .mobile-cards-view {
         display: none;
     }
     
-    .admin-btn-mobile {
+    .desktop-table-view {
         display: block;
-        width: 100%;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        padding: 14px;
-        border-radius: 30px;
-        font-weight: bold;
-        margin-top: 16px;
-        cursor: pointer;
     }
     
-    .cart-table {
-        min-width: 500px;
-    }
-}
-
-@media (min-width: 769px) {
     .admin-btn-mobile {
         display: none;
     }
     
     .admin-fab {
-        display: flex;
+        display: block;
     }
 }
 </style>
@@ -538,21 +499,21 @@ select:focus, input:focus {
             <span>Kitchen Order <span>| Chef</span></span>
         </div>
         <div class="header-buttons">
-            <button class="refresh-btn" onclick="manualRefresh()">🔄 Refresh</button>
-            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
+            <button class="logout-btn" onclick="logout()">🚪</button>
         </div>
     </div>
 </div>
 
 <div class="kitchen-tabs">
     <div class="tabs-container">
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Hot Kitchen')">🔥 Hot Kitchen</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Cold Kitchen')">❄️ Cold Kitchen</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Pastry')">🍰 Pastry</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Butchery')">🥩 Butchery</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Beach House')">🏖️ Beach House</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Nihon Kitchen')">🍜 Nihon Kitchen</button>
-        <button class="tab-btn" onclick="showKitchenPasswordModal('Staff Kitchen')">👥 Staff Kitchen</button>
+        <button class="tab-btn" onclick="selectKitchen('Hot Kitchen')">🔥 Hot Kitchen</button>
+        <button class="tab-btn" onclick="selectKitchen('Cold Kitchen')">❄️ Cold Kitchen</button>
+        <button class="tab-btn" onclick="selectKitchen('Pastry')">🍰 Pastry</button>
+        <button class="tab-btn" onclick="selectKitchen('Butchery')">🥩 Butchery</button>
+        <button class="tab-btn" onclick="selectKitchen('Beach House')">🏖️ Beach House</button>
+        <button class="tab-btn" onclick="selectKitchen('Nihon Kitchen')">🍜 Nihon Kitchen</button>
+        <button class="tab-btn" onclick="selectKitchen('Staff Kitchen')">👥 Staff Kitchen</button>
     </div>
 </div>
 
@@ -564,7 +525,7 @@ select:focus, input:focus {
 
 <script>
 // ========================
-// KITCHEN PASSWORD PROTECTION - SAME STYLE AS ADMIN
+// KITCHEN PASSWORD PROTECTION
 // ========================
 const kitchenPasswords = {
     "Hot Kitchen": "hot123",
@@ -577,9 +538,10 @@ const kitchenPasswords = {
 };
 
 let unlockedKitchens = {};
-let currentKitchen = null;
-let pendingKitchen = null;
+let currentKitchen = null; // Start with no kitchen selected
+let selectedKitchen = null;
 
+// Load saved unlocked kitchens from localStorage
 function loadUnlockedKitchens() {
     const saved = localStorage.getItem("unlockedKitchens");
     if(saved) {
@@ -591,48 +553,28 @@ function saveUnlockedKitchens() {
     localStorage.setItem("unlockedKitchens", JSON.stringify(unlockedKitchens));
 }
 
-function showKitchenPasswordModal(kitchen) {
+function checkKitchenPassword(kitchen) {
+    // Check if already unlocked
     if(unlockedKitchens[kitchen]) {
-        selectKitchen(kitchen);
-        return;
+        return true;
     }
     
-    pendingKitchen = kitchen;
-    
-    const modal = document.createElement("div");
-    modal.className = "modal";
-    modal.id = "kitchenPasswordModal";
-    modal.innerHTML = `
-        <div class="modal-content">
-            <h2>🔐 Kitchen Access</h2>
-            <p>Enter password for ${kitchen}</p>
-            <input type="password" id="kitchenPasswordInput" placeholder="Enter password">
-            <button onclick="verifyKitchenPassword()">Unlock</button>
-            <div id="kitchenPasswordError" class="error-msg"></div>
-            <button class="close-modal" onclick="closePasswordModal()">← Go Back</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
-function closePasswordModal() {
-    const modal = document.getElementById("kitchenPasswordModal");
-    if(modal) modal.remove();
-    pendingKitchen = null;
-}
-
-function verifyKitchenPassword() {
-    const inputPassword = document.getElementById("kitchenPasswordInput").value;
-    const kitchen = pendingKitchen;
-    
-    if(inputPassword === kitchenPasswords[kitchen]) {
-        localStorage.setItem(`kitchen_password_${kitchen}`, inputPassword);
+    const savedPassword = localStorage.getItem(`kitchen_password_${kitchen}`);
+    if(savedPassword === kitchenPasswords[kitchen]) {
         unlockedKitchens[kitchen] = true;
         saveUnlockedKitchens();
-        closePasswordModal();
-        selectKitchen(kitchen);
+        return true;
+    }
+    
+    const enteredPassword = prompt(`🔐 Enter password for ${kitchen}:`);
+    if(enteredPassword === kitchenPasswords[kitchen]) {
+        localStorage.setItem(`kitchen_password_${kitchen}`, enteredPassword);
+        unlockedKitchens[kitchen] = true;
+        saveUnlockedKitchens();
+        return true;
     } else {
-        document.getElementById("kitchenPasswordError").innerHTML = "Wrong password!";
+        alert("❌ Wrong password! Access denied.");
+        return false;
     }
 }
 
@@ -691,14 +633,14 @@ function loadSavedCart() {
         const parsed = JSON.parse(saved);
         kitchens.forEach(kitchen => {
             if(parsed[kitchen]) {
-                kitchenData[kitchen] = { cart: parsed[kitchen] };
+                kitchenData[kitchen] = { cart: parsed[kitchen], chefName: chefNames[kitchen] };
             } else {
-                kitchenData[kitchen] = { cart: [] };
+                kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
             }
         });
     } else {
         kitchens.forEach(kitchen => {
-            kitchenData[kitchen] = { cart: [] };
+            kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
         });
     }
 }
@@ -770,13 +712,14 @@ function loadItems(kitchen) {
     
     let items = getItemsForKitchen(kitchen);
     let filtered = search ? items.filter(i => i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search)) : items;
-    select.innerHTML = "<option value=''>-- Select an item --</option>";
+    select.innerHTML = "";
     if(filtered.length === 0) { select.innerHTML = "<option>No items found</option>"; return; }
     filtered.forEach(i => { select.innerHTML += `<option value="${i.code}">${i.code} - ${i.name} (${i.unit}) - Max: ${i.maxLimit}</option>`; });
 }
 
 function filterItems(kitchen) { loadItems(kitchen); }
 
+// FIXED: addItem function with proper quantity limit validation
 function addItem(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_');
     const chefName = chefNames[kitchen];
@@ -789,11 +732,10 @@ function addItem(kitchen) {
         document.getElementById(`chefNameError_${kitchenId}`).innerHTML = "";
     }
     
-    const selectElement = document.getElementById(`itemSelect_${kitchenId}`);
-    const code = selectElement.value;
+    const code = document.getElementById(`itemSelect_${kitchenId}`).value;
     const qty = parseFloat(document.getElementById(`qty_${kitchenId}`).value);
     
-    if(!code || code === "" || code === "No items found" || code === "-- Select an item --") {
+    if(!code || code === "No items found" || code === "Enter chef name first") {
         showToast("Please select an item");
         return;
     }
@@ -802,28 +744,31 @@ function addItem(kitchen) {
     const item = items.find(i => i.code === code);
     if(!item) return;
     
+    // Check if single addition exceeds max limit
     if(qty > item.maxLimit) {
-        showToast(`⚠️ Max ${item.maxLimit} ${item.unit}`);
+        showToast(`⚠️ Cannot add more than ${item.maxLimit} ${item.unit} at once`);
         return;
     }
     
     const existing = kitchenData[kitchen].cart.find(i => i.code === code);
     let newTotalQty = (existing ? existing.qty : 0) + qty;
     
+    // Check if total would exceed max limit
     if(newTotalQty > item.maxLimit) {
-        showToast(`⚠️ Cannot add more than ${item.maxLimit} ${item.unit}. You already have ${existing ? existing.qty : 0}`);
+        const remaining = item.maxLimit - (existing ? existing.qty : 0);
+        showToast(`⚠️ Cannot add ${qty} ${item.unit}. Only ${remaining} ${item.unit} remaining (Max: ${item.maxLimit})`);
         return;
     }
     
     if(existing) {
         existing.qty += qty;
-        showToast(`✓ Updated ${item.name}: ${existing.qty}/${item.maxLimit}`);
+        showToast(`✓ Updated ${item.name}: ${existing.qty}/${item.maxLimit} ${item.unit}`);
     } else {
         kitchenData[kitchen].cart.push({
             code: item.code, name: item.name, unit: item.unit, 
             qty: qty, maxLimit: item.maxLimit
         });
-        showToast(`✓ Added ${item.name} (${qty}/${item.maxLimit})`);
+        showToast(`✓ Added ${item.name} (${qty}/${item.maxLimit} ${item.unit})`);
     }
     
     document.getElementById(`qty_${kitchenId}`).value = "1";
@@ -839,6 +784,7 @@ function renderCart(kitchen) {
     document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty;
     document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
     
+    // Desktop table view
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
@@ -855,6 +801,28 @@ function renderCart(kitchen) {
                         <td>${item.qty}/${item.maxLimit}</td>
                         <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button></td>
                     </tr>
+                `;
+            });
+        }
+    }
+    
+    // Mobile card view
+    const mobileContainer = document.getElementById(`cartMobile_${kitchenId}`);
+    if(mobileContainer) {
+        if(cart.length === 0) {
+            mobileContainer.innerHTML = '<div class="empty-state">📭 No items added yet</div>';
+        } else {
+            mobileContainer.innerHTML = "";
+            cart.forEach((item, index) => {
+                mobileContainer.innerHTML += `
+                    <div class="request-item pending">
+                        <div class="request-header">
+                            <span class="request-id">${item.code}</span>
+                            <button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button>
+                        </div>
+                        <div><strong>${item.name}</strong></div>
+                        <div class="request-date">Quantity: ${item.qty} / ${item.maxLimit} ${item.unit}</div>
+                    </div>
                 `;
             });
         }
@@ -957,9 +925,9 @@ function loadMyRequests(kitchen) {
                         itemStatus = "⏳ Pending";
                         itemValue = "Waiting...";
                     }
-                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+                    itemsHtml += `</td><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
                 });
-                itemsHtml += `</tbody></td>`;
+                itemsHtml += `</tbody></table>`;
                 
                 desktopContainer.innerHTML += `
                     <div style="border:1px solid #e0e0e0; border-radius:12px; padding:14px; margin-bottom:16px;">
@@ -1059,9 +1027,17 @@ function logout() {
     }
 }
 
-function selectKitchen(kitchen) {
+// ============ SELECT KITCHEN - PASSWORD ONLY WHEN CLICKING ============
+async function selectKitchen(kitchen) {
+    // Check password first
+    if(!checkKitchenPassword(kitchen)) {
+        return;
+    }
+    
+    // If password is correct, switch to the kitchen
     currentKitchen = kitchen;
     
+    // Update tab active state
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
         if(btn.innerText.includes(kitchen)) {
@@ -1069,11 +1045,13 @@ function selectKitchen(kitchen) {
         }
     });
     
+    // Update page visibility
     document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
     const pageId = `page_${kitchen.replace(/\s/g, '_')}`;
     const targetPage = document.getElementById(pageId);
     if(targetPage) targetPage.classList.add('active-page');
     
+    // Load saved chef name for this kitchen
     const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_')}`);
     if(chefInput) chefInput.value = chefNames[kitchen] || "";
     
@@ -1127,12 +1105,17 @@ function createKitchenPage(kitchen) {
                     <span>📦 Total: <strong id="totalItems_${id}">0</strong></span>
                     <span>📋 Items: <strong id="lineCount_${id}">0</strong></span>
                 </div>
-                <div class="table-wrapper">
-                    <table class="cart-table">
-                        <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
-                        <tbody id="cartTableDesktop_${id}"></tbody>
-                    </table>
+                <!-- Desktop Table View -->
+                <div class="desktop-table-view">
+                    <div class="table-wrapper">
+                        <table class="cart-table">
+                            <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
+                            <tbody id="cartTableDesktop_${id}"></tbody>
+                        </table>
+                    </div>
                 </div>
+                <!-- Mobile Card View -->
+                <div class="mobile-cards-view" id="cartMobile_${id}"></div>
                 <div class="button-group">
                     <button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 Submit Request</button>
                     <button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 Export</button>
@@ -1141,7 +1124,9 @@ function createKitchenPage(kitchen) {
             </div>
             <div class="card">
                 <h3>📜 My Requests</h3>
+                <!-- Desktop Table View -->
                 <div class="desktop-table-view" id="myRequestsDesktop_${id}"></div>
+                <!-- Mobile Card View -->
                 <div class="mobile-cards-view" id="myRequestsMobile_${id}"></div>
             </div>
         </div>
@@ -1152,18 +1137,22 @@ function generatePages() {
     const container = document.getElementById("kitchenPagesContainer");
     container.innerHTML = "";
     kitchens.forEach(k => { container.innerHTML += createKitchenPage(k); });
+    
+    // Don't auto-select any kitchen - show a welcome message or first kitchen without password?
+    // For now, we'll show the Hot Kitchen page but NOT mark it as active/selected
+    // This means no kitchen content is visible until user clicks a tab
 }
 
 generatePages();
 loadRequestsFromFirebase();
 
-// Real-time listener
+// REAL-TIME LISTENER - Auto updates when admin approves
 db.collection("kitchen_requests").onSnapshot(() => {
     console.log("🔄 Real-time update detected! Refreshing chef dashboard...");
     loadRequestsFromFirebase();
 });
 
-// Auto refresh every 3 seconds
+// AUTO REFRESH every 3 seconds
 setInterval(() => {
     if (currentKitchen) {
         loadRequestsFromFirebase();
