@@ -9,7 +9,6 @@
 <title>Chef Dashboard - Kitchen Order System</title>
 
 <style>
-/* Same styles as before - keep your existing CSS */
 * {
     margin: 0;
     padding: 0;
@@ -21,7 +20,6 @@ body {
     background: #f5f7fb;
 }
 
-/* Header */
 .header {
     background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: white;
@@ -79,7 +77,6 @@ body {
     transform: scale(1.02);
 }
 
-/* Kitchen Tabs - Horizontal Scroll */
 .kitchen-tabs {
     background: white;
     padding: 0 12px;
@@ -122,7 +119,6 @@ body {
     color: white;
 }
 
-/* Container */
 .container {
     max-width: 1400px;
     margin: 0 auto;
@@ -137,7 +133,6 @@ body {
     display: block;
 }
 
-/* Cards */
 .card {
     background: white;
     border-radius: 14px;
@@ -154,7 +149,6 @@ body {
     padding-left: 10px;
 }
 
-/* Input Groups */
 .input-group {
     margin-bottom: 12px;
 }
@@ -194,7 +188,6 @@ select:focus, input:focus {
     border-color: #3498db;
 }
 
-/* Buttons */
 .btn {
     padding: 10px 16px;
     border: none;
@@ -214,7 +207,6 @@ select:focus, input:focus {
 .btn-success { background: #27ae60; color: white; }
 .btn-danger { background: #e74c3c; color: white; }
 
-/* Search Add Row - Stack on mobile */
 .search-add-row {
     display: flex;
     flex-direction: column;
@@ -225,7 +217,6 @@ select:focus, input:focus {
     margin-bottom: 0;
 }
 
-/* Button Group */
 .button-group {
     display: flex;
     flex-direction: column;
@@ -237,7 +228,6 @@ select:focus, input:focus {
     width: 100%;
 }
 
-/* Table - Horizontal Scroll */
 .table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -273,7 +263,6 @@ select:focus, input:focus {
     font-size: 11px;
 }
 
-/* Status Badge */
 .status-badge {
     display: inline-block;
     padding: 3px 10px;
@@ -286,7 +275,6 @@ select:focus, input:focus {
 .status-approved { background: #27ae60; color: white; }
 .status-rejected { background: #e74c3c; color: white; }
 
-/* Cart Stats */
 .cart-stats {
     background: #e8f4fd;
     padding: 10px 12px;
@@ -305,7 +293,6 @@ select:focus, input:focus {
     font-size: 13px;
 }
 
-/* Toast */
 .toast {
     position: fixed;
     bottom: 20px;
@@ -332,7 +319,6 @@ select:focus, input:focus {
     }
 }
 
-/* Sync Status */
 .sync-status {
     font-size: 10px;
     text-align: center;
@@ -343,7 +329,6 @@ select:focus, input:focus {
     color: #27ae60;
 }
 
-/* Admin Buttons */
 .admin-fab {
     position: fixed;
     bottom: 20px;
@@ -375,7 +360,6 @@ select:focus, input:focus {
     font-size: 14px;
 }
 
-/* Mobile Cards View */
 .mobile-cards-view {
     display: block;
 }
@@ -439,7 +423,6 @@ select:focus, input:focus {
     color: #333;
 }
 
-/* Approved Items Table */
 .approved-items-table {
     width: 100%;
     border-collapse: collapse;
@@ -458,7 +441,6 @@ select:focus, input:focus {
     border-bottom: 1px solid #f0f0f0;
 }
 
-/* Password Modal - Same as Admin */
 .modal {
     display: flex;
     position: fixed;
@@ -536,7 +518,6 @@ select:focus, input:focus {
     background: #7f8c8d;
 }
 
-/* Desktop View */
 @media screen and (min-width: 769px) {
     .search-add-row {
         flex-direction: row;
@@ -566,6 +547,21 @@ select:focus, input:focus {
     .admin-fab {
         display: block;
     }
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>
 </head>
@@ -619,40 +615,37 @@ const kitchenPasswords = {
 let unlockedKitchens = {};
 let currentKitchen = null;
 let pendingKitchen = null;
-let allItems = null; // Will load lazily
+let allItems = null;
 let kitchenData = {};
 let allRequests = [];
 let chefNames = {};
 let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
-// Load items from external file dynamically (lazy loading)
-async function loadItemsDatabase() {
-    return new Promise((resolve, reject) => {
+// ============ LOAD ITEMS FROM JSON ============
+async function loadItemsFromJSON() {
+    return new Promise(async (resolve, reject) => {
         if (allItems) {
             resolve(allItems);
             return;
         }
         
-        const script = document.createElement('script');
-        script.src = 'database.js';
-        script.onload = () => {
-            // Wait a bit for the variable to be available
-            setTimeout(() => {
-                if (typeof window.allItems !== 'undefined') {
-                    allItems = window.allItems;
-                    console.log(`✅ Loaded ${allItems.length} items`);
-                    resolve(allItems);
-                } else {
-                    reject(new Error('allItems not found'));
-                }
-            }, 100);
-        };
-        script.onerror = () => reject(new Error('Failed to load database.js'));
-        document.head.appendChild(script);
+        showToast("📦 Loading inventory...");
+        
+        try {
+            const response = await fetch('items.json');
+            const data = await response.json();
+            allItems = data.items;
+            console.log(`✅ Loaded ${allItems.length} items from JSON`);
+            showToast(`✅ ${allItems.length} items loaded!`);
+            resolve(allItems);
+        } catch (error) {
+            console.error("Failed to load items:", error);
+            showToast("❌ Failed to load inventory");
+            reject(error);
+        }
     });
 }
 
-// Load saved chef names from localStorage
 function loadChefNames() {
     const saved = localStorage.getItem("chefNames");
     if(saved) {
@@ -667,7 +660,6 @@ function saveChefNames() {
     localStorage.setItem("chefNames", JSON.stringify(chefNames));
 }
 
-// Load saved cart from localStorage
 function loadSavedCart() {
     const saved = localStorage.getItem("kitchenCart");
     if(saved) {
@@ -694,12 +686,9 @@ function saveCart() {
     localStorage.setItem("kitchenCart", JSON.stringify(cartToSave));
 }
 
-// Initialize
 loadChefNames();
 loadSavedCart();
 loadUnlockedKitchens();
-
-// ============ PASSWORD MODAL FUNCTIONS ============
 
 function loadUnlockedKitchens() {
     const saved = localStorage.getItem("unlockedKitchens");
@@ -797,7 +786,7 @@ async function manualRefresh() {
     }
 }
 
-// ============ ITEM FUNCTIONS WITH LAZY LOADING ============
+// ============ ITEM FUNCTIONS ============
 
 function getItemsForKitchen(kitchen) { 
     if (!allItems) return [];
@@ -805,13 +794,6 @@ function getItemsForKitchen(kitchen) {
 }
 
 async function loadItems(kitchen) {
-    // Load database if not loaded yet
-    if (!allItems) {
-        showToast("📦 Loading inventory...");
-        await loadItemsDatabase();
-        showToast("✅ Inventory loaded!");
-    }
-    
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const chefName = chefNames[kitchen];
     const select = document.getElementById(`itemSelect_${kitchenId}`);
@@ -822,6 +804,13 @@ async function loadItems(kitchen) {
         return; 
     }
     
+    if (!allItems) {
+        select.innerHTML = "<option>⏳ Loading inventory...</option>";
+        select.disabled = true;
+        await loadItemsFromJSON();
+        select.disabled = false;
+    }
+    
     let items = getItemsForKitchen(kitchen);
     if (!items || items.length === 0) {
         select.innerHTML = "<option>No items found for this kitchen</option>";
@@ -829,20 +818,20 @@ async function loadItems(kitchen) {
     }
     
     let filtered = search ? items.filter(i => i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search)) : items;
-    select.innerHTML = "<option value=''>-- Select an item --</option>";
-    if(filtered.length === 0) { 
-        select.innerHTML = "<option>No items found</option>"; 
-        return; 
-    }
     
-    // Limit to 100 items for faster loading (add virtual scroll later if needed)
-    const displayItems = filtered.slice(0, 100);
+    // Show only 30 items for fast loading
+    const MAX_ITEMS = 30;
+    const hasMore = filtered.length > MAX_ITEMS;
+    const displayItems = filtered.slice(0, MAX_ITEMS);
+    
+    select.innerHTML = "<option value=''>-- Select an item --</option>";
     displayItems.forEach(i => { 
-        select.innerHTML += `<option value="${i.code}">${i.code} - ${i.name.substring(0, 50)} (${i.unit}) - Max: ${i.maxLimit}</option>`; 
+        let shortName = i.name.length > 40 ? i.name.substring(0, 37) + "..." : i.name;
+        select.innerHTML += `<option value="${i.code}">${i.code} - ${shortName} (${i.unit}) - Max: ${i.maxLimit}</option>`; 
     });
     
-    if (filtered.length > 100) {
-        select.innerHTML += `<option disabled>--- + ${filtered.length - 100} more items (use search) ---</option>`;
+    if (hasMore) {
+        select.innerHTML += `<option disabled style="background:#f5f5f5; color:#666;">📌 Use search to find more (${filtered.length - MAX_ITEMS}+ items)</option>`;
     }
 }
 
@@ -1166,7 +1155,6 @@ function logout() {
     }
 }
 
-// ============ SELECT KITCHEN AFTER PASSWORD VERIFICATION ============
 async function selectKitchen(kitchen) {
     currentKitchen = kitchen;
     
@@ -1185,7 +1173,6 @@ async function selectKitchen(kitchen) {
     const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`);
     if(chefInput) chefInput.value = chefNames[kitchen] || "";
     
-    // Load items (will load database if needed)
     await loadItems(kitchen);
     renderCart(kitchen);
     loadMyRequests(kitchen);
@@ -1270,13 +1257,11 @@ function generatePages() {
 generatePages();
 loadRequestsFromFirebase();
 
-// REAL-TIME LISTENER
 db.collection("kitchen_requests").onSnapshot(() => {
     console.log("🔄 Real-time update detected! Refreshing chef dashboard...");
     loadRequestsFromFirebase();
 });
 
-// AUTO REFRESH every 3 seconds
 setInterval(() => {
     if (currentKitchen) {
         loadRequestsFromFirebase();
