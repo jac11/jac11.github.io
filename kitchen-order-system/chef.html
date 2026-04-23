@@ -13,7 +13,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -25,32 +24,32 @@ body {
 .header {
     background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: white;
-    padding: 16px 24px;
+    padding: 12px 16px;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
 .header-content {
-    max-width: 1400px;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
     flex-wrap: wrap;
-    gap: 15px;
-}
-
-.logo {
-    font-size: 1.4rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
     gap: 10px;
 }
 
+.logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .logo-icon {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 .logo span {
@@ -59,53 +58,57 @@ body {
 
 .header-buttons {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .refresh-btn, .logout-btn {
     background: rgba(255,255,255,0.2);
     border: none;
-    padding: 8px 20px;
+    padding: 6px 12px;
     border-radius: 25px;
     color: white;
     font-weight: 600;
     cursor: pointer;
+    font-size: 12px;
     transition: all 0.3s;
 }
 
 .refresh-btn:hover, .logout-btn:hover {
     background: rgba(255,255,255,0.3);
-    transform: translateY(-2px);
+    transform: scale(1.02);
 }
 
-/* Kitchen Tabs */
+/* Kitchen Tabs - Horizontal Scroll */
 .kitchen-tabs {
     background: white;
-    padding: 0 24px;
+    padding: 0 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     position: sticky;
-    top: 70px;
+    top: 60px;
     z-index: 99;
     overflow-x: auto;
     white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
 }
 
 .tabs-container {
     max-width: 1400px;
     margin: 0 auto;
     display: inline-flex;
-    gap: 10px;
-    padding: 12px 0;
+    gap: 6px;
+    padding: 10px 0;
 }
 
 .tab-btn {
-    padding: 10px 24px;
+    padding: 8px 14px;
     background: #f0f2f5;
     border: none;
     border-radius: 30px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    font-size: 12px;
+    white-space: nowrap;
 }
 
 .tab-btn:hover {
@@ -122,7 +125,7 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 24px;
+    padding: 16px;
 }
 
 .kitchen-page {
@@ -136,32 +139,33 @@ body {
 /* Cards */
 .card {
     background: white;
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 18px;
+    font-size: 1rem;
+    margin-bottom: 14px;
     color: #1e3c72;
     border-left: 4px solid #3498db;
-    padding-left: 12px;
+    padding-left: 10px;
 }
 
 /* Input Groups */
 .input-group {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .input-group label {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: #555;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .required {
@@ -171,16 +175,16 @@ body {
 
 .error-message {
     color: #e74c3c;
-    font-size: 12px;
-    margin-top: 5px;
+    font-size: 11px;
+    margin-top: 4px;
 }
 
 select, input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 12px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 16px;
+    font-size: 14px;
     background: white;
 }
 
@@ -191,12 +195,13 @@ select:focus, input:focus {
 
 /* Buttons */
 .btn {
-    padding: 12px 24px;
+    padding: 10px 16px;
     border: none;
     border-radius: 10px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    font-size: 13px;
 }
 
 .btn:hover {
@@ -207,66 +212,72 @@ select:focus, input:focus {
 .btn-primary { background: #3498db; color: white; }
 .btn-success { background: #27ae60; color: white; }
 .btn-danger { background: #e74c3c; color: white; }
-.btn-warning { background: #f39c12; color: white; }
 
-/* Search Add Row */
+/* Search Add Row - Stack on mobile */
 .search-add-row {
     display: flex;
-    gap: 12px;
-    align-items: flex-end;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .search-add-row .input-group {
-    flex: 1;
     margin-bottom: 0;
 }
 
 /* Button Group */
 .button-group {
     display: flex;
-    gap: 12px;
+    flex-direction: column;
+    gap: 10px;
     margin-top: 16px;
-    flex-wrap: wrap;
 }
 
-/* Tables */
+.button-group .btn {
+    width: 100%;
+}
+
+/* Table - Horizontal Scroll */
 .table-wrapper {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .cart-table {
+    min-width: 500px;
     width: 100%;
     border-collapse: collapse;
 }
 
 .cart-table th, .cart-table td {
-    padding: 12px;
+    padding: 10px;
     text-align: left;
     border-bottom: 1px solid #eee;
+    font-size: 12px;
 }
 
 .cart-table th {
     background: #f8f9fa;
     font-weight: 600;
+    color: #555;
 }
 
 .remove-btn {
     background: #fee2e2;
     border: none;
-    padding: 6px 14px;
+    padding: 5px 10px;
     border-radius: 20px;
     color: #e74c3c;
     font-weight: 600;
     cursor: pointer;
+    font-size: 11px;
 }
 
-/* Status Badges */
+/* Status Badge */
 .status-badge {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
 }
 
@@ -277,18 +288,20 @@ select:focus, input:focus {
 /* Cart Stats */
 .cart-stats {
     background: #e8f4fd;
-    padding: 12px 16px;
+    padding: 10px 12px;
     border-radius: 10px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
     font-weight: 500;
+    font-size: 12px;
 }
 
 .empty-state {
     text-align: center;
-    padding: 40px;
+    padding: 30px;
     color: #999;
+    font-size: 13px;
 }
 
 /* Toast */
@@ -299,109 +312,41 @@ select:focus, input:focus {
     transform: translateX(-50%);
     background: #333;
     color: white;
-    padding: 12px 24px;
+    padding: 10px 20px;
     border-radius: 30px;
+    font-size: 12px;
     z-index: 1000;
     animation: slideUp 0.3s ease;
+    white-space: nowrap;
 }
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
 
 /* Sync Status */
 .sync-status {
-    font-size: 12px;
-    text-align: right;
+    font-size: 10px;
+    text-align: center;
     margin-top: 10px;
     padding: 5px 10px;
     border-radius: 10px;
-    display: inline-block;
-    float: right;
-}
-
-/* Password Modal */
-.modal {
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 24px;
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-}
-
-.modal-content h2 {
-    margin-bottom: 15px;
-    color: #1a1a2e;
-}
-
-.modal-content p {
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    font-size: 16px;
-}
-
-.modal-content button {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    transition: all 0.3s;
-}
-
-.modal-content button:hover {
-    background: #2980b9;
-    transform: scale(1.02);
-}
-
-.error-msg {
-    color: #e74c3c;
-    margin-top: 12px;
-    font-size: 0.85rem;
-}
-
-.close-modal {
-    background: #95a5a6;
-    margin-top: 10px;
-}
-
-.close-modal:hover {
-    background: #7f8c8d;
+    background: #e8f5e9;
+    color: #27ae60;
 }
 
 /* Admin Buttons */
 .admin-fab {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 20px;
+    right: 20px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     border: none;
@@ -413,172 +358,134 @@ select:focus, input:focus {
     cursor: pointer;
     z-index: 99;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .admin-btn-mobile {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 30px;
+    font-weight: bold;
+    margin-top: 16px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Mobile Cards View */
+.mobile-cards-view {
+    display: block;
+}
+
+.desktop-table-view {
     display: none;
 }
 
-/* Requests List */
-.requests-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.request-card {
+.request-item {
     background: #f8f9fa;
     border-radius: 12px;
-    padding: 16px;
+    padding: 12px;
+    margin-bottom: 10px;
     border-left: 4px solid;
 }
 
-.request-card.pending { border-left-color: #f39c12; }
-.request-card.approved { border-left-color: #27ae60; }
-.request-card.rejected { border-left-color: #e74c3c; }
+.request-item.pending { border-left-color: #f39c12; }
+.request-item.approved { border-left-color: #27ae60; }
+.request-item.rejected { border-left-color: #e74c3c; }
 
-.request-card-header {
+.request-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
-    gap: 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #e0e0e0;
+    gap: 8px;
 }
 
-.request-card-id {
+.request-id {
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
-.request-card-date {
-    font-size: 0.7rem;
+.request-date {
+    font-size: 0.65rem;
     color: #888;
+    margin: 6px 0;
 }
 
-.request-card-items {
-    margin-top: 12px;
+.request-items-list {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
 }
 
-.request-item-row {
+.request-item-detail {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
+    padding: 4px 0;
     border-bottom: 1px dashed #e0e0e0;
-}
-
-.request-item-row:last-child {
-    border-bottom: none;
 }
 
 .request-item-name {
     font-weight: 500;
-    font-size: 0.85rem;
 }
 
-.request-item-status {
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
+.request-item-qty {
+    color: #333;
 }
 
-.status-approved-badge { background: #27ae60; color: white; }
-.status-rejected-badge { background: #e74c3c; color: white; }
-.status-pending-badge { background: #f39c12; color: white; }
+/* Approved Items Table */
+.approved-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 11px;
+}
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .header {
-        padding: 12px 16px;
-    }
-    
-    .logo {
-        font-size: 1.1rem;
-    }
-    
-    .logo-icon {
-        font-size: 1.3rem;
-    }
-    
-    .container {
-        padding: 16px;
-    }
-    
-    .card {
-        padding: 16px;
-    }
-    
-    .card h3 {
-        font-size: 1rem;
-    }
-    
+.approved-items-table th {
+    background: #e8f4fd;
+    padding: 6px;
+    text-align: left;
+}
+
+.approved-items-table td {
+    padding: 6px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Desktop View */
+@media screen and (min-width: 769px) {
     .search-add-row {
-        flex-direction: column;
-    }
-    
-    .search-add-row .input-group {
-        width: 100%;
+        flex-direction: row;
+        align-items: flex-end;
     }
     
     .button-group {
-        flex-direction: column;
+        flex-direction: row;
     }
     
     .button-group .btn {
-        width: 100%;
+        width: auto;
     }
     
-    .kitchen-tabs {
-        padding: 0 16px;
-        top: 60px;
-    }
-    
-    .tab-btn {
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-    
-    .admin-fab {
+    .mobile-cards-view {
         display: none;
     }
     
-    .admin-btn-mobile {
+    .desktop-table-view {
         display: block;
-        width: 100%;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        padding: 14px;
-        border-radius: 30px;
-        font-weight: bold;
-        margin-top: 16px;
-        cursor: pointer;
     }
     
-    .cart-table {
-        min-width: 500px;
-    }
-    
-    .request-card-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-@media (min-width: 769px) {
     .admin-btn-mobile {
         display: none;
     }
     
     .admin-fab {
-        display: flex;
+        display: block;
     }
 }
 </style>
@@ -592,8 +499,8 @@ select:focus, input:focus {
             <span>Kitchen Order <span>| Chef</span></span>
         </div>
         <div class="header-buttons">
-            <button class="refresh-btn" onclick="manualRefresh()">🔄 Refresh</button>
-            <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+            <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
+            <button class="logout-btn" onclick="logout()">🚪</button>
         </div>
     </div>
 </div>
@@ -631,157 +538,49 @@ const kitchenPasswords = {
 };
 
 let unlockedKitchens = {};
-let currentKitchen = null;
-let allRequests = [];
-let kitchenData = {};
-let chefNames = {};
+let currentKitchen = null; // Start with no kitchen selected
+let selectedKitchen = null;
 
-const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
-
-// Load saved data
-function loadSavedData() {
-    const savedUnlocked = localStorage.getItem("unlockedKitchens");
-    if(savedUnlocked) unlockedKitchens = JSON.parse(savedUnlocked);
-    
-    const savedChefNames = localStorage.getItem("chefNames");
-    if(savedChefNames) chefNames = JSON.parse(savedChefNames);
-    
-    const savedCart = localStorage.getItem("kitchenCart");
-    if(savedCart) {
-        const parsed = JSON.parse(savedCart);
-        kitchens.forEach(kitchen => {
-            kitchenData[kitchen] = parsed[kitchen] ? { cart: parsed[kitchen] } : { cart: [] };
-        });
-    } else {
-        kitchens.forEach(kitchen => { kitchenData[kitchen] = { cart: [] }; });
+// Load saved unlocked kitchens from localStorage
+function loadUnlockedKitchens() {
+    const saved = localStorage.getItem("unlockedKitchens");
+    if(saved) {
+        unlockedKitchens = JSON.parse(saved);
     }
 }
 
-function saveChefNames() {
-    localStorage.setItem("chefNames", JSON.stringify(chefNames));
+function saveUnlockedKitchens() {
+    localStorage.setItem("unlockedKitchens", JSON.stringify(unlockedKitchens));
 }
 
-function saveCart() {
-    const cartToSave = {};
-    kitchens.forEach(kitchen => {
-        cartToSave[kitchen] = kitchenData[kitchen].cart;
-    });
-    localStorage.setItem("kitchenCart", JSON.stringify(cartToSave));
-}
-
-loadSavedData();
-
-// ============ FIREBASE FUNCTIONS ============
-
-async function loadRequestsFromFirebase() {
-    try {
-        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
-        allRequests = [];
-        snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
-        console.log("✅ Loaded:", allRequests.length, "requests");
-        if (currentKitchen) {
-            loadMyRequests(currentKitchen);
-        }
-        document.getElementById("syncStatus").innerHTML = "✅ Connected • " + allRequests.length + " orders";
-        document.getElementById("syncStatus").style.background = "#e8f5e9";
-        document.getElementById("syncStatus").style.color = "#27ae60";
-    } catch (error) {
-        console.error("Firebase error:", error);
-        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
-        document.getElementById("syncStatus").style.background = "#fee2e2";
-        document.getElementById("syncStatus").style.color = "#e74c3c";
-    }
-}
-
-async function saveRequestToFirebase(request) {
-    try {
-        await db.collection("kitchen_requests").add(request);
-        showToast("✅ Request saved!");
-        await loadRequestsFromFirebase();
-    } catch (error) {
-        showToast("❌ Error saving");
-    }
-}
-
-async function manualRefresh() {
-    showToast("🔄 Refreshing...");
-    await loadRequestsFromFirebase();
-    if (currentKitchen) {
-        loadMyRequests(currentKitchen);
-        renderCart(currentKitchen);
-    }
-}
-
-// ============ PASSWORD MODAL ============
-
-function showPasswordModal(kitchen) {
-    const modal = document.createElement("div");
-    modal.className = "modal";
-    modal.id = "kitchenPasswordModal";
-    modal.innerHTML = `
-        <div class="modal-content">
-            <h2>🔐 Kitchen Access</h2>
-            <p>Enter password for ${kitchen}</p>
-            <input type="password" id="kitchenPasswordInput" placeholder="Enter password">
-            <button onclick="verifyPassword('${kitchen}')">Unlock</button>
-            <div id="kitchenPasswordError" class="error-msg"></div>
-            <button class="close-modal" onclick="closePasswordModal()">← Go Back</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
-
-function closePasswordModal() {
-    const modal = document.getElementById("kitchenPasswordModal");
-    if(modal) modal.remove();
-}
-
-function verifyPassword(kitchen) {
-    const inputPassword = document.getElementById("kitchenPasswordInput").value;
-    if(inputPassword === kitchenPasswords[kitchen]) {
-        localStorage.setItem(`kitchen_password_${kitchen}`, inputPassword);
-        unlockedKitchens[kitchen] = true;
-        localStorage.setItem("unlockedKitchens", JSON.stringify(unlockedKitchens));
-        closePasswordModal();
-        selectKitchen(kitchen);
-    } else {
-        document.getElementById("kitchenPasswordError").innerHTML = "Wrong password!";
-    }
-}
-
-function selectKitchen(kitchen) {
+function checkKitchenPassword(kitchen) {
+    // Check if already unlocked
     if(unlockedKitchens[kitchen]) {
-        switchToKitchen(kitchen);
+        return true;
+    }
+    
+    const savedPassword = localStorage.getItem(`kitchen_password_${kitchen}`);
+    if(savedPassword === kitchenPasswords[kitchen]) {
+        unlockedKitchens[kitchen] = true;
+        saveUnlockedKitchens();
+        return true;
+    }
+    
+    const enteredPassword = prompt(`🔐 Enter password for ${kitchen}:`);
+    if(enteredPassword === kitchenPasswords[kitchen]) {
+        localStorage.setItem(`kitchen_password_${kitchen}`, enteredPassword);
+        unlockedKitchens[kitchen] = true;
+        saveUnlockedKitchens();
+        return true;
     } else {
-        showPasswordModal(kitchen);
+        alert("❌ Wrong password! Access denied.");
+        return false;
     }
 }
 
-function switchToKitchen(kitchen) {
-    currentKitchen = kitchen;
-    
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if(btn.innerText.includes(kitchen.replace(' Kitchen', ''))) {
-            btn.classList.add('active');
-        }
-    });
-    
-    document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
-    const pageId = `page_${kitchen.replace(/\s/g, '_')}`;
-    const targetPage = document.getElementById(pageId);
-    if(targetPage) targetPage.classList.add('active-page');
-    
-    const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_')}`);
-    if(chefInput) chefInput.value = chefNames[kitchen] || "";
-    
-    loadItems(kitchen);
-    renderCart(kitchen);
-    loadMyRequests(kitchen);
-}
-
-// ============ ITEMS FUNCTIONS ============
-
+// ========================
+// ALL ITEMS FOR ALL KITCHENS
+// ========================
 const allItems = [
     {code: "HOT001", name: "Tomato Peeled Tin", unit: "can", section: "Hot Kitchen", maxLimit: 12},
     {code: "HOT002", name: "Black Pepper Corn", unit: "kg", section: "Hot Kitchen", maxLimit: 4},
@@ -806,6 +605,100 @@ const allItems = [
     {code: "STF002", name: "Cooking Oil", unit: "liter", section: "Staff Kitchen", maxLimit: 10},
     {code: "STF003", name: "Tea Bags", unit: "box", section: "Staff Kitchen", maxLimit: 10}
 ];
+
+let kitchenData = {};
+let allRequests = [];
+let chefNames = {};
+const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
+
+// Load saved chef names from localStorage
+function loadChefNames() {
+    const saved = localStorage.getItem("chefNames");
+    if(saved) {
+        const parsed = JSON.parse(saved);
+        kitchens.forEach(kitchen => {
+            chefNames[kitchen] = parsed[kitchen] || "";
+        });
+    }
+}
+
+function saveChefNames() {
+    localStorage.setItem("chefNames", JSON.stringify(chefNames));
+}
+
+// Load saved cart from localStorage
+function loadSavedCart() {
+    const saved = localStorage.getItem("kitchenCart");
+    if(saved) {
+        const parsed = JSON.parse(saved);
+        kitchens.forEach(kitchen => {
+            if(parsed[kitchen]) {
+                kitchenData[kitchen] = { cart: parsed[kitchen], chefName: chefNames[kitchen] };
+            } else {
+                kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
+            }
+        });
+    } else {
+        kitchens.forEach(kitchen => {
+            kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
+        });
+    }
+}
+
+function saveCart() {
+    const cartToSave = {};
+    kitchens.forEach(kitchen => {
+        cartToSave[kitchen] = kitchenData[kitchen].cart;
+    });
+    localStorage.setItem("kitchenCart", JSON.stringify(cartToSave));
+}
+
+// Initialize
+loadChefNames();
+loadSavedCart();
+loadUnlockedKitchens();
+
+// ============ FIREBASE FUNCTIONS ============
+
+async function loadRequestsFromFirebase() {
+    try {
+        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
+        allRequests = [];
+        snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
+        console.log("✅ Loaded:", allRequests.length, "requests");
+        if (currentKitchen) loadMyRequests(currentKitchen);
+        document.getElementById("syncStatus").innerHTML = "✅ Connected • " + allRequests.length + " orders";
+        document.getElementById("syncStatus").style.background = "#e8f5e9";
+        document.getElementById("syncStatus").style.color = "#27ae60";
+    } catch (error) {
+        console.error("Firebase error:", error);
+        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
+        document.getElementById("syncStatus").style.background = "#fee2e2";
+        document.getElementById("syncStatus").style.color = "#e74c3c";
+    }
+}
+
+async function saveRequestToFirebase(request) {
+    try {
+        await db.collection("kitchen_requests").add(request);
+        showToast("✅ Request saved to cloud!");
+        await loadRequestsFromFirebase();
+    } catch (error) {
+        console.error("Save error:", error);
+        showToast("❌ Error saving to cloud");
+    }
+}
+
+async function manualRefresh() {
+    showToast("🔄 Refreshing...");
+    await loadRequestsFromFirebase();
+    if (currentKitchen) {
+        loadMyRequests(currentKitchen);
+        renderCart(currentKitchen);
+    }
+}
+
+// ============ HELPER FUNCTIONS ============
 
 function getItemsForKitchen(kitchen) { return allItems.filter(i => i.section === kitchen); }
 
@@ -841,7 +734,7 @@ function addItem(kitchen) {
     const code = document.getElementById(`itemSelect_${kitchenId}`).value;
     const qty = parseFloat(document.getElementById(`qty_${kitchenId}`).value);
     
-    if(!code || code === "No items found") {
+    if(!code || code === "No items found" || code === "Enter chef name first") {
         showToast("Please select an item");
         return;
     }
@@ -849,7 +742,11 @@ function addItem(kitchen) {
     const items = getItemsForKitchen(kitchen);
     const item = items.find(i => i.code === code);
     if(!item) return;
-    if(qty > item.maxLimit) { showToast(`⚠️ Max ${item.maxLimit} ${item.unit}`); return; }
+    
+    if(qty > item.maxLimit) {
+        showToast(`⚠️ Max ${item.maxLimit} ${item.unit}`);
+        return;
+    }
     
     const existing = kitchenData[kitchen].cart.find(i => i.code === code);
     if(existing) {
@@ -876,6 +773,7 @@ function renderCart(kitchen) {
     document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty;
     document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
     
+    // Desktop table view
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
@@ -892,6 +790,28 @@ function renderCart(kitchen) {
                         <td>${item.qty}/${item.maxLimit}</td>
                         <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button></td>
                     </tr>
+                `;
+            });
+        }
+    }
+    
+    // Mobile card view
+    const mobileContainer = document.getElementById(`cartMobile_${kitchenId}`);
+    if(mobileContainer) {
+        if(cart.length === 0) {
+            mobileContainer.innerHTML = '<div class="empty-state">📭 No items added yet</div>';
+        } else {
+            mobileContainer.innerHTML = "";
+            cart.forEach((item, index) => {
+                mobileContainer.innerHTML += `
+                    <div class="request-item pending">
+                        <div class="request-header">
+                            <span class="request-id">${item.code}</span>
+                            <button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button>
+                        </div>
+                        <div><strong>${item.name}</strong></div>
+                        <div class="request-date">Quantity: ${item.qty} / ${item.maxLimit} ${item.unit}</div>
+                    </div>
                 `;
             });
         }
@@ -922,6 +842,7 @@ async function submitRequest(kitchen) {
         showToast("⚠️ Please enter chef name");
         return;
     }
+    
     if(cart.length === 0) {
         showToast("No items to submit");
         return;
@@ -947,85 +868,116 @@ async function submitRequest(kitchen) {
     showToast(`✅ Request ${newRequest.requestId} submitted!`);
 }
 
+function getOverallStatus(items) {
+    if(items.every(i => i.status === "approved")) return "approved";
+    if(items.every(i => i.status === "rejected")) return "rejected";
+    if(items.some(i => i.status === "approved") && items.some(i => i.status === "rejected")) return "partial";
+    return "pending";
+}
+
 function loadMyRequests(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_');
     const chefName = chefNames[kitchen];
-    const container = document.getElementById(`myRequestsContainer_${kitchenId}`);
     
     if(!chefName) {
-        if(container) container.innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
+        const desktopContainer = document.getElementById(`myRequestsDesktop_${kitchenId}`);
+        if(desktopContainer) desktopContainer.innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
         return;
     }
     
     const myRequests = allRequests.filter(r => r.chefName === chefName && r.section === kitchen);
-    console.log(`Found ${myRequests.length} requests for ${chefName} in ${kitchen}`);
     
-    if(!container) return;
-    
-    if(myRequests.length === 0) {
-        container.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
-        return;
+    // Desktop view
+    const desktopContainer = document.getElementById(`myRequestsDesktop_${kitchenId}`);
+    if(desktopContainer) {
+        if(myRequests.length === 0) {
+            desktopContainer.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
+        } else {
+            desktopContainer.innerHTML = "";
+            [...myRequests].reverse().forEach(req => {
+                const status = getOverallStatus(req.items);
+                const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
+                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+                
+                let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
+                
+                req.items.forEach(item => {
+                    let itemStatus = "";
+                    let itemValue = "";
+                    if(item.status === "approved") {
+                        itemStatus = "✅ Approved";
+                        itemValue = `${item.approvedQty} ${item.unit}`;
+                    } else if(item.status === "rejected") {
+                        itemStatus = "❌ Rejected";
+                        itemValue = item.rejectionReason || "No stock";
+                    } else {
+                        itemStatus = "⏳ Pending";
+                        itemValue = "Waiting...";
+                    }
+                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+                });
+                itemsHtml += `</tbody></table>`;
+                
+                desktopContainer.innerHTML += `
+                    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:14px; margin-bottom:16px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap;">
+                            <span style="font-weight:bold; font-size:0.85rem;">📄 ${req.requestId}</span>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        <div style="background:#f8f9fa; padding:8px; border-radius:8px; margin-bottom:10px; font-size:0.7rem;">
+                            <span>📅 ${req.submittedAt}</span>
+                        </div>
+                        ${itemsHtml}
+                    </div>
+                `;
+            });
+        }
     }
     
-    container.innerHTML = '<div class="requests-list">';
-    
-    myRequests.reverse().forEach(req => {
-        const allApproved = req.items.every(i => i.status === "approved");
-        const allRejected = req.items.every(i => i.status === "rejected");
-        let statusClass = "pending";
-        let statusText = "⏳ Pending";
-        let borderClass = "pending";
-        
-        if(allApproved) { 
-            statusClass = "approved"; 
-            statusText = "✅ Approved"; 
-            borderClass = "approved";
-        } else if(allRejected) { 
-            statusClass = "rejected"; 
-            statusText = "❌ Rejected"; 
-            borderClass = "rejected";
+    // Mobile view
+    const mobileContainer = document.getElementById(`myRequestsMobile_${kitchenId}`);
+    if(mobileContainer) {
+        if(myRequests.length === 0) {
+            mobileContainer.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
+        } else {
+            mobileContainer.innerHTML = "";
+            [...myRequests].reverse().forEach(req => {
+                const status = getOverallStatus(req.items);
+                const statusClass = status === "pending" ? "pending" : (status === "approved" ? "approved" : "rejected");
+                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+                const statusBadgeClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
+                
+                let itemsHtml = '<div class="request-items-list">';
+                req.items.forEach(item => {
+                    let statusIcon = "";
+                    let approvedText = "";
+                    if(item.status === "approved") {
+                        statusIcon = "✅";
+                        approvedText = ` → ${item.approvedQty} ${item.unit} approved`;
+                    } else if(item.status === "rejected") {
+                        statusIcon = "❌";
+                        approvedText = ` → ${item.rejectionReason || "Rejected"}`;
+                    } else {
+                        statusIcon = "⏳";
+                        approvedText = ` → Waiting`;
+                    }
+                    itemsHtml += `<div class="request-item-detail"><span class="request-item-name">${item.name}</span><span class="request-item-qty">${item.originalQty} ${item.unit}${approvedText} ${statusIcon}</span></div>`;
+                });
+                itemsHtml += '</div>';
+                
+                mobileContainer.innerHTML += `
+                    <div class="request-item ${statusClass}">
+                        <div class="request-header">
+                            <span class="request-id">${req.requestId}</span>
+                            <span class="status-badge ${statusBadgeClass}">${statusText}</span>
+                        </div>
+                        <div class="request-date">📅 ${req.submittedAt}</div>
+                        ${itemsHtml}
+                    </div>
+                `;
+            });
         }
-        
-        let itemsHtml = '<div class="request-card-items">';
-        
-        req.items.forEach(item => {
-            let itemStatusClass = "";
-            let itemStatusText = "";
-            if(item.status === "approved") {
-                itemStatusClass = "status-approved-badge";
-                itemStatusText = `✅ ${item.approvedQty} ${item.unit}`;
-            } else if(item.status === "rejected") {
-                itemStatusClass = "status-rejected-badge";
-                itemStatusText = `❌ ${item.rejectionReason || "Rejected"}`;
-            } else {
-                itemStatusClass = "status-pending-badge";
-                itemStatusText = "⏳ Waiting";
-            }
-            
-            itemsHtml += `
-                <div class="request-item-row">
-                    <span class="request-item-name">${item.name} (${item.code})</span>
-                    <span class="request-item-status ${itemStatusClass}">${itemStatusText}</span>
-                </div>
-            `;
-        });
-        itemsHtml += '</div>';
-        
-        container.innerHTML += `
-            <div class="request-card ${borderClass}">
-                <div class="request-card-header">
-                    <span class="request-card-id">📄 ${req.requestId}</span>
-                    <span class="request-card-date">📅 ${req.submittedAt}</span>
-                </div>
-                ${itemsHtml}
-                <div style="margin-top: 10px; text-align: right;">
-                    <span class="status-badge status-${statusClass}">${statusText}</span>
-                </div>
-            </div>
-        `;
-    });
-    
-    container.innerHTML += '</div>';
+    }
 }
 
 function exportToExcel(kitchen) {
@@ -1064,6 +1016,39 @@ function logout() {
     }
 }
 
+// ============ SELECT KITCHEN - PASSWORD ONLY WHEN CLICKING ============
+async function selectKitchen(kitchen) {
+    // Check password first
+    if(!checkKitchenPassword(kitchen)) {
+        return;
+    }
+    
+    // If password is correct, switch to the kitchen
+    currentKitchen = kitchen;
+    
+    // Update tab active state
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.innerText.includes(kitchen)) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Update page visibility
+    document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
+    const pageId = `page_${kitchen.replace(/\s/g, '_')}`;
+    const targetPage = document.getElementById(pageId);
+    if(targetPage) targetPage.classList.add('active-page');
+    
+    // Load saved chef name for this kitchen
+    const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_')}`);
+    if(chefInput) chefInput.value = chefNames[kitchen] || "";
+    
+    loadItems(kitchen);
+    renderCart(kitchen);
+    loadMyRequests(kitchen);
+}
+
 function onChefNameChange(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_');
     const newName = document.getElementById(`chefName_${kitchenId}`).value.trim();
@@ -1090,7 +1075,7 @@ function createKitchenPage(kitchen) {
                 <div class="search-add-row">
                     <div class="input-group">
                         <label>🔍 Search</label>
-                        <input type="text" id="searchItem_${id}" placeholder="Search..." onkeyup="filterItems('${kitchen}')">
+                        <input type="text" id="searchItem_${id}" placeholder="Search items..." onkeyup="filterItems('${kitchen}')">
                     </div>
                     <div class="input-group">
                         <label>Select Item</label>
@@ -1100,7 +1085,7 @@ function createKitchenPage(kitchen) {
                         <label>Quantity</label>
                         <input type="number" id="qty_${id}" min="1" value="1">
                     </div>
-                    <button class="btn btn-primary" onclick="addItem('${kitchen}')">+ Add</button>
+                    <button class="btn btn-primary" onclick="addItem('${kitchen}')">+ Add Item</button>
                 </div>
             </div>
             <div class="card">
@@ -1109,12 +1094,17 @@ function createKitchenPage(kitchen) {
                     <span>📦 Total: <strong id="totalItems_${id}">0</strong></span>
                     <span>📋 Items: <strong id="lineCount_${id}">0</strong></span>
                 </div>
-                <div class="table-wrapper">
-                    <table class="cart-table">
-                        <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
-                        <tbody id="cartTableDesktop_${id}"></tbody>
-                    </table>
+                <!-- Desktop Table View -->
+                <div class="desktop-table-view">
+                    <div class="table-wrapper">
+                        <table class="cart-table">
+                            <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
+                            <tbody id="cartTableDesktop_${id}"></tbody>
+                        </table>
+                    </div>
                 </div>
+                <!-- Mobile Card View -->
+                <div class="mobile-cards-view" id="cartMobile_${id}"></div>
                 <div class="button-group">
                     <button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 Submit Request</button>
                     <button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 Export</button>
@@ -1122,8 +1112,11 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📜 My Submitted Requests</h3>
-                <div id="myRequestsContainer_${id}"></div>
+                <h3>📜 My Requests</h3>
+                <!-- Desktop Table View -->
+                <div class="desktop-table-view" id="myRequestsDesktop_${id}"></div>
+                <!-- Mobile Card View -->
+                <div class="mobile-cards-view" id="myRequestsMobile_${id}"></div>
             </div>
         </div>
     `;
@@ -1133,17 +1126,22 @@ function generatePages() {
     const container = document.getElementById("kitchenPagesContainer");
     container.innerHTML = "";
     kitchens.forEach(k => { container.innerHTML += createKitchenPage(k); });
+    
+    // Don't auto-select any kitchen - show a welcome message or first kitchen without password?
+    // For now, we'll show the Hot Kitchen page but NOT mark it as active/selected
+    // This means no kitchen content is visible until user clicks a tab
 }
 
 generatePages();
 loadRequestsFromFirebase();
 
-// Real-time listener
+// REAL-TIME LISTENER - Auto updates when admin approves
 db.collection("kitchen_requests").onSnapshot(() => {
+    console.log("🔄 Real-time update detected! Refreshing chef dashboard...");
     loadRequestsFromFirebase();
 });
 
-// Auto refresh every 3 seconds
+// AUTO REFRESH every 3 seconds
 setInterval(() => {
     if (currentKitchen) {
         loadRequestsFromFirebase();
