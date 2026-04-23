@@ -24,7 +24,7 @@ body {
 .header {
     background: linear-gradient(135deg, #1e5c3c, #2a8a50);
     color: white;
-    padding: 12px 16px;
+    padding: 16px 24px;
     position: sticky;
     top: 0;
     z-index: 100;
@@ -37,19 +37,19 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
 }
 
 .logo {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .logo-icon {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
 }
 
 .logo span {
@@ -58,60 +58,58 @@ body {
 
 .header-buttons {
     display: flex;
-    gap: 8px;
+    gap: 10px;
 }
 
 .btn-header {
     background: rgba(255,255,255,0.2);
     border: none;
-    padding: 8px 12px;
+    padding: 8px 18px;
     border-radius: 25px;
     color: white;
     cursor: pointer;
     font-weight: 600;
-    font-size: 12px;
     transition: all 0.3s;
 }
 
-.btn-header:active {
-    transform: scale(0.95);
+.btn-header:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
 }
 
 /* Kitchen Tabs */
 .kitchen-tabs {
     background: white;
-    padding: 0 12px;
+    padding: 0 24px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     position: sticky;
-    top: 60px;
+    top: 70px;
     z-index: 99;
     overflow-x: auto;
     white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
 }
 
 .tabs-container {
     max-width: 1400px;
     margin: 0 auto;
     display: inline-flex;
-    gap: 8px;
-    padding: 10px 0;
+    gap: 10px;
+    padding: 12px 0;
 }
 
 .tab-btn {
-    padding: 8px 16px;
+    padding: 10px 24px;
     background: #f0f2f5;
     border: none;
     border-radius: 30px;
     font-weight: 600;
     cursor: pointer;
-    font-size: 12px;
-    white-space: nowrap;
     transition: all 0.3s;
 }
 
-.tab-btn:active {
-    transform: scale(0.95);
+.tab-btn:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
 }
 
 .tab-btn.active {
@@ -123,7 +121,7 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 24px;
 }
 
 .kitchen-page {
@@ -134,98 +132,65 @@ body {
     display: block;
 }
 
-/* Cards */
-.card {
-    background: white;
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.card h3 {
-    font-size: 1rem;
-    margin-bottom: 14px;
-    color: #1e5c3c;
-    border-left: 4px solid #27ae60;
-    padding-left: 10px;
-}
-
 /* Stats Grid */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 16px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
 }
 
 .stat-card {
     background: white;
-    padding: 14px;
+    padding: 20px;
     border-radius: 16px;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .stat-number {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: bold;
     color: #27ae60;
 }
 
 .stat-label {
     color: #666;
-    margin-top: 4px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
+    margin-top: 5px;
+    font-size: 0.85rem;
 }
 
-/* Orders Table */
-.orders-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.orders-table {
-    min-width: 500px;
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-}
-
-.orders-table th, .orders-table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-}
-
-.orders-table th {
-    background: #f8f9fa;
-    font-weight: 600;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 50px 20px;
+/* Card */
+.card {
     background: white;
     border-radius: 16px;
-    color: #999;
-    font-size: 0.85rem;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 18px;
+    color: #1e5c3c;
+    border-left: 4px solid #27ae60;
+    padding-left: 12px;
 }
 
 /* Filters */
 .filters {
     display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
+    gap: 15px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .filters select, .filters input {
-    padding: 8px 12px;
+    padding: 10px 16px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: 14px;
     background: white;
 }
 
@@ -233,11 +198,116 @@ body {
     background: #3498db;
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 24px;
     border-radius: 10px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 12px;
+    transition: all 0.3s;
+}
+
+.filters button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Orders List - Each item separate */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.order-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    border-left: 4px solid #27ae60;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.order-id {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.order-date {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.order-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: white;
+    border-radius: 10px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+}
+
+.info-value {
+    font-weight: 600;
+    margin-top: 3px;
+    font-size: 0.85rem;
+}
+
+.items-list {
+    margin-top: 12px;
+}
+
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.item-row:last-child {
+    border-bottom: none;
+}
+
+.item-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.item-qty {
+    background: #27ae60;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border-radius: 16px;
+    color: #999;
 }
 
 /* Toast */
@@ -248,9 +318,8 @@ body {
     transform: translateX(-50%);
     background: #333;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 24px;
     border-radius: 30px;
-    font-size: 12px;
     z-index: 1000;
 }
 
@@ -271,22 +340,20 @@ body {
 
 .modal-content {
     background: white;
-    padding: 24px;
+    padding: 30px;
     border-radius: 24px;
     text-align: center;
-    max-width: 350px;
-    width: 100%;
+    max-width: 400px;
+    width: 90%;
 }
 
 .modal-content h2 {
     margin-bottom: 15px;
     color: #1a1a2e;
-    font-size: 1.3rem;
 }
 
 .modal-content p {
     color: #666;
-    font-size: 0.85rem;
     margin-bottom: 20px;
 }
 
@@ -309,26 +376,78 @@ body {
     cursor: pointer;
     width: 100%;
     font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.modal-content button:hover {
+    background: #2980b9;
+    transform: scale(1.02);
 }
 
 .error-msg {
     color: #e74c3c;
     margin-top: 12px;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
 }
 
-@media (min-width: 768px) {
+.close-modal {
+    background: #95a5a6;
+    margin-top: 10px;
+}
+
+.close-modal:hover {
+    background: #7f8c8d;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 16px;
+    }
+    
+    .logo {
+        font-size: 1.1rem;
+    }
+    
+    .logo-icon {
+        font-size: 1.3rem;
+    }
+    
     .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .stat-card {
+        padding: 12px;
     }
     
     .stat-number {
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
-}
-
-@media (max-width: 480px) {
+    
+    .container {
+        padding: 16px;
+    }
+    
+    .card {
+        padding: 16px;
+    }
+    
+    .card h3 {
+        font-size: 1rem;
+    }
+    
+    .kitchen-tabs {
+        padding: 0 16px;
+        top: 60px;
+    }
+    
+    .tab-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+    
     .filters {
         flex-direction: column;
     }
@@ -337,8 +456,25 @@ body {
         width: 100%;
     }
     
-    .orders-table {
-        min-width: 450px;
+    .order-info {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .item-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .item-qty {
+        align-self: flex-start;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stats-grid {
+        gap: 15px;
     }
 }
 </style>
@@ -352,6 +488,7 @@ body {
         <input type="password" id="passwordInput" placeholder="Enter password">
         <button onclick="checkPassword()">Login</button>
         <div id="passwordError" class="error-msg"></div>
+        <button class="close-modal" onclick="closePasswordModal()">← Go Back</button>
     </div>
 </div>
 
@@ -363,7 +500,7 @@ body {
                 <span>Storekeeper <span>| Approved Orders</span></span>
             </div>
             <div class="header-buttons">
-                <button class="btn-header" onclick="exportAllToExcel()">📎 Export</button>
+                <button class="btn-header" onclick="exportAllToExcel()">📎 Export Excel</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
             </div>
         </div>
@@ -390,6 +527,11 @@ const STOREKEEPER_PASSWORD = "store123";
 let currentKitchen = "all";
 let allApprovedOrders = [];
 
+function closePasswordModal() {
+    document.getElementById("passwordModal").style.display = "none";
+    window.location.href = "index.html";
+}
+
 function checkPassword() {
     if(document.getElementById("passwordInput").value === STOREKEEPER_PASSWORD) {
         document.getElementById("passwordModal").style.display = "none";
@@ -397,7 +539,7 @@ function checkPassword() {
         loadApprovedOrders();
         setInterval(loadApprovedOrders, 5000);
     } else {
-        document.getElementById("passwordError").innerHTML = "Wrong password! Try: store123";
+        document.getElementById("passwordError").innerHTML = "Wrong password!";
     }
 }
 
@@ -411,6 +553,7 @@ async function loadApprovedOrders() {
                 allApprovedOrders.push({ id: doc.id, ...data });
             }
         });
+        console.log("Loaded approved orders:", allApprovedOrders.length);
         renderCurrentKitchen();
     } catch (error) {
         console.error("Error:", error);
@@ -457,7 +600,7 @@ function renderKitchenPage(kitchen, orders) {
                     <input type="date" id="dateTo" placeholder="To Date">
                     <button onclick="filterOrders()">🔄 Filter</button>
                 </div>
-                <div class="orders-wrapper" id="ordersWrapper"></div>
+                <div id="ordersList"></div>
             </div>
         </div>
     `;
@@ -467,7 +610,7 @@ function renderKitchenPage(kitchen, orders) {
 }
 
 function displayOrders(orders) {
-    const wrapper = document.getElementById("ordersWrapper");
+    const container = document.getElementById("ordersList");
     
     let dateFrom = document.getElementById("dateFrom")?.value;
     let dateTo = document.getElementById("dateTo")?.value;
@@ -485,35 +628,45 @@ function displayOrders(orders) {
     filtered.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
     
     if(filtered.length === 0) {
-        wrapper.innerHTML = '<div class="empty-state">📭 No approved orders found</div>';
+        container.innerHTML = '<div class="empty-state">📭 No approved orders found</div>';
         return;
     }
     
-    let tableHtml = `
-        <table class="orders-table">
-            <thead>
-                <tr><th>ID</th><th>Chef</th><th>Date</th><th>Items</th><th>Qty</th></tr>
-            </thead>
-            <tbody>
-    `;
+    let ordersHtml = '<div class="orders-list">';
     
     filtered.forEach(order => {
-        const itemsList = order.items.map(item => `${item.name} (${item.approvedQty || item.originalQty} ${item.unit})`).join(", ");
         const totalQty = order.items.reduce((sum, item) => sum + (item.approvedQty || item.originalQty), 0);
         
-        tableHtml += `
-            <tr>
-                <td><strong>${order.requestId}</strong></td>
-                <td>${order.chefName}</td>
-                <td>${order.submittedAt}</td>
-                <td style="font-size:0.8rem;">${itemsList.substring(0, 60)}${itemsList.length > 60 ? "..." : ""}</td>
-                <td><strong>${totalQty}</strong></td>
-            </tr>
+        let itemsHtml = '<div class="items-list">';
+        order.items.forEach(item => {
+            const qty = item.approvedQty || item.originalQty;
+            itemsHtml += `
+                <div class="item-row">
+                    <span class="item-name">${item.name} (${item.code})</span>
+                    <span class="item-qty">${qty} ${item.unit}</span>
+                </div>
+            `;
+        });
+        itemsHtml += '</div>';
+        
+        ordersHtml += `
+            <div class="order-card">
+                <div class="order-header">
+                    <span class="order-id">📄 ${order.requestId}</span>
+                    <span class="order-date">📅 ${order.submittedAt}</span>
+                </div>
+                <div class="order-info">
+                    <div class="info-item"><span class="info-label">🍽️ Kitchen</span><span class="info-value">${order.section}</span></div>
+                    <div class="info-item"><span class="info-label">👨‍🍳 Chef</span><span class="info-value">${order.chefName}</span></div>
+                    <div class="info-item"><span class="info-label">📦 Total Quantity</span><span class="info-value">${totalQty} units</span></div>
+                </div>
+                ${itemsHtml}
+            </div>
         `;
     });
     
-    tableHtml += `</tbody></table>`;
-    wrapper.innerHTML = tableHtml;
+    ordersHtml += '</div>';
+    container.innerHTML = ordersHtml;
 }
 
 function filterOrders() {
