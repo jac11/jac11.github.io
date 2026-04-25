@@ -6,7 +6,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Chef Dashboard - Full Items with Quantity</title>
+<title>Chef Dashboard - Smart Order System</title>
 
 <style>
 * {
@@ -17,7 +17,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f5f7fb;
+    background: #f0f4f8;
 }
 
 .header {
@@ -119,12 +119,6 @@ body {
     color: white;
 }
 
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 16px;
-}
-
 .kitchen-page {
     display: none;
 }
@@ -135,10 +129,10 @@ body {
 
 .card {
     background: white;
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 16px;
+    padding: 18px;
     margin-bottom: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
 
 .card h3 {
@@ -166,12 +160,6 @@ body {
 .required {
     color: #e74c3c;
     margin-left: 4px;
-}
-
-.error-message {
-    color: #e74c3c;
-    font-size: 11px;
-    margin-top: 4px;
 }
 
 input {
@@ -256,7 +244,7 @@ input:focus {
 
 .status-badge {
     display: inline-block;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 600;
@@ -265,6 +253,7 @@ input:focus {
 .status-pending { background: #f39c12; color: white; }
 .status-approved { background: #27ae60; color: white; }
 .status-rejected { background: #e74c3c; color: white; }
+.status-partial { background: #8e44ad; color: white; }
 
 .cart-stats {
     background: #e8f4fd;
@@ -362,14 +351,16 @@ input:focus {
 .request-item {
     background: #f8f9fa;
     border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
     border-left: 4px solid;
+    transition: all 0.2s;
 }
 
-.request-item.pending { border-left-color: #f39c12; }
-.request-item.approved { border-left-color: #27ae60; }
-.request-item.rejected { border-left-color: #e74c3c; }
+.request-item.pending { border-left-color: #f39c12; background: #fff8e7; }
+.request-item.approved { border-left-color: #27ae60; background: #e8f5e9; }
+.request-item.rejected { border-left-color: #e74c3c; background: #fdeaea; }
+.request-item.partial { border-left-color: #8e44ad; background: #f3e8ff; }
 
 .request-header {
     display: flex;
@@ -382,7 +373,7 @@ input:focus {
 
 .request-id {
     font-weight: bold;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
 }
 
 .request-date {
@@ -402,7 +393,7 @@ input:focus {
 .request-item-detail {
     display: flex;
     justify-content: space-between;
-    padding: 4px 0;
+    padding: 5px 0;
     border-bottom: 1px dashed #e0e0e0;
 }
 
@@ -412,6 +403,7 @@ input:focus {
 
 .request-item-qty {
     color: #333;
+    font-family: monospace;
 }
 
 .approved-items-table {
@@ -455,60 +447,6 @@ input:focus {
     width: 90%;
 }
 
-.modal-content h2 {
-    margin-bottom: 15px;
-    color: #1a1a2e;
-    font-size: 1.3rem;
-}
-
-.modal-content p {
-    color: #666;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    font-size: 16px;
-}
-
-.modal-content button {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    transition: all 0.3s;
-}
-
-.modal-content button:hover {
-    background: #2980b9;
-    transform: scale(1.02);
-}
-
-.error-msg {
-    color: #e74c3c;
-    margin-top: 12px;
-    font-size: 0.85rem;
-}
-
-.close-modal {
-    background: #95a5a6;
-    margin-top: 10px;
-}
-
-.close-modal:hover {
-    background: #7f8c8d;
-}
-
 /* Item card with quantity picker */
 .items-scroll-container {
     max-height: 500px;
@@ -538,6 +476,12 @@ input:focus {
     border-color: #3498db;
 }
 
+.item-card.selected {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    border-width: 2px;
+}
+
 .item-main-row {
     display: flex;
     justify-content: space-between;
@@ -553,12 +497,12 @@ input:focus {
 
 .item-name {
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #2c3e50;
 }
 
 .item-code {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: #7f8c8d;
     font-family: monospace;
     margin-top: 3px;
@@ -573,13 +517,13 @@ input:focus {
     background: #ecf0f1;
     padding: 3px 8px;
     border-radius: 20px;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 500;
     display: inline-block;
 }
 
 .item-max {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: #e67e22;
     margin-top: 4px;
 }
@@ -601,8 +545,8 @@ input:focus {
 }
 
 .qty-btn {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 20px;
     border: none;
     background: white;
@@ -618,18 +562,21 @@ input:focus {
     color: white;
 }
 
-.qty-value {
-    font-weight: 600;
-    font-size: 1rem;
-    min-width: 35px;
+.qty-input {
+    width: 55px;
     text-align: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 4px;
 }
 
 .add-item-btn {
     background: #27ae60;
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 8px 18px;
     border-radius: 25px;
     font-weight: 600;
     font-size: 0.75rem;
@@ -652,27 +599,30 @@ input:focus {
     font-weight: 500;
 }
 
+.section-badge {
+    font-size: 10px;
+    background: #e0e7ff;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
 @media screen and (min-width: 769px) {
     .button-group {
         flex-direction: row;
     }
-    
     .button-group .btn {
         width: auto;
     }
-    
     .mobile-cards-view {
         display: none;
     }
-    
     .desktop-table-view {
         display: block;
     }
-    
     .admin-btn-mobile {
         display: none;
     }
-    
     .admin-fab {
         display: block;
     }
@@ -721,7 +671,6 @@ input:focus {
 <div class="sync-status" id="syncStatus">🔄 Connecting...</div>
 
 <script>
-// Kitchen passwords
 const kitchenPasswords = {
     "Hot Kitchen": "hot123",
     "Cold Kitchen": "cold123", 
@@ -742,30 +691,25 @@ let chefNames = {};
 let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
 let kitchenItemsCache = {};
-// Store selected quantities per item for the UI
 let selectedQuantities = {};
+let addedItemsStatus = {};
 
-// Load items from JSON
 async function loadItemsFromJSON() {
     return new Promise(async (resolve, reject) => {
         if (allItems) {
             resolve(allItems);
             return;
         }
-        
         showToast("📦 Loading inventory...");
-        
         try {
             const response = await fetch('items.json');
             const data = await response.json();
             allItems = data.items;
             console.log(`✅ Loaded ${allItems.length} total items from JSON`);
-            
             kitchens.forEach(kitchen => {
                 kitchenItemsCache[kitchen] = allItems.filter(i => i.section === kitchen);
                 console.log(`📁 ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
             });
-            
             showToast(`✅ ${allItems.length} total items loaded!`);
             resolve(allItems);
         } catch (error) {
@@ -840,9 +784,7 @@ function showKitchenPasswordModal(kitchen) {
         selectKitchen(kitchen);
         return;
     }
-    
     pendingKitchen = kitchen;
-    
     const modal = document.createElement("div");
     modal.className = "modal";
     modal.id = "kitchenPasswordModal";
@@ -868,7 +810,6 @@ function closePasswordModal() {
 function verifyKitchenPassword() {
     const inputPassword = document.getElementById("kitchenPasswordInput").value;
     const kitchen = pendingKitchen;
-    
     if(inputPassword === kitchenPasswords[kitchen]) {
         localStorage.setItem(`kitchen_password_${kitchen}`, inputPassword);
         unlockedKitchens[kitchen] = true;
@@ -880,7 +821,6 @@ function verifyKitchenPassword() {
     }
 }
 
-// Firebase functions
 async function loadRequestsFromFirebase() {
     try {
         const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
@@ -892,12 +832,10 @@ async function loadRequestsFromFirebase() {
         }
         document.getElementById("syncStatus").innerHTML = "✅ Connected • " + allRequests.length + " orders";
         document.getElementById("syncStatus").style.background = "#e8f5e9";
-        document.getElementById("syncStatus").style.color = "#27ae60";
     } catch (error) {
         console.error("Firebase error:", error);
         document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
         document.getElementById("syncStatus").style.background = "#fee2e2";
-        document.getElementById("syncStatus").style.color = "#e74c3c";
     }
 }
 
@@ -924,7 +862,6 @@ async function manualRefresh() {
     }
 }
 
-// Render items with quantity picker
 async function renderItemsList(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const container = document.getElementById(`itemsListContainer_${kitchenId}`);
@@ -941,15 +878,18 @@ async function renderItemsList(kitchen) {
         await loadItemsFromJSON();
     }
     
+    // Get items ONLY for this specific kitchen section
     let items = getItemsForKitchen(kitchen);
     if (!items || items.length === 0) {
-        container.innerHTML = '<div class="empty-state">📭 No items found for this kitchen</div>';
+        container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen} section in items.json</div>`;
         return;
     }
     
-    // Initialize selected quantities for this kitchen if not exists
     if (!selectedQuantities[kitchen]) {
         selectedQuantities[kitchen] = {};
+    }
+    if (!addedItemsStatus[kitchen]) {
+        addedItemsStatus[kitchen] = {};
     }
     
     const sortedItems = [...items].sort((a,b) => a.name.localeCompare(b.name));
@@ -960,9 +900,12 @@ async function renderItemsList(kitchen) {
     `;
     
     sortedItems.forEach(item => {
-        const currentQty = selectedQuantities[kitchen][item.code] || 1;
+        const currentQty = selectedQuantities[kitchen][item.code] !== undefined ? selectedQuantities[kitchen][item.code] : 0;
+        const isSelected = addedItemsStatus[kitchen][item.code] || false;
+        const selectedClass = isSelected ? 'selected' : '';
+        
         html += `
-            <div class="item-card">
+            <div class="item-card ${selectedClass}" id="itemCard_${kitchenId}_${item.code.replace(/[^a-zA-Z0-9]/g, '_')}">
                 <div class="item-main-row">
                     <div class="item-info">
                         <div class="item-name">${escapeHtml(item.name)}</div>
@@ -974,9 +917,9 @@ async function renderItemsList(kitchen) {
                     </div>
                     <div class="item-actions">
                         <div class="qty-picker">
-                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', -1, ${item.maxLimit})">-</button>
-                            <span class="qty-value" id="qty_${kitchenId}_${item.code.replace(/[^a-zA-Z0-9]/g, '_')}">${currentQty}</span>
-                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', 1, ${item.maxLimit})">+</button>
+                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', -0.5, ${item.maxLimit})">-0.5</button>
+                            <input type="number" step="0.5" class="qty-input" id="qty_${kitchenId}_${item.code.replace(/[^a-zA-Z0-9]/g, '_')}" value="${currentQty}" onchange="setQuantity('${kitchen}', '${item.code}', this.value, ${item.maxLimit})">
+                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', 0.5, ${item.maxLimit})">+0.5</button>
                         </div>
                         <button class="add-item-btn" onclick="addItemWithQuantity('${kitchen}', '${item.code}', '${escapeHtml(item.name)}', '${item.unit}', ${item.maxLimit})">+ Add</button>
                     </div>
@@ -987,7 +930,7 @@ async function renderItemsList(kitchen) {
     
     html += `
             </div>
-            <div class="scroll-info">📜 Showing all ${sortedItems.length} items • Select quantity and click Add</div>
+            <div class="scroll-info">📜 Showing all ${sortedItems.length} items for ${kitchen} • Set quantity (0.5 increments) and click Add</div>
         </div>
     `;
     
@@ -998,16 +941,32 @@ function changeQuantity(kitchen, code, delta, maxLimit) {
     if (!selectedQuantities[kitchen]) {
         selectedQuantities[kitchen] = {};
     }
-    let current = selectedQuantities[kitchen][code] || 1;
-    let newQty = current + delta;
-    if (newQty < 1) newQty = 1;
+    let current = selectedQuantities[kitchen][code] || 0;
+    let newQty = parseFloat((current + delta).toFixed(1));
+    if (newQty < 0) newQty = 0;
     if (newQty > maxLimit) newQty = maxLimit;
     selectedQuantities[kitchen][code] = newQty;
     
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
-    const qtySpan = document.getElementById(`qty_${kitchenId}_${safeCode}`);
-    if (qtySpan) qtySpan.innerText = newQty;
+    const qtyInput = document.getElementById(`qty_${kitchenId}_${safeCode}`);
+    if (qtyInput) qtyInput.value = newQty;
+}
+
+function setQuantity(kitchen, code, value, maxLimit) {
+    if (!selectedQuantities[kitchen]) {
+        selectedQuantities[kitchen] = {};
+    }
+    let newQty = parseFloat(value);
+    if (isNaN(newQty)) newQty = 0;
+    if (newQty < 0) newQty = 0;
+    if (newQty > maxLimit) newQty = maxLimit;
+    selectedQuantities[kitchen][code] = newQty;
+    
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
+    const qtyInput = document.getElementById(`qty_${kitchenId}_${safeCode}`);
+    if (qtyInput) qtyInput.value = newQty;
 }
 
 function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
@@ -1017,7 +976,11 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
         return;
     }
     
-    const qty = selectedQuantities[kitchen]?.[code] || 1;
+    const qty = selectedQuantities[kitchen]?.[code] || 0;
+    if (qty <= 0) {
+        showToast(`⚠️ Please set a quantity greater than 0 for ${itemName}`);
+        return;
+    }
     
     const itemsForKitchen = getItemsForKitchen(kitchen);
     const item = itemsForKitchen.find(i => i.code === code);
@@ -1043,14 +1006,20 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
         showToast(`✓ Added ${qty} ${item.name} (${qty}/${item.maxLimit} ${item.unit})`);
     }
     
-    // Reset quantity picker to 1 after adding
-    if (selectedQuantities[kitchen]) {
-        selectedQuantities[kitchen][code] = 1;
-        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-        const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
-        const qtySpan = document.getElementById(`qty_${kitchenId}_${safeCode}`);
-        if (qtySpan) qtySpan.innerText = "1";
-    }
+    // Mark as selected
+    if (!addedItemsStatus[kitchen]) addedItemsStatus[kitchen] = {};
+    addedItemsStatus[kitchen][code] = true;
+    
+    // Reset quantity to 0 after adding
+    selectedQuantities[kitchen][code] = 0;
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
+    const qtyInput = document.getElementById(`qty_${kitchenId}_${safeCode}`);
+    if (qtyInput) qtyInput.value = 0;
+    
+    // Update visual selection
+    const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
+    if (card) card.classList.add('selected');
     
     renderCart(kitchen);
     saveCart();
@@ -1071,13 +1040,13 @@ function renderCart(kitchen) {
     const cart = kitchenData[kitchen].cart;
     const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
     
-    document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty;
+    document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty.toFixed(1);
     document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
     
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
-            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</div>';
+            desktopBody.innerHTML = '�<td colspan="6" style="text-align:center; color:#999;">No items added</div>';
         } else {
             desktopBody.innerHTML = "";
             cart.forEach((item, index) => {
@@ -1085,9 +1054,9 @@ function renderCart(kitchen) {
                     <tr>
                         <td>${item.code}</td>
                         <td><strong>${escapeHtml(item.name)}</strong></td>
-                        <td>${item.qty}</td>
+                        <td>${item.qty.toFixed(1)}</td>
                         <td>${item.unit}</td>
-                        <td>${item.qty}/${item.maxLimit}</td>
+                        <td>${item.qty.toFixed(1)}/${item.maxLimit}</td>
                         <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button></td>
                     </tr>
                 `;
@@ -1109,7 +1078,7 @@ function renderCart(kitchen) {
                             <button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button>
                         </div>
                         <div><strong>${escapeHtml(item.name)}</strong></div>
-                        <div class="request-date">Quantity: ${item.qty} / ${item.maxLimit} ${item.unit}</div>
+                        <div class="request-date">Quantity: ${item.qty.toFixed(1)} / ${item.maxLimit} ${item.unit}</div>
                     </div>
                 `;
             });
@@ -1118,6 +1087,20 @@ function renderCart(kitchen) {
 }
 
 function removeItem(kitchen, index) {
+    const removedItem = kitchenData[kitchen].cart[index];
+    if (removedItem) {
+        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+        const safeCode = removedItem.code.replace(/[^a-zA-Z0-9]/g, '_');
+        if (addedItemsStatus[kitchen]) {
+            // Check if any other entry with same code exists
+            const stillExists = kitchenData[kitchen].cart.some((item, i) => i !== index && item.code === removedItem.code);
+            if (!stillExists) {
+                addedItemsStatus[kitchen][removedItem.code] = false;
+                const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
+                if (card) card.classList.remove('selected');
+            }
+        }
+    }
     kitchenData[kitchen].cart.splice(index, 1);
     renderCart(kitchen);
     saveCart();
@@ -1126,7 +1109,16 @@ function removeItem(kitchen, index) {
 
 function clearCart(kitchen) {
     if(confirm("Clear all items?")) {
+        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
         kitchenData[kitchen].cart = [];
+        if (addedItemsStatus[kitchen]) {
+            Object.keys(addedItemsStatus[kitchen]).forEach(code => {
+                addedItemsStatus[kitchen][code] = false;
+                const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
+                const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
+                if (card) card.classList.remove('selected');
+            });
+        }
         renderCart(kitchen);
         saveCart();
         showToast("Cart cleared");
@@ -1162,11 +1154,19 @@ async function submitRequest(kitchen) {
     
     await saveRequestToFirebase(newRequest);
     kitchenData[kitchen].cart = [];
+    // Clear selection marks
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    if (addedItemsStatus[kitchen]) {
+        Object.keys(addedItemsStatus[kitchen]).forEach(code => {
+            addedItemsStatus[kitchen][code] = false;
+            const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
+            const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
+            if (card) card.classList.remove('selected');
+        });
+    }
     renderCart(kitchen);
     saveCart();
     showToast(`✅ Request ${newRequest.requestId} submitted!`);
-    
-    // Refresh requests display immediately
     await loadRequestsFromFirebase();
     if (currentKitchen) {
         loadMyRequests(currentKitchen);
@@ -1175,9 +1175,11 @@ async function submitRequest(kitchen) {
 
 function getOverallStatus(items) {
     if(!items || items.length === 0) return "pending";
-    if(items.every(i => i.status === "approved")) return "approved";
-    if(items.every(i => i.status === "rejected")) return "rejected";
-    if(items.some(i => i.status === "approved") && items.some(i => i.status === "rejected")) return "partial";
+    const approvedCount = items.filter(i => i.status === "approved").length;
+    const rejectedCount = items.filter(i => i.status === "rejected").length;
+    if (approvedCount === items.length) return "approved";
+    if (rejectedCount === items.length) return "rejected";
+    if (approvedCount > 0 && rejectedCount > 0) return "partial";
     return "pending";
 }
 
@@ -1201,30 +1203,34 @@ function loadMyRequests(kitchen) {
             desktopContainer.innerHTML = "";
             [...myRequests].reverse().forEach(req => {
                 const status = getOverallStatus(req.items);
-                const statusClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
-                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+                let statusClass = "status-pending", statusText = "⏳ Pending";
+                if (status === "approved") { statusClass = "status-approved"; statusText = "✅ Fully Approved"; }
+                else if (status === "rejected") { statusClass = "status-rejected"; statusText = "❌ Rejected"; }
+                else if (status === "partial") { statusClass = "status-partial"; statusText = "⚠️ Partially Approved"; }
                 
                 let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Approved/Rejected</th></tr></thead><tbody>`;
                 
                 req.items.forEach(item => {
-                    let itemStatus = "";
-                    let itemValue = "";
+                    let itemStatus = "", itemValue = "", statusIcon = "";
                     if(item.status === "approved") {
-                        itemStatus = "✅ Approved";
+                        statusIcon = "✅";
+                        itemStatus = "Approved";
                         itemValue = `${item.approvedQty} ${item.unit}`;
                     } else if(item.status === "rejected") {
-                        itemStatus = "❌ Rejected";
+                        statusIcon = "❌";
+                        itemStatus = "Rejected";
                         itemValue = item.rejectionReason || "No stock";
                     } else {
-                        itemStatus = "⏳ Pending";
-                        itemValue = "Waiting for approval...";
+                        statusIcon = "⏳";
+                        itemStatus = "Pending";
+                        itemValue = "Waiting...";
                     }
-                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${statusIcon} ${itemStatus}</td><td>${itemValue}</td></tr>`;
                 });
                 itemsHtml += `</tbody></table>`;
                 
                 desktopContainer.innerHTML += `
-                    <div style="border:1px solid #e0e0e0; border-radius:12px; padding:14px; margin-bottom:16px;">
+                    <div style="border-left: 4px solid ${status === 'approved' ? '#27ae60' : status === 'rejected' ? '#e74c3c' : status === 'partial' ? '#8e44ad' : '#f39c12'}; border-radius:12px; padding:14px; margin-bottom:16px; background:#fff;">
                         <div style="display:flex; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap;">
                             <span style="font-weight:bold; font-size:0.85rem;">📄 ${req.requestId}</span>
                             <span class="status-badge ${statusClass}">${statusText}</span>
@@ -1238,62 +1244,14 @@ function loadMyRequests(kitchen) {
             });
         }
     }
-    
-    // Mobile view
-    const mobileContainer = document.getElementById(`myRequestsMobile_${kitchenId}`);
-    if(mobileContainer) {
-        if(myRequests.length === 0) {
-            mobileContainer.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
-        } else {
-            mobileContainer.innerHTML = "";
-            [...myRequests].reverse().forEach(req => {
-                const status = getOverallStatus(req.items);
-                const statusClass = status === "pending" ? "pending" : (status === "approved" ? "approved" : "rejected");
-                const statusBadgeClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
-                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
-                
-                let itemsHtml = '<div class="request-items-list">';
-                req.items.forEach(item => {
-                    let statusIcon = "";
-                    let approvedText = "";
-                    if(item.status === "approved") {
-                        statusIcon = "✅";
-                        approvedText = ` → ${item.approvedQty} ${item.unit} approved`;
-                    } else if(item.status === "rejected") {
-                        statusIcon = "❌";
-                        approvedText = ` → ${item.rejectionReason || "Rejected"}`;
-                    } else {
-                        statusIcon = "⏳";
-                        approvedText = ` → Waiting for approval`;
-                    }
-                    itemsHtml += `<div class="request-item-detail"><span class="request-item-name">${escapeHtml(item.name)}</span><span class="request-item-qty">${item.originalQty} ${item.unit}${approvedText} ${statusIcon}</span></div>`;
-                });
-                itemsHtml += '</div>';
-                
-                mobileContainer.innerHTML += `
-                    <div class="request-item ${statusClass}">
-                        <div class="request-header">
-                            <span class="request-id">${req.requestId}</span>
-                            <span class="status-badge ${statusBadgeClass}">${statusText}</span>
-                        </div>
-                        <div class="request-date">📅 ${req.submittedAt}</div>
-                        ${itemsHtml}
-                    </div>
-                `;
-            });
-        }
-    }
 }
 
 function exportToExcel(kitchen) {
     const cart = kitchenData[kitchen].cart;
     if(cart.length === 0) { showToast("No items to export"); return; }
-    
     const chef = chefNames[kitchen];
-    
     let csv = "Code,Item,Quantity,Unit,Max Limit\n";
     cart.forEach(i => { csv += `${i.code},${i.name},${i.qty},${i.unit},${i.maxLimit}\n`; });
-    
     const blob = new Blob([csv], {type: "text/csv"});
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -1313,7 +1271,7 @@ function showToast(msg) {
 }
 
 function logout() {
-    if(confirm("Are you sure you want to logout? This will clear all unlocked kitchens and you will need to enter passwords again.")) {
+    if(confirm("Are you sure you want to logout?")) {
         unlockedKitchens = {};
         localStorage.removeItem("unlockedKitchens");
         kitchens.forEach(kitchen => { localStorage.removeItem(`kitchen_password_${kitchen}`); });
@@ -1322,19 +1280,17 @@ function logout() {
         currentKitchen = null;
         document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        showToast("Logged out. All passwords cleared.");
+        showToast("Logged out.");
         setTimeout(() => { window.location.href = "index.html"; }, 1500);
     }
 }
 
 async function selectKitchen(kitchen) {
     currentKitchen = kitchen;
-    
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
         if(btn.innerText.includes(kitchen)) btn.classList.add('active');
     });
-    
     document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
     const pageId = `page_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`;
     const targetPage = document.getElementById(pageId);
@@ -1360,11 +1316,10 @@ function onChefNameChange(kitchen) {
 
 function createKitchenPage(kitchen) {
     const id = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const displayName = kitchen;
     return `
         <div class="kitchen-page" id="page_${id}">
             <div class="card">
-                <h3>👨‍🍳 Chef Information - ${displayName}</h3>
+                <h3>👨‍🍳 Chef Information - ${kitchen}</h3>
                 <div class="input-group">
                     <label>Chef Name <span class="required">*</span></label>
                     <input type="text" id="chefName_${id}" placeholder="Enter chef name" onchange="onChefNameChange('${kitchen}')">
@@ -1372,7 +1327,7 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📦 All Store Items <span style="font-size:11px; font-weight:normal;">(Select quantity and click Add)</span></h3>
+                <h3>📦 ${kitchen} Items <span style="font-size:11px; font-weight:normal;">(Set quantity in 0.5 increments, click Add to cart)</span></h3>
                 <div id="itemsListContainer_${id}"></div>
             </div>
             <div class="card">
@@ -1397,7 +1352,7 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📜 My Requests <span style="font-size:11px; font-weight:normal;">(Real-time status updates)</span></h3>
+                <h3>📜 My Requests <span style="font-size:11px; font-weight:normal;">(Real-time status from admin)</span></h3>
                 <div class="desktop-table-view" id="myRequestsDesktop_${id}"></div>
                 <div class="mobile-cards-view" id="myRequestsMobile_${id}"></div>
             </div>
@@ -1420,13 +1375,11 @@ generatePages();
 loadItemsFromJSON().then(() => {
     loadRequestsFromFirebase();
     db.collection("kitchen_requests").onSnapshot(() => {
-        console.log("🔄 Real-time update detected! Refreshing chef dashboard...");
+        console.log("🔄 Real-time update!");
         loadRequestsFromFirebase();
     });
     setInterval(() => {
-        if (currentKitchen) {
-            loadRequestsFromFirebase();
-        }
+        if (currentKitchen) loadRequestsFromFirebase();
     }, 3000);
 });
 </script>
