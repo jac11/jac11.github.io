@@ -1,0 +1,141 @@
+{
+  "items": [
+    {
+      "category": "🥩 Meat & Poultry",
+      "icon": "🥩",
+      "items": [
+        {"code": "110029", "name": "Beef Shoulder Indian", "unit": "kg", "maxLimit": 12},
+        {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "unit": "kg", "maxLimit": 15}
+      ]
+    },
+    {
+      "category": "❄️ Frozen Vegetables",
+      "icon": "❄️",
+      "items": [
+        {"code": "142002", "name": "Beans Frozen Americana", "unit": "10kg box", "maxLimit": 2},
+        {"code": "142011", "name": "Mix Vegetable Frozen", "unit": "10kg box", "maxLimit": 2},
+        {"code": "142012", "name": "Molokia Frozen Americana", "unit": "20x400g box", "maxLimit": 2},
+        {"code": "142013", "name": "Okra Frozen Americana", "unit": "10kg box", "maxLimit": 2},
+        {"code": "142016", "name": "Peas Frozen Americana", "unit": "10kg box", "maxLimit": 3},
+        {"code": "142019", "name": "Spinach Americana", "unit": "20x400g box", "maxLimit": 2}
+      ]
+    },
+    {
+      "category": "🧂 Spices & Seasonings",
+      "icon": "🧂",
+      "items": [
+        {"code": "161005", "name": "Black Pepper Corn", "unit": "kg", "maxLimit": 2},
+        {"code": "161006", "name": "Black Pepper Powder", "unit": "kg", "maxLimit": 2},
+        {"code": "161011", "name": "Cardamom Seeds", "unit": "kg", "maxLimit": 2},
+        {"code": "161019", "name": "Chili Powder", "unit": "kg", "maxLimit": 2},
+        {"code": "161028", "name": "Coriander Powder", "unit": "kg", "maxLimit": 3},
+        {"code": "161030", "name": "Cumin Powder", "unit": "kg", "maxLimit": 3},
+        {"code": "161031", "name": "Cumin Whole Seed", "unit": "kg", "maxLimit": 3},
+        {"code": "161077", "name": "White Pepper Powder", "unit": "kg", "maxLimit": 2},
+        {"code": "161063", "name": "Salt Kitchen", "unit": "kg", "maxLimit": 10},
+        {"code": "161067", "name": "Salt Table", "unit": "700g pkt", "maxLimit": 8}
+      ]
+    },
+    {
+      "category": "🥫 Sauces & Pastes",
+      "icon": "🥫",
+      "items": [
+        {"code": "162002", "name": "Chicken Stock Knorr", "unit": "kg", "maxLimit": 5},
+        {"code": "162018", "name": "Demi Glace Sauce Knorr", "unit": "750g pkt", "maxLimit": 4},
+        {"code": "163080", "name": "Tahine Gallon", "unit": "10kg gal", "maxLimit": 1},
+        {"code": "160079", "name": "Tomato Paste Wadi Food", "unit": "3kg tin", "maxLimit": 6},
+        {"code": "160086", "name": "Tomato Peeled", "unit": "2.55kg tin", "maxLimit": 6}
+      ]
+    },
+    {
+      "category": "🫒 Oils & Vinegars",
+      "icon": "🫒",
+      "items": [
+        {"code": "163005", "name": "Oil Corn", "unit": "L", "maxLimit": 15},
+        {"code": "163006", "name": "Oil Fried Mix", "unit": "L", "maxLimit": 15},
+        {"code": "167017", "name": "Vinegar Heinz White", "unit": "L", "maxLimit": 8},
+        {"code": "163037", "name": "Pickles Mixed 7 Items", "unit": "8kg gal", "maxLimit": 1}
+      ]
+    },
+    {
+      "category": "🥛 Dairy & Milk",
+      "icon": "🥛",
+      "items": [
+        {"code": "152003", "name": "Milk Full Cream Juhayna", "unit": "L", "maxLimit": 15},
+        {"code": "152039", "name": "Milk Powder Nestle", "unit": "1.75kg pkt", "maxLimit": 4},
+        {"code": "153038", "name": "Cheese White Gallon", "unit": "10kg gal", "maxLimit": 2}
+      ]
+    },
+    {
+      "category": "🍝 Pasta, Rice & Grains",
+      "icon": "🍝",
+      "items": [
+        {"code": "164005", "name": "Macaroni Birds Tongue", "unit": "kg", "maxLimit": 10},
+        {"code": "164020", "name": "Macaroni Penne Masria", "unit": "kg", "maxLimit": 12},
+        {"code": "164021", "name": "Macaroni Penne Regina", "unit": "kg", "maxLimit": 12},
+        {"code": "164025", "name": "Macaroni Small Rings Masria", "unit": "kg", "maxLimit": 10},
+        {"code": "164032", "name": "Macaroni Spaghetti Masria", "unit": "kg", "maxLimit": 12},
+        {"code": "164035", "name": "Macaroni Vermicelli Masria", "unit": "kg", "maxLimit": 10},
+        {"code": "164143", "name": "Rice White Local (El Badr)", "unit": "25kg sac", "maxLimit": 3},
+        {"code": "164116", "name": "Rice White Local (Fattoh)", "unit": "25kg sac", "maxLimit": 3},
+        {"code": "166002", "name": "Black Lentil", "unit": "kg", "maxLimit": 10},
+        {"code": "166003", "name": "Borgoul Seeds", "unit": "kg", "maxLimit": 8},
+        {"code": "166004", "name": "Chick Peas Dry", "unit": "kg", "maxLimit": 12},
+        {"code": "166007", "name": "Fava Beans Crushed Dry", "unit": "kg", "maxLimit": 10},
+        {"code": "166008", "name": "Fava Beans Dry Local", "unit": "kg", "maxLimit": 12},
+        {"code": "166021", "name": "Freek", "unit": "kg", "maxLimit": 8},
+        {"code": "166016", "name": "Sesame Seeds", "unit": "kg", "maxLimit": 5},
+        {"code": "166018", "name": "Wheat Whole", "unit": "kg", "maxLimit": 10},
+        {"code": "166019", "name": "White Beans", "unit": "kg", "maxLimit": 12},
+        {"code": "166020", "name": "Yellow Lentil", "unit": "kg", "maxLimit": 10}
+      ]
+    },
+    {
+      "category": "🍵 Tea & Coffee",
+      "icon": "🍵",
+      "items": [
+        {"code": "180052", "name": "Tea Ahmed Chamomile", "unit": "20 bags", "maxLimit": 6},
+        {"code": "180003", "name": "Tea Ahmed Earl Grey", "unit": "100 bags", "maxLimit": 5},
+        {"code": "180004", "name": "Tea Ahmed English Breakfast", "unit": "100 bags", "maxLimit": 5},
+        {"code": "180054", "name": "Tea Ahmed Green Jasmine", "unit": "20 bags", "maxLimit": 6},
+        {"code": "180153", "name": "Tea Ahmed Green Mint", "unit": "100 bags", "maxLimit": 5},
+        {"code": "180152", "name": "Tea Ahmed Green Pure", "unit": "100 bags", "maxLimit": 5},
+        {"code": "180029", "name": "Tea Lipton Staff", "unit": "kg", "maxLimit": 5},
+        {"code": "180030", "name": "Tea Lipton With Envelope", "unit": "100 bags", "maxLimit": 8},
+        {"code": "180002", "name": "Hibiscus", "unit": "kg", "maxLimit": 3},
+        {"code": "181018", "name": "Nescafe Classic", "unit": "50 bags", "maxLimit": 8}
+      ]
+    },
+    {
+      "category": "🍹 Juices & Beverages",
+      "icon": "🍹",
+      "items": [
+        {"code": "191007", "name": "Juice Powder Source Mango", "unit": "2.25kg pkt", "maxLimit": 3},
+        {"code": "191008", "name": "Juice Powder Source Orange", "unit": "2.25kg pkt", "maxLimit": 3},
+        {"code": "191009", "name": "Juice Powder Source Pineapple", "unit": "2.25kg pkt", "maxLimit": 3},
+        {"code": "191015", "name": "Sobia Powder", "unit": "kg", "maxLimit": 5}
+      ]
+    },
+    {
+      "category": "🍯 Jams, Honey & Spreads",
+      "icon": "🍯",
+      "items": [
+        {"code": "177033", "name": "Jam Strawberry", "unit": "5kg gal", "maxLimit": 2},
+        {"code": "177037", "name": "Jam Portion Figs Hero", "unit": "144pc box", "maxLimit": 2},
+        {"code": "177028", "name": "Jam Portion Strawberry Hero", "unit": "144pc box", "maxLimit": 2},
+        {"code": "177023", "name": "Jam Fig", "unit": "5kg gal", "maxLimit": 2},
+        {"code": "177036", "name": "Jam Apricot Portion", "unit": "144pc box", "maxLimit": 2},
+        {"code": "177018", "name": "Jam Apricot", "unit": "5kg gal", "maxLimit": 2},
+        {"code": "177011", "name": "Honey Bee Portion", "unit": "144pc box", "maxLimit": 2},
+        {"code": "177003", "name": "Halawa Tahine", "unit": "4kg tin", "maxLimit": 2}
+      ]
+    },
+    {
+      "category": "🍬 Sugar & Sweeteners",
+      "icon": "🍬",
+      "items": [
+        {"code": "178010", "name": "Sugar Crystal", "unit": "kg", "maxLimit": 10}
+      ]
+    }
+  ]
+}
