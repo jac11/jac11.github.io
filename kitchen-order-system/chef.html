@@ -6,7 +6,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Chef Dashboard - Kitchen Order System</title>
+<title>Chef Dashboard - Full Items View</title>
 
 <style>
 * {
@@ -174,7 +174,7 @@ body {
     margin-top: 4px;
 }
 
-select, input {
+input {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #ddd;
@@ -183,7 +183,7 @@ select, input {
     background: white;
 }
 
-select:focus, input:focus {
+input:focus {
     outline: none;
     border-color: #3498db;
 }
@@ -509,21 +509,9 @@ select:focus, input:focus {
     background: #7f8c8d;
 }
 
-/* Scrollable items list with search */
-.items-search-bar {
-    margin-bottom: 12px;
-}
-
-.items-search-bar input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 14px;
-}
-
+/* Full scrollable items list - NO search limit, ALL items visible */
 .items-scroll-container {
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
     border: 1px solid #eef2f6;
     border-radius: 12px;
@@ -543,7 +531,7 @@ select:focus, input:focus {
     align-items: center;
     background: white;
     border-radius: 10px;
-    padding: 10px 12px;
+    padding: 12px 14px;
     border: 1px solid #e9ecef;
     transition: all 0.2s;
     cursor: pointer;
@@ -569,7 +557,7 @@ select:focus, input:focus {
     font-size: 0.7rem;
     color: #7f8c8d;
     font-family: monospace;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .item-meta {
@@ -581,36 +569,39 @@ select:focus, input:focus {
 
 .item-unit {
     background: #ecf0f1;
-    padding: 2px 6px;
-    border-radius: 12px;
+    padding: 3px 8px;
+    border-radius: 20px;
     font-size: 0.65rem;
+    font-weight: 500;
 }
 
 .item-max {
     font-size: 0.65rem;
     color: #e67e22;
+    margin-top: 4px;
 }
 
 .add-icon {
     background: #27ae60;
     color: white;
-    width: 28px;
-    height: 28px;
-    border-radius: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
 }
 
-.scroll-hint {
+.scroll-info {
     text-align: center;
-    font-size: 10px;
-    color: #94a3b8;
-    padding: 6px;
-    border-top: 1px solid #eef2f6;
-    margin-top: 4px;
+    font-size: 11px;
+    color: #5a6e8a;
+    padding: 8px;
+    background: #f1f5f9;
+    border-radius: 0 0 12px 12px;
+    font-weight: 500;
 }
 
 @media screen and (min-width: 769px) {
@@ -641,12 +632,13 @@ select:focus, input:focus {
 
 .loading-spinner {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border: 2px solid #f3f3f3;
     border-top: 2px solid #3498db;
     border-radius: 50%;
     animation: spin 1s linear infinite;
+    margin-right: 8px;
 }
 
 @keyframes spin {
@@ -661,7 +653,7 @@ select:focus, input:focus {
     <div class="header-content">
         <div class="logo">
             <span class="logo-icon">🍳</span>
-            <span>Kitchen Order <span>| Chef</span></span>
+            <span>Kitchen Order <span>| Chef (All Items)</span></span>
         </div>
         <div class="header-buttons">
             <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
@@ -681,9 +673,7 @@ select:focus, input:focus {
 <div class="sync-status" id="syncStatus">🔄 Connecting...</div>
 
 <script>
-// ========================
-// KITCHEN PASSWORD PROTECTION
-// ========================
+// Kitchen passwords
 const kitchenPasswords = {
     "Hot Kitchen": "hot123",
     "Cold Kitchen": "cold123", 
@@ -703,10 +693,9 @@ let allRequests = [];
 let chefNames = {};
 let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
-// Store the full items list per kitchen for filtering
 let kitchenItemsCache = {};
 
-// ============ LOAD ITEMS FROM JSON ============
+// Load items from JSON - show ALL items, no truncation
 async function loadItemsFromJSON() {
     return new Promise(async (resolve, reject) => {
         if (allItems) {
@@ -720,14 +709,15 @@ async function loadItemsFromJSON() {
             const response = await fetch('items.json');
             const data = await response.json();
             allItems = data.items;
-            console.log(`✅ Loaded ${allItems.length} items from JSON`);
+            console.log(`✅ Loaded ${allItems.length} total items from JSON`);
             
-            // Cache items per kitchen
+            // Cache items per kitchen - ALL items, no limit
             kitchens.forEach(kitchen => {
                 kitchenItemsCache[kitchen] = allItems.filter(i => i.section === kitchen);
+                console.log(`📁 ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
             });
             
-            showToast(`✅ ${allItems.length} items loaded!`);
+            showToast(`✅ ${allItems.length} total items loaded!`);
             resolve(allItems);
         } catch (error) {
             console.error("Failed to load items:", error);
@@ -841,8 +831,7 @@ function verifyKitchenPassword() {
     }
 }
 
-// ============ FIREBASE FUNCTIONS ============
-
+// Firebase functions
 async function loadRequestsFromFirebase() {
     try {
         const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
@@ -881,7 +870,7 @@ async function manualRefresh() {
     }
 }
 
-// ============ RENDER SCROLLABLE ITEMS LIST (ALL ITEMS WITH SEARCH) ============
+// Render ALL items for kitchen - NO SEARCH, NO LIMIT, just scroll
 async function renderItemsList(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const container = document.getElementById(`itemsListContainer_${kitchenId}`);
@@ -904,67 +893,24 @@ async function renderItemsList(kitchen) {
         return;
     }
     
-    // Store full items list for filtering
-    const fullItems = [...items].sort((a,b) => a.name.localeCompare(b.name));
+    // Sort items alphabetically by name
+    const sortedItems = [...items].sort((a,b) => a.name.localeCompare(b.name));
     
-    // Create search input and scrollable container
-    container.innerHTML = `
-        <div class="items-search-bar">
-            <input type="text" id="searchItems_${kitchenId}" placeholder="🔍 Filter items by name or code..." onkeyup="filterItemsList('${kitchen}')">
-        </div>
-        <div id="itemsScroll_${kitchenId}" class="items-scroll-container">
-            <div class="items-grid" id="itemsGrid_${kitchenId}"></div>
-            <div id="scrollHint_${kitchenId}" class="scroll-hint"></div>
-        </div>
+    // Create scrollable container with ALL items (no search bar, no truncation)
+    let html = `
+        <div class="items-scroll-container">
+            <div class="items-grid" id="itemsGrid_${kitchenId}">
     `;
     
-    // Store items data for filtering
-    window[`kitchenItemsData_${kitchenId}`] = fullItems;
-    
-    // Render all items initially
-    renderFilteredItems(kitchen, fullItems);
-}
-
-function filterItemsList(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const searchInput = document.getElementById(`searchItems_${kitchenId}`);
-    const searchTerm = searchInput ? searchInput.value.toLowerCase() : "";
-    const itemsData = window[`kitchenItemsData_${kitchenId}`] || [];
-    
-    let filtered = itemsData;
-    if (searchTerm) {
-        filtered = itemsData.filter(item => 
-            item.name.toLowerCase().includes(searchTerm) || 
-            item.code.toLowerCase().includes(searchTerm)
-        );
-    }
-    
-    renderFilteredItems(kitchen, filtered);
-}
-
-function renderFilteredItems(kitchen, items) {
-    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const gridContainer = document.getElementById(`itemsGrid_${kitchenId}`);
-    const hintContainer = document.getElementById(`scrollHint_${kitchenId}`);
-    
-    if (!gridContainer) return;
-    
-    if (items.length === 0) {
-        gridContainer.innerHTML = '<div class="empty-state" style="padding:20px;">🔍 No matching items found</div>';
-        if (hintContainer) hintContainer.innerHTML = '';
-        return;
-    }
-    
-    let html = '';
-    items.forEach(item => {
+    sortedItems.forEach(item => {
         html += `
-            <div class="item-row" onclick="quickAddItemFromList('${kitchen}', '${item.code}', ${item.maxLimit}, '${item.unit}', '${escapeHtml(item.name)}')">
+            <div class="item-row" onclick="quickAddItem('${kitchen}', '${item.code}', ${item.maxLimit}, '${item.unit}', '${escapeHtml(item.name)}')">
                 <div class="item-info">
                     <div class="item-name">${escapeHtml(item.name)}</div>
                     <div class="item-code">${item.code}</div>
                 </div>
                 <div class="item-meta">
-                    <span class="item-unit">${item.unit}</span>
+                    <div class="item-unit">${item.unit}</div>
                     <div class="item-max">max ${item.maxLimit}</div>
                 </div>
                 <div class="add-icon">+</div>
@@ -972,14 +918,13 @@ function renderFilteredItems(kitchen, items) {
         `;
     });
     
-    gridContainer.innerHTML = html;
+    html += `
+            </div>
+            <div class="scroll-info">📜 Showing all ${sortedItems.length} items • Scroll to see more • Click any item to add</div>
+        </div>
+    `;
     
-    if (hintContainer) {
-        const showingText = items.length === (window[`kitchenItemsData_${kitchenId}`] || []).length ? 
-            `📜 Showing all ${items.length} items • Click any item to add` : 
-            `📜 Showing ${items.length} of ${(window[`kitchenItemsData_${kitchenId}`] || []).length} items`;
-        hintContainer.innerHTML = showingText;
-    }
+    container.innerHTML = html;
 }
 
 function escapeHtml(str) {
@@ -992,7 +937,7 @@ function escapeHtml(str) {
     });
 }
 
-function quickAddItemFromList(kitchen, code, maxLimit, unit, itemName) {
+function quickAddItem(kitchen, code, maxLimit, unit, itemName) {
     const chefName = chefNames[kitchen];
     if(!chefName) {
         showToast("⚠️ Please enter chef name first");
@@ -1174,7 +1119,7 @@ function loadMyRequests(kitchen) {
                         itemStatus = "⏳ Pending";
                         itemValue = "Waiting...";
                     }
-                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}<\/td></tr>`;
                 });
                 itemsHtml += `</tbody></table>`;
                 
@@ -1282,20 +1227,19 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📦 Store Items <span style="font-size:11px; font-weight:normal; color:#666;">(Click any item to add to cart)</span></h3>
+                <h3>📦 All Store Items <span style="font-size:11px; font-weight:normal;">(Click any item to add to cart)</span></h3>
                 <div id="itemsListContainer_${id}"></div>
             </div>
             <div class="card">
                 <h3>🛒 Current Request</h3>
                 <div class="cart-stats">
-                    <span>📦 Total: <strong id="totalItems_${id}">0</strong></span>
+                    <span>📦 Total Qty: <strong id="totalItems_${id}">0</strong></span>
                     <span>📋 Items: <strong id="lineCount_${id}">0</strong></span>
                 </div>
                 <div class="desktop-table-view">
                     <div class="table-wrapper">
                         <table class="cart-table">
-                            <thead></table><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr>
-                            </thead>
+                            <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
                             <tbody id="cartTableDesktop_${id}"></tbody>
                         </table>
                     </div>
