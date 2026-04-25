@@ -208,16 +208,6 @@ select:focus, input:focus {
 .btn-danger { background: #e74c3c; color: white; }
 .btn-warning { background: #f39c12; color: white; }
 
-.search-add-row {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.search-add-row .input-group {
-    margin-bottom: 0;
-}
-
 .button-group {
     display: flex;
     flex-direction: column;
@@ -519,12 +509,111 @@ select:focus, input:focus {
     background: #7f8c8d;
 }
 
+/* Scrollable items list with search */
+.items-search-bar {
+    margin-bottom: 12px;
+}
+
+.items-search-bar input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.items-scroll-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #eef2f6;
+    border-radius: 12px;
+    background: #fafcfc;
+}
+
+.items-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+}
+
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.item-row:hover {
+    background: #e8f4fd;
+    transform: translateX(2px);
+    border-color: #3498db;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #2c3e50;
+}
+
+.item-code {
+    font-size: 0.7rem;
+    color: #7f8c8d;
+    font-family: monospace;
+    margin-top: 2px;
+}
+
+.item-meta {
+    text-align: right;
+    font-size: 0.7rem;
+    color: #666;
+    margin-right: 12px;
+}
+
+.item-unit {
+    background: #ecf0f1;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+}
+
+.item-max {
+    font-size: 0.65rem;
+    color: #e67e22;
+}
+
+.add-icon {
+    background: #27ae60;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.scroll-hint {
+    text-align: center;
+    font-size: 10px;
+    color: #94a3b8;
+    padding: 6px;
+    border-top: 1px solid #eef2f6;
+    margin-top: 4px;
+}
+
 @media screen and (min-width: 769px) {
-    .search-add-row {
-        flex-direction: row;
-        align-items: flex-end;
-    }
-    
     .button-group {
         flex-direction: row;
     }
@@ -608,11 +697,14 @@ const kitchenPasswords = {
 let unlockedKitchens = {};
 let currentKitchen = null;
 let pendingKitchen = null;
-let allItems = null;           // all items from JSON
+let allItems = null;
 let kitchenData = {};
 let allRequests = [];
 let chefNames = {};
 let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
+
+// Store the full items list per kitchen for filtering
+let kitchenItemsCache = {};
 
 // ============ LOAD ITEMS FROM JSON ============
 async function loadItemsFromJSON() {
@@ -629,6 +721,12 @@ async function loadItemsFromJSON() {
             const data = await response.json();
             allItems = data.items;
             console.log(`✅ Loaded ${allItems.length} items from JSON`);
+            
+            // Cache items per kitchen
+            kitchens.forEach(kitchen => {
+                kitchenItemsCache[kitchen] = allItems.filter(i => i.section === kitchen);
+            });
+            
             showToast(`✅ ${allItems.length} items loaded!`);
             resolve(allItems);
         } catch (error) {
@@ -640,8 +738,7 @@ async function loadItemsFromJSON() {
 }
 
 function getItemsForKitchen(kitchen) { 
-    if (!allItems) return [];
-    return allItems.filter(i => i.section === kitchen); 
+    return kitchenItemsCache[kitchen] || [];
 }
 
 function loadChefNames() {
@@ -784,96 +881,141 @@ async function manualRefresh() {
     }
 }
 
-// ============ ITEM FUNCTIONS ============
-
-async function loadItems(kitchen) {
+// ============ RENDER SCROLLABLE ITEMS LIST (ALL ITEMS WITH SEARCH) ============
+async function renderItemsList(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const chefName = chefNames[kitchen];
-    const select = document.getElementById(`itemSelect_${kitchenId}`);
-    const search = document.getElementById(`searchItem_${kitchenId}`)?.value.toLowerCase() || "";
+    const container = document.getElementById(`itemsListContainer_${kitchenId}`);
+    if (!container) return;
     
-    if(!chefName) { 
-        if(select) select.innerHTML = "<option>Enter chef name first</option>"; 
-        return; 
+    const chefName = chefNames[kitchen];
+    if(!chefName) {
+        container.innerHTML = '<div class="empty-state">⚠️ Please enter chef name above to see items</div>';
+        return;
     }
     
     if (!allItems) {
-        if(select) {
-            select.innerHTML = "<option>⏳ Loading inventory...</option>";
-            select.disabled = true;
-        }
+        container.innerHTML = '<div class="empty-state"><span class="loading-spinner"></span> Loading items...</div>';
         await loadItemsFromJSON();
-        if(select) select.disabled = false;
     }
     
     let items = getItemsForKitchen(kitchen);
     if (!items || items.length === 0) {
-        if(select) select.innerHTML = "<option>No items found for this kitchen</option>";
+        container.innerHTML = '<div class="empty-state">📭 No items found for this kitchen</div>';
         return;
     }
     
-    let filtered = search ? items.filter(i => i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search)) : items;
+    // Store full items list for filtering
+    const fullItems = [...items].sort((a,b) => a.name.localeCompare(b.name));
     
-    const MAX_ITEMS = 30;
-    const hasMore = filtered.length > MAX_ITEMS;
-    const displayItems = filtered.slice(0, MAX_ITEMS);
+    // Create search input and scrollable container
+    container.innerHTML = `
+        <div class="items-search-bar">
+            <input type="text" id="searchItems_${kitchenId}" placeholder="🔍 Filter items by name or code..." onkeyup="filterItemsList('${kitchen}')">
+        </div>
+        <div id="itemsScroll_${kitchenId}" class="items-scroll-container">
+            <div class="items-grid" id="itemsGrid_${kitchenId}"></div>
+            <div id="scrollHint_${kitchenId}" class="scroll-hint"></div>
+        </div>
+    `;
     
-    if(select) {
-        select.innerHTML = "<option value=''>-- Select an item --</option>";
-        displayItems.forEach(i => { 
-            let shortName = i.name.length > 40 ? i.name.substring(0, 37) + "..." : i.name;
-            select.innerHTML += `<option value="${i.code}">${i.code} - ${shortName} (${i.unit}) - Max: ${i.maxLimit}</option>`; 
-        });
-        
-        if (hasMore) {
-            select.innerHTML += `<option disabled style="background:#f5f5f5; color:#666;">📌 Use search to find more (${filtered.length - MAX_ITEMS}+ items)</option>`;
-        }
+    // Store items data for filtering
+    window[`kitchenItemsData_${kitchenId}`] = fullItems;
+    
+    // Render all items initially
+    renderFilteredItems(kitchen, fullItems);
+}
+
+function filterItemsList(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const searchInput = document.getElementById(`searchItems_${kitchenId}`);
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : "";
+    const itemsData = window[`kitchenItemsData_${kitchenId}`] || [];
+    
+    let filtered = itemsData;
+    if (searchTerm) {
+        filtered = itemsData.filter(item => 
+            item.name.toLowerCase().includes(searchTerm) || 
+            item.code.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    renderFilteredItems(kitchen, filtered);
+}
+
+function renderFilteredItems(kitchen, items) {
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const gridContainer = document.getElementById(`itemsGrid_${kitchenId}`);
+    const hintContainer = document.getElementById(`scrollHint_${kitchenId}`);
+    
+    if (!gridContainer) return;
+    
+    if (items.length === 0) {
+        gridContainer.innerHTML = '<div class="empty-state" style="padding:20px;">🔍 No matching items found</div>';
+        if (hintContainer) hintContainer.innerHTML = '';
+        return;
+    }
+    
+    let html = '';
+    items.forEach(item => {
+        html += `
+            <div class="item-row" onclick="quickAddItemFromList('${kitchen}', '${item.code}', ${item.maxLimit}, '${item.unit}', '${escapeHtml(item.name)}')">
+                <div class="item-info">
+                    <div class="item-name">${escapeHtml(item.name)}</div>
+                    <div class="item-code">${item.code}</div>
+                </div>
+                <div class="item-meta">
+                    <span class="item-unit">${item.unit}</span>
+                    <div class="item-max">max ${item.maxLimit}</div>
+                </div>
+                <div class="add-icon">+</div>
+            </div>
+        `;
+    });
+    
+    gridContainer.innerHTML = html;
+    
+    if (hintContainer) {
+        const showingText = items.length === (window[`kitchenItemsData_${kitchenId}`] || []).length ? 
+            `📜 Showing all ${items.length} items • Click any item to add` : 
+            `📜 Showing ${items.length} of ${(window[`kitchenItemsData_${kitchenId}`] || []).length} items`;
+        hintContainer.innerHTML = showingText;
     }
 }
 
-function filterItems(kitchen) { loadItems(kitchen); }
+function escapeHtml(str) {
+    if(!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if(m === '&') return '&amp;';
+        if(m === '<') return '&lt;';
+        if(m === '>') return '&gt;';
+        return m;
+    });
+}
 
-function addItem(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+function quickAddItemFromList(kitchen, code, maxLimit, unit, itemName) {
     const chefName = chefNames[kitchen];
-    
     if(!chefName) {
-        document.getElementById(`chefNameError_${kitchenId}`).innerHTML = "Chef name is required";
-        showToast("⚠️ Please enter chef name");
-        return;
-    } else {
-        document.getElementById(`chefNameError_${kitchenId}`).innerHTML = "";
-    }
-    
-    const code = document.getElementById(`itemSelect_${kitchenId}`).value;
-    const qty = parseFloat(document.getElementById(`qty_${kitchenId}`).value);
-    
-    if(!code || code === "" || code === "No items found" || code === "-- Select an item --") {
-        showToast("Please select an item");
+        showToast("⚠️ Please enter chef name first");
         return;
     }
     
-    const items = getItemsForKitchen(kitchen);
-    const item = items.find(i => i.code === code);
+    const itemsForKitchen = getItemsForKitchen(kitchen);
+    const item = itemsForKitchen.find(i => i.code === code);
     if(!item) return;
     
-    if(qty > item.maxLimit) {
-        showToast(`⚠️ Cannot add more than ${item.maxLimit} ${item.unit} at once`);
-        return;
-    }
-    
+    let qty = 1;
     const existing = kitchenData[kitchen].cart.find(i => i.code === code);
     let newTotalQty = (existing ? existing.qty : 0) + qty;
     
     if(newTotalQty > item.maxLimit) {
         const remaining = item.maxLimit - (existing ? existing.qty : 0);
-        showToast(`⚠️ Cannot add ${qty} ${item.unit}. Only ${remaining} ${item.unit} remaining (Max: ${item.maxLimit})`);
+        showToast(`⚠️ Max limit ${item.maxLimit} ${item.unit}. Only ${remaining} left`);
         return;
     }
     
     if(existing) {
         existing.qty += qty;
-        showToast(`✓ Updated ${item.name}: ${existing.qty}/${item.maxLimit} ${item.unit}`);
+        showToast(`✓ +1 ${item.name}: ${existing.qty}/${item.maxLimit} ${item.unit}`);
     } else {
         kitchenData[kitchen].cart.push({
             code: item.code, name: item.name, unit: item.unit, 
@@ -882,7 +1024,6 @@ function addItem(kitchen) {
         showToast(`✓ Added ${item.name} (${qty}/${item.maxLimit} ${item.unit})`);
     }
     
-    document.getElementById(`qty_${kitchenId}`).value = "1";
     renderCart(kitchen);
     saveCart();
 }
@@ -898,14 +1039,14 @@ function renderCart(kitchen) {
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
-            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</td></tr>';
+            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</div>';
         } else {
             desktopBody.innerHTML = "";
             cart.forEach((item, index) => {
                 desktopBody.innerHTML += `
                     <tr>
                         <td>${item.code}</td>
-                        <td><strong>${item.name}</strong></td>
+                        <td><strong>${escapeHtml(item.name)}</strong></td>
                         <td>${item.qty}</td>
                         <td>${item.unit}</td>
                         <td>${item.qty}/${item.maxLimit}</td>
@@ -929,7 +1070,7 @@ function renderCart(kitchen) {
                             <span class="request-id">${item.code}</span>
                             <button class="remove-btn" onclick="removeItem('${kitchen}', ${index})">Remove</button>
                         </div>
-                        <div><strong>${item.name}</strong></div>
+                        <div><strong>${escapeHtml(item.name)}</strong></div>
                         <div class="request-date">Quantity: ${item.qty} / ${item.maxLimit} ${item.unit}</div>
                     </div>
                 `;
@@ -1033,7 +1174,7 @@ function loadMyRequests(kitchen) {
                         itemStatus = "⏳ Pending";
                         itemValue = "Waiting...";
                     }
-                    itemsHtml += `<tr><td><strong>${item.name}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
+                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
                 });
                 itemsHtml += `</tbody></table>`;
                 
@@ -1046,50 +1187,6 @@ function loadMyRequests(kitchen) {
                         <div style="background:#f8f9fa; padding:8px; border-radius:8px; margin-bottom:10px; font-size:0.7rem;">
                             <span>📅 ${req.submittedAt}</span>
                         </div>
-                        ${itemsHtml}
-                    </div>
-                `;
-            });
-        }
-    }
-    
-    const mobileContainer = document.getElementById(`myRequestsMobile_${kitchenId}`);
-    if(mobileContainer) {
-        if(myRequests.length === 0) {
-            mobileContainer.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
-        } else {
-            mobileContainer.innerHTML = "";
-            [...myRequests].reverse().forEach(req => {
-                const status = getOverallStatus(req.items);
-                const statusClass = status === "pending" ? "pending" : (status === "approved" ? "approved" : "rejected");
-                const statusBadgeClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
-                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
-                
-                let itemsHtml = '<div class="request-items-list">';
-                req.items.forEach(item => {
-                    let statusIcon = "";
-                    let approvedText = "";
-                    if(item.status === "approved") {
-                        statusIcon = "✅";
-                        approvedText = ` → ${item.approvedQty} ${item.unit} approved`;
-                    } else if(item.status === "rejected") {
-                        statusIcon = "❌";
-                        approvedText = ` → ${item.rejectionReason || "Rejected"}`;
-                    } else {
-                        statusIcon = "⏳";
-                        approvedText = ` → Waiting`;
-                    }
-                    itemsHtml += `<div class="request-item-detail"><span class="request-item-name">${item.name}</span><span class="request-item-qty">${item.originalQty} ${item.unit}${approvedText} ${statusIcon}</span></div>`;
-                });
-                itemsHtml += '</div>';
-                
-                mobileContainer.innerHTML += `
-                    <div class="request-item ${statusClass}">
-                        <div class="request-header">
-                            <span class="request-id">${req.requestId}</span>
-                            <span class="status-badge ${statusBadgeClass}">${statusText}</span>
-                        </div>
-                        <div class="request-date">📅 ${req.submittedAt}</div>
                         ${itemsHtml}
                     </div>
                 `;
@@ -1129,24 +1226,14 @@ function logout() {
     if(confirm("Are you sure you want to logout? This will clear all unlocked kitchens and you will need to enter passwords again.")) {
         unlockedKitchens = {};
         localStorage.removeItem("unlockedKitchens");
-        
-        kitchens.forEach(kitchen => {
-            localStorage.removeItem(`kitchen_password_${kitchen}`);
-        });
-        
+        kitchens.forEach(kitchen => { localStorage.removeItem(`kitchen_password_${kitchen}`); });
         kitchens.forEach(k => { kitchenData[k].cart = []; renderCart(k); });
         saveCart();
-        
         currentKitchen = null;
-        
         document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        
         showToast("Logged out. All passwords cleared.");
-        
-        setTimeout(() => {
-            window.location.href = "index.html";
-        }, 1500);
+        setTimeout(() => { window.location.href = "index.html"; }, 1500);
     }
 }
 
@@ -1155,9 +1242,7 @@ async function selectKitchen(kitchen) {
     
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
-        if(btn.innerText.includes(kitchen)) {
-            btn.classList.add('active');
-        }
+        if(btn.innerText.includes(kitchen)) btn.classList.add('active');
     });
     
     document.querySelectorAll('.kitchen-page').forEach(page => page.classList.remove('active-page'));
@@ -1168,7 +1253,8 @@ async function selectKitchen(kitchen) {
     const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`);
     if(chefInput) chefInput.value = chefNames[kitchen] || "";
     
-    await loadItems(kitchen);
+    await loadItemsFromJSON();
+    await renderItemsList(kitchen);
     renderCart(kitchen);
     loadMyRequests(kitchen);
 }
@@ -1178,7 +1264,7 @@ function onChefNameChange(kitchen) {
     const newName = document.getElementById(`chefName_${kitchenId}`).value.trim();
     chefNames[kitchen] = newName;
     saveChefNames();
-    loadItems(kitchen);
+    renderItemsList(kitchen);
     loadMyRequests(kitchen);
 }
 
@@ -1196,22 +1282,8 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📦 Add Store Items</h3>
-                <div class="search-add-row">
-                    <div class="input-group">
-                        <label>🔍 Search</label>
-                        <input type="text" id="searchItem_${id}" placeholder="Search items..." onkeyup="filterItems('${kitchen}')">
-                    </div>
-                    <div class="input-group">
-                        <label>Select Item</label>
-                        <select id="itemSelect_${id}"></select>
-                    </div>
-                    <div class="input-group">
-                        <label>Quantity</label>
-                        <input type="number" id="qty_${id}" min="1" value="1">
-                    </div>
-                    <button class="btn btn-primary" onclick="addItem('${kitchen}')">+ Add Item</button>
-                </div>
+                <h3>📦 Store Items <span style="font-size:11px; font-weight:normal; color:#666;">(Click any item to add to cart)</span></h3>
+                <div id="itemsListContainer_${id}"></div>
             </div>
             <div class="card">
                 <h3>🛒 Current Request</h3>
@@ -1222,7 +1294,8 @@ function createKitchenPage(kitchen) {
                 <div class="desktop-table-view">
                     <div class="table-wrapper">
                         <table class="cart-table">
-                            <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead>
+                            <thead></table><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr>
+                            </thead>
                             <tbody id="cartTableDesktop_${id}"></tbody>
                         </table>
                     </div>
