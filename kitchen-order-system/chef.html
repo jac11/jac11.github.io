@@ -6,7 +6,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Chef Dashboard - Full Items View</title>
+<title>Chef Dashboard - Full Items with Quantity</title>
 
 <style>
 * {
@@ -509,7 +509,7 @@ input:focus {
     background: #7f8c8d;
 }
 
-/* Full scrollable items list - NO search limit, ALL items visible */
+/* Item card with quantity picker */
 .items-scroll-container {
     max-height: 500px;
     overflow-y: auto;
@@ -521,35 +521,39 @@ input:focus {
 .items-grid {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 10px;
+    gap: 8px;
+    padding: 12px;
 }
 
-.item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.item-card {
     background: white;
-    border-radius: 10px;
-    padding: 12px 14px;
+    border-radius: 12px;
+    padding: 12px;
     border: 1px solid #e9ecef;
     transition: all 0.2s;
-    cursor: pointer;
 }
 
-.item-row:hover {
-    background: #e8f4fd;
-    transform: translateX(2px);
+.item-card:hover {
+    background: #f8fafc;
     border-color: #3498db;
 }
 
+.item-main-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .item-info {
-    flex: 1;
+    flex: 2;
+    min-width: 150px;
 }
 
 .item-name {
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #2c3e50;
 }
 
@@ -562,36 +566,80 @@ input:focus {
 
 .item-meta {
     text-align: right;
-    font-size: 0.7rem;
-    color: #666;
-    margin-right: 12px;
+    min-width: 100px;
 }
 
 .item-unit {
     background: #ecf0f1;
     padding: 3px 8px;
     border-radius: 20px;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 500;
+    display: inline-block;
 }
 
 .item-max {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     color: #e67e22;
     margin-top: 4px;
 }
 
-.add-icon {
-    background: #27ae60;
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 25px;
+.item-actions {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.qty-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 5px 10px;
+    border-radius: 30px;
+}
+
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 20px;
+    border: none;
+    background: white;
     font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #3498db;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.qty-btn:hover {
+    background: #3498db;
+    color: white;
+}
+
+.qty-value {
+    font-weight: 600;
+    font-size: 1rem;
+    min-width: 35px;
+    text-align: center;
+}
+
+.add-item-btn {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-item-btn:hover {
+    background: #219a52;
+    transform: scale(1.02);
 }
 
 .scroll-info {
@@ -653,7 +701,7 @@ input:focus {
     <div class="header-content">
         <div class="logo">
             <span class="logo-icon">🍳</span>
-            <span>Kitchen Order <span>| Chef (All Items)</span></span>
+            <span>Kitchen Order <span>| Chef</span></span>
         </div>
         <div class="header-buttons">
             <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
@@ -694,8 +742,10 @@ let chefNames = {};
 let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
 let kitchenItemsCache = {};
+// Store selected quantities per item for the UI
+let selectedQuantities = {};
 
-// Load items from JSON - show ALL items, no truncation
+// Load items from JSON
 async function loadItemsFromJSON() {
     return new Promise(async (resolve, reject) => {
         if (allItems) {
@@ -711,7 +761,6 @@ async function loadItemsFromJSON() {
             allItems = data.items;
             console.log(`✅ Loaded ${allItems.length} total items from JSON`);
             
-            // Cache items per kitchen - ALL items, no limit
             kitchens.forEach(kitchen => {
                 kitchenItemsCache[kitchen] = allItems.filter(i => i.section === kitchen);
                 console.log(`📁 ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
@@ -838,7 +887,9 @@ async function loadRequestsFromFirebase() {
         allRequests = [];
         snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
         console.log("✅ Loaded:", allRequests.length, "requests");
-        if (currentKitchen) loadMyRequests(currentKitchen);
+        if (currentKitchen) {
+            loadMyRequests(currentKitchen);
+        }
         document.getElementById("syncStatus").innerHTML = "✅ Connected • " + allRequests.length + " orders";
         document.getElementById("syncStatus").style.background = "#e8f5e9";
         document.getElementById("syncStatus").style.color = "#27ae60";
@@ -855,6 +906,9 @@ async function saveRequestToFirebase(request) {
         await db.collection("kitchen_requests").add(request);
         showToast("✅ Request saved to cloud!");
         await loadRequestsFromFirebase();
+        if (currentKitchen) {
+            loadMyRequests(currentKitchen);
+        }
     } catch (error) {
         console.error("Save error:", error);
         showToast("❌ Error saving to cloud");
@@ -870,7 +924,7 @@ async function manualRefresh() {
     }
 }
 
-// Render ALL items for kitchen - NO SEARCH, NO LIMIT, just scroll
+// Render items with quantity picker
 async function renderItemsList(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const container = document.getElementById(`itemsListContainer_${kitchenId}`);
@@ -893,38 +947,113 @@ async function renderItemsList(kitchen) {
         return;
     }
     
-    // Sort items alphabetically by name
+    // Initialize selected quantities for this kitchen if not exists
+    if (!selectedQuantities[kitchen]) {
+        selectedQuantities[kitchen] = {};
+    }
+    
     const sortedItems = [...items].sort((a,b) => a.name.localeCompare(b.name));
     
-    // Create scrollable container with ALL items (no search bar, no truncation)
     let html = `
         <div class="items-scroll-container">
             <div class="items-grid" id="itemsGrid_${kitchenId}">
     `;
     
     sortedItems.forEach(item => {
+        const currentQty = selectedQuantities[kitchen][item.code] || 1;
         html += `
-            <div class="item-row" onclick="quickAddItem('${kitchen}', '${item.code}', ${item.maxLimit}, '${item.unit}', '${escapeHtml(item.name)}')">
-                <div class="item-info">
-                    <div class="item-name">${escapeHtml(item.name)}</div>
-                    <div class="item-code">${item.code}</div>
+            <div class="item-card">
+                <div class="item-main-row">
+                    <div class="item-info">
+                        <div class="item-name">${escapeHtml(item.name)}</div>
+                        <div class="item-code">${item.code}</div>
+                    </div>
+                    <div class="item-meta">
+                        <span class="item-unit">${item.unit}</span>
+                        <div class="item-max">max ${item.maxLimit}</div>
+                    </div>
+                    <div class="item-actions">
+                        <div class="qty-picker">
+                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', -1, ${item.maxLimit})">-</button>
+                            <span class="qty-value" id="qty_${kitchenId}_${item.code.replace(/[^a-zA-Z0-9]/g, '_')}">${currentQty}</span>
+                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', 1, ${item.maxLimit})">+</button>
+                        </div>
+                        <button class="add-item-btn" onclick="addItemWithQuantity('${kitchen}', '${item.code}', '${escapeHtml(item.name)}', '${item.unit}', ${item.maxLimit})">+ Add</button>
+                    </div>
                 </div>
-                <div class="item-meta">
-                    <div class="item-unit">${item.unit}</div>
-                    <div class="item-max">max ${item.maxLimit}</div>
-                </div>
-                <div class="add-icon">+</div>
             </div>
         `;
     });
     
     html += `
             </div>
-            <div class="scroll-info">📜 Showing all ${sortedItems.length} items • Scroll to see more • Click any item to add</div>
+            <div class="scroll-info">📜 Showing all ${sortedItems.length} items • Select quantity and click Add</div>
         </div>
     `;
     
     container.innerHTML = html;
+}
+
+function changeQuantity(kitchen, code, delta, maxLimit) {
+    if (!selectedQuantities[kitchen]) {
+        selectedQuantities[kitchen] = {};
+    }
+    let current = selectedQuantities[kitchen][code] || 1;
+    let newQty = current + delta;
+    if (newQty < 1) newQty = 1;
+    if (newQty > maxLimit) newQty = maxLimit;
+    selectedQuantities[kitchen][code] = newQty;
+    
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
+    const qtySpan = document.getElementById(`qty_${kitchenId}_${safeCode}`);
+    if (qtySpan) qtySpan.innerText = newQty;
+}
+
+function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
+    const chefName = chefNames[kitchen];
+    if(!chefName) {
+        showToast("⚠️ Please enter chef name first");
+        return;
+    }
+    
+    const qty = selectedQuantities[kitchen]?.[code] || 1;
+    
+    const itemsForKitchen = getItemsForKitchen(kitchen);
+    const item = itemsForKitchen.find(i => i.code === code);
+    if(!item) return;
+    
+    const existing = kitchenData[kitchen].cart.find(i => i.code === code);
+    let newTotalQty = (existing ? existing.qty : 0) + qty;
+    
+    if(newTotalQty > item.maxLimit) {
+        const remaining = item.maxLimit - (existing ? existing.qty : 0);
+        showToast(`⚠️ Max limit ${item.maxLimit} ${item.unit}. Only ${remaining} ${item.unit} remaining`);
+        return;
+    }
+    
+    if(existing) {
+        existing.qty += qty;
+        showToast(`✓ Added ${qty} ${item.name}: now ${existing.qty}/${item.maxLimit} ${item.unit}`);
+    } else {
+        kitchenData[kitchen].cart.push({
+            code: item.code, name: item.name, unit: item.unit, 
+            qty: qty, maxLimit: item.maxLimit
+        });
+        showToast(`✓ Added ${qty} ${item.name} (${qty}/${item.maxLimit} ${item.unit})`);
+    }
+    
+    // Reset quantity picker to 1 after adding
+    if (selectedQuantities[kitchen]) {
+        selectedQuantities[kitchen][code] = 1;
+        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+        const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
+        const qtySpan = document.getElementById(`qty_${kitchenId}_${safeCode}`);
+        if (qtySpan) qtySpan.innerText = "1";
+    }
+    
+    renderCart(kitchen);
+    saveCart();
 }
 
 function escapeHtml(str) {
@@ -935,42 +1064,6 @@ function escapeHtml(str) {
         if(m === '>') return '&gt;';
         return m;
     });
-}
-
-function quickAddItem(kitchen, code, maxLimit, unit, itemName) {
-    const chefName = chefNames[kitchen];
-    if(!chefName) {
-        showToast("⚠️ Please enter chef name first");
-        return;
-    }
-    
-    const itemsForKitchen = getItemsForKitchen(kitchen);
-    const item = itemsForKitchen.find(i => i.code === code);
-    if(!item) return;
-    
-    let qty = 1;
-    const existing = kitchenData[kitchen].cart.find(i => i.code === code);
-    let newTotalQty = (existing ? existing.qty : 0) + qty;
-    
-    if(newTotalQty > item.maxLimit) {
-        const remaining = item.maxLimit - (existing ? existing.qty : 0);
-        showToast(`⚠️ Max limit ${item.maxLimit} ${item.unit}. Only ${remaining} left`);
-        return;
-    }
-    
-    if(existing) {
-        existing.qty += qty;
-        showToast(`✓ +1 ${item.name}: ${existing.qty}/${item.maxLimit} ${item.unit}`);
-    } else {
-        kitchenData[kitchen].cart.push({
-            code: item.code, name: item.name, unit: item.unit, 
-            qty: qty, maxLimit: item.maxLimit
-        });
-        showToast(`✓ Added ${item.name} (${qty}/${item.maxLimit} ${item.unit})`);
-    }
-    
-    renderCart(kitchen);
-    saveCart();
 }
 
 function renderCart(kitchen) {
@@ -1072,9 +1165,16 @@ async function submitRequest(kitchen) {
     renderCart(kitchen);
     saveCart();
     showToast(`✅ Request ${newRequest.requestId} submitted!`);
+    
+    // Refresh requests display immediately
+    await loadRequestsFromFirebase();
+    if (currentKitchen) {
+        loadMyRequests(currentKitchen);
+    }
 }
 
 function getOverallStatus(items) {
+    if(!items || items.length === 0) return "pending";
     if(items.every(i => i.status === "approved")) return "approved";
     if(items.every(i => i.status === "rejected")) return "rejected";
     if(items.some(i => i.status === "approved") && items.some(i => i.status === "rejected")) return "partial";
@@ -1117,9 +1217,9 @@ function loadMyRequests(kitchen) {
                         itemValue = item.rejectionReason || "No stock";
                     } else {
                         itemStatus = "⏳ Pending";
-                        itemValue = "Waiting...";
+                        itemValue = "Waiting for approval...";
                     }
-                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}<\/td></tr>`;
+                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${itemStatus}</td><td>${itemValue}</td></tr>`;
                 });
                 itemsHtml += `</tbody></table>`;
                 
@@ -1132,6 +1232,51 @@ function loadMyRequests(kitchen) {
                         <div style="background:#f8f9fa; padding:8px; border-radius:8px; margin-bottom:10px; font-size:0.7rem;">
                             <span>📅 ${req.submittedAt}</span>
                         </div>
+                        ${itemsHtml}
+                    </div>
+                `;
+            });
+        }
+    }
+    
+    // Mobile view
+    const mobileContainer = document.getElementById(`myRequestsMobile_${kitchenId}`);
+    if(mobileContainer) {
+        if(myRequests.length === 0) {
+            mobileContainer.innerHTML = '<div class="empty-state">📭 No requests submitted yet</div>';
+        } else {
+            mobileContainer.innerHTML = "";
+            [...myRequests].reverse().forEach(req => {
+                const status = getOverallStatus(req.items);
+                const statusClass = status === "pending" ? "pending" : (status === "approved" ? "approved" : "rejected");
+                const statusBadgeClass = status === "pending" ? "status-pending" : (status === "approved" ? "status-approved" : "status-rejected");
+                const statusText = status === "pending" ? "⏳ Pending" : (status === "approved" ? "✅ Approved" : "❌ Rejected");
+                
+                let itemsHtml = '<div class="request-items-list">';
+                req.items.forEach(item => {
+                    let statusIcon = "";
+                    let approvedText = "";
+                    if(item.status === "approved") {
+                        statusIcon = "✅";
+                        approvedText = ` → ${item.approvedQty} ${item.unit} approved`;
+                    } else if(item.status === "rejected") {
+                        statusIcon = "❌";
+                        approvedText = ` → ${item.rejectionReason || "Rejected"}`;
+                    } else {
+                        statusIcon = "⏳";
+                        approvedText = ` → Waiting for approval`;
+                    }
+                    itemsHtml += `<div class="request-item-detail"><span class="request-item-name">${escapeHtml(item.name)}</span><span class="request-item-qty">${item.originalQty} ${item.unit}${approvedText} ${statusIcon}</span></div>`;
+                });
+                itemsHtml += '</div>';
+                
+                mobileContainer.innerHTML += `
+                    <div class="request-item ${statusClass}">
+                        <div class="request-header">
+                            <span class="request-id">${req.requestId}</span>
+                            <span class="status-badge ${statusBadgeClass}">${statusText}</span>
+                        </div>
+                        <div class="request-date">📅 ${req.submittedAt}</div>
                         ${itemsHtml}
                     </div>
                 `;
@@ -1227,7 +1372,7 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📦 All Store Items <span style="font-size:11px; font-weight:normal;">(Click any item to add to cart)</span></h3>
+                <h3>📦 All Store Items <span style="font-size:11px; font-weight:normal;">(Select quantity and click Add)</span></h3>
                 <div id="itemsListContainer_${id}"></div>
             </div>
             <div class="card">
@@ -1252,7 +1397,7 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📜 My Requests</h3>
+                <h3>📜 My Requests <span style="font-size:11px; font-weight:normal;">(Real-time status updates)</span></h3>
                 <div class="desktop-table-view" id="myRequestsDesktop_${id}"></div>
                 <div class="mobile-cards-view" id="myRequestsMobile_${id}"></div>
             </div>
