@@ -723,11 +723,11 @@ const kitchenPasswords = {
     "Staff Kitchen": "staff123"
 };
 
-// Map kitchen display names to JSON filenames
+// CORRECTED FILE MAPPING - based on actual files in your /items/ folder
 const kitchenToFileMap = {
     "Hot Kitchen": "hot-kitchen.json",
     "Cold Kitchen": "cold-kitchen.json",
-    "Pastry / Bakery": "pastry.json",
+    "Pastry / Bakery": "pastry.json",        // You may need to create this file
     "Butchery": "butchery.json",
     "Beach House": "beach-house.json",
     "Nihon Kitchen": "nihon-kitchen.json",
@@ -737,7 +737,7 @@ const kitchenToFileMap = {
 let unlockedKitchens = {};
 let currentKitchen = null;
 let pendingKitchen = null;
-let kitchenItemsCache = {};  // Store items per kitchen
+let kitchenItemsCache = {};
 let kitchenData = {};
 let allRequests = [];
 let chefNames = {};
@@ -748,7 +748,6 @@ let addedItemsStatus = {};
 
 // ============ LOAD ITEMS FROM INDIVIDUAL JSON FILES IN /items/ FOLDER ============
 async function loadItemsForKitchen(kitchen, forceRefresh = false) {
-    // Check cache first
     if (kitchenItemsCache[kitchen] && !forceRefresh) {
         console.log(`Using cached items for ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
         return kitchenItemsCache[kitchen];
@@ -760,7 +759,6 @@ async function loadItemsForKitchen(kitchen, forceRefresh = false) {
         return [];
     }
     
-    // Path: /items/beach-house.json etc.
     const jsonPath = `items/${fileName}`;
     const cacheBuster = new Date().getTime();
     const url = `${jsonPath}?t=${cacheBuster}`;
@@ -772,7 +770,11 @@ async function loadItemsForKitchen(kitchen, forceRefresh = false) {
         const response = await fetch(url);
         
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText} - File not found at ${jsonPath}`);
+            console.warn(`File not found: ${jsonPath} - HTTP ${response.status}`);
+            // Return empty array but don't throw - show helpful message
+            kitchenItemsCache[kitchen] = [];
+            showToast(`⚠️ No items file for ${kitchen}. Create items/${fileName}`);
+            return [];
         }
         
         const data = await response.json();
@@ -781,7 +783,7 @@ async function loadItemsForKitchen(kitchen, forceRefresh = false) {
         let itemsArray = Array.isArray(data) ? data : (data.items || []);
         
         if (!itemsArray.length) {
-            console.warn(`No items found in ${jsonPath}`);
+            console.warn(`No items found in ${jsonPath} - file may be empty`);
         }
         
         // Add section property to each item if missing
@@ -798,7 +800,8 @@ async function loadItemsForKitchen(kitchen, forceRefresh = false) {
         
     } catch (error) {
         console.error(`Error loading ${jsonPath}:`, error);
-        showToast(`❌ Failed to load ${kitchen} items. Check ${jsonPath}`);
+        kitchenItemsCache[kitchen] = [];
+        showToast(`❌ Failed to load ${kitchen} items. Check items/${fileName}`);
         return [];
     }
 }
@@ -815,7 +818,8 @@ async function forceReloadItems() {
         await loadItemsForKitchen(currentKitchen, true);
         await renderItemsList(currentKitchen);
         renderCart(currentKitchen);
-        showToast(`✅ Reloaded ${kitchenItemsCache[currentKitchen]?.length || 0} items for ${currentKitchen}`);
+        const count = kitchenItemsCache[currentKitchen]?.length || 0;
+        showToast(`✅ Reloaded ${count} items for ${currentKitchen}`);
     } else {
         showToast("✅ Cache cleared. Select a kitchen to reload.");
     }
@@ -967,7 +971,13 @@ async function renderItemsList(kitchen) {
     let items = await loadItemsForKitchen(kitchen, false);
     
     if (!items || items.length === 0) {
-        container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen}<br><small>Check items/${kitchenToFileMap[kitchen]}</small></div>`;
+        const fileName = kitchenToFileMap[kitchen];
+        container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen}<br><br>
+        <strong>Expected file:</strong> items/${fileName}<br>
+        <small>Check that the file exists and has the correct format:
+        <pre style="text-align:left; margin-top:10px;">[{"code":"001","name":"Item Name","unit":"kg","maxLimit":10}]</pre>
+        Or: {"items": [{"code":"001","name":"Item Name","unit":"kg","maxLimit":10}]}
+        </small></div>`;
         return;
     }
     
@@ -1256,11 +1266,12 @@ function loadMyRequests(kitchen) {
             if(item.status === "approved") resultText = `${item.approvedQty} ${item.unit} approved`;
             else if(item.status === "rejected") resultText = item.rejectionReason || "Rejected";
             else resultText = "Waiting...";
-            itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></div>
-                          <td>${item.originalQty.toFixed(1)} ${item.unit}</div>
-                          <td>${item.status === "approved" ? "✅" : item.status === "rejected" ? "❌" : "⏳"} ${item.status === "approved" ? "Approved" : item.status === "rejected" ? "Rejected" : "Pending"}</div>
-                          <td>${resultText}</div>
-                    </tr>`;
+            itemsHtml += `<tr>
+                <td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></div>
+                <td>${item.originalQty.toFixed(1)} ${item.unit}</div>
+                <td>${item.status === "approved" ? "✅" : item.status === "rejected" ? "❌" : "⏳"} ${item.status === "approved" ? "Approved" : item.status === "rejected" ? "Rejected" : "Pending"}</div>
+                <td>${resultText}</div>
+            <tr>`;
         });
         itemsHtml += `</tbody></table>`;
         
