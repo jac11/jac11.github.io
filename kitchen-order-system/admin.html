@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Admin Dashboard - Approve Orders</title>
+<title>Admin Dashboard - Approve Orders | Real-time Sync</title>
 <style>
 * {
     margin: 0;
@@ -20,7 +21,6 @@ body {
     background: #f0f2f5;
 }
 
-/* Header */
 .header {
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     color: white;
@@ -66,6 +66,7 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
+    font-size: 13px;
 }
 
 .btn-header:hover {
@@ -81,7 +82,6 @@ body {
     background: #e74c3c;
 }
 
-/* Stats Grid - Responsive */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -116,7 +116,6 @@ body {
     font-size: 0.85rem;
 }
 
-/* Kitchen Filters */
 .kitchen-filters {
     display: flex;
     gap: 10px;
@@ -147,7 +146,6 @@ body {
     color: white;
 }
 
-/* Status Tabs */
 .tabs {
     display: flex;
     gap: 12px;
@@ -175,13 +173,13 @@ body {
     color: white;
 }
 
-/* Request Cards */
 .request-card {
     background: white;
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.2s;
 }
 
 .request-header {
@@ -227,7 +225,6 @@ body {
 .status-rejected { background: #e74c3c; color: white; }
 .status-partial { background: #8e44ad; color: white; }
 
-/* Request Details */
 .request-details {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -249,7 +246,6 @@ body {
     margin-top: 4px;
 }
 
-/* Items Table */
 .items-wrapper {
     overflow-x: auto;
     margin: 16px 0;
@@ -258,6 +254,7 @@ body {
 .items-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 600px;
 }
 
 .items-table th {
@@ -298,10 +295,10 @@ body {
     border-color: #27ae60;
 }
 
-/* Action Buttons */
 .action-buttons {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .btn-approve {
@@ -336,7 +333,6 @@ body {
     transform: scale(1.02);
 }
 
-/* Request Actions */
 .request-actions {
     display: flex;
     gap: 12px;
@@ -373,7 +369,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Empty State */
 .empty-state {
     text-align: center;
     padding: 60px;
@@ -382,7 +377,6 @@ body {
     color: #999;
 }
 
-/* Toast */
 .toast {
     position: fixed;
     bottom: 20px;
@@ -401,7 +395,6 @@ body {
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* Floating Refresh */
 .floating-refresh {
     position: fixed;
     bottom: 20px;
@@ -423,7 +416,6 @@ body {
     background: #2980b9;
 }
 
-/* Password Modal */
 .modal {
     display: flex;
     position: fixed;
@@ -499,74 +491,62 @@ body {
     background: #7f8c8d;
 }
 
-/* Mobile Responsive */
+.sync-indicator {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #27ae60;
+    color: white;
+}
+
 @media (max-width: 768px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
-    
     .stat-card {
         padding: 12px;
     }
-    
     .stat-number {
         font-size: 1.5rem;
     }
-    
     .kitchen-filters {
         overflow-x: auto;
         flex-wrap: nowrap;
         padding: 12px;
         gap: 8px;
     }
-    
     .kitchen-filter-btn {
         white-space: nowrap;
         padding: 6px 16px;
         font-size: 12px;
     }
-    
     .tabs {
         overflow-x: auto;
         flex-wrap: nowrap;
         gap: 8px;
     }
-    
     .tab-btn {
         white-space: nowrap;
         padding: 8px 16px;
         font-size: 12px;
     }
-    
     .request-card {
         padding: 14px;
     }
-    
-    .request-id {
-        font-size: 0.9rem;
-    }
-    
-    .items-table {
-        min-width: 550px;
-    }
-    
     .items-table th, .items-table td {
         padding: 8px;
         font-size: 12px;
     }
-    
     .approval-input {
         width: 70px;
         padding: 6px 8px;
         font-size: 12px;
     }
-    
     .btn-approve, .btn-reject {
         padding: 6px 12px;
         font-size: 11px;
     }
-    
     .request-details {
         grid-template-columns: 1fr;
         gap: 8px;
@@ -577,10 +557,6 @@ body {
     .stats-grid {
         gap: 15px;
     }
-    
-    .items-table {
-        min-width: auto;
-    }
 }
 </style>
 </head>
@@ -590,7 +566,7 @@ body {
     <div class="modal-content">
         <h2>🔐 Admin Access</h2>
         <p>Enter password to continue</p>
-        <input type="password" id="passwordInput" placeholder="Enter password">
+        <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
         <button onclick="checkPassword()">Login</button>
         <div id="passwordError" class="error-msg"></div>
         <button class="close-modal" onclick="closePasswordModal()">← Go Back</button>
@@ -600,9 +576,9 @@ body {
 <div id="mainContent" style="display: none;">
     <div class="header">
         <div class="header-content">
-            <h1>👑 Admin Dashboard <span>| Approve Items</span></h1>
+            <h1>👑 Admin Dashboard <span>| Approve Orders</span></h1>
             <div class="header-buttons">
-                <button class="btn-header btn-analytics" onclick="window.open('analytics.html', '_blank')">📊 Analytics</button>
+                <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
                 <button class="btn-header" onclick="exportToExcel()">📎 Export Excel</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
                 <button class="btn-header btn-danger" onclick="resetOldRequests()">🗑️ Reset Old</button>
@@ -611,7 +587,7 @@ body {
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="max-width:1400px; margin:0 auto; padding:20px;">
         <div class="stats-grid">
             <div class="stat-card" onclick="filterStatus('pending')"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">⏳ Pending</div></div>
             <div class="stat-card" onclick="filterStatus('approved')"><div class="stat-number" id="approvedCount">0</div><div class="stat-label">✅ Approved</div></div>
@@ -620,22 +596,22 @@ body {
         </div>
 
         <div class="kitchen-filters">
-            <button class="kitchen-filter-btn active" onclick="filterKitchen('all')">📋 All Kitchens</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Hot Kitchen')">🔥 Hot</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Cold Kitchen')">❄️ Cold</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Pastry')">🍰 Pastry</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Butchery')">🥩 Butchery</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Beach House')">🏖️ Beach</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Nihon Kitchen')">🍜 Nihon</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Staff Kitchen')">👥 Staff</button>
+            <button class="kitchen-filter-btn active" onclick="filterKitchen('all', this)">📋 All Kitchens</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Hot Kitchen', this)">🔥 Hot</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Cold Kitchen', this)">❄️ Cold</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Pastry / Bakery', this)">🍰 Pastry</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Butchery', this)">🥩 Butchery</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Beach House', this)">🏖️ Beach</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Nihon Kitchen', this)">🍜 Nihon</button>
+            <button class="kitchen-filter-btn" onclick="filterKitchen('Staff Kitchen', this)">👥 Staff</button>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('pending')">⏳ Pending</button>
-            <button class="tab-btn" onclick="showTab('approved')">✅ Approved</button>
-            <button class="tab-btn" onclick="showTab('rejected')">❌ Rejected</button>
-            <button class="tab-btn" onclick="showTab('partial')">🟣 Partial</button>
-            <button class="tab-btn" onclick="showTab('all')">📋 All</button>
+            <button class="tab-btn active" onclick="showTab('pending', this)">⏳ Pending</button>
+            <button class="tab-btn" onclick="showTab('approved', this)">✅ Approved</button>
+            <button class="tab-btn" onclick="showTab('rejected', this)">❌ Rejected</button>
+            <button class="tab-btn" onclick="showTab('partial', this)">🟣 Partial</button>
+            <button class="tab-btn" onclick="showTab('all', this)">📋 All</button>
         </div>
 
         <div id="requestsContainer"></div>
@@ -649,21 +625,45 @@ const ADMIN_PASSWORD = "admin123";
 let currentKitchenFilter = "all";
 let currentStatusFilter = "pending";
 let allRequests = [];
+let activeListener = null;
 
 function closePasswordModal() {
     document.getElementById("passwordModal").style.display = "none";
     window.location.href = "index.html";
 }
 
+function openAnalytics() {
+    // Open analytics in new tab - works on both mobile and laptop
+    window.open("analytics.html", "_blank");
+}
+
 function checkPassword() {
-    if(document.getElementById("passwordInput").value === ADMIN_PASSWORD) {
+    const input = document.getElementById("passwordInput").value;
+    if(input === ADMIN_PASSWORD) {
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
+        setupRealtimeListener();
         loadRequests();
-        db.collection("kitchen_requests").onSnapshot(() => { loadRequests(); });
     } else {
-        document.getElementById("passwordError").innerHTML = "Wrong password!";
+        document.getElementById("passwordError").innerHTML = "❌ Wrong password!";
     }
+}
+
+function setupRealtimeListener() {
+    if(activeListener) return;
+    activeListener = db.collection("kitchen_requests").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+        console.log("🔄 Real-time update from Firebase");
+        allRequests = [];
+        snapshot.forEach(doc => {
+            allRequests.push({ firebaseId: doc.id, ...doc.data() });
+        });
+        refreshData();
+        updateStats();
+        showToast("📡 Synced with database");
+    }, (error) => {
+        console.error("Firebase listener error:", error);
+        showToast("⚠️ Connection issue, retrying...");
+    });
 }
 
 async function loadRequests() {
@@ -673,24 +673,40 @@ async function loadRequests() {
         snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
         refreshData();
         updateStats();
-    } catch (error) { console.error("Firebase error:", error); }
+    } catch (error) { 
+        console.error("Firebase error:", error);
+        showToast("❌ Failed to load data");
+    }
 }
 
 async function updateRequest(reqId, updatedItems) {
-    try { await db.collection("kitchen_requests").doc(reqId).update({ items: updatedItems }); showToast("✅ Updated"); await loadRequests(); }
-    catch (error) { showToast("❌ Error"); }
+    try { 
+        await db.collection("kitchen_requests").doc(reqId).update({ items: updatedItems }); 
+        showToast("✅ Updated successfully");
+        // No need to reload - real-time listener will update
+    } catch (error) { 
+        console.error("Update error:", error);
+        showToast("❌ Update failed"); 
+    }
 }
 
 async function deleteRequest(reqId) {
-    try { await db.collection("kitchen_requests").doc(reqId).delete(); }
-    catch (error) { console.error("Delete error:", error); }
+    try { 
+        await db.collection("kitchen_requests").doc(reqId).delete();
+        showToast("🗑️ Request deleted");
+    } catch (error) { 
+        console.error("Delete error:", error);
+        showToast("❌ Delete failed");
+    }
 }
 
 function getStatus(req) {
     if(!req.items || req.items.length === 0) return "pending";
-    if(req.items.every(i => i.status === "approved")) return "approved";
-    if(req.items.every(i => i.status === "rejected")) return "rejected";
-    if(req.items.some(i => i.status === "approved") && req.items.some(i => i.status === "rejected")) return "partial";
+    const approvedCount = req.items.filter(i => i.status === "approved").length;
+    const rejectedCount = req.items.filter(i => i.status === "rejected").length;
+    if(approvedCount === req.items.length) return "approved";
+    if(rejectedCount === req.items.length) return "rejected";
+    if(approvedCount > 0 || rejectedCount > 0) return "partial";
     return "pending";
 }
 
@@ -738,7 +754,7 @@ async function rejectItem(reqId, itemIdx) {
 }
 
 async function approveAll(reqId) {
-    if(!confirm("Approve ALL items?")) return;
+    if(!confirm("Approve ALL items with max limits?")) return;
     const req = allRequests.find(r => r.firebaseId === reqId);
     if(req) {
         req.items.forEach((item, idx) => {
@@ -770,17 +786,22 @@ async function rejectAll(reqId) {
 }
 
 async function resetOldRequests() {
-    if(confirm("Delete ALL approved/rejected requests?")) {
+    if(confirm("Delete ALL approved/rejected requests? This cannot be undone!")) {
+        let deleted = 0;
         for (const req of allRequests) {
-            if (getStatus(req) !== "pending") { await deleteRequest(req.firebaseId); }
+            const status = getStatus(req);
+            if (status !== "pending") { 
+                await deleteRequest(req.firebaseId);
+                deleted++;
+            }
         }
+        showToast(`🗑️ Deleted ${deleted} completed requests`);
         await loadRequests();
-        showToast("Reset complete");
     }
 }
 
 function exportToExcel() {
-    if(allRequests.length === 0) { showToast("No data"); return; }
+    if(allRequests.length === 0) { showToast("No data to export"); return; }
     let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Reason\n";
     allRequests.forEach(req => {
         req.items.forEach(item => {
@@ -796,26 +817,38 @@ function exportToExcel() {
     link.href = URL.createObjectURL(blob);
     link.download = `orders_${new Date().toISOString().slice(0,19)}.csv`;
     link.click();
-    showToast("Exported");
+    showToast("📎 Exported to Excel");
 }
 
 function getKitchenClass(kitchen) {
-    const map = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" };
-    return map[kitchen] || "";
+    const map = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry", "Pastry": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" };
+    return map[kitchen] || "kitchen-staff";
 }
 
-function filterKitchen(kitchen) { 
-    currentKitchenFilter = kitchen; 
-    document.querySelectorAll('.kitchen-filter-btn').forEach(btn => btn.classList.remove('active')); 
-    event.target.classList.add('active');
-    refreshData(); 
+function filterKitchen(kitchen, btnElement) {
+    currentKitchenFilter = kitchen;
+    document.querySelectorAll('.kitchen-filter-btn').forEach(btn => btn.classList.remove('active'));
+    if(btnElement) btnElement.classList.add('active');
+    refreshData();
 }
 
-function showTab(tab) { 
-    currentStatusFilter = tab; 
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active')); 
-    event.target.classList.add('active');
-    refreshData(); 
+function showTab(tab, btnElement) {
+    currentStatusFilter = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    if(btnElement) btnElement.classList.add('active');
+    refreshData();
+}
+
+function filterStatus(status) {
+    currentStatusFilter = status;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    const btns = document.querySelectorAll('.tab-btn');
+    if(status === 'pending') btns[0]?.classList.add('active');
+    else if(status === 'approved') btns[1]?.classList.add('active');
+    else if(status === 'rejected') btns[2]?.classList.add('active');
+    else if(status === 'partial') btns[3]?.classList.add('active');
+    else if(status === 'all') btns[4]?.classList.add('active');
+    refreshData();
 }
 
 function refreshData() {
@@ -824,7 +857,7 @@ function refreshData() {
     if(currentStatusFilter !== "all") requests = requests.filter(r => getStatus(r) === currentStatusFilter);
     requests.reverse();
     const container = document.getElementById("requestsContainer");
-    if(requests.length === 0) { container.innerHTML = `<div class="empty-state">📭 No requests</div>`; updateStats(); return; }
+    if(requests.length === 0) { container.innerHTML = `<div class="empty-state">📭 No requests found</div>`; return; }
     container.innerHTML = "";
     requests.forEach(req => {
         const status = getStatus(req);
@@ -834,11 +867,11 @@ function refreshData() {
         let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Code</th><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
         req.items.forEach((item, idx) => {
             if(item.status === "approved") {
-                itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}</td><td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><strong style="color:#27ae60;">${item.approvedQty}</strong></td><td>✅ Approved</td><td><span class="status-badge status-approved">Approved</span></td></tr>`;
+                itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}</td><td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><strong style="color:#27ae60;">${item.approvedQty}</strong></td><td class="action-buttons">✅ Approved</div><td class="status-badge status-approved">Approved</div></tr>`;
             } else if(item.status === "rejected") {
-                itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}</td><td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><strong style="color:#e74c3c;">0</strong></td><td>❌ Rejected</td><td><span class="status-badge status-rejected">${item.rejectionReason || 'Rejected'}</span></td></tr>`;
+                itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}</td><td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><strong style="color:#e74c3c;">0</strong></td><td class="action-buttons">❌ Rejected</div><td class="status-badge status-rejected">${escapeHtml(item.rejectionReason || 'Rejected')}</div></tr>`;
             } else {
-                itemsHtml += `<tr><td>${item.code}</td><td><strong>${item.name}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td><td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></td><td><span class="status-badge status-pending">Pending</span></td></tr>`;
+                itemsHtml += `<tr><td>${item.code}</td><td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></div><td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></div><td><span class="status-badge status-pending">Pending</span></div></tr>`;
             }
         });
         itemsHtml += `</tbody>}</div>`;
@@ -846,9 +879,13 @@ function refreshData() {
         if(status === "pending") {
             actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All</button><button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All</button></div>`;
         }
-        container.innerHTML += `<div class="request-card"><div class="request-header"><div><span class="request-id">📄 ${req.requestId}</span><span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div><span class="status-badge ${statusClass}">${statusText}</span></div><div class="request-details"><div><div class="detail-label">👨‍🍳 Chef</div><div class="detail-value">${req.chefName}</div></div><div><div class="detail-label">📅 Submitted</div><div class="detail-value">${req.submittedAt}</div></div></div>${itemsHtml}${actions}</div>`;
+        container.innerHTML += `<div class="request-card"><div class="request-header"><div><span class="request-id">📄 ${req.requestId}</span><span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div><span class="status-badge ${statusClass}">${statusText}</span></div><div class="request-details"><div><div class="detail-label">👨‍🍳 Chef</div><div class="detail-value">${escapeHtml(req.chefName)}</div></div><div><div class="detail-label">📅 Submitted</div><div class="detail-value">${req.submittedAt}</div></div></div>${itemsHtml}${actions}</div>`;
     });
-    updateStats();
+}
+
+function escapeHtml(str) {
+    if(!str) return '';
+    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
 }
 
 function showToast(msg) { 
@@ -856,10 +893,13 @@ function showToast(msg) {
     toast.className = "toast"; 
     toast.innerText = msg; 
     document.body.appendChild(toast); 
-    setTimeout(() => toast.remove(), 2500); 
+    setTimeout(() => toast.remove(), 3000); 
 }
 
-window.onload = () => { document.getElementById("passwordModal").style.display = "flex"; };
+window.onload = () => { 
+    document.getElementById("passwordModal").style.display = "flex"; 
+    document.getElementById("passwordInput").focus();
+};
 </script>
 </body>
 </html>
