@@ -7,7 +7,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Admin Dashboard - Approve Orders | Track Admin</title>
+<title>Admin Dashboard - Multi-Admin Approval System</title>
 <style>
 * {
     margin: 0;
@@ -63,6 +63,17 @@ body {
 .admin-name {
     font-weight: 600;
     font-size: 0.9rem;
+}
+
+.admin-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e94560;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
 }
 
 .logout-btn {
@@ -279,12 +290,14 @@ body {
     font-size: 0.7rem;
     color: #27ae60;
     margin-top: 3px;
+    font-weight: 500;
 }
 
 .rejected-by {
     font-size: 0.7rem;
     color: #e74c3c;
     margin-top: 3px;
+    font-weight: 500;
 }
 
 .items-wrapper {
@@ -295,7 +308,7 @@ body {
 .items-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 650px;
+    min-width: 700px;
 }
 
 .items-table th {
@@ -473,43 +486,47 @@ body {
 
 .modal-content {
     background: white;
-    padding: 30px;
-    border-radius: 24px;
+    padding: 35px 30px;
+    border-radius: 28px;
     text-align: center;
-    max-width: 400px;
+    max-width: 380px;
     width: 90%;
 }
 
 .modal-content h2 {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: #1a1a2e;
+    font-size: 1.5rem;
 }
 
 .modal-content p {
     color: #666;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    font-size: 0.85rem;
 }
 
 .modal-content input {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
+    padding: 14px;
+    margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 12px;
+    border-radius: 14px;
     font-size: 16px;
+    text-align: center;
 }
 
 .modal-content button {
     background: #3498db;
     color: white;
     border: none;
-    padding: 12px;
-    border-radius: 12px;
+    padding: 14px;
+    border-radius: 40px;
     font-weight: 600;
     cursor: pointer;
     width: 100%;
     font-size: 1rem;
     transition: all 0.3s;
+    margin-bottom: 10px;
 }
 
 .modal-content button:hover {
@@ -524,66 +541,53 @@ body {
 }
 
 .close-modal {
-    background: #95a5a6;
-    margin-top: 10px;
+    background: #95a5a6 !important;
+    margin-top: 5px;
 }
 
 .close-modal:hover {
-    background: #7f8c8d;
+    background: #7f8c8d !important;
 }
 
+.user-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.user-btn {
+    background: #f0f2f5;
+    color: #333;
+    border: 2px solid #e0e0e0;
+    padding: 12px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.user-btn:hover {
+    background: #e0e0e0;
+    transform: scale(1.02);
+}
+
+.user-btn[data-user="Marco"]:hover { border-color: #3498db; }
+.user-btn[data-user="Nady"]:hover { border-color: #27ae60; }
+.user-btn[data-user="Ahmed"]:hover { border-color: #e94560; }
+
 @media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-    .stat-card {
-        padding: 12px;
-    }
-    .stat-number {
-        font-size: 1.5rem;
-    }
-    .kitchen-filters {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding: 12px;
-        gap: 8px;
-    }
-    .kitchen-filter-btn {
-        white-space: nowrap;
-        padding: 6px 16px;
-        font-size: 12px;
-    }
-    .tabs {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        gap: 8px;
-    }
-    .tab-btn {
-        white-space: nowrap;
-        padding: 8px 16px;
-        font-size: 12px;
-    }
-    .request-card {
-        padding: 14px;
-    }
-    .items-table th, .items-table td {
-        padding: 8px;
-        font-size: 12px;
-    }
-    .approval-input {
-        width: 70px;
-        padding: 6px 8px;
-        font-size: 12px;
-    }
-    .btn-approve, .btn-reject {
-        padding: 6px 12px;
-        font-size: 11px;
-    }
-    .request-details {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .stat-card { padding: 12px; }
+    .stat-number { font-size: 1.5rem; }
+    .kitchen-filters { overflow-x: auto; flex-wrap: nowrap; padding: 12px; gap: 8px; }
+    .kitchen-filter-btn { white-space: nowrap; padding: 6px 16px; font-size: 12px; }
+    .tabs { overflow-x: auto; flex-wrap: nowrap; gap: 8px; }
+    .tab-btn { white-space: nowrap; padding: 8px 16px; font-size: 12px; }
+    .request-card { padding: 14px; }
+    .items-table th, .items-table td { padding: 8px; font-size: 12px; }
+    .approval-input { width: 70px; padding: 6px 8px; font-size: 12px; }
+    .btn-approve, .btn-reject { padding: 6px 12px; font-size: 11px; }
 }
 </style>
 </head>
@@ -592,10 +596,14 @@ body {
 <div id="passwordModal" class="modal">
     <div class="modal-content">
         <h2>🔐 Admin Login</h2>
-        <p>Enter your admin credentials</p>
-        <input type="text" id="adminNameInput" placeholder="Admin Name" autocomplete="off">
-        <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
-        <button onclick="checkAdminLogin()">Login</button>
+        <p>Select your account and enter password</p>
+        <div class="user-selector">
+            <button class="user-btn" data-user="Marco" onclick="selectUser('Marco')">👨‍💼 Marco - Administrator</button>
+            <button class="user-btn" data-user="Nady" onclick="selectUser('Nady')">👩‍💼 Nady - Administrator</button>
+            <button class="user-btn" data-user="Ahmed" onclick="selectUser('Ahmed')">👨‍💻 Ahmed - Administrator</button>
+        </div>
+        <input type="password" id="passwordInput" placeholder="Enter your password" autocomplete="off" style="display:none;">
+        <button id="loginBtn" style="display:none;" onclick="checkAdminLogin()">Login →</button>
         <div id="loginError" class="error-msg"></div>
         <button class="close-modal" onclick="closePasswordModal()">← Go Back</button>
     </div>
@@ -606,6 +614,7 @@ body {
         <div class="header-content">
             <h1>👑 Admin Dashboard <span>| Approve Orders</span></h1>
             <div class="admin-info">
+                <div class="admin-avatar" id="adminAvatar">M</div>
                 <span class="admin-name" id="adminNameDisplay">Admin</span>
                 <button class="logout-btn" onclick="logoutAdmin()">🚪 Logout</button>
             </div>
@@ -653,11 +662,11 @@ body {
 </div>
 
 <script>
+// 3 Admin Users with their own passwords
 const ADMIN_CREDENTIALS = {
-    "Mohamed": "admin123",
-    "Ahmed": "admin123",
-    "Sara": "admin123",
-    "Admin": "admin123"
+    "Marco": "marco123",
+    "Nady": "nady123",
+    "Ahmed": "ahmed123"
 };
 
 let currentAdminName = "";
@@ -665,36 +674,65 @@ let currentKitchenFilter = "all";
 let currentStatusFilter = "pending";
 let allRequests = [];
 let activeListener = null;
+let selectedUser = "";
+
+function selectUser(user) {
+    selectedUser = user;
+    document.querySelectorAll('.user-btn').forEach(btn => {
+        btn.style.opacity = "0.6";
+        btn.style.border = "2px solid #e0e0e0";
+    });
+    const selectedBtn = document.querySelector(`.user-btn[data-user="${user}"]`);
+    selectedBtn.style.opacity = "1";
+    selectedBtn.style.border = `2px solid ${user === 'Marco' ? '#3498db' : user === 'Nady' ? '#27ae60' : '#e94560'}`;
+    
+    const passwordInput = document.getElementById("passwordInput");
+    const loginBtn = document.getElementById("loginBtn");
+    passwordInput.style.display = "block";
+    loginBtn.style.display = "block";
+    passwordInput.placeholder = `Enter password for ${user}`;
+    passwordInput.value = "";
+    document.getElementById("loginError").innerHTML = "";
+}
 
 function closePasswordModal() {
     document.getElementById("passwordModal").style.display = "none";
 }
 
 function checkAdminLogin() {
-    const adminName = document.getElementById("adminNameInput").value.trim();
     const password = document.getElementById("passwordInput").value;
     
-    if(adminName && ADMIN_CREDENTIALS[adminName] === password) {
-        currentAdminName = adminName;
-        document.getElementById("adminNameDisplay").innerText = adminName;
+    if(selectedUser && ADMIN_CREDENTIALS[selectedUser] === password) {
+        currentAdminName = selectedUser;
+        document.getElementById("adminNameDisplay").innerText = currentAdminName;
+        const avatar = document.getElementById("adminAvatar");
+        avatar.innerText = currentAdminName.charAt(0);
+        avatar.style.background = currentAdminName === 'Marco' ? '#3498db' : currentAdminName === 'Nady' ? '#27ae60' : '#e94560';
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
-        localStorage.setItem("adminName", adminName);
+        localStorage.setItem("adminName", currentAdminName);
         setupRealtimeListener();
         loadRequests();
+        showToast(`✅ Welcome, ${currentAdminName}!`);
     } else {
-        document.getElementById("loginError").innerHTML = "❌ Invalid name or password!";
+        document.getElementById("loginError").innerHTML = "❌ Invalid password!";
     }
 }
 
 function logoutAdmin() {
     currentAdminName = "";
+    selectedUser = "";
     localStorage.removeItem("adminName");
     document.getElementById("mainContent").style.display = "none";
     document.getElementById("passwordModal").style.display = "flex";
-    document.getElementById("adminNameInput").value = "";
+    document.getElementById("passwordInput").style.display = "none";
+    document.getElementById("loginBtn").style.display = "none";
     document.getElementById("passwordInput").value = "";
     document.getElementById("loginError").innerHTML = "";
+    document.querySelectorAll('.user-btn').forEach(btn => {
+        btn.style.opacity = "1";
+        btn.style.border = "2px solid #e0e0e0";
+    });
 }
 
 function openAnalytics() {
@@ -787,6 +825,7 @@ async function approveItem(reqId, itemIdx) {
         item.approvedBy = currentAdminName;
         item.approvedAt = new Date().toLocaleString();
         item.rejectionReason = null;
+        item.rejectedBy = null;
         await updateRequest(reqId, req.items);
     }
 }
@@ -801,6 +840,7 @@ async function rejectItem(reqId, itemIdx) {
             req.items[itemIdx].rejectedBy = currentAdminName;
             req.items[itemIdx].rejectedAt = new Date().toLocaleString();
             req.items[itemIdx].approvedQty = 0;
+            req.items[itemIdx].approvedBy = null;
             await updateRequest(reqId, req.items);
         }
     }
@@ -820,6 +860,7 @@ async function approveAll(reqId) {
             item.approvedBy = currentAdminName;
             item.approvedAt = new Date().toLocaleString();
             item.rejectionReason = null;
+            item.rejectedBy = null;
         });
         await updateRequest(reqId, req.items);
     }
@@ -836,6 +877,7 @@ async function rejectAll(reqId) {
                 item.rejectedBy = currentAdminName;
                 item.rejectedAt = new Date().toLocaleString();
                 item.approvedQty = 0;
+                item.approvedBy = null;
             });
             await updateRequest(reqId, req.items);
         }
@@ -859,27 +901,29 @@ async function resetOldRequests() {
 
 function exportToExcel() {
     if(allRequests.length === 0) { showToast("No data to export"); return; }
-    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Approved/Rejected By,Reason\n";
+    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Approved/Rejected By,Reason,Timestamp\n";
     allRequests.forEach(req => {
         req.items.forEach(item => {
-            let status = item.status, finalQty = "", reason = "", actionBy = "";
+            let status = item.status, finalQty = "", reason = "", actionBy = "", actionTime = "";
             if(item.status === "approved") { 
                 status = "Approved"; 
                 finalQty = item.approvedQty;
                 actionBy = item.approvedBy || "Unknown";
+                actionTime = item.approvedAt || "";
             }
             else if(item.status === "rejected") { 
                 status = "Rejected"; 
                 finalQty = "0"; 
                 reason = item.rejectionReason || "";
                 actionBy = item.rejectedBy || "Unknown";
+                actionTime = item.rejectedAt || "";
             }
             else { 
                 status = "Pending"; 
                 finalQty = "Waiting";
                 actionBy = "-";
             }
-            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${actionBy}","${reason}"\n`;
+            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${actionBy}","${reason}","${actionTime}"\n`;
         });
     });
     const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
@@ -914,7 +958,7 @@ function filterStatus(status) {
     const btns = document.querySelectorAll('.tab-btn');
     const statusMap = { pending: 0, approved: 1, rejected: 2, partial: 3, all: 4 };
     const idx = statusMap[status] || 0;
-    btns[idx]?.classList.add('active');
+    if(btns[idx]) btns[idx].classList.add('active');
     refreshData();
 }
 
@@ -931,7 +975,7 @@ function refreshData() {
         const statusClass = `status-${status}`;
         const statusText = { pending: "Pending", approved: "Approved", rejected: "Rejected", partial: "Partial" }[status];
         const kitchenClass = getKitchenClass(req.section);
-        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Code</th><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
+        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Code</th><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status & Admin</th></tr></thead><tbody>`;
         
         req.items.forEach((item, idx) => {
             if(item.status === "approved") {
@@ -941,8 +985,8 @@ function refreshData() {
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
                     <td><strong style="color:#27ae60;">${item.approvedQty}</strong></td>
-                    <td>✅ Approved</td>
-                    <td><span class="status-badge status-approved">Approved</span><br><small class="approved-by">by: ${escapeHtml(item.approvedBy || '?')}</small></td>
+                    <td>✅ Approved</div></td>
+                    <td><span class="status-badge status-approved">Approved</span><br><small class="approved-by">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</small></td>
                 </tr>`;
             } else if(item.status === "rejected") {
                 itemsHtml += `<tr style="background:#fee2e2;">
@@ -951,8 +995,8 @@ function refreshData() {
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
                     <td><strong style="color:#e74c3c;">0</strong></td>
-                    <td>❌ Rejected</td>
-                    <td><span class="status-badge status-rejected">Rejected</span><br><small class="rejected-by">by: ${escapeHtml(item.rejectedBy || '?')}<br>${escapeHtml(item.rejectionReason || '')}</small></td>
+                    <td>❌ Rejected</div></td>
+                    <td><span class="status-badge status-rejected">Rejected</span><br><small class="rejected-by">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</small></div></td>
                 </tr>`;
             } else {
                 itemsHtml += `<tr>
@@ -962,11 +1006,11 @@ function refreshData() {
                     <td>${item.unit}</td>
                     <td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td>
                     <td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></td>
-                    <td><span class="status-badge status-pending">Pending</span></td>
+                    <td><span class="status-badge status-pending">Pending</span><br><small class="approved-by">Waiting for admin</small></td>
                 </tr>`;
             }
         });
-        itemsHtml += `</tbody></table></div>`;
+        itemsHtml += `</tbody>}</div>`;
         
         let actions = "";
         if(status === "pending") {
@@ -1005,7 +1049,10 @@ window.onload = () => {
     const savedAdmin = localStorage.getItem("adminName");
     if(savedAdmin && ADMIN_CREDENTIALS[savedAdmin]) {
         currentAdminName = savedAdmin;
-        document.getElementById("adminNameDisplay").innerText = savedAdmin;
+        document.getElementById("adminNameDisplay").innerText = currentAdminName;
+        const avatar = document.getElementById("adminAvatar");
+        avatar.innerText = currentAdminName.charAt(0);
+        avatar.style.background = currentAdminName === 'Marco' ? '#3498db' : currentAdminName === 'Nady' ? '#27ae60' : '#e94560';
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         setupRealtimeListener();
