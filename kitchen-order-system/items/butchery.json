@@ -1,126 +1,70 @@
-{
-  "categories": [
-    {
-      "category": "🥩 Beef & Lamb",
-      "icon": "🥩",
-      "items": [
-        {"code": "110010", "name": "Beef Fillet Brazil", "unit": "kg", "maxLimit": 10},
-        {"code": "110148", "name": "Beef Rib Eye Russian", "unit": "kg", "maxLimit": 8},
-        {"code": "110028", "name": "Beef Shoulder Brazil", "unit": "kg", "maxLimit": 12},
-        {"code": "110029", "name": "Beef Shoulder Indian", "unit": "kg", "maxLimit": 12},
-        {"code": "110051", "name": "Beef Tenderloin Australian", "unit": "kg", "maxLimit": 8},
-        {"code": "112007", "name": "Lamb Rack Standard", "unit": "kg", "maxLimit": 6},
-        {"code": "112009", "name": "Lamb Shank Australian", "unit": "kg", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🐓 Poultry",
-      "icon": "🐓",
-      "items": [
-        {"code": "120047", "name": "Chicken Breast Size 4-5", "unit": "kg", "maxLimit": 15},
-        {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "unit": "kg", "maxLimit": 15},
-        {"code": "120011", "name": "Duck Whole Al Abed", "unit": "kg", "maxLimit": 6},
-        {"code": "113042", "name": "Chicken Cold Cut Egyswiss", "unit": "kg", "maxLimit": 6},
-        {"code": "113026", "name": "Chicken Sausage Chipolata", "unit": "kg", "maxLimit": 8},
-        {"code": "113088", "name": "Turkey Pressed Smoked Choice", "unit": "kg", "maxLimit": 5}
-      ]
-    },
-    {
-      "category": "🥓 Cold Cuts & Sausages",
-      "icon": "🥓",
-      "items": [
-        {"code": "113085", "name": "Beef Bacon Smoked Sliced Choice", "unit": "kg", "maxLimit": 5},
-        {"code": "113111", "name": "Beef Bacon Smoked Sliced Taste Pure", "unit": "500g pkt", "maxLimit": 8},
-        {"code": "113008", "name": "Beef Cold Cut With Meat Cut", "unit": "kg", "maxLimit": 6},
-        {"code": "113018", "name": "Beef Salami Air Dried Whole", "unit": "kg", "maxLimit": 5},
-        {"code": "113019", "name": "Beef Sausage Chipolata", "unit": "kg", "maxLimit": 8},
-        {"code": "113079", "name": "Beef Smoked Pressed Choice", "unit": "kg", "maxLimit": 5}
-      ]
-    },
-    {
-      "category": "🦐 Seafood",
-      "icon": "🦐",
-      "items": [
-        {"code": "130012", "name": "Calamari Baby", "unit": "kg", "maxLimit": 6},
-        {"code": "131002", "name": "Crab Steaks", "unit": "kg", "maxLimit": 5},
-        {"code": "131073", "name": "Salmon Whole Side Fillet Skin On 10/10", "unit": "kg", "maxLimit": 8},
-        {"code": "131055", "name": "Salmon Whole Side Fillet Skin On Maxim", "unit": "kg", "maxLimit": 8},
-        {"code": "131014", "name": "Sea Scallop Wild Atlantic", "unit": "kg", "maxLimit": 4},
-        {"code": "131015", "name": "Smoked Eel", "unit": "kg", "maxLimit": 3},
-        {"code": "131027", "name": "Smoked Herring Fillet Sea Star", "unit": "kg", "maxLimit": 4},
-        {"code": "131058", "name": "Smoked Salmon Sliced Skin On 10/10", "unit": "kg", "maxLimit": 5},
-        {"code": "131054", "name": "Smoked Salmon Sliced Skin On Maxim", "unit": "kg", "maxLimit": 5},
-        {"code": "131018", "name": "Tuna Saku", "unit": "kg", "maxLimit": 6},
-        {"code": "132016", "name": "Crabs Whole Frozen", "unit": "kg", "maxLimit": 8},
-        {"code": "132006", "name": "Mussels Whole Shell", "unit": "kg", "maxLimit": 6},
-        {"code": "132010", "name": "Shrimps Large (16-20)", "unit": "kg", "maxLimit": 5},
-        {"code": "132012", "name": "Shrimps Meat (26-30)", "unit": "kg", "maxLimit": 5},
-        {"code": "132013", "name": "Shrimps Medium (20-30)", "unit": "kg", "maxLimit": 5},
-      ]
-    },
-    {
-      "category": "🥫 Canned & Jarred Goods",
-      "icon": "🥫",
-      "items": [
-        {"code": "160079", "name": "Tomato Paste Wadi Food", "unit": "3kg tin", "maxLimit": 6},
-        {"code": "160086", "name": "Tomato Peeled", "unit": "2.55kg tin", "maxLimit": 6},
-        {"code": "163100", "name": "Tahina Jar El Rashidi", "unit": "460g jar", "maxLimit": 6}
-      ]
-    },
-    {
-      "category": "🧂 Spices & Seasonings",
-      "icon": "🧂",
-      "items": [
-        {"code": "161005", "name": "Black Pepper Corn", "unit": "kg", "maxLimit": 2},
-        {"code": "161006", "name": "Black Pepper Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161164", "name": "Cajun Seasoning", "unit": "680g jar", "maxLimit": 3},
-        {"code": "161011", "name": "Cardamom Seeds", "unit": "kg", "maxLimit": 2},
-        {"code": "161019", "name": "Chili Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161022", "name": "Chilli Whole Red Indian", "unit": "kg", "maxLimit": 3},
-        {"code": "161024", "name": "Cinnamon Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161026", "name": "Cinnamon Sticks", "unit": "kg", "maxLimit": 3},
-        {"code": "161027", "name": "Cloves Seeds", "unit": "kg", "maxLimit": 1},
-        {"code": "161028", "name": "Coriander Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161030", "name": "Cumin Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161031", "name": "Cumin Whole Seed", "unit": "kg", "maxLimit": 3},
-        {"code": "161041", "name": "Garlic Powder", "unit": "kg", "maxLimit": 4},
-        {"code": "161042", "name": "Ginger Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161051", "name": "Nutmeg Whole", "unit": "kg", "maxLimit": 1},
-        {"code": "161052", "name": "Onion Powder", "unit": "kg", "maxLimit": 4},
-        {"code": "161053", "name": "Oregano Dry", "unit": "kg", "maxLimit": 2},
-        {"code": "161081", "name": "Oregano Dry Abu Auf", "unit": "250g pkt", "maxLimit": 5},
-        {"code": "161092", "name": "Paprika Smoked Powder", "unit": "500g pkt", "maxLimit": 4},
-        {"code": "161070", "name": "Sumacs Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161075", "name": "Turmeric Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161077", "name": "White Pepper Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161063", "name": "Salt Kitchen", "unit": "kg", "maxLimit": 10},
-        {"code": "161064", "name": "Salt Lemon", "unit": "kg", "maxLimit": 2},
-        {"code": "161067", "name": "Salt Table", "unit": "700g pkt", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🥫 Sauces & Stocks",
-      "icon": "🥫",
-      "items": [
-        {"code": "162002", "name": "Chicken Stock Knorr", "unit": "kg", "maxLimit": 5},
-        {"code": "167006", "name": "Mustard Dijon", "unit": "370g jar", "maxLimit": 5}
-      ]
-    },
-    {
-      "category": "🫒 Oils & Vinegars",
-      "icon": "🫒",
-      "items": [
-        {"code": "163005", "name": "Oil Corn", "unit": "L", "maxLimit": 15},
-        {"code": "163008", "name": "Oil Olive", "unit": "L", "maxLimit": 8},
-        {"code": "167017", "name": "Vinegar Heinz White", "unit": "L", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🍞 Baking & Breadcrumbs",
-      "icon": "🍞",
-      "items": [
-        {"code": "175248", "name": "Bread Crumb Imported Coarse", "unit": "kg", "maxLimit": 6}
-      ]
-    }
-  ]
-}
+[
+  {"code": "110010", "name": "Beef Fillet Brazil", "unit": "kg", "maxLimit": 10},
+  {"code": "110148", "name": "Beef Rib Eye Russian", "unit": "kg", "maxLimit": 8},
+  {"code": "110028", "name": "Beef Shoulder Brazil", "unit": "kg", "maxLimit": 12},
+  {"code": "110029", "name": "Beef Shoulder Indian", "unit": "kg", "maxLimit": 12},
+  {"code": "110051", "name": "Beef Tenderloin Australian", "unit": "kg", "maxLimit": 8},
+  {"code": "112007", "name": "Lamb Rack Standard", "unit": "kg", "maxLimit": 6},
+  {"code": "112009", "name": "Lamb Shank Australian", "unit": "kg", "maxLimit": 8},
+  {"code": "120047", "name": "Chicken Breast Size 4-5", "unit": "kg", "maxLimit": 15},
+  {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "unit": "kg", "maxLimit": 15},
+  {"code": "120011", "name": "Duck Whole Al Abed", "unit": "kg", "maxLimit": 6},
+  {"code": "113042", "name": "Chicken Cold Cut Egyswiss", "unit": "kg", "maxLimit": 6},
+  {"code": "113026", "name": "Chicken Sausage Chipolata", "unit": "kg", "maxLimit": 8},
+  {"code": "113088", "name": "Turkey Pressed Smoked Choice", "unit": "kg", "maxLimit": 5},
+  {"code": "113085", "name": "Beef Bacon Smoked Sliced Choice", "unit": "kg", "maxLimit": 5},
+  {"code": "113111", "name": "Beef Bacon Smoked Sliced Taste Pure", "unit": "500g pkt", "maxLimit": 8},
+  {"code": "113008", "name": "Beef Cold Cut With Meat Cut", "unit": "kg", "maxLimit": 6},
+  {"code": "113018", "name": "Beef Salami Air Dried Whole", "unit": "kg", "maxLimit": 5},
+  {"code": "113019", "name": "Beef Sausage Chipolata", "unit": "kg", "maxLimit": 8},
+  {"code": "113079", "name": "Beef Smoked Pressed Choice", "unit": "kg", "maxLimit": 5},
+  {"code": "130012", "name": "Calamari Baby", "unit": "kg", "maxLimit": 6},
+  {"code": "131002", "name": "Crab Steaks", "unit": "kg", "maxLimit": 5},
+  {"code": "131073", "name": "Salmon Whole Side Fillet Skin On 10/10", "unit": "kg", "maxLimit": 8},
+  {"code": "131055", "name": "Salmon Whole Side Fillet Skin On Maxim", "unit": "kg", "maxLimit": 8},
+  {"code": "131014", "name": "Sea Scallop Wild Atlantic", "unit": "kg", "maxLimit": 4},
+  {"code": "131015", "name": "Smoked Eel", "unit": "kg", "maxLimit": 3},
+  {"code": "131027", "name": "Smoked Herring Fillet Sea Star", "unit": "kg", "maxLimit": 4},
+  {"code": "131058", "name": "Smoked Salmon Sliced Skin On 10/10", "unit": "kg", "maxLimit": 5},
+  {"code": "131054", "name": "Smoked Salmon Sliced Skin On Maxim", "unit": "kg", "maxLimit": 5},
+  {"code": "131018", "name": "Tuna Saku", "unit": "kg", "maxLimit": 6},
+  {"code": "132016", "name": "Crabs Whole Frozen", "unit": "kg", "maxLimit": 8},
+  {"code": "132006", "name": "Mussels Whole Shell", "unit": "kg", "maxLimit": 6},
+  {"code": "132010", "name": "Shrimps Large (16-20)", "unit": "kg", "maxLimit": 5},
+  {"code": "132012", "name": "Shrimps Meat (26-30)", "unit": "kg", "maxLimit": 5},
+  {"code": "132013", "name": "Shrimps Medium (20-30)", "unit": "kg", "maxLimit": 5},
+  {"code": "160079", "name": "Tomato Paste Wadi Food", "unit": "3kg tin", "maxLimit": 6},
+  {"code": "160086", "name": "Tomato Peeled", "unit": "2.55kg tin", "maxLimit": 6},
+  {"code": "163100", "name": "Tahina Jar El Rashidi", "unit": "460g jar", "maxLimit": 6},
+  {"code": "161005", "name": "Black Pepper Corn", "unit": "kg", "maxLimit": 2},
+  {"code": "161006", "name": "Black Pepper Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161164", "name": "Cajun Seasoning", "unit": "680g jar", "maxLimit": 3},
+  {"code": "161011", "name": "Cardamom Seeds", "unit": "kg", "maxLimit": 2},
+  {"code": "161019", "name": "Chili Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161022", "name": "Chilli Whole Red Indian", "unit": "kg", "maxLimit": 3},
+  {"code": "161024", "name": "Cinnamon Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161026", "name": "Cinnamon Sticks", "unit": "kg", "maxLimit": 3},
+  {"code": "161027", "name": "Cloves Seeds", "unit": "kg", "maxLimit": 1},
+  {"code": "161028", "name": "Coriander Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161030", "name": "Cumin Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161031", "name": "Cumin Whole Seed", "unit": "kg", "maxLimit": 3},
+  {"code": "161041", "name": "Garlic Powder", "unit": "kg", "maxLimit": 4},
+  {"code": "161042", "name": "Ginger Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161051", "name": "Nutmeg Whole", "unit": "kg", "maxLimit": 1},
+  {"code": "161052", "name": "Onion Powder", "unit": "kg", "maxLimit": 4},
+  {"code": "161053", "name": "Oregano Dry", "unit": "kg", "maxLimit": 2},
+  {"code": "161081", "name": "Oregano Dry Abu Auf", "unit": "250g pkt", "maxLimit": 5},
+  {"code": "161092", "name": "Paprika Smoked Powder", "unit": "500g pkt", "maxLimit": 4},
+  {"code": "161070", "name": "Sumacs Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161075", "name": "Turmeric Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161077", "name": "White Pepper Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161063", "name": "Salt Kitchen", "unit": "kg", "maxLimit": 10},
+  {"code": "161064", "name": "Salt Lemon", "unit": "kg", "maxLimit": 2},
+  {"code": "161067", "name": "Salt Table", "unit": "700g pkt", "maxLimit": 8},
+  {"code": "162002", "name": "Chicken Stock Knorr", "unit": "kg", "maxLimit": 5},
+  {"code": "167006", "name": "Mustard Dijon", "unit": "370g jar", "maxLimit": 5},
+  {"code": "163005", "name": "Oil Corn", "unit": "L", "maxLimit": 15},
+  {"code": "163008", "name": "Oil Olive", "unit": "L", "maxLimit": 8},
+  {"code": "167017", "name": "Vinegar Heinz White", "unit": "L", "maxLimit": 8},
+  {"code": "175248", "name": "Bread Crumb Imported Coarse", "unit": "kg", "maxLimit": 6}
+]
