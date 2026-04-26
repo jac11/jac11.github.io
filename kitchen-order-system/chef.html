@@ -194,10 +194,15 @@ input:focus {
     font-size: 13px;
 }
 
-.btn:hover {                                          transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);      }                                                 
-.btn-primary { background: #3498db; color: white; }                                                 .btn-success { background: #27ae60; color: white; }
-.btn-danger { background: #e74c3c; color: white; }.btn-warning { background: #f39c12; color: white; }
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-primary { background: #3498db; color: white; }
+.btn-success { background: #27ae60; color: white; }
+.btn-danger { background: #e74c3c; color: white; }
+.btn-warning { background: #f39c12; color: white; }
 
 .button-group {
     display: flex;
@@ -206,12 +211,14 @@ input:focus {
     margin-top: 16px;
 }
 
-.button-group .btn {                                  width: 100%;
+.button-group .btn {
+    width: 100%;
 }
 
 .table-wrapper {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;            }
+    -webkit-overflow-scrolling: touch;
+}
 
 .cart-table {
     min-width: 500px;
@@ -250,7 +257,8 @@ input:focus {
     font-size: 11px;
     font-weight: 600;
 }
-                                                  .status-pending { background: #f39c12; color: white; }
+
+.status-pending { background: #f39c12; color: white; }
 .status-approved { background: #27ae60; color: white; }
 .status-rejected { background: #e74c3c; color: white; }
 .status-partial { background: #8e44ad; color: white; }
@@ -258,7 +266,8 @@ input:focus {
 .cart-stats {
     background: #e8f4fd;
     padding: 10px 12px;
-    border-radius: 10px;                              margin-bottom: 12px;
+    border-radius: 10px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-between;
     font-weight: 500;
@@ -274,7 +283,8 @@ input:focus {
 
 .toast {
     position: fixed;
-    bottom: 20px;                                     left: 50%;
+    bottom: 20px;
+    left: 50%;
     transform: translateX(-50%);
     background: #333;
     color: white;
@@ -308,7 +318,8 @@ input:focus {
 }
 
 .admin-fab {
-    position: fixed;                                  bottom: 20px;
+    position: fixed;
+    bottom: 20px;
     right: 20px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
@@ -324,7 +335,8 @@ input:focus {
 }
 
 .admin-btn-mobile {
-    display: block;                                   width: 100%;
+    display: block;
+    width: 100%;
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
     border: none;
@@ -375,13 +387,18 @@ input:focus {
     font-size: 0.65rem;
     color: #888;
     margin: 6px 0;
-}                                                 
+}
+
 .request-items-list {
     font-size: 0.7rem;
-    color: #666;                                      margin-top: 8px;
-    padding-top: 8px;                                 border-top: 1px solid #e0e0e0;
-}                                                 
-.request-item-detail {                                display: flex;
+    color: #666;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.request-item-detail {
+    display: flex;
     justify-content: space-between;
     padding: 5px 0;
     border-bottom: 1px dashed #e0e0e0;
@@ -405,7 +422,6 @@ input:focus {
     border-bottom: 1px solid #f0f0f0;
 }
 
-/* Password Modal Styles */
 .modal {
     display: flex;
     position: fixed;
@@ -437,10 +453,14 @@ input:focus {
 }
 
 .modal-content p {
-    color: #666;                                      margin-bottom: 20px;
-    font-size: 0.85rem;                           }
-                                                  .modal-content input {
-    width: 100%;                                      padding: 12px;
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 14px;
@@ -478,14 +498,15 @@ input:focus {
     font-size: 0.8rem;
 }
 
-.close-modal {                                        background: #95a5a6 !important;
+.close-modal {
+    background: #95a5a6 !important;
     margin-top: 5px;
 }
 
-.close-modal:hover {                                  background: #7f8c8d !important;
+.close-modal:hover {
+    background: #7f8c8d !important;
 }
 
-/* Item cards */
 .items-scroll-container {
     max-height: 500px;
     overflow-y: auto;
@@ -500,7 +521,8 @@ input:focus {
     gap: 8px;
     padding: 12px;
 }
-                                                  .item-card {
+
+.item-card {
     background: white;
     border-radius: 12px;
     padding: 12px;
@@ -510,13 +532,15 @@ input:focus {
 
 .item-card.selected {
     background: #d4edda;
-    border-color: #27ae60;                        }
+    border-color: #27ae60;
+}
 
 .item-main-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;                                  gap: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .item-info {
@@ -543,10 +567,14 @@ input:focus {
 }
 
 .item-unit {
-    background: #ecf0f1;                              padding: 3px 8px;
-    border-radius: 20px;                              font-size: 0.65rem;
-    font-weight: 500;                                 display: inline-block;
-}                                                 
+    background: #ecf0f1;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
 .item-max {
     font-size: 0.65rem;
     color: #e67e22;
@@ -623,7 +651,8 @@ input:focus {
 @media screen and (min-width: 769px) {
     .button-group {
         flex-direction: row;
-    }                                                 .button-group .btn {
+    }
+    .button-group .btn {
         width: auto;
     }
     .mobile-cards-view {
@@ -667,7 +696,7 @@ input:focus {
         </div>
         <div class="header-buttons">
             <button class="refresh-btn" onclick="manualRefresh()" title="Refresh Orders">🔄</button>
-            <button class="hard-reload-btn" onclick="hardReloadJSON()" title="Force Reload Items from JSON (Clear Cache)">📦 Reload Items</button>
+            <button class="hard-reload-btn" onclick="forceReloadItems()" title="Force Reload Items from JSON">📦 Reload Items</button>
             <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
         </div>
     </div>
@@ -686,7 +715,7 @@ input:focus {
 <script>
 const kitchenPasswords = {
     "Hot Kitchen": "hot123",
-    "Cold Kitchen": "cold123",
+    "Cold Kitchen": "cold123", 
     "Pastry / Bakery": "pastry123",
     "Butchery": "butchery123",
     "Beach House": "beach123",
@@ -694,122 +723,105 @@ const kitchenPasswords = {
     "Staff Kitchen": "staff123"
 };
 
+// Map kitchen display names to JSON filenames
+const kitchenToFileMap = {
+    "Hot Kitchen": "hot-kitchen.json",
+    "Cold Kitchen": "cold-kitchen.json",
+    "Pastry / Bakery": "pastry.json",
+    "Butchery": "butchery.json",
+    "Beach House": "beach-house.json",
+    "Nihon Kitchen": "nihon-kitchen.json",
+    "Staff Kitchen": "staff-kitchen.json"
+};
+
 let unlockedKitchens = {};
 let currentKitchen = null;
 let pendingKitchen = null;
-let allItems = null;
+let kitchenItemsCache = {};  // Store items per kitchen
 let kitchenData = {};
 let allRequests = [];
 let chefNames = {};
 let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
-let kitchenItemsCache = {};
 let selectedQuantities = {};
 let addedItemsStatus = {};
 
-// ============ CACHE-BUSTING JSON LOADER ============
-// Solution 1 & 4: Cache-busting with timestamp parameter
-async function loadItemsFromJSON(forceRefresh = false) {
-    return new Promise(async (resolve, reject) => {
-        if (allItems && !forceRefresh) {
-            console.log("Using cached items, skipping reload");
-            resolve(allItems);
-            return;
-        }
-
-        showToast("📦 Loading inventory from JSON...");
-
-        try {
-            // Add cache-busting timestamp to prevent browser cache
-            const cacheBuster = new Date().getTime();
-            const response = await fetch(`items.json?t=${cacheBuster}`);
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-
-            if (!data.items || !Array.isArray(data.items)) {
-                throw new Error("Invalid JSON format: missing 'items' array");
-            }
-
-            allItems = data.items;
-            console.log(`✅ Loaded ${allItems.length} items from JSON at ${new Date().toLocaleTimeString()}`);
-
-            // Rebuild kitchen cache
-            kitchens.forEach(kitchen => {
-                kitchenItemsCache[kitchen] = allItems.filter(i => i.section === kitchen);
-                console.log(`📁 ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
-            });
-
-            showToast(`✅ ${allItems.length} items loaded!`);
-            resolve(allItems);
-        } catch (error) {
-            console.error("Failed to load items:", error);
-            showToast(`❌ Failed to load inventory: ${error.message}`);
-            reject(error);
-        }
-    });
-}
-
-// Solution 2: Force reload JSON (clear cached items and reload)
-async function forceReloadItems() {
-    showToast("🔄 Force reloading items from JSON...");
+// ============ LOAD ITEMS FROM INDIVIDUAL JSON FILES IN /items/ FOLDER ============
+async function loadItemsForKitchen(kitchen, forceRefresh = false) {
+    // Check cache first
+    if (kitchenItemsCache[kitchen] && !forceRefresh) {
+        console.log(`Using cached items for ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
+        return kitchenItemsCache[kitchen];
+    }
+    
+    const fileName = kitchenToFileMap[kitchen];
+    if (!fileName) {
+        console.error(`No file mapping for kitchen: ${kitchen}`);
+        return [];
+    }
+    
+    // Path: /items/beach-house.json etc.
+    const jsonPath = `items/${fileName}`;
+    const cacheBuster = new Date().getTime();
+    const url = `${jsonPath}?t=${cacheBuster}`;
+    
+    showToast(`📦 Loading ${kitchen} items...`);
+    console.log(`Fetching: ${url}`);
+    
     try {
-        // Clear the cached items
-        allItems = null;
-        kitchenItemsCache = {};
-
-        // Reload with cache busting (forceRefresh = true)
-        await loadItemsFromJSON(true);
-
-        // Refresh current kitchen view if any kitchen is selected
-        if (currentKitchen) {
-            await renderItemsList(currentKitchen);
-            renderCart(currentKitchen);
-            showToast(`✅ Reloaded ${allItems.length} items for ${currentKitchen}`);
-        } else {
-            showToast(`✅ Reloaded ${allItems.length} items total`);
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText} - File not found at ${jsonPath}`);
         }
-    } catch (error) {
-        console.error("Force reload failed:", error);
-        showToast("❌ Failed to reload items. Check items.json file.");
-    }
-}
-
-// Solution 5: Hard reload entire page with cache-buster
-function hardReloadJSON() {
-    if (confirm("Force reload items from JSON file?\nThis will clear the cached items and reload fresh data from items.json")) {
-        forceReloadItems();
-    }
-}
-
-// Solution 3: Full page reload with cache-buster parameter
-function fullPageHardReload() {
-    if (confirm("Hard reload entire page?\nThis will clear all caches and reload the page completely.")) {
-        const url = new URL(window.location.href);
-        url.searchParams.set('reload', Date.now());
-        window.location.href = url.toString();
-    }
-}
-
-// Add a hidden function to check current JSON data (for debugging)
-window.checkJSONData = async function() {
-    try {
-        const cacheBuster = Date.now();
-        const response = await fetch(`items.json?t=${cacheBuster}`);
+        
         const data = await response.json();
-        console.log("Current items.json content:", data);
-        showToast(`JSON has ${data.items?.length || 0} items`);
-        return data;
-    } catch(e) {
-        console.error(e);
-        showToast("Error reading JSON");
+        
+        // Support both formats: direct array or { items: [...] }
+        let itemsArray = Array.isArray(data) ? data : (data.items || []);
+        
+        if (!itemsArray.length) {
+            console.warn(`No items found in ${jsonPath}`);
+        }
+        
+        // Add section property to each item if missing
+        itemsArray = itemsArray.map(item => ({
+            ...item,
+            section: item.section || kitchen
+        }));
+        
+        kitchenItemsCache[kitchen] = itemsArray;
+        console.log(`✅ Loaded ${itemsArray.length} items for ${kitchen} from ${jsonPath}`);
+        showToast(`✅ ${kitchen}: ${itemsArray.length} items loaded`);
+        
+        return itemsArray;
+        
+    } catch (error) {
+        console.error(`Error loading ${jsonPath}:`, error);
+        showToast(`❌ Failed to load ${kitchen} items. Check ${jsonPath}`);
+        return [];
     }
-};
+}
 
-function getItemsForKitchen(kitchen) {
+// Force reload all kitchen items
+async function forceReloadItems() {
+    showToast("🔄 Force reloading all kitchen items...");
+    
+    for (const kitchen of kitchens) {
+        kitchenItemsCache[kitchen] = null;
+    }
+    
+    if (currentKitchen) {
+        await loadItemsForKitchen(currentKitchen, true);
+        await renderItemsList(currentKitchen);
+        renderCart(currentKitchen);
+        showToast(`✅ Reloaded ${kitchenItemsCache[currentKitchen]?.length || 0} items for ${currentKitchen}`);
+    } else {
+        showToast("✅ Cache cleared. Select a kitchen to reload.");
+    }
+}
+
+function getItemsForKitchen(kitchen) { 
     return kitchenItemsCache[kitchen] || [];
 }
 
@@ -821,21 +833,31 @@ function loadChefNames() {
             chefNames[kitchen] = parsed[kitchen] || "";
         });
     }
-}                                                 
-function saveChefNames() {                            localStorage.setItem("chefNames", JSON.stringify(chefNames));
 }
-                                                  function loadSavedCart() {                            const saved = localStorage.getItem("kitchenCart");                                                  if(saved) {                                           const parsed = JSON.parse(saved);                 kitchens.forEach(kitchen => {
+
+function saveChefNames() {
+    localStorage.setItem("chefNames", JSON.stringify(chefNames));
+}
+
+function loadSavedCart() {
+    const saved = localStorage.getItem("kitchenCart");
+    if(saved) {
+        const parsed = JSON.parse(saved);
+        kitchens.forEach(kitchen => {
             kitchenData[kitchen] = { cart: parsed[kitchen] || [], chefName: chefNames[kitchen] };
         });
     } else {
         kitchens.forEach(kitchen => {
             kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
-        });                                           }
+        });
+    }
 }
 
 function saveCart() {
     const cartToSave = {};
-    kitchens.forEach(kitchen => {                         cartToSave[kitchen] = kitchenData[kitchen].cart;                                                });
+    kitchens.forEach(kitchen => {
+        cartToSave[kitchen] = kitchenData[kitchen].cart;
+    });
     localStorage.setItem("kitchenCart", JSON.stringify(cartToSave));
 }
 
@@ -853,98 +875,144 @@ loadUnlockedKitchens();
 
 function showKitchenPasswordModal(kitchen) {
     if(unlockedKitchens[kitchen]) {
-        selectKitchen(kitchen);                           return;                                       }
+        selectKitchen(kitchen);
+        return;
+    }
     pendingKitchen = kitchen;
     const modalDiv = document.createElement("div");
     modalDiv.className = "modal";
     modalDiv.id = "kitchenPasswordModal";
-    modalDiv.innerHTML = `                                <div class="modal-content">
-            <h2>🔐 Kitchen Access</h2>                        <p>Enter password for <strong>${kitchen}</strong></p>                                               <input type="password" id="kitchenPasswordInput" placeholder="Enter password" autocomplete="off">
-            <button id="verifyPassBtn">Unlock Kitchen</button>                                                  <div id="kitchenPasswordError" class="error-msg"></div>
+    modalDiv.innerHTML = `
+        <div class="modal-content">
+            <h2>🔐 Kitchen Access</h2>
+            <p>Enter password for <strong>${kitchen}</strong></p>
+            <input type="password" id="kitchenPasswordInput" placeholder="Enter password" autocomplete="off">
+            <button id="verifyPassBtn">Unlock Kitchen</button>
+            <div id="kitchenPasswordError" class="error-msg"></div>
             <button class="close-modal" id="closeModalBtn">Cancel</button>
         </div>
-    `;                                                document.body.appendChild(modalDiv);
-
-    document.getElementById("verifyPassBtn").onclick = () => verifyKitchenPassword();                   document.getElementById("closeModalBtn").onclick = () => closePasswordModal();                      document.getElementById("kitchenPasswordInput").focus();                                        }
+    `;
+    document.body.appendChild(modalDiv);
+    
+    document.getElementById("verifyPassBtn").onclick = () => verifyKitchenPassword();
+    document.getElementById("closeModalBtn").onclick = () => closePasswordModal();
+    document.getElementById("kitchenPasswordInput").focus();
+}
 
 function closePasswordModal() {
     const modal = document.getElementById("kitchenPasswordModal");
     if(modal) modal.remove();
     pendingKitchen = null;
-}                                                 
+}
+
 function verifyKitchenPassword() {
     const inputPassword = document.getElementById("kitchenPasswordInput").value;
-    const kitchen = pendingKitchen;                   if(inputPassword === kitchenPasswords[kitchen]) {
+    const kitchen = pendingKitchen;
+    if(inputPassword === kitchenPasswords[kitchen]) {
         unlockedKitchens[kitchen] = true;
         saveUnlockedKitchens();
-        closePasswordModal();                             selectKitchen(kitchen);                       } else {
+        closePasswordModal();
+        selectKitchen(kitchen);
+    } else {
         document.getElementById("kitchenPasswordError").innerHTML = "❌ Wrong password!";
     }
-}                                                 
-async function loadRequestsFromFirebase() {           try {
+}
+
+async function loadRequestsFromFirebase() {
+    try {
         const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
-        allRequests = [];                                 snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
-        if (currentKitchen) loadMyRequests(currentKitchen);                                                 document.getElementById("syncStatus").innerHTML = "✅ Connected • " + allRequests.length + " orders";
+        allRequests = [];
+        snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
+        if (currentKitchen) loadMyRequests(currentKitchen);
+        document.getElementById("syncStatus").innerHTML = "✅ Connected • " + allRequests.length + " orders";
     } catch (error) {
+        console.error("Firebase error:", error);
         document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
     }
 }
-                                                  async function saveRequestToFirebase(request) {
+
+async function saveRequestToFirebase(request) {
     try {
         await db.collection("kitchen_requests").add(request);
         showToast("✅ Request saved!");
         await loadRequestsFromFirebase();
         if (currentKitchen) loadMyRequests(currentKitchen);
     } catch (error) {
-        showToast("❌ Error saving");                 }
+        console.error("Save error:", error);
+        showToast("❌ Error saving");
+    }
 }
 
-async function manualRefresh() {                      showToast("🔄 Refreshing orders...");
+async function manualRefresh() {
+    showToast("🔄 Refreshing orders...");
     await loadRequestsFromFirebase();
-    if (currentKitchen) {                                 loadMyRequests(currentKitchen);
+    if (currentKitchen) {
+        loadMyRequests(currentKitchen);
         renderCart(currentKitchen);
-    }                                             }
+    }
+}
 
-async function renderItemsList(kitchen) {             const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const container = document.getElementById(`itemsListContainer_${kitchenId}`);                       if (!container) return;
-                                                      const chefName = chefNames[kitchen];
+async function renderItemsList(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const container = document.getElementById(`itemsListContainer_${kitchenId}`);
+    if (!container) return;
+    
+    const chefName = chefNames[kitchen];
     if(!chefName) {
         container.innerHTML = '<div class="empty-state">⚠️ Enter chef name to see items</div>';
-        return;                                       }
-
-    if (!allItems) await loadItemsFromJSON(false);                                                      let items = getItemsForKitchen(kitchen);
-    if (!items || items.length === 0) {
-        container.innerHTML = `<div class="empty-state">📭 No items for ${kitchen}</div>`;
         return;
-    }                                             
-    if (!selectedQuantities[kitchen]) selectedQuantities[kitchen] = {};                                 if (!addedItemsStatus[kitchen]) addedItemsStatus[kitchen] = {};
-                                                      const sortedItems = [...items].sort((a,b) => a.name.localeCompare(b.name));                         let html = `<div class="items-scroll-container"><div class="items-grid">`;                      
+    }
+    
+    // Load items for this specific kitchen from its JSON file
+    let items = await loadItemsForKitchen(kitchen, false);
+    
+    if (!items || items.length === 0) {
+        container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen}<br><small>Check items/${kitchenToFileMap[kitchen]}</small></div>`;
+        return;
+    }
+    
+    if (!selectedQuantities[kitchen]) selectedQuantities[kitchen] = {};
+    if (!addedItemsStatus[kitchen]) addedItemsStatus[kitchen] = {};
+    
+    const sortedItems = [...items].sort((a,b) => (a.name || "").localeCompare(b.name || ""));
+    let html = `<div class="items-scroll-container"><div class="items-grid">`;
+    
     sortedItems.forEach(item => {
         const currentQty = selectedQuantities[kitchen][item.code] || 0;
         const isSelected = addedItemsStatus[kitchen][item.code] || false;
         const selectedClass = isSelected ? 'selected' : '';
-        const safeCode = item.code.replace(/[^a-zA-Z0-9]/g, '_');                                   
-        html += `                                             <div class="item-card ${selectedClass}" data-code="${item.code}" id="itemCard_${kitchenId}_${safeCode}">
-                <div class="item-main-row">                           <div class="item-info">
-                        <div class="item-name">${escapeHtml(item.name)}</div>
-                        <div class="item-code">${item.code}</div>
+        const safeCode = (item.code || "").replace(/[^a-zA-Z0-9]/g, '_');
+        const itemName = item.name || "Unknown";
+        const itemUnit = item.unit || "pcs";
+        const maxLimit = item.maxLimit || 99;
+        
+        html += `
+            <div class="item-card ${selectedClass}" data-code="${item.code}" id="itemCard_${kitchenId}_${safeCode}">
+                <div class="item-main-row">
+                    <div class="item-info">
+                        <div class="item-name">${escapeHtml(itemName)}</div>
+                        <div class="item-code">${item.code || "N/A"}</div>
                     </div>
                     <div class="item-meta">
-                        <span class="item-unit">${item.unit}</span>
-                        <div class="item-max">max ${item.maxLimit}</div>
+                        <span class="item-unit">${itemUnit}</span>
+                        <div class="item-max">max ${maxLimit}</div>
                     </div>
                     <div class="item-actions">
                         <div class="qty-picker">
-                            <button class="qty-btn" data-step="-0.5" data-code="${item.code}" data-max="${item.maxLimit}">−</button>
-                            <span class="qty-value" id="qtySpan_${kitchenId}_${safeCode}">${currentQty.toFixed(1)}</span>                                                         <button class="qty-btn" data-step="0.5" data-code="${item.code}" data-max="${item.maxLimit}">+</button>
+                            <button class="qty-btn" data-step="-0.5" data-code="${item.code}" data-max="${maxLimit}">−</button>
+                            <span class="qty-value" id="qtySpan_${kitchenId}_${safeCode}">${currentQty.toFixed(1)}</span>
+                            <button class="qty-btn" data-step="0.5" data-code="${item.code}" data-max="${maxLimit}">+</button>
                         </div>
-                        <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(item.name)}" data-unit="${item.unit}" data-max="${item.maxLimit}">Add</button>
+                        <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(itemName)}" data-unit="${itemUnit}" data-max="${maxLimit}">Add</button>
                     </div>
                 </div>
             </div>
-        `;                                            });
+        `;
+    });
     html += `</div><div class="scroll-info">📜 ${sortedItems.length} items • Use +/− (0.5 steps) → Add</div></div>`;
-    container.innerHTML = html;                                                                         container.querySelectorAll('.qty-btn').forEach(btn => {
+    container.innerHTML = html;
+    
+    container.querySelectorAll('.qty-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const step = parseFloat(btn.dataset.step);
@@ -955,61 +1023,86 @@ async function renderItemsList(kitchen) {             const kitchenId = kitchen.
     });
     container.querySelectorAll('.add-item-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            e.stopPropagation();                              const code = btn.dataset.code;
+            e.stopPropagation();
+            const code = btn.dataset.code;
             const itemName = btn.dataset.name;
             const unit = btn.dataset.unit;
             const maxLimit = parseFloat(btn.dataset.max);
             addItemWithQuantity(kitchen, code, itemName, unit, maxLimit);
-        });                                           });
-}                                                 
+        });
+    });
+}
+
 function changeQuantity(kitchen, code, delta, maxLimit) {
     if (!selectedQuantities[kitchen]) selectedQuantities[kitchen] = {};
     let current = selectedQuantities[kitchen][code] || 0;
-    let newQty = parseFloat((current + delta).toFixed(1));                                              if (newQty < 0) newQty = 0;
+    let newQty = parseFloat((current + delta).toFixed(1));
+    if (newQty < 0) newQty = 0;
     if (newQty > maxLimit) newQty = maxLimit;
     selectedQuantities[kitchen][code] = newQty;
-
+    
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
+    const safeCode = (code || "").replace(/[^a-zA-Z0-9]/g, '_');
     const span = document.getElementById(`qtySpan_${kitchenId}_${safeCode}`);
     if (span) span.innerText = newQty.toFixed(1);
 }
 
 function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
-    const chefName = chefNames[kitchen];              if(!chefName) { showToast("⚠️ Enter chef name first"); return; }
-                                                      const qty = selectedQuantities[kitchen]?.[code] || 0;                                               if (qty <= 0) { showToast(`⚠️ Set quantity > 0 for ${itemName}`); return; }                      
-    const item = getItemsForKitchen(kitchen).find(i => i.code === code);
+    const chefName = chefNames[kitchen];
+    if(!chefName) { showToast("⚠️ Enter chef name first"); return; }
+    
+    const qty = selectedQuantities[kitchen]?.[code] || 0;
+    if (qty <= 0) { showToast(`⚠️ Set quantity > 0 for ${itemName}`); return; }
+    
+    const items = getItemsForKitchen(kitchen);
+    const item = items.find(i => i.code === code);
     if(!item) return;
-
+    
     const existing = kitchenData[kitchen].cart.find(i => i.code === code);
     let newTotal = (existing ? existing.qty : 0) + qty;
-    if (newTotal > item.maxLimit) {                       const remaining = item.maxLimit - (existing ? existing.qty : 0);
-        showToast(`⚠️ Max ${item.maxLimit} ${item.unit}. Only ${remaining.toFixed(1)} left`);
-        return;                                       }
-
+    if (newTotal > (item.maxLimit || maxLimit)) {
+        const remaining = (item.maxLimit || maxLimit) - (existing ? existing.qty : 0);
+        showToast(`⚠️ Max ${item.maxLimit || maxLimit} ${item.unit || unit}. Only ${remaining.toFixed(1)} left`);
+        return;
+    }
+    
     if (existing) {
         existing.qty += qty;
         showToast(`✓ Added ${qty.toFixed(1)} ${item.name}`);
-    } else {                                              kitchenData[kitchen].cart.push({
-            code: item.code, name: item.name, unit: item.unit,                                                  qty: qty, maxLimit: item.maxLimit
+    } else {
+        kitchenData[kitchen].cart.push({
+            code: item.code, name: item.name, unit: item.unit || unit, 
+            qty: qty, maxLimit: item.maxLimit || maxLimit
         });
         showToast(`✓ Added ${qty.toFixed(1)} ${item.name}`);
     }
-
-    addedItemsStatus[kitchen][code] = true;           selectedQuantities[kitchen][code] = 0;
-
+    
+    addedItemsStatus[kitchen][code] = true;
+    selectedQuantities[kitchen][code] = 0;
+    
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
-    const span = document.getElementById(`qtySpan_${kitchenId}_${safeCode}`);                           if (span) span.innerText = "0.0";             
-    const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);                          if (card) card.classList.add('selected');     
-    renderCart(kitchen);                              saveCart();
-}                                                                                                   function renderCart(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');                                  const cart = kitchenData[kitchen].cart;
+    const safeCode = (code || "").replace(/[^a-zA-Z0-9]/g, '_');
+    const span = document.getElementById(`qtySpan_${kitchenId}_${safeCode}`);
+    if (span) span.innerText = "0.0";
+    
+    const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
+    if (card) card.classList.add('selected');
+    
+    renderCart(kitchen);
+    saveCart();
+}
+
+function renderCart(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const cart = kitchenData[kitchen].cart;
     const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
-    document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty.toFixed(1);                 document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
-                                                      const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
+    document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty.toFixed(1);
+    document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
+    
+    const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
-        if(cart.length === 0) {                               desktopBody.innerHTML = '<td><td colspan="6" style="text-align:center;">No items</div>';
+        if(cart.length === 0) {
+            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No items</div>';
         } else {
             desktopBody.innerHTML = "";
             cart.forEach((item, idx) => {
@@ -1021,146 +1114,230 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
                         <td>${item.unit}</div>
                         <td>${item.qty.toFixed(1)}/${item.maxLimit}</div>
                         <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">Remove</button></div>
-                    </tr>                                         `;
+                    </tr>
+                `;
             });
         }
     }
-
-    const mobileContainer = document.getElementById(`cartMobile_${kitchenId}`);                         if(mobileContainer) {
+    
+    const mobileContainer = document.getElementById(`cartMobile_${kitchenId}`);
+    if(mobileContainer) {
         if(cart.length === 0) {
             mobileContainer.innerHTML = '<div class="empty-state">No items added</div>';
-        } else {                                              mobileContainer.innerHTML = "";
+        } else {
+            mobileContainer.innerHTML = "";
             cart.forEach((item, idx) => {
-                mobileContainer.innerHTML += `                        <div class="request-item pending">
+                mobileContainer.innerHTML += `
+                    <div class="request-item pending">
                         <div class="request-header">
                             <span>${item.code}</span>
                             <button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">Remove</button>
-                        </div>                                            <div><strong>${escapeHtml(item.name)}</strong></div>
+                        </div>
+                        <div><strong>${escapeHtml(item.name)}</strong></div>
                         <div>Qty: ${item.qty.toFixed(1)} / ${item.maxLimit} ${item.unit}</div>
-                    </div>                                        `;
+                    </div>
+                `;
             });
         }
-    }                                             }
-                                                  function removeItem(kitchen, index) {
-    const removed = kitchenData[kitchen].cart[index];
-    if (removed) {                                        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-        const safeCode = removed.code.replace(/[^a-zA-Z0-9]/g, '_');                                        const stillExists = kitchenData[kitchen].cart.some((it, i) => i !== index && it.code === removed.code);                                               if (!stillExists && addedItemsStatus[kitchen]) {                                                        addedItemsStatus[kitchen][removed.code] = false;                                                    const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);                          if (card) card.classList.remove('selected');
-        }                                             }
-    kitchenData[kitchen].cart.splice(index, 1);       renderCart(kitchen);
-    saveCart();                                       showToast("Item removed");
+    }
 }
-                                                  function clearCart(kitchen) {
-    if(confirm("Clear all items?")) {                     kitchenData[kitchen].cart = [];
-        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');                                  if (addedItemsStatus[kitchen]) {
-            Object.keys(addedItemsStatus[kitchen]).forEach(code => {                                                addedItemsStatus[kitchen][code] = false;                                                            const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
-                const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);                          if (card) card.classList.remove('selected');                                                    });
+
+function removeItem(kitchen, index) {
+    const removed = kitchenData[kitchen].cart[index];
+    if (removed) {
+        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+        const safeCode = (removed.code || "").replace(/[^a-zA-Z0-9]/g, '_');
+        const stillExists = kitchenData[kitchen].cart.some((it, i) => i !== index && it.code === removed.code);
+        if (!stillExists && addedItemsStatus[kitchen]) {
+            addedItemsStatus[kitchen][removed.code] = false;
+            const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
+            if (card) card.classList.remove('selected');
+        }
+    }
+    kitchenData[kitchen].cart.splice(index, 1);
+    renderCart(kitchen);
+    saveCart();
+    showToast("Item removed");
+}
+
+function clearCart(kitchen) {
+    if(confirm("Clear all items?")) {
+        kitchenData[kitchen].cart = [];
+        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+        if (addedItemsStatus[kitchen]) {
+            Object.keys(addedItemsStatus[kitchen]).forEach(code => {
+                addedItemsStatus[kitchen][code] = false;
+                const safeCode = (code || "").replace(/[^a-zA-Z0-9]/g, '_');
+                const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
+                if (card) card.classList.remove('selected');
+            });
         }
         renderCart(kitchen);
         saveCart();
         showToast("Cart cleared");
     }
-}                                                                                                   async function submitRequest(kitchen) {
+}
+
+async function submitRequest(kitchen) {
     const chefName = chefNames[kitchen];
     const cart = kitchenData[kitchen].cart;
     if(!chefName) { showToast("⚠️ Enter chef name"); return; }
     if(cart.length === 0) { showToast("No items to submit"); return; }
-
-    const newRequest = {                                  requestId: "REQ-" + Date.now().toString().slice(-6),
-        chefName: chefName,                               section: kitchen,
-        items: cart.map(i => ({                               code: i.code, name: i.name, unit: i.unit,
-            originalQty: i.qty, maxLimit: i.maxLimit,                                                           status: "pending", approvedQty: 0, rejectionReason: null                                        })),
+    
+    const newRequest = {
+        requestId: "REQ-" + Date.now().toString().slice(-6),
+        chefName: chefName,
+        section: kitchen,
+        items: cart.map(i => ({
+            code: i.code, name: i.name, unit: i.unit,
+            originalQty: i.qty, maxLimit: i.maxLimit,
+            status: "pending", approvedQty: 0, rejectionReason: null
+        })),
         submittedAt: new Date().toLocaleString(),
         timestamp: Date.now()
-    };                                            
+    };
+    
     await saveRequestToFirebase(newRequest);
-    kitchenData[kitchen].cart = [];                   const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');                                  if (addedItemsStatus[kitchen]) {
+    kitchenData[kitchen].cart = [];
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    if (addedItemsStatus[kitchen]) {
         Object.keys(addedItemsStatus[kitchen]).forEach(code => {
             addedItemsStatus[kitchen][code] = false;
-            const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
+            const safeCode = (code || "").replace(/[^a-zA-Z0-9]/g, '_');
             const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
             if (card) card.classList.remove('selected');
-        });                                           }
+        });
+    }
     renderCart(kitchen);
-    saveCart();                                       showToast(`✅ Request ${newRequest.requestId} submitted!`);                                         await loadRequestsFromFirebase();
-    if (currentKitchen) loadMyRequests(currentKitchen);                                             }
-                                                  function getOverallStatus(items) {
+    saveCart();
+    showToast(`✅ Request ${newRequest.requestId} submitted!`);
+    await loadRequestsFromFirebase();
+    if (currentKitchen) loadMyRequests(currentKitchen);
+}
+
+function getOverallStatus(items) {
     if(!items || items.length === 0) return "pending";
     const approved = items.filter(i => i.status === "approved").length;
     const rejected = items.filter(i => i.status === "rejected").length;
     if (approved === items.length) return "approved";
-    if (rejected === items.length) return "rejected";                                                   if (approved > 0 && rejected > 0) return "partial";
-    return "pending";                             }
-                                                  function loadMyRequests(kitchen) {
-    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');                                  const chefName = chefNames[kitchen];
+    if (rejected === items.length) return "rejected";
+    if (approved > 0 && rejected > 0) return "partial";
+    return "pending";
+}
+
+function loadMyRequests(kitchen) {
+    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+    const chefName = chefNames[kitchen];
     const container = document.getElementById(`myRequestsDesktop_${kitchenId}`);
-    if (!container) return;                       
-    if(!chefName) {                                       container.innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
-        return;                                       }
-                                                      const myRequests = allRequests.filter(r => r.chefName === chefName && r.section === kitchen);
+    if (!container) return;
+    
+    if(!chefName) {
+        container.innerHTML = '<div class="empty-state">Enter chef name to see requests</div>';
+        return;
+    }
+    
+    const myRequests = allRequests.filter(r => r.chefName === chefName && r.section === kitchen);
     if (myRequests.length === 0) {
         container.innerHTML = '<div class="empty-state">📭 No requests yet</div>';
         return;
-    }                                             
+    }
+    
     container.innerHTML = "";
     [...myRequests].reverse().forEach(req => {
         const status = getOverallStatus(req.items);
         let statusClass = "status-pending", statusText = "⏳ Pending";
         if (status === "approved") { statusClass = "status-approved"; statusText = "✅ Fully Approved"; }
-        else if (status === "rejected") { statusClass = "status-rejected"; statusText = "❌ Rejected"; }                                                      else if (status === "partial") { statusClass = "status-partial"; statusText = "⚠️ Partially Approved"; }
-                                                          let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Result</th></tr></thead><tbody>`;                                                     req.items.forEach(item => {
+        else if (status === "rejected") { statusClass = "status-rejected"; statusText = "❌ Rejected"; }
+        else if (status === "partial") { statusClass = "status-partial"; statusText = "⚠️ Partially Approved"; }
+        
+        let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Result</th></tr></thead><tbody>`;
+        req.items.forEach(item => {
             let resultText = "";
-            if(item.status === "approved") resultText = `${item.approvedQty} ${item.unit} approved`;            else if(item.status === "rejected") resultText = item.rejectionReason || "Rejected";                else resultText = "Waiting...";
-            itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td>
+            if(item.status === "approved") resultText = `${item.approvedQty} ${item.unit} approved`;
+            else if(item.status === "rejected") resultText = item.rejectionReason || "Rejected";
+            else resultText = "Waiting...";
+            itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></div>
                           <td>${item.originalQty.toFixed(1)} ${item.unit}</div>
                           <td>${item.status === "approved" ? "✅" : item.status === "rejected" ? "❌" : "⏳"} ${item.status === "approved" ? "Approved" : item.status === "rejected" ? "Rejected" : "Pending"}</div>
-                          <td>${resultText}</div>                     </tr>`;
-        });                                               itemsHtml += `</tbody></table>`;
-                                                          container.innerHTML += `
+                          <td>${resultText}</div>
+                    </tr>`;
+        });
+        itemsHtml += `</tbody></table>`;
+        
+        container.innerHTML += `
             <div style="border-left:4px solid ${status === 'approved' ? '#27ae60' : status === 'rejected' ? '#e74c3c' : status === 'partial' ? '#8e44ad' : '#f39c12'}; border-radius:12px; padding:14px; margin-bottom:16px; background:#fff;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">                          <span style="font-weight:bold;">📄 ${req.requestId}</span>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span style="font-weight:bold;">📄 ${req.requestId}</span>
                     <span class="status-badge ${statusClass}">${statusText}</span>
                 </div>
                 <div style="font-size:0.7rem; color:#666; margin-bottom:10px;">📅 ${req.submittedAt}</div>
-                ${itemsHtml}                                  </div>
-        `;                                            });
-}                                                 
-function exportToExcel(kitchen) {                     const cart = kitchenData[kitchen].cart;
-    if(cart.length === 0) { showToast("No items"); return; }                                            let csv = "Code,Item,Quantity,Unit,Max Limit\n";
+                ${itemsHtml}
+            </div>
+        `;
+    });
+}
+
+function exportToExcel(kitchen) {
+    const cart = kitchenData[kitchen].cart;
+    if(cart.length === 0) { showToast("No items"); return; }
+    let csv = "Code,Item,Quantity,Unit,Max Limit\n";
     cart.forEach(i => csv += `${i.code},${i.name},${i.qty.toFixed(1)},${i.unit},${i.maxLimit}\n`);
     const blob = new Blob([csv], {type: "text/csv"});
     const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);            link.download = `order_${kitchen}_${chefNames[kitchen]}.csv`;
+    link.href = URL.createObjectURL(blob);
+    link.download = `order_${kitchen}_${chefNames[kitchen]}.csv`;
     link.click();
-    showToast("Exporting...");                    }
+    showToast("Exporting...");
+}
 
 function openAdmin() { window.open("admin.html", "_blank"); }
 function showToast(msg) {
-    const toast = document.createElement("div");      toast.className = "toast";
-    toast.innerText = msg;                            document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);       }
-function escapeHtml(str) {                            if(!str) return '';
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));                    }
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+}
+function escapeHtml(str) {
+    if(!str) return '';
+    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+}
 
-function logout() {                                   if(confirm("Logout? All unlocked kitchens will be locked.")) {                                          unlockedKitchens = {};                            localStorage.removeItem("unlockedKitchens");
+function logout() {
+    if(confirm("Logout? All unlocked kitchens will be locked.")) {
+        unlockedKitchens = {};
+        localStorage.removeItem("unlockedKitchens");
         kitchens.forEach(k => localStorage.removeItem(`kitchen_password_${k}`));
         kitchens.forEach(k => { kitchenData[k].cart = []; renderCart(k); });
         saveCart();
         currentKitchen = null;
-        document.querySelectorAll('.kitchen-page').forEach(p => p.classList.remove('active-page'));         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        showToast("Logged out.");                         setTimeout(() => window.location.href = "index.html", 1500);                                    }
-}                                                                                                   async function selectKitchen(kitchen) {
-    currentKitchen = kitchen;                         document.querySelectorAll('.tab-btn').forEach(btn => {                                                  btn.classList.remove('active');
-        if(btn.innerText.includes(kitchen)) btn.classList.add('active');
-    });                                               document.querySelectorAll('.kitchen-page').forEach(p => p.classList.remove('active-page'));
-    const pageId = `page_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`;                           const target = document.getElementById(pageId);
-    if(target) target.classList.add('active-page');
+        document.querySelectorAll('.kitchen-page').forEach(p => p.classList.remove('active-page'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        showToast("Logged out.");
+        setTimeout(() => window.location.href = "index.html", 1500);
+    }
+}
 
+async function selectKitchen(kitchen) {
+    currentKitchen = kitchen;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if(btn.innerText.includes(kitchen)) btn.classList.add('active');
+    });
+    document.querySelectorAll('.kitchen-page').forEach(p => p.classList.remove('active-page'));
+    const pageId = `page_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`;
+    const target = document.getElementById(pageId);
+    if(target) target.classList.add('active-page');
+    
     const chefInput = document.getElementById(`chefName_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`);
-    if(chefInput) chefInput.value = chefNames[kitchen] || "";                                       
-    await loadItemsFromJSON(false);
-    await renderItemsList(kitchen);                   renderCart(kitchen);
-    loadMyRequests(kitchen);                      }
-                                                  function onChefNameChange(kitchen) {
+    if(chefInput) chefInput.value = chefNames[kitchen] || "";
+    
+    await renderItemsList(kitchen);
+    renderCart(kitchen);
+    loadMyRequests(kitchen);
+}
+
+function onChefNameChange(kitchen) {
     const id = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const newName = document.getElementById(`chefName_${id}`).value.trim();
     chefNames[kitchen] = newName;
@@ -1172,40 +1349,52 @@ function logout() {                                   if(confirm("Logout? All un
 function createKitchenPage(kitchen) {
     const id = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     return `
-        <div class="kitchen-page" id="page_${id}">            <div class="card">
-                <h3>👨‍🍳 Chef - ${kitchen}</h3>                   <div class="input-group">
+        <div class="kitchen-page" id="page_${id}">
+            <div class="card">
+                <h3>👨‍🍳 Chef - ${kitchen}</h3>
+                <div class="input-group">
                     <label>Chef Name <span class="required">*</span></label>
-                    <input type="text" id="chefName_${id}" placeholder="Enter chef name" onchange="onChefNameChange('${kitchen}')">                                   </div>
+                    <input type="text" id="chefName_${id}" placeholder="Enter chef name" onchange="onChefNameChange('${kitchen}')">
+                </div>
             </div>
             <div class="card">
                 <h3>📦 ${kitchen} Items</h3>
                 <div id="itemsListContainer_${id}"></div>
-            </div>                                            <div class="card">
-                <h3>🛒 Current Request</h3>                       <div class="cart-stats"><span>📦 Total: <strong id="totalItems_${id}">0</strong></span><span>📋 Items: <strong id="lineCount_${id}">0</strong></span></div>
+            </div>
+            <div class="card">
+                <h3>🛒 Current Request</h3>
+                <div class="cart-stats"><span>📦 Total: <strong id="totalItems_${id}">0</strong></span><span>📋 Items: <strong id="lineCount_${id}">0</strong></span></div>
                 <div class="desktop-table-view"><div class="table-wrapper"><table class="cart-table"><thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Max</th><th></th></tr></thead><tbody id="cartTableDesktop_${id}"></tbody></table></div></div>
                 <div class="mobile-cards-view" id="cartMobile_${id}"></div>
                 <div class="button-group">
-                    <button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 Submit</button>                                                              <button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 Export</button>
-                    <button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ Clear</button>                                                                 </div>
+                    <button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 Submit</button>
+                    <button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 Export</button>
+                    <button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ Clear</button>
+                </div>
             </div>
             <div class="card">
                 <h3>📜 My Requests</h3>
-                <div id="myRequestsDesktop_${id}"></div>                                                        </div>
+                <div id="myRequestsDesktop_${id}"></div>
+            </div>
         </div>
-    `;                                            }
+    `;
+}
 
 function generatePages() {
-    const tabs = document.getElementById("tabsContainer");                                              const pages = document.getElementById("kitchenPagesContainer");                                     tabs.innerHTML = "";
-    pages.innerHTML = "";                             kitchens.forEach(k => {
-        tabs.innerHTML += `<button class="tab-btn" onclick="showKitchenPasswordModal('${k}')">${k}</button>`;                                                 pages.innerHTML += createKitchenPage(k);
-    });                                           }
+    const tabs = document.getElementById("tabsContainer");
+    const pages = document.getElementById("kitchenPagesContainer");
+    tabs.innerHTML = "";
+    pages.innerHTML = "";
+    kitchens.forEach(k => {
+        tabs.innerHTML += `<button class="tab-btn" onclick="showKitchenPasswordModal('${k}')">${k}</button>`;
+        pages.innerHTML += createKitchenPage(k);
+    });
+}
 
 generatePages();
-loadItemsFromJSON(false).then(() => {
-    loadRequestsFromFirebase();
-    db.collection("kitchen_requests").onSnapshot(() => loadRequestsFromFirebase());
-    setInterval(() => { if(currentKitchen) loadRequestsFromFirebase(); }, 4000);                    });
-
-// Expose force reload function to global scope for debugging
-window.forceReloadItems = forceReloadItems;       </script>                                         </body>
+loadRequestsFromFirebase();
+db.collection("kitchen_requests").onSnapshot(() => loadRequestsFromFirebase());
+setInterval(() => { if(currentKitchen) loadRequestsFromFirebase(); }, 4000);
+</script>
+</body>
 </html>
