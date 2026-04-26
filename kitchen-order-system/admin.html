@@ -12,105 +12,69 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0f2f5;
+    background: #f0f4f8;
 }
 
 .header {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: white;
-    padding: 16px 24px;
+    padding: 12px 16px;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
 .header-content {
-    max-width: 1400px;
-    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
     flex-wrap: wrap;
-    gap: 15px;
-}
-
-.header h1 {
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
     gap: 10px;
 }
 
-.header span {
-    color: #e94560;
-}
-
-.admin-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255,255,255,0.1);
-    padding: 5px 15px;
-    border-radius: 40px;
-}
-
-.admin-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: #e94560;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.logo {
+    font-size: 1.2rem;
     font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.admin-name {
-    font-weight: 600;
-    font-size: 0.85rem;
+.logo-icon {
+    font-size: 1.5rem;
 }
 
-.logout-btn {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    padding: 5px 12px;
-    border-radius: 25px;
-    color: white;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.2s;
-}
-
-.logout-btn:hover {
-    background: rgba(255,255,255,0.3);
+.logo span {
+    color: #ffd700;
 }
 
 .header-buttons {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .btn-header {
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.2);
     border: none;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 25px;
     color: white;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
     font-size: 12px;
+    transition: all 0.3s;
 }
 
 .btn-header:hover {
-    background: rgba(255,255,255,0.25);
-    transform: translateY(-1px);
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.02);
 }
 
 .btn-analytics {
@@ -124,27 +88,27 @@ body {
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 16px;
     margin-bottom: 24px;
 }
 
 .stat-card {
     background: white;
-    padding: 18px;
-    border-radius: 16px;
+    padding: 16px;
+    border-radius: 14px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .stat-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .stat-number {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: bold;
     color: #e94560;
 }
@@ -153,29 +117,27 @@ body {
     color: #666;
     margin-top: 5px;
     font-size: 0.75rem;
-    font-weight: 500;
 }
 
 .kitchen-filters {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 20px;
     flex-wrap: wrap;
     background: white;
-    padding: 12px 20px;
-    border-radius: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    padding: 12px 16px;
+    border-radius: 14px;
 }
 
 .kitchen-filter-btn {
-    padding: 6px 18px;
+    padding: 6px 16px;
     background: #f0f2f5;
     border: none;
     border-radius: 30px;
     font-weight: 600;
-    font-size: 12px;
     cursor: pointer;
-    transition: all 0.2s;
+    font-size: 12px;
+    transition: all 0.3s;
 }
 
 .kitchen-filter-btn:hover {
@@ -189,21 +151,19 @@ body {
 
 .tabs {
     display: flex;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
 .tab-btn {
-    padding: 8px 22px;
+    padding: 8px 20px;
     background: white;
     border: none;
     border-radius: 30px;
     font-weight: 600;
-    font-size: 13px;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: all 0.3s;
 }
 
 .tab-btn.active {
@@ -211,32 +171,29 @@ body {
     color: white;
 }
 
-/* Request Card - Like Chef Card */
 .request-card {
     background: white;
-    border-radius: 16px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border-radius: 14px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     overflow: hidden;
-    border: 1px solid #eef2f6;
 }
 
 .request-header {
     background: #f8f9fa;
-    padding: 16px 20px;
-    border-bottom: 1px solid #eef2f6;
+    padding: 14px 16px;
+    border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
 }
 
 .request-id {
-    font-weight: 700;
-    font-size: 1rem;
+    font-weight: bold;
+    font-size: 0.9rem;
     color: #1e3c72;
-    font-family: monospace;
 }
 
 .kitchen-badge {
@@ -246,34 +203,34 @@ body {
     font-weight: 600;
 }
 
-.kitchen-hot { background: #ffe0e0; color: #c0392b; }
-.kitchen-cold { background: #e0f0ff; color: #2980b9; }
-.kitchen-pastry { background: #fff0e0; color: #e67e22; }
-.kitchen-butchery { background: #f0e0ff; color: #8e44ad; }
-.kitchen-beach { background: #e0fff0; color: #1abc9c; }
-.kitchen-nihon { background: #ffe0f0; color: #e91e63; }
-.kitchen-staff { background: #e8e8e8; color: #7f8c8d; }
+.kitchen-hot { background: #e74c3c20; color: #e74c3c; }
+.kitchen-cold { background: #3498db20; color: #3498db; }
+.kitchen-pastry { background: #f39c1220; color: #f39c12; }
+.kitchen-butchery { background: #8e44ad20; color: #8e44ad; }
+.kitchen-beach { background: #1abc9c20; color: #1abc9c; }
+.kitchen-nihon { background: #e91e6320; color: #e91e63; }
+.kitchen-staff { background: #95a5a620; color: #7f8c8d; }
 
 .status-badge {
-    padding: 4px 14px;
+    padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 600;
+    display: inline-block;
 }
 
-.status-pending { background: #fef3c7; color: #d97706; }
-.status-approved { background: #dcfce7; color: #16a34a; }
-.status-rejected { background: #fee2e2; color: #dc2626; }
-.status-partial { background: #f3e8ff; color: #9333ea; }
+.status-pending { background: #f39c12; color: white; }
+.status-approved { background: #27ae60; color: white; }
+.status-rejected { background: #e74c3c; color: white; }
+.status-partial { background: #8e44ad; color: white; }
 
-/* Request Info Grid */
 .request-info {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 16px 20px;
+    display: flex;
+    gap: 20px;
+    padding: 12px 16px;
     background: white;
-    border-bottom: 1px solid #eef2f6;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: wrap;
 }
 
 .info-item {
@@ -282,64 +239,58 @@ body {
 }
 
 .info-label {
-    font-size: 0.65rem;
-    color: #94a3b8;
+    font-size: 0.6rem;
+    color: #999;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .info-value {
     font-weight: 600;
     font-size: 0.85rem;
-    color: #1e293b;
-    margin-top: 4px;
+    margin-top: 3px;
 }
 
-/* Items Table */
 .items-wrapper {
     overflow-x: auto;
-    padding: 0 16px 16px 16px;
+    padding: 0 16px 16px;
 }
 
 .items-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px;
+    min-width: 550px;
 }
 
 .items-table th {
     text-align: left;
-    padding: 12px 8px;
+    padding: 10px 8px;
     font-size: 0.7rem;
     font-weight: 600;
-    color: #64748b;
-    border-bottom: 2px solid #eef2f6;
-    background: #fafcfc;
+    color: #888;
+    border-bottom: 1px solid #eee;
 }
 
 .items-table td {
-    padding: 14px 8px;
-    border-bottom: 1px solid #f0f2f5;
+    padding: 12px 8px;
+    border-bottom: 1px solid #f0f0f0;
     vertical-align: middle;
 }
 
-.item-name-cell {
+.item-name {
     font-weight: 600;
     font-size: 0.85rem;
-    color: #2c3e50;
 }
 
 .item-code {
     font-size: 0.65rem;
-    color: #94a3b8;
+    color: #999;
     font-family: monospace;
-    margin-top: 3px;
+    margin-top: 2px;
 }
 
 .item-max {
     font-size: 0.6rem;
     color: #e67e22;
-    margin-top: 2px;
 }
 
 .requested-qty {
@@ -352,25 +303,23 @@ body {
 }
 
 .approval-input {
-    width: 85px;
-    padding: 8px 8px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
+    width: 80px;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
     text-align: center;
     font-size: 0.8rem;
     font-weight: 600;
-    background: white;
 }
 
 .approval-input:focus {
     outline: none;
-    border-color: #e94560;
+    border-color: #3498db;
 }
 
 .action-buttons {
     display: flex;
     gap: 6px;
-    flex-wrap: wrap;
 }
 
 .btn-approve {
@@ -378,15 +327,10 @@ body {
     color: white;
     border: none;
     padding: 5px 12px;
-    border-radius: 25px;
+    border-radius: 20px;
     cursor: pointer;
     font-weight: 600;
     font-size: 0.7rem;
-    transition: all 0.2s;
-}
-
-.btn-approve:hover {
-    background: #219a52;
 }
 
 .btn-reject {
@@ -394,109 +338,86 @@ body {
     color: white;
     border: none;
     padding: 5px 12px;
-    border-radius: 25px;
+    border-radius: 20px;
     cursor: pointer;
     font-weight: 600;
     font-size: 0.7rem;
-    transition: all 0.2s;
 }
 
-.btn-reject:hover {
-    background: #c0392b;
-}
-
-/* Status Cell */
 .status-cell {
     min-width: 120px;
 }
 
-.status-approved-badge {
-    background: #dcfce7;
+.status-approved-cell {
+    background: #d4edda;
+    color: #27ae60;
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 600;
-    color: #16a34a;
     display: inline-block;
 }
 
-.status-rejected-badge {
-    background: #fee2e2;
+.status-rejected-cell {
+    background: #f8d7da;
+    color: #e74c3c;
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 600;
-    color: #dc2626;
     display: inline-block;
 }
 
-.status-pending-badge {
-    background: #fef3c7;
+.status-pending-cell {
+    background: #fff3cd;
+    color: #f39c12;
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 0.7rem;
     font-weight: 600;
-    color: #d97706;
     display: inline-block;
 }
 
-.admin-info {
+.admin-info-text {
     font-size: 0.65rem;
-    color: #64748b;
-    margin-top: 6px;
-    line-height: 1.4;
-}
-
-.admin-name-text {
-    font-weight: 600;
-    color: #e94560;
+    color: #666;
+    margin-top: 5px;
 }
 
 .request-actions {
     display: flex;
     gap: 12px;
-    padding: 16px 20px;
-    background: #f8fafc;
-    border-top: 1px solid #eef2f6;
+    padding: 14px 16px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.btn-approve-all, .btn-reject-all {
+    flex: 1;
+    padding: 10px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 0.8rem;
 }
 
 .btn-approve-all {
-    flex: 1;
     background: #27ae60;
     color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 40px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
 }
 
 .btn-reject-all {
-    flex: 1;
     background: #e74c3c;
     color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 40px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-approve-all:hover, .btn-reject-all:hover {
-    transform: translateY(-1px);
-    filter: brightness(1.05);
 }
 
 .empty-state {
     text-align: center;
-    padding: 60px;
+    padding: 50px;
     background: white;
-    border-radius: 16px;
-    color: #94a3b8;
+    border-radius: 14px;
+    color: #999;
 }
 
 .toast {
@@ -504,17 +425,17 @@ body {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: #1e293b;
+    background: #333;
     color: white;
     padding: 10px 20px;
-    border-radius: 40px;
-    font-size: 0.8rem;
+    border-radius: 30px;
+    font-size: 12px;
     z-index: 1000;
-    animation: fadeIn 0.2s;
+    animation: fadeIn 0.3s;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
@@ -530,15 +451,9 @@ body {
     border-radius: 50%;
     font-size: 1.2rem;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    transition: all 0.2s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
-.floating-refresh:hover {
-    transform: scale(1.05);
-}
-
-/* Modal */
 .modal {
     display: flex;
     position: fixed;
@@ -563,15 +478,8 @@ body {
 }
 
 .modal-content h2 {
-    margin-bottom: 10px;
-    color: #1a1a2e;
-    font-size: 1.4rem;
-}
-
-.modal-content p {
-    color: #666;
-    margin-bottom: 20px;
-    font-size: 0.8rem;
+    margin-bottom: 15px;
+    color: #1e3c72;
 }
 
 .user-selector {
@@ -582,32 +490,31 @@ body {
 }
 
 .user-btn {
-    background: #f1f5f9;
-    color: #1e293b;
-    border: 2px solid #e2e8f0;
+    background: #f0f2f5;
+    border: none;
     padding: 12px;
     border-radius: 40px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
 }
 
 .user-btn:hover {
-    background: #e2e8f0;
+    background: #e0e0e0;
 }
 
 .modal-content input {
     width: 100%;
     padding: 12px;
-    margin-bottom: 16px;
-    border: 1px solid #e2e8f0;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
     border-radius: 40px;
     font-size: 14px;
     text-align: center;
 }
 
 .modal-content button {
-    background: #e94560;
+    background: #3498db;
     color: white;
     border: none;
     padding: 12px;
@@ -616,16 +523,11 @@ body {
     cursor: pointer;
     width: 100%;
     font-size: 1rem;
-    transition: all 0.2s;
-}
-
-.modal-content button:hover {
-    background: #c0392b;
 }
 
 .error-msg {
     color: #e74c3c;
-    margin-top: 12px;
+    margin-top: 10px;
     font-size: 0.8rem;
 }
 
@@ -648,12 +550,9 @@ body {
     .kitchen-filters {
         overflow-x: auto;
         flex-wrap: nowrap;
-        padding: 10px 14px;
     }
     .kitchen-filter-btn {
         white-space: nowrap;
-        padding: 5px 14px;
-        font-size: 11px;
     }
     .tabs {
         overflow-x: auto;
@@ -661,37 +560,10 @@ body {
     }
     .tab-btn {
         white-space: nowrap;
-        padding: 6px 16px;
-        font-size: 12px;
     }
     .request-info {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 8px;
-        padding: 12px 16px;
-    }
-    .request-header {
-        padding: 12px 16px;
-    }
-    .items-wrapper {
-        padding: 0 12px 12px 12px;
-    }
-    .items-table th, .items-table td {
-        padding: 8px 6px;
-        font-size: 0.7rem;
-    }
-    .approval-input {
-        width: 65px;
-        padding: 6px 6px;
-        font-size: 0.7rem;
-    }
-    .btn-approve, .btn-reject {
-        padding: 4px 10px;
-        font-size: 0.65rem;
-    }
-    .header-buttons {
-        order: 3;
-        width: 100%;
-        justify-content: center;
     }
 }
 
@@ -707,33 +579,34 @@ body {
 <div id="passwordModal" class="modal">
     <div class="modal-content">
         <h2>🔐 Admin Login</h2>
-        <p>Select your account</p>
         <div class="user-selector">
-            <button class="user-btn" onclick="selectUser('Marco')">👨‍💼 Marco - Administrator</button>
-            <button class="user-btn" onclick="selectUser('Nady')">👩‍💼 Nady - Administrator</button>
-            <button class="user-btn" onclick="selectUser('Ahmed')">👨‍💻 Ahmed - Administrator</button>
+            <button class="user-btn" onclick="selectUser('Marco')">👨‍💼 Marco</button>
+            <button class="user-btn" onclick="selectUser('Nady')">👩‍💼 Nady</button>
+            <button class="user-btn" onclick="selectUser('Ahmed')">👨‍💻 Ahmed</button>
         </div>
-        <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off" style="display:none;">
-        <button id="loginBtn" style="display:none;" onclick="checkAdminLogin()">Login →</button>
+        <input type="password" id="passwordInput" placeholder="Enter password" style="display:none;">
+        <button id="loginBtn" style="display:none;" onclick="checkLogin()">Login</button>
         <div id="loginError" class="error-msg"></div>
-        <button class="close-modal" onclick="closePasswordModal()">← Back</button>
+        <button class="close-modal" onclick="closeModal()">Back</button>
     </div>
 </div>
 
-<div id="mainContent" style="display: none;">
+<div id="mainContent" style="display:none;">
     <div class="header">
         <div class="header-content">
-            <h1>👑 Admin <span>Dashboard</span></h1>
-            <div class="admin-info">
-                <div class="admin-avatar" id="adminAvatar">M</div>
-                <span class="admin-name" id="adminNameDisplay">Admin</span>
-                <button class="logout-btn" onclick="logoutAdmin()">🚪 Logout</button>
+            <div class="logo">
+                <span class="logo-icon">👑</span>
+                <span>Admin <span>Dashboard</span></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span id="adminNameDisplay" style="font-weight: 600;"></span>
+                <button class="btn-header" onclick="logout()">🚪 Logout</button>
             </div>
             <div class="header-buttons">
                 <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
-                <button class="btn-header" onclick="exportToExcel()">📎 Export</button>
+                <button class="btn-header" onclick="exportExcel()">📎 Export</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
-                <button class="btn-header btn-danger" onclick="resetOldRequests()">🗑️ Reset Old</button>
+                <button class="btn-header btn-danger" onclick="resetOld()">🗑️ Reset</button>
                 <button class="btn-header" onclick="refreshData()">🔄 Refresh</button>
             </div>
         </div>
@@ -741,31 +614,14 @@ body {
 
     <div class="container">
         <div class="stats-grid">
-            <div class="stat-card" onclick="filterStatus('pending')"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">⏳ Pending</div></div>
-            <div class="stat-card" onclick="filterStatus('approved')"><div class="stat-number" id="approvedCount">0</div><div class="stat-label">✅ Approved</div></div>
-            <div class="stat-card" onclick="filterStatus('rejected')"><div class="stat-number" id="rejectedCount">0</div><div class="stat-label">❌ Rejected</div></div>
-            <div class="stat-card" onclick="filterStatus('all')"><div class="stat-number" id="totalCount">0</div><div class="stat-label">📦 Total</div></div>
+            <div class="stat-card" onclick="setFilter('pending')"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">Pending</div></div>
+            <div class="stat-card" onclick="setFilter('approved')"><div class="stat-number" id="approvedCount">0</div><div class="stat-label">Approved</div></div>
+            <div class="stat-card" onclick="setFilter('rejected')"><div class="stat-number" id="rejectedCount">0</div><div class="stat-label">Rejected</div></div>
+            <div class="stat-card" onclick="setFilter('all')"><div class="stat-number" id="totalCount">0</div><div class="stat-label">Total</div></div>
         </div>
 
-        <div class="kitchen-filters">
-            <button class="kitchen-filter-btn active" onclick="filterKitchen('all', this)">📋 All</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Hot Kitchen', this)">🔥 Hot</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Cold Kitchen', this)">❄️ Cold</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Pastry / Bakery', this)">🍰 Pastry</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Butchery', this)">🥩 Butchery</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Beach House', this)">🏖️ Beach</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Nihon Kitchen', this)">🍜 Nihon</button>
-            <button class="kitchen-filter-btn" onclick="filterKitchen('Staff Kitchen', this)">👥 Staff</button>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('pending', this)">⏳ Pending</button>
-            <button class="tab-btn" onclick="showTab('approved', this)">✅ Approved</button>
-            <button class="tab-btn" onclick="showTab('rejected', this)">❌ Rejected</button>
-            <button class="tab-btn" onclick="showTab('partial', this)">🟣 Partial</button>
-            <button class="tab-btn" onclick="showTab('all', this)">📋 All</button>
-        </div>
-
+        <div class="kitchen-filters" id="kitchenFilters"></div>
+        <div class="tabs" id="statusTabs"></div>
         <div id="requestsContainer"></div>
     </div>
 
@@ -773,106 +629,195 @@ body {
 </div>
 
 <script>
-const ADMIN_CREDENTIALS = { "Marco": "marco123", "Nady": "nady123", "Ahmed": "ahmed123" };
+const ADMIN_PASSWORDS = { "Marco": "marco123", "Nady": "nady123", "Ahmed": "ahmed123" };
+const KITCHENS = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
-let currentAdminName = "";
-let currentKitchenFilter = "all";
-let currentStatusFilter = "pending";
+let currentAdmin = "";
+let currentKitchen = "all";
+let currentStatus = "pending";
 let allRequests = [];
-let activeListener = null;
-let selectedUser = "";
 
 function selectUser(user) {
-    selectedUser = user;
-    document.querySelectorAll('.user-btn').forEach(btn => btn.style.opacity = "0.6");
-    document.querySelector(`.user-btn:contains('${user}')`).style.opacity = "1";
-    const passInput = document.getElementById("passwordInput");
-    const loginBtn = document.getElementById("loginBtn");
-    passInput.style.display = "block";
-    loginBtn.style.display = "block";
-    passInput.placeholder = `Password for ${user}`;
-    passInput.value = "";
-    document.getElementById("loginError").innerHTML = "";
+    document.getElementById("passwordInput").style.display = "block";
+    document.getElementById("loginBtn").style.display = "block";
+    document.getElementById("passwordInput").placeholder = `Password for ${user}`;
+    window.selectedUser = user;
 }
 
-function closePasswordModal() { document.getElementById("passwordModal").style.display = "none"; }
+function closeModal() {
+    document.getElementById("passwordModal").style.display = "none";
+}
 
-function checkAdminLogin() {
-    const password = document.getElementById("passwordInput").value;
-    if(selectedUser && ADMIN_CREDENTIALS[selectedUser] === password) {
-        currentAdminName = selectedUser;
-        document.getElementById("adminNameDisplay").innerText = currentAdminName;
-        const avatar = document.getElementById("adminAvatar");
-        avatar.innerText = currentAdminName.charAt(0);
-        const colors = { Marco: "#3b82f6", Nady: "#10b981", Ahmed: "#e94560" };
-        avatar.style.background = colors[currentAdminName] || "#e94560";
+function checkLogin() {
+    const pass = document.getElementById("passwordInput").value;
+    if(window.selectedUser && ADMIN_PASSWORDS[window.selectedUser] === pass) {
+        currentAdmin = window.selectedUser;
+        document.getElementById("adminNameDisplay").innerText = currentAdmin;
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
-        localStorage.setItem("adminName", currentAdminName);
-        setupRealtimeListener();
+        localStorage.setItem("admin", currentAdmin);
         loadRequests();
-        showToast(`✅ Welcome, ${currentAdminName}!`);
+        db.collection("kitchen_requests").onSnapshot(() => loadRequests());
     } else {
-        document.getElementById("loginError").innerHTML = "❌ Invalid password!";
+        document.getElementById("loginError").innerHTML = "Wrong password!";
     }
 }
 
-function logoutAdmin() {
-    currentAdminName = "";
-    selectedUser = "";
-    localStorage.removeItem("adminName");
+function logout() {
+    currentAdmin = "";
+    localStorage.removeItem("admin");
     document.getElementById("mainContent").style.display = "none";
     document.getElementById("passwordModal").style.display = "flex";
     document.getElementById("passwordInput").style.display = "none";
     document.getElementById("loginBtn").style.display = "none";
     document.getElementById("loginError").innerHTML = "";
-    document.querySelectorAll('.user-btn').forEach(btn => btn.style.opacity = "1");
 }
 
 function openAnalytics() { window.open("analytics.html", "_blank"); }
 
-function setupRealtimeListener() {
-    if(activeListener) return;
-    activeListener = db.collection("kitchen_requests").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-        allRequests = [];
-        snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
-        refreshData();
-        updateStats();
-        showToast("📡 Synced");
-    });
-}
-
 async function loadRequests() {
     try {
-        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
+        const snap = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
         allRequests = [];
-        snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
-        refreshData();
-        updateStats();
-    } catch (error) { showToast("❌ Failed to load"); }
-}
-
-async function updateRequest(reqId, updatedItems) {
-    try { 
-        await db.collection("kitchen_requests").doc(reqId).update({ items: updatedItems }); 
-        showToast(`✅ Updated by ${currentAdminName}`);
-    } catch (error) { showToast("❌ Update failed"); }
+        snap.forEach(doc => allRequests.push({ id: doc.id, ...doc.data() }));
+        renderUI();
+    } catch(e) { showToast("Error loading"); }
 }
 
 function getStatus(req) {
-    if(!req.items || req.items.length === 0) return "pending";
-    const approvedCount = req.items.filter(i => i.status === "approved").length;
-    const rejectedCount = req.items.filter(i => i.status === "rejected").length;
-    if(approvedCount === req.items.length) return "approved";
-    if(rejectedCount === req.items.length) return "rejected";
-    if(approvedCount > 0 || rejectedCount > 0) return "partial";
+    if(!req.items?.length) return "pending";
+    const approved = req.items.filter(i => i.status === "approved").length;
+    const rejected = req.items.filter(i => i.status === "rejected").length;
+    if(approved === req.items.length) return "approved";
+    if(rejected === req.items.length) return "rejected";
+    if(approved > 0 || rejected > 0) return "partial";
     return "pending";
 }
 
-function updateStats() {
-    let pending = 0, approved = 0, rejected = 0, partial = 0;
+async function updateRequest(id, items) {
+    try {
+        await db.collection("kitchen_requests").doc(id).update({ items });
+        showToast(`✅ Updated by ${currentAdmin}`);
+    } catch(e) { showToast("Error"); }
+}
+
+async function approveItem(reqId, idx) {
+    const input = document.getElementById(`qty_${reqId}_${idx}`);
+    let qty = parseFloat(input?.value || 0);
+    if(!qty || qty <= 0) { showToast("Enter quantity"); return; }
+    const req = allRequests.find(r => r.id === reqId);
+    if(req) {
+        const item = req.items[idx];
+        if(qty > item.maxLimit) { showToast(`Max ${item.maxLimit}`); return; }
+        item.status = "approved";
+        item.approvedQty = qty;
+        item.approvedBy = currentAdmin;
+        item.approvedAt = new Date().toLocaleString();
+        await updateRequest(reqId, req.items);
+    }
+}
+
+async function rejectItem(reqId, idx) {
+    const reason = prompt("Rejection reason:", "Out of stock");
+    if(reason) {
+        const req = allRequests.find(r => r.id === reqId);
+        if(req) {
+            req.items[idx].status = "rejected";
+            req.items[idx].rejectionReason = reason;
+            req.items[idx].rejectedBy = currentAdmin;
+            req.items[idx].rejectedAt = new Date().toLocaleString();
+            await updateRequest(reqId, req.items);
+        }
+    }
+}
+
+async function approveAll(reqId) {
+    if(!confirm(`Approve all as ${currentAdmin}?`)) return;
+    const req = allRequests.find(r => r.id === reqId);
+    if(req) {
+        req.items.forEach((item, idx) => {
+            let qty = item.originalQty;
+            if(qty > item.maxLimit) qty = item.maxLimit;
+            item.status = "approved";
+            item.approvedQty = qty;
+            item.approvedBy = currentAdmin;
+            item.approvedAt = new Date().toLocaleString();
+        });
+        await updateRequest(reqId, req.items);
+    }
+}
+
+async function rejectAll(reqId) {
+    const reason = prompt("Rejection reason for all:", "Not available");
+    if(reason) {
+        const req = allRequests.find(r => r.id === reqId);
+        if(req) {
+            req.items.forEach(item => {
+                item.status = "rejected";
+                item.rejectionReason = reason;
+                item.rejectedBy = currentAdmin;
+                item.rejectedAt = new Date().toLocaleString();
+            });
+            await updateRequest(reqId, req.items);
+        }
+    }
+}
+
+async function resetOld() {
+    if(confirm("Delete all non-pending requests?")) {
+        for(const req of allRequests) {
+            if(getStatus(req) !== "pending") {
+                await db.collection("kitchen_requests").doc(req.id).delete();
+            }
+        }
+        await loadRequests();
+        showToast("Reset complete");
+    }
+}
+
+function exportExcel() {
+    if(!allRequests.length) { showToast("No data"); return; }
+    let csv = "ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved,Action By\n";
     allRequests.forEach(req => {
-        const s = getStatus(req);
+        req.items.forEach(item => {
+            let status = item.status, approved = "", by = "";
+            if(item.status === "approved") { status = "Approved"; approved = item.approvedQty; by = item.approvedBy || ""; }
+            else if(item.status === "rejected") { status = "Rejected"; approved = "0"; by = item.rejectedBy || ""; }
+            else { status = "Pending"; approved = "Waiting"; by = "-"; }
+            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${approved},"${by}"\n`;
+        });
+    });
+    const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8"});
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `orders_${Date.now()}.csv`;
+    link.click();
+}
+
+function setFilter(status) { currentStatus = status; renderUI(); }
+function filterKitchen(kitchen) { currentKitchen = kitchen; renderUI(); }
+
+function renderUI() {
+    // Render kitchen filters
+    const kitchenDiv = document.getElementById("kitchenFilters");
+    kitchenDiv.innerHTML = `<button class="kitchen-filter-btn ${currentKitchen === 'all' ? 'active' : ''}" onclick="filterKitchen('all')">📋 All</button>`;
+    KITCHENS.forEach(k => {
+        kitchenDiv.innerHTML += `<button class="kitchen-filter-btn ${currentKitchen === k ? 'active' : ''}" onclick="filterKitchen('${k}')">${k === 'Hot Kitchen' ? '🔥' : k === 'Cold Kitchen' ? '❄️' : k === 'Pastry / Bakery' ? '🍰' : k === 'Butchery' ? '🥩' : k === 'Beach House' ? '🏖️' : k === 'Nihon Kitchen' ? '🍜' : '👥'} ${k.replace(' Kitchen', '')}</button>`;
+    });
+    
+    // Render status tabs
+    const tabsDiv = document.getElementById("statusTabs");
+    const statuses = ["pending", "approved", "rejected", "partial", "all"];
+    const statusNames = ["Pending", "Approved", "Rejected", "Partial", "All"];
+    tabsDiv.innerHTML = "";
+    statuses.forEach((s, i) => {
+        tabsDiv.innerHTML += `<button class="tab-btn ${currentStatus === s ? 'active' : ''}" onclick="setFilter('${s}')">${statusNames[i]}</button>`;
+    });
+    
+    // Stats
+    let pending=0, approved=0, rejected=0, partial=0;
+    allRequests.forEach(r => {
+        const s = getStatus(r);
         if(s === "pending") pending++;
         else if(s === "approved") approved++;
         else if(s === "rejected") rejected++;
@@ -882,192 +827,67 @@ function updateStats() {
     document.getElementById("approvedCount").innerText = approved;
     document.getElementById("rejectedCount").innerText = rejected;
     document.getElementById("totalCount").innerText = allRequests.length;
-}
-
-async function approveItem(reqId, itemIdx) {
-    const input = document.getElementById(`qty_${reqId}_${itemIdx}`);
-    let qty = input ? parseFloat(input.value) : 0;
-    if(isNaN(qty) || qty <= 0) { showToast("⚠️ Enter valid quantity"); return; }
-    const req = allRequests.find(r => r.firebaseId === reqId);
-    if(req) {
-        const item = req.items[itemIdx];
-        if(qty > item.maxLimit) { showToast(`⚠️ Max ${item.maxLimit} ${item.unit}`); return; }
-        item.status = "approved";
-        item.approvedQty = qty;
-        item.approvedBy = currentAdminName;
-        item.approvedAt = new Date().toLocaleString();
-        item.rejectionReason = null;
-        await updateRequest(reqId, req.items);
-    }
-}
-
-async function rejectItem(reqId, itemIdx) {
-    const reason = prompt(`Rejection reason (${currentAdminName}):`, "Out of stock");
-    if(reason && reason.trim()) {
-        const req = allRequests.find(r => r.firebaseId === reqId);
-        if(req) {
-            req.items[itemIdx].status = "rejected";
-            req.items[itemIdx].rejectionReason = reason;
-            req.items[itemIdx].rejectedBy = currentAdminName;
-            req.items[itemIdx].rejectedAt = new Date().toLocaleString();
-            req.items[itemIdx].approvedQty = 0;
-            await updateRequest(reqId, req.items);
-        }
-    }
-}
-
-async function approveAll(reqId) {
-    if(!confirm(`Approve ALL as ${currentAdminName}?`)) return;
-    const req = allRequests.find(r => r.firebaseId === reqId);
-    if(req) {
-        req.items.forEach((item, idx) => {
-            const input = document.getElementById(`qty_${reqId}_${idx}`);
-            let qty = input ? parseFloat(input.value) : item.originalQty;
-            if(isNaN(qty) || qty <= 0) qty = item.originalQty;
-            if(qty > item.maxLimit) qty = item.maxLimit;
-            item.status = "approved";
-            item.approvedQty = qty;
-            item.approvedBy = currentAdminName;
-            item.approvedAt = new Date().toLocaleString();
-            item.rejectionReason = null;
-        });
-        await updateRequest(reqId, req.items);
-    }
-}
-
-async function rejectAll(reqId) {
-    const reason = prompt(`Rejection reason for ALL (${currentAdminName}):`, "Not available");
-    if(reason && reason.trim()) {
-        const req = allRequests.find(r => r.firebaseId === reqId);
-        if(req) {
-            req.items.forEach(item => {
-                item.status = "rejected";
-                item.rejectionReason = reason;
-                item.rejectedBy = currentAdminName;
-                item.rejectedAt = new Date().toLocaleString();
-                item.approvedQty = 0;
-            });
-            await updateRequest(reqId, req.items);
-        }
-    }
-}
-
-async function resetOldRequests() {
-    if(confirm(`Delete ALL non-pending requests? (${currentAdminName})`)) {
-        let deleted = 0;
-        for (const req of allRequests) {
-            if (getStatus(req) !== "pending") { 
-                await db.collection("kitchen_requests").doc(req.firebaseId).delete();
-                deleted++;
-            }
-        }
-        showToast(`🗑️ Deleted ${deleted} requests`);
-        await loadRequests();
-    }
-}
-
-function exportToExcel() {
-    if(allRequests.length === 0) { showToast("No data"); return; }
-    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Approved/Rejected By,Reason\n";
-    allRequests.forEach(req => {
-        req.items.forEach(item => {
-            let status = item.status, finalQty = "", actionBy = "", reason = "";
-            if(item.status === "approved") { status = "Approved"; finalQty = item.approvedQty; actionBy = item.approvedBy || ""; }
-            else if(item.status === "rejected") { status = "Rejected"; finalQty = "0"; actionBy = item.rejectedBy || ""; reason = item.rejectionReason || ""; }
-            else { status = "Pending"; finalQty = "Waiting"; actionBy = "-"; }
-            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${actionBy}","${reason}"\n`;
-        });
-    });
-    const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `orders_${new Date().toISOString().slice(0,19)}.csv`;
-    link.click();
-    showToast("📎 Exported");
-}
-
-function getKitchenClass(kitchen) {
-    const map = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" };
-    return map[kitchen] || "kitchen-staff";
-}
-
-function filterKitchen(kitchen, btn) {
-    currentKitchenFilter = kitchen;
-    document.querySelectorAll('.kitchen-filter-btn').forEach(b => b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    refreshData();
-}
-
-function showTab(tab, btn) {
-    currentStatusFilter = tab;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    refreshData();
-}
-
-function filterStatus(status) {
-    currentStatusFilter = status;
-    const btns = document.querySelectorAll('.tab-btn');
-    const map = { pending: 0, approved: 1, rejected: 2, partial: 3, all: 4 };
-    btns[map[status]]?.classList.add('active');
-    refreshData();
-}
-
-function refreshData() {
-    let requests = [...allRequests];
-    if(currentKitchenFilter !== "all") requests = requests.filter(r => r.section === currentKitchenFilter);
-    if(currentStatusFilter !== "all") requests = requests.filter(r => getStatus(r) === currentStatusFilter);
-    requests.reverse();
+    
+    // Filter requests
+    let filtered = [...allRequests];
+    if(currentKitchen !== "all") filtered = filtered.filter(r => r.section === currentKitchen);
+    if(currentStatus !== "all") filtered = filtered.filter(r => getStatus(r) === currentStatus);
+    filtered.reverse();
+    
     const container = document.getElementById("requestsContainer");
-    if(requests.length === 0) { container.innerHTML = `<div class="empty-state">📭 No requests found</div>`; updateStats(); return; }
+    if(!filtered.length) { container.innerHTML = `<div class="empty-state">📭 No requests found</div>`; return; }
+    
     container.innerHTML = "";
-    requests.forEach(req => {
+    filtered.forEach(req => {
         const status = getStatus(req);
-        const statusClass = `status-${status}`;
-        const statusText = { pending: "Pending", approved: "Approved", rejected: "Rejected", partial: "Partial" }[status];
-        const kitchenClass = getKitchenClass(req.section);
-        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status & Admin</th></tr></thead><tbody>`;
+        const kitchenClass = {
+            "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry",
+            "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff"
+        }[req.section] || "kitchen-staff";
+        
+        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
         
         req.items.forEach((item, idx) => {
             if(item.status === "approved") {
-                itemsHtml += `<tr style="background:#f0fdf4;">
-                    <td><div><div class="item-name-cell">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit} ${item.unit}</div></div></td>
+                itemsHtml += `<tr style="background:#e8f5e9;">
+                    <td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit}</div></td>
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
-                    <td><strong style="color:#16a34a;">${item.approvedQty}</strong></td>
-                    <td><span class="btn-approve" style="background:#16a34a; opacity:0.7; cursor:default; padding:4px 12px;">✅ Approved</span></td>
-                    <td><div><span class="status-approved-badge">Approved</span><div class="admin-info">👤 <span class="admin-name-text">${escapeHtml(item.approvedBy || '?')}</span><br>📅 ${item.approvedAt || ''}</div></div></td>
+                    <td><strong style="color:#27ae60;">${item.approvedQty}</strong></td>
+                    <td><span class="btn-approve" style="background:#27ae60;opacity:0.7;cursor:default;">✅ Approved</span></td>
+                    <td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</div></td>
                 </tr>`;
             } else if(item.status === "rejected") {
-                itemsHtml += `<tr style="background:#fef2f2;">
-                    <td><div><div class="item-name-cell">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit} ${item.unit}</div></div></td>
+                itemsHtml += `<tr style="background:#fee2e2;">
+                    <td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit}</div></td>
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
-                    <td><strong style="color:#dc2626;">0</strong></td>
-                    <td><span class="btn-reject" style="background:#dc2626; opacity:0.7; cursor:default; padding:4px 12px;">❌ Rejected</span></td>
-                    <td><div><span class="status-rejected-badge">Rejected</span><div class="admin-info">👤 <span class="admin-name-text" style="color:#dc2626;">${escapeHtml(item.rejectedBy || '?')}</span><br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></div></td>
+                    <td><strong style="color:#e74c3c;">0</strong></td>
+                    <td><span class="btn-reject" style="background:#e74c3c;opacity:0.7;cursor:default;">❌ Rejected</span></td>
+                    <td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td>
                 </tr>`;
             } else {
                 itemsHtml += `<tr>
-                    <td><div><div class="item-name-cell">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit} ${item.unit}</div></div></td>
+                    <td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit}</div></td>
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
-                    <td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td>
-                    <td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></div></td>
-                    <td><div><span class="status-pending-badge">Pending</span><div class="admin-info">Waiting for admin approval</div></div></td>
+                    <td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td>
+                    <td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.id}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.id}', ${idx})">❌ Reject</button></td>
+                    <td><span class="status-pending-cell">Pending</span><div class="admin-info-text">Waiting for admin</div></td>
                 </tr>`;
             }
         });
-        itemsHtml += `</tbody>}</div>`;
+        itemsHtml += `</tbody></table></div>`;
         
         let actions = "";
         if(status === "pending") {
-            actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All (${currentAdminName})</button><button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All (${currentAdminName})</button></div>`;
+            actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.id}')">✅ Approve All (${currentAdmin})</button><button class="btn-reject-all" onclick="rejectAll('${req.id}')">❌ Reject All (${currentAdmin})</button></div>`;
         }
+        
         container.innerHTML += `<div class="request-card">
             <div class="request-header">
                 <div><span class="request-id">📄 ${req.requestId}</span><span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div>
-                <span class="status-badge ${statusClass}">${statusText}</span>
+                <span class="status-badge status-${status}">${status === "pending" ? "Pending" : status === "approved" ? "Approved" : status === "rejected" ? "Rejected" : "Partial"}</span>
             </div>
             <div class="request-info">
                 <div class="info-item"><div class="info-label">👨‍🍳 CHEF</div><div class="info-value">${escapeHtml(req.chefName)}</div></div>
@@ -1077,39 +897,25 @@ function refreshData() {
             ${actions}
         </div>`;
     });
-    updateStats();
 }
 
-function escapeHtml(str) {
-    if(!str) return '';
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-}
-
+function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ''; }
 function showToast(msg) { 
-    const toast = document.createElement("div"); 
-    toast.className = "toast"; 
-    toast.innerText = msg; 
-    document.body.appendChild(toast); 
-    setTimeout(() => toast.remove(), 2500); 
+    const t = document.createElement("div"); t.className = "toast"; t.innerText = msg; 
+    document.body.appendChild(t); setTimeout(() => t.remove(), 2500); 
 }
+function refreshData() { loadRequests(); }
 
-window.onload = () => { 
-    const savedAdmin = localStorage.getItem("adminName");
-    if(savedAdmin && ADMIN_CREDENTIALS[savedAdmin]) {
-        currentAdminName = savedAdmin;
-        document.getElementById("adminNameDisplay").innerText = currentAdminName;
-        const avatar = document.getElementById("adminAvatar");
-        avatar.innerText = currentAdminName.charAt(0);
-        const colors = { Marco: "#3b82f6", Nady: "#10b981", Ahmed: "#e94560" };
-        avatar.style.background = colors[currentAdminName] || "#e94560";
-        document.getElementById("passwordModal").style.display = "none";
-        document.getElementById("mainContent").style.display = "block";
-        setupRealtimeListener();
-        loadRequests();
-    } else {
-        document.getElementById("passwordModal").style.display = "flex";
-    }
-};
+// Check saved login
+const saved = localStorage.getItem("admin");
+if(saved && ADMIN_PASSWORDS[saved]) {
+    currentAdmin = saved;
+    document.getElementById("adminNameDisplay").innerText = currentAdmin;
+    document.getElementById("passwordModal").style.display = "none";
+    document.getElementById("mainContent").style.display = "block";
+    loadRequests();
+    db.collection("kitchen_requests").onSnapshot(() => loadRequests());
+}
 </script>
 </body>
 </html>
