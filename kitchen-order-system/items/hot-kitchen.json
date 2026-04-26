@@ -1,8 +1,206 @@
-[
-  {
-    "code": "TEST001",
-    "name": "Test Item",
-    "unit": "kg",
-    "maxLimit": 10
-  }
-]
+{
+  "categories": [
+    {
+      "name": "🥜 Nuts & Seeds",
+      "icon": "🥜",
+      "items": [
+        {"code": "176003", "name": "Almond Powder Abu Auf", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "176001", "name": "Almond Slice Abu Auf", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "176005", "name": "Almond Whole", "unit": "kg","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "176007", "name": "Cashew Abu Auf", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "176010", "name": "Coconut Powder Fine", "unit": "kg","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "176012", "name": "Hazelnut Abu Auf", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "176053", "name": "Hazelnut Skinless Roasted", "unit": "kg","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "176016", "name": "Mix Nuts Jar", "unit": "each","section": "Hot Kitchen", "maxLimit":  15},
+        {"code": "176028", "name": "Mixed Nuts Salted", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "176018", "name": "Peanuts For Pastry", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "176021", "name": "Pine Nut", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "176036", "name": "Pistachio Powder", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "176024", "name": "Pistachio Whole", "unit": "kg","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "176025", "name": "Walnuts", "unit": "kg","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "175066", "name": "Sunflower Seeds Abu Auf", "unit": "450g pkt","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "176011", "name": "Dry Raisins", "unit": "kg","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "166016", "name": "Sesame Seeds", "unit": "kg","section": "Hot Kitchen", "maxLimit":  5}
+      ]
+    },
+    {
+      "name": "🧂 Spices & Seasonings",
+      "icon": "🧂",
+      "items": [
+        {"code": "161005", "name": "Black Pepper Corn", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161006", "name": "Black Pepper Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161096", "name": "Black Seeds", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161008", "name": "Black Sesame Seeds", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161164", "name": "Cajun Seasoning", "unit": "680g jar","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161011", "name": "Cardamom Seeds", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161019", "name": "Chili Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161022", "name": "Chilli Whole Red Indian", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161024", "name": "Cinnamon Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161026", "name": "Cinnamon Sticks", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161027", "name": "Cloves Seeds", "unit": "kg","section": "Hot Kitchen", "maxLimit":  1},
+        {"code": "161028", "name": "Coriander Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161030", "name": "Cumin Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161031", "name": "Cumin Whole Seed", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161032", "name": "Curry Paste (Red)", "unit": "400g pkt","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "161036", "name": "Curry Powder Madras", "unit": "500g tin","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "161041", "name": "Garlic Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "161042", "name": "Ginger Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161046", "name": "Green Pepper Corn", "unit": "700g pkt","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161049", "name": "Kharoub Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161051", "name": "Nutmeg Whole", "unit": "kg","section": "Hot Kitchen", "maxLimit":  1},
+        {"code": "161052", "name": "Onion Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "161053", "name": "Oregano Dry", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161081", "name": "Oregano Dry Abu Auf", "unit": "250g pkt","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "161092", "name": "Paprika Smoked Powder", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "161078", "name": "Salt Himalayan", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161064", "name": "Salt Lemon", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161135", "name": "Salt Sea Flakes Maldon", "unit": "each","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "161069", "name": "Salt Sea Imported", "unit": "kg","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "161067", "name": "Salt Table", "unit": "700g pkt","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "161071", "name": "Star Anis Seeds", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161070", "name": "Sumacs Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "161075", "name": "Turmeric Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "161077", "name": "White Pepper Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  2}
+      ]
+    },
+    {
+      "name": "🥫 Sauces & Condiments",
+      "icon": "🥫",
+      "items": [
+        { "code": "167001", "name": "Mayonnaise Heinz Gallon 3.29 ", "unit": "kg","section": "Hot Kitchen", "maxLimit":  50 },
+        {"code": "162002", "name": "Chicken Stock Knorr", "unit": "kg","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "162006", "name": "Curry Paste (Green)", "unit": "400g jar","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "162018", "name": "Demi Glace Sauce Knorr", "unit": "750g pkt","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "162019", "name": "Miso Paste", "unit": "1kg pkt","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "163053", "name": "Sauce Fish", "unit": "750ml bottle","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "163155", "name": "Ketchup Heinz", "unit": "200ml bottle","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "163002", "name": "Ketchup Heinz", "unit": "10kg gal","section": "Hot Kitchen", "maxLimit":  1},
+        {"code": "163103", "name": "Ketchup Portion Spice World", "unit": "98pc box","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "163165", "name": "Sauce Barbecue Heinz", "unit": "4.25kg gal","section": "Hot Kitchen", "maxLimit":  1},
+        {"code": "163051", "name": "Sauce Chipotle Tabasco", "unit": "60ml bottle","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "163140", "name": "Sauce Oyster", "unit": "830ml bottle","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "163124", "name": "Sauce Soya Kikoman", "unit": "18.9L gal","section": "Hot Kitchen", "maxLimit":  1},
+        {"code": "163169", "name": "Sauce Sriracha Hot Chili", "unit": "740g jar","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "163219", "name": "Sauce Sweet Chilli", "unit": "710ml bottle","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "163078", "name": "Sauce Worcestershire", "unit": "250g jar","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "163079", "name": "Sauce Worcestershire", "unit": "500ml bottle","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "163208", "name": "Pomegranate Molasses", "unit": "750ml bottle","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "167006", "name": "Mustard Dijon", "unit": "370g jar","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "167008", "name": "Mustard Heinz", "unit": "235g jar","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "177008", "name": "Honey Bee Hero", "unit": "650g jar","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "173025", "name": "Maple Syrup", "unit": "709ml bottle","section": "Hot Kitchen", "maxLimit":  4}
+      ]
+    },
+    {
+      "name": "🫒 Oils & Vinegars",
+      "icon": "🫒",
+      "items": [
+        {"code": "163008", "name": "Oil Olive", "unit": "L","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "163013", "name": "Oil Truffle", "unit": "250ml bottle","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "163005", "name": "Oil Corn", "unit": "L","section": "Hot Kitchen", "maxLimit":  15},
+        {"code": "163006", "name": "Oil Fried Mix", "unit": "L","section": "Hot Kitchen", "maxLimit":  15},
+        {"code": "163227", "name": "Oil Sesame", "unit": "500ml bottle","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "167014", "name": "Vinegar Apple", "unit": "500ml bottle","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "167023", "name": "Vinegar Balsamic", "unit": "500ml bottle","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "167017", "name": "Vinegar Heinz White", "unit": "L","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "167018", "name": "Vinegar Red Grape", "unit": "500ml bottle","section": "Hot Kitchen", "maxLimit":  4}
+      ]
+    },
+    {
+      "name": "🥫 Canned & Jarred Goods",
+      "icon": "🥫",
+      "items": [
+        {"code": "160010", "name": "Fava Beans Cooked Americana", "unit": "400g tin","section": "Hot Kitchen", "maxLimit":  12},
+        {"code": "160023", "name": "Red Kidney Beans", "unit": "400g tin","section": "Hot Kitchen", "maxLimit":  12},
+        {"code": "160027", "name": "Sweet Corn", "unit": "400g tin","section": "Hot Kitchen", "maxLimit":  12},
+        {"code": "160028", "name": "Sweet Corn", "unit": "425g tin","section": "Hot Kitchen", "maxLimit":  12},
+        {"code": "160079", "name": "Tomato Paste Wadi Food", "unit": "3kg tin","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "160086", "name": "Tomato Peeled", "unit": "2.55kg tin","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "163031", "name": "Pickles Jalapeno Wadi Food", "unit": "kg","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "163089", "name": "Pickles Green Olives Seedless", "unit": "650g jar","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "140198", "name": "Wine Leaves Stuffed", "unit": "kg","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "165056", "name": "Prawn Crackers", "unit": "227g pkt", "maxLimit": 10}
+      ]
+    },
+    {
+      "name": "🍝 Pasta, Rice & Grains",
+      "icon": "🍝",
+      "items": [
+        {"code": "164002", "name": "Glass Noodles", "unit": "250g pkt","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "164054", "name": "Cuscus Powder", "unit": "kg","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "164083", "name": "Kibbeh Shami Large", "unit": "kg","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "164005", "name": "Macaroni Birds Tongue", "unit": "kg","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "164050", "name": "Macaroni Gluten Free", "unit": "340g pkt","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "164129", "name": "Macaroni Gluten Free", "unit": "350g pkt","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "164053", "name": "Macaroni Linguine Agnesi", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "164099", "name": "Macaroni Penne Lori Italy", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "164021", "name": "Macaroni Penne Regina", "unit": "kg","section": "Hot Kitchen", "maxLimit":  12},
+        {"code": "164098", "name": "Macaroni Rigatoni Garfallo", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "164025", "name": "Macaroni Small Rings Masria", "unit": "kg","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "164102", "name": "Macaroni Spaghetti Lori Italy", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "164035", "name": "Macaroni Vermicelli Masria", "unit": "kg","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "164039", "name": "Rice Basmati", "unit": "kg","section": "Hot Kitchen", "maxLimit":  15},
+        {"code": "164043", "name": "Rice Risotto Gallo", "unit": "kg","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "166002", "name": "Black Lentil", "unit": "kg","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "166004", "name": "Chick Peas Dry", "unit": "kg","section": "Hot Kitchen", "maxLimit":  12},
+        {"code": "166007", "name": "Fava Beans Crushed Dry", "unit": "kg","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "166021", "name": "Freek", "unit": "kg","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "166018", "name": "Wheat Whole", "unit": "kg","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "166019", "name": "White Beans", "unit": "kg","section": "Hot Kitchen", "maxLimit":  12},
+        {"code": "166020", "name": "Yellow Lentil", "unit": "kg","section": "Hot Kitchen", "maxLimit":  10},
+        {"code": "170030", "name": "White Oats Lino", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  8}
+      ]
+    },
+    {
+      "name": "🍞 Bread & Baking",
+      "icon": "🍞",
+      "items": [
+        {"code": "175248", "name": "Bread Crumb Imported Coarse", "unit": "kg","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "175133", "name": "Corn Flour Dreem", "unit": "240g pkt","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "175043", "name": "Golash", "unit": "350g pkt","section": "Hot Kitchen", "maxLimit":  8}
+      ]
+    },
+    {
+      "name": "🧀 Dairy & Cheese",
+      "icon": "🧀",
+      "items": [
+        {"code": "151008", "name": "Butter New Zealand Block", "unit": "25kg box","section": "Hot Kitchen", "maxLimit":  1},
+        {"code": "151038", "name": "Butter New Zealand Fontera Block", "unit": "25kg box","section": "Hot Kitchen", "maxLimit":  1},
+        {"code": "151013", "name": "Butter Vegetarian", "unit": "1.5kg tin","section": "Hot Kitchen", "maxLimit":  4},
+        {"code": "152003", "name": "Milk Full Cream Juhayna", "unit": "L","section": "Hot Kitchen", "maxLimit":  15},
+        {"code": "152028", "name": "Milk Oat Alpro", "unit": "L","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "173072", "name": "Milk Almond Juhayna", "unit": "L","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "173015", "name": "Milk Coconut", "unit": "400ml tin","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "152017", "name": "Rich Cream Juhayna Cooking", "unit": "L","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "153018", "name": "Cheese Halloumi", "unit": "250g pkt","section": "Hot Kitchen", "maxLimit":  12},
+        {"code": "153046", "name": "Cheese Grana Padano 1/4 Wheel", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "153004", "name": "Cheese Cheddar Yellow Block", "unit": "kg","section": "Hot Kitchen", "maxLimit":  6}
+      ]
+    },
+    {
+      "name": "❄️ Frozen Foods",
+      "icon": "❄️",
+      "items": [
+        {"code": "143004", "name": "Mix Berries Frozen", "unit": "kg","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "142006", "name": "French Fried Allumettes", "unit": "12.5kg box","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "142012", "name": "Molokia Frozen Americana", "unit": "20x400g box","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "142013", "name": "Okra Frozen Americana", "unit": "10kg box","section": "Hot Kitchen", "maxLimit":  2},
+        {"code": "142019", "name": "Spinach Americana", "unit": "20x400g box","section": "Hot Kitchen", "maxLimit":  2}
+        {"code": "142041", "name": "Croquettes Potato", "unit": "15kg box", "section": "Hot Kitchen", "maxLimit": 2}
+      ]
+    },
+    {
+      "name": "🥩 Meat & Sausages",
+      "icon": "🥩",
+      "items": [
+        {"code": "113019", "name": "Beef Sausage Chipolata", "unit": "kg","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "113026", "name": "Chicken Sausage Chipolata", "unit": "kg","section": "Hot Kitchen", "maxLimit":  8},
+        {"code": "113034", "name": "Spring Roll With Vegetables", "unit": "kg","section": "Hot Kitchen", "maxLimit":  6},
+        {"code": "160020", "name": "Mushroom Shiitake Dry", "unit": "kg","section": "Hot Kitchen", "maxLimit":  3},
+        {"code": "160092", "name": "Green Pepper Corn", "unit": "each","section": "Hot Kitchen", "maxLimit":  5},
+        {"code": "113085", "name": "Beef Bacon Smoked Sliced Choice", "unit": "kg","section": "Hot Kitchen", "maxLimit":  5 },
+       { "code": "113111", "name": "Beef Bacon Smoked Sliced Taste Pure", "unit": "500g pkt","section": "Hot Kitchen", "maxLimit":  8 }
+      ]
+    }
+  ]
+}
