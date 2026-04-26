@@ -6,7 +6,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Chef Dashboard - Smart Order System</title>
+<title>Chef Dashboard - 0.5 Step Quantity</title>
 
 <style>
 * {
@@ -447,7 +447,7 @@ input:focus {
     width: 90%;
 }
 
-/* Item card with quantity picker */
+/* Item card with quantity picker - 0.5 step */
 .items-scroll-container {
     max-height: 500px;
     overflow-y: auto;
@@ -545,13 +545,13 @@ input:focus {
 }
 
 .qty-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 25px;
     border: none;
     background: white;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     cursor: pointer;
     color: #3498db;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
@@ -562,14 +562,12 @@ input:focus {
     color: white;
 }
 
-.qty-input {
-    width: 55px;
+.qty-value {
+    min-width: 55px;
     text-align: center;
-    font-weight: 600;
-    font-size: 0.85rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 4px;
+    font-weight: 700;
+    font-size: 1rem;
+    font-family: monospace;
 }
 
 .add-item-btn {
@@ -597,14 +595,6 @@ input:focus {
     background: #f1f5f9;
     border-radius: 0 0 12px 12px;
     font-weight: 500;
-}
-
-.section-badge {
-    font-size: 10px;
-    background: #e0e7ff;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: 8px;
 }
 
 @media screen and (min-width: 769px) {
@@ -651,7 +641,7 @@ input:focus {
     <div class="header-content">
         <div class="logo">
             <span class="logo-icon">🍳</span>
-            <span>Kitchen Order <span>| Chef</span></span>
+            <span>Kitchen Order <span>| Chef (0.5 Steps)</span></span>
         </div>
         <div class="header-buttons">
             <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
@@ -878,7 +868,6 @@ async function renderItemsList(kitchen) {
         await loadItemsFromJSON();
     }
     
-    // Get items ONLY for this specific kitchen section
     let items = getItemsForKitchen(kitchen);
     if (!items || items.length === 0) {
         container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen} section in items.json</div>`;
@@ -917,11 +906,11 @@ async function renderItemsList(kitchen) {
                     </div>
                     <div class="item-actions">
                         <div class="qty-picker">
-                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', -0.5, ${item.maxLimit})">-0.5</button>
-                            <input type="number" step="0.5" class="qty-input" id="qty_${kitchenId}_${item.code.replace(/[^a-zA-Z0-9]/g, '_')}" value="${currentQty}" onchange="setQuantity('${kitchen}', '${item.code}', this.value, ${item.maxLimit})">
-                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', 0.5, ${item.maxLimit})">+0.5</button>
+                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', -0.5, ${item.maxLimit})">−</button>
+                            <span class="qty-value" id="qty_${kitchenId}_${item.code.replace(/[^a-zA-Z0-9]/g, '_')}">${currentQty.toFixed(1)}</span>
+                            <button class="qty-btn" onclick="changeQuantity('${kitchen}', '${item.code}', 0.5, ${item.maxLimit})">+</button>
                         </div>
-                        <button class="add-item-btn" onclick="addItemWithQuantity('${kitchen}', '${item.code}', '${escapeHtml(item.name)}', '${item.unit}', ${item.maxLimit})">+ Add</button>
+                        <button class="add-item-btn" onclick="addItemWithQuantity('${kitchen}', '${item.code}', '${escapeHtml(item.name)}', '${item.unit}', ${item.maxLimit})">Add</button>
                     </div>
                 </div>
             </div>
@@ -930,7 +919,7 @@ async function renderItemsList(kitchen) {
     
     html += `
             </div>
-            <div class="scroll-info">📜 Showing all ${sortedItems.length} items for ${kitchen} • Set quantity (0.5 increments) and click Add</div>
+            <div class="scroll-info">📜 Showing all ${sortedItems.length} items for ${kitchen} • Use +/− to adjust quantity (0.5 each click) • Click Add to cart</div>
         </div>
     `;
     
@@ -949,24 +938,8 @@ function changeQuantity(kitchen, code, delta, maxLimit) {
     
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
-    const qtyInput = document.getElementById(`qty_${kitchenId}_${safeCode}`);
-    if (qtyInput) qtyInput.value = newQty;
-}
-
-function setQuantity(kitchen, code, value, maxLimit) {
-    if (!selectedQuantities[kitchen]) {
-        selectedQuantities[kitchen] = {};
-    }
-    let newQty = parseFloat(value);
-    if (isNaN(newQty)) newQty = 0;
-    if (newQty < 0) newQty = 0;
-    if (newQty > maxLimit) newQty = maxLimit;
-    selectedQuantities[kitchen][code] = newQty;
-    
-    const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
-    const qtyInput = document.getElementById(`qty_${kitchenId}_${safeCode}`);
-    if (qtyInput) qtyInput.value = newQty;
+    const qtySpan = document.getElementById(`qty_${kitchenId}_${safeCode}`);
+    if (qtySpan) qtySpan.innerText = newQty.toFixed(1);
 }
 
 function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
@@ -978,7 +951,7 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
     
     const qty = selectedQuantities[kitchen]?.[code] || 0;
     if (qty <= 0) {
-        showToast(`⚠️ Please set a quantity greater than 0 for ${itemName}`);
+        showToast(`⚠️ Please use + button to set quantity greater than 0 for ${itemName}`);
         return;
     }
     
@@ -991,22 +964,22 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
     
     if(newTotalQty > item.maxLimit) {
         const remaining = item.maxLimit - (existing ? existing.qty : 0);
-        showToast(`⚠️ Max limit ${item.maxLimit} ${item.unit}. Only ${remaining} ${item.unit} remaining`);
+        showToast(`⚠️ Max limit ${item.maxLimit} ${item.unit}. Only ${remaining.toFixed(1)} ${item.unit} remaining`);
         return;
     }
     
     if(existing) {
         existing.qty += qty;
-        showToast(`✓ Added ${qty} ${item.name}: now ${existing.qty}/${item.maxLimit} ${item.unit}`);
+        showToast(`✓ Added ${qty.toFixed(1)} ${item.name}: now ${existing.qty.toFixed(1)}/${item.maxLimit} ${item.unit}`);
     } else {
         kitchenData[kitchen].cart.push({
             code: item.code, name: item.name, unit: item.unit, 
             qty: qty, maxLimit: item.maxLimit
         });
-        showToast(`✓ Added ${qty} ${item.name} (${qty}/${item.maxLimit} ${item.unit})`);
+        showToast(`✓ Added ${qty.toFixed(1)} ${item.name} (${qty.toFixed(1)}/${item.maxLimit} ${item.unit})`);
     }
     
-    // Mark as selected
+    // Mark as selected in UI
     if (!addedItemsStatus[kitchen]) addedItemsStatus[kitchen] = {};
     addedItemsStatus[kitchen][code] = true;
     
@@ -1014,8 +987,8 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit) {
     selectedQuantities[kitchen][code] = 0;
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const safeCode = code.replace(/[^a-zA-Z0-9]/g, '_');
-    const qtyInput = document.getElementById(`qty_${kitchenId}_${safeCode}`);
-    if (qtyInput) qtyInput.value = 0;
+    const qtySpan = document.getElementById(`qty_${kitchenId}_${safeCode}`);
+    if (qtySpan) qtySpan.innerText = "0.0";
     
     // Update visual selection
     const card = document.getElementById(`itemCard_${kitchenId}_${safeCode}`);
@@ -1046,7 +1019,7 @@ function renderCart(kitchen) {
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
-            desktopBody.innerHTML = '�<td colspan="6" style="text-align:center; color:#999;">No items added</div>';
+            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#999;">No items added</td></tr>';
         } else {
             desktopBody.innerHTML = "";
             cart.forEach((item, index) => {
@@ -1092,7 +1065,6 @@ function removeItem(kitchen, index) {
         const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
         const safeCode = removedItem.code.replace(/[^a-zA-Z0-9]/g, '_');
         if (addedItemsStatus[kitchen]) {
-            // Check if any other entry with same code exists
             const stillExists = kitchenData[kitchen].cart.some((item, i) => i !== index && item.code === removedItem.code);
             if (!stillExists) {
                 addedItemsStatus[kitchen][removedItem.code] = false;
@@ -1154,7 +1126,6 @@ async function submitRequest(kitchen) {
     
     await saveRequestToFirebase(newRequest);
     kitchenData[kitchen].cart = [];
-    // Clear selection marks
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     if (addedItemsStatus[kitchen]) {
         Object.keys(addedItemsStatus[kitchen]).forEach(code => {
@@ -1225,7 +1196,7 @@ function loadMyRequests(kitchen) {
                         itemStatus = "Pending";
                         itemValue = "Waiting...";
                     }
-                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty} ${item.unit}</td><td>${statusIcon} ${itemStatus}</td><td>${itemValue}</td></tr>`;
+                    itemsHtml += `<tr><td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td><td>${item.originalQty.toFixed(1)} ${item.unit}</td><td>${statusIcon} ${itemStatus}</td><td>${itemValue}</td></tr>`;
                 });
                 itemsHtml += `</tbody></table>`;
                 
@@ -1251,7 +1222,7 @@ function exportToExcel(kitchen) {
     if(cart.length === 0) { showToast("No items to export"); return; }
     const chef = chefNames[kitchen];
     let csv = "Code,Item,Quantity,Unit,Max Limit\n";
-    cart.forEach(i => { csv += `${i.code},${i.name},${i.qty},${i.unit},${i.maxLimit}\n`; });
+    cart.forEach(i => { csv += `${i.code},${i.name},${i.qty.toFixed(1)},${i.unit},${i.maxLimit}\n`; });
     const blob = new Blob([csv], {type: "text/csv"});
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -1327,7 +1298,7 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📦 ${kitchen} Items <span style="font-size:11px; font-weight:normal;">(Set quantity in 0.5 increments, click Add to cart)</span></h3>
+                <h3>📦 ${kitchen} Items <span style="font-size:11px; font-weight:normal;">(Click +/− to adjust quantity by 0.5, then Add)</span></h3>
                 <div id="itemsListContainer_${id}"></div>
             </div>
             <div class="card">
