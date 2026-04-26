@@ -1,225 +1,126 @@
-{
-  "categories": [
-    {
-      "category": "🥩 Beef & Lamb",
-      "icon": "🥩",
-      "items": [
-        {"code": "110010", "name": "Beef Fillet Brazil", "unit": "kg", "maxLimit": 10},
-        {"code": "110148", "name": "Beef Rib Eye Russian", "unit": "kg", "maxLimit": 8},
-        {"code": "110051", "name": "Beef Tenderloin Australian", "unit": "kg", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🐓 Poultry",
-      "icon": "🐓",
-      "items": [
-        {"code": "120047", "name": "Chicken Breast Size 4-5", "unit": "kg", "maxLimit": 15},
-        {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "unit": "kg", "maxLimit": 15}
-      ]
-    },
-    {
-      "category": "🦐 Seafood",
-      "icon": "🦐",
-      "items": [
-        {"code": "131014", "name": "Sea Scallop Wild Atlantic", "unit": "kg", "maxLimit": 4},
-        {"code": "130012", "name": "Calamari Baby", "unit": "kg", "maxLimit": 6},
-        {"code": "131073", "name": "Salmon Whole Side Fillet Skin On 10/10", "unit": "kg", "maxLimit": 8},
-        {"code": "131055", "name": "Salmon Whole Side Fillet Skin On Maxim", "unit": "kg", "maxLimit": 8},
-        {"code": "132006", "name": "Mussels Whole Shell", "unit": "kg", "maxLimit": 6},
-        {"code": "132010", "name": "Shrimps Large (16-20)", "unit": "kg", "maxLimit": 5},
-        {"code": "132012", "name": "Shrimps Meat (26-30)", "unit": "kg", "maxLimit": 5},
-        {"code": "132013", "name": "Shrimps Medium (20-30)", "unit": "kg", "maxLimit": 5}
-      ]
-    },
-    {
-      "category": "❄️ Frozen Foods",
-      "icon": "❄️",
-      "items": [
-        {"code": "142002", "name": "Beans Frozen Americana", "unit": "10kg box", "maxLimit": 2},
-        {"code": "142003", "name": "Broccoli Frozen", "unit": "7.5kg box", "maxLimit": 2},
-        {"code": "142016", "name": "Peas Frozen Americana", "unit": "10kg box", "maxLimit": 3},
-        {"code": "142006", "name": "French Fried Allumettes", "unit": "12.5kg box", "maxLimit": 3},
-        {"code": "142019", "name": "Spinach Americana", "unit": "20x400g box", "maxLimit": 2},
-        {"code": "155002", "name": "Ice Cream Blackberry Movenpick", "unit": "5L gal", "maxLimit": 2},
-        {"code": "155006", "name": "Ice Cream Espresso Movenpick", "unit": "5L gal", "maxLimit": 2},
-        {"code": "155008", "name": "Ice Cream Lemon Movenpick", "unit": "5L gal", "maxLimit": 2},
-        {"code": "155009", "name": "Ice Cream Mango Movenpick", "unit": "5L gal", "maxLimit": 2},
-        {"code": "155013", "name": "Ice Cream Movenpick Vanilla", "unit": "5L gal", "maxLimit": 3},
-        {"code": "155023", "name": "Ice Cream Strawberry Movenpick", "unit": "5L gal", "maxLimit": 2}
-      ]
-    },
-    {
-      "category": "🧈 Butter & Dairy",
-      "icon": "🧈",
-      "items": [
-        {"code": "151032", "name": "Butter Ghee Sheraton", "unit": "2kg tin", "maxLimit": 3},
-        {"code": "151008", "name": "Butter New Zealand Block", "unit": "25kg box", "maxLimit": 1},
-        {"code": "151038", "name": "Butter New Zealand Fontera Block", "unit": "25kg box", "maxLimit": 1},
-        {"code": "152003", "name": "Milk Full Cream Juhayna", "unit": "L", "maxLimit": 15},
-        {"code": "152017", "name": "Rich Cream Juhayna Cooking", "unit": "L", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🧀 Cheese",
-      "icon": "🧀",
-      "items": [
-        {"code": "153004", "name": "Cheese Cheddar Yellow Block", "unit": "kg", "maxLimit": 6},
-        {"code": "153007", "name": "Cheese Edam Farm Cheese", "unit": "kg", "maxLimit": 5},
-        {"code": "153008", "name": "Cheese Emental Local Farm Cheese", "unit": "kg", "maxLimit": 5},
-        {"code": "153009", "name": "Cheese Feta Greece", "unit": "kg", "maxLimit": 5},
-        {"code": "153011", "name": "Cheese Goat", "unit": "150g pkt", "maxLimit": 10},
-        {"code": "153046", "name": "Cheese Grana Padano 1/4 Wheel", "unit": "kg", "maxLimit": 3},
-        {"code": "153018", "name": "Cheese Halloumi", "unit": "250g pkt", "maxLimit": 12},
-        {"code": "153038", "name": "Cheese White Gallon", "unit": "10kg gal", "maxLimit": 2}
-      ]
-    },
-    {
-      "category": "🥫 Canned & Jarred Goods",
-      "icon": "🥫",
-      "items": [
-        {"code": "160001", "name": "Anchovies Small Tin", "unit": "50g pkt", "maxLimit": 8},
-        {"code": "160096", "name": "Capers", "unit": "910g jar", "maxLimit": 3},
-        {"code": "160022", "name": "Palm Heart Grad A", "unit": "800g tin", "maxLimit": 6},
-        {"code": "160027", "name": "Sweet Corn", "unit": "400g tin", "maxLimit": 12},
-        {"code": "160028", "name": "Sweet Corn", "unit": "425g tin", "maxLimit": 12}
-      ]
-    },
-    {
-      "category": "🥒 Pickles & Olives",
-      "icon": "🥒",
-      "items": [
-        {"code": "163152", "name": "Mix Pickles Wadi Food", "unit": "kg", "maxLimit": 5},
-        {"code": "163016", "name": "Pickles Black Olive Local", "unit": "8kg gal", "maxLimit": 1},
-        {"code": "163020", "name": "Pickles Black Olives Minced", "unit": "300g jar", "maxLimit": 6},
-        {"code": "163090", "name": "Pickles Cucumber", "unit": "300g jar", "maxLimit": 6},
-        {"code": "163211", "name": "Pickles Cucumber", "unit": "350g jar", "maxLimit": 6},
-        {"code": "163089", "name": "Pickles Green Olives Seedless", "unit": "650g jar", "maxLimit": 4},
-        {"code": "163106", "name": "Pickles Onion", "unit": "350g jar", "maxLimit": 6},
-        {"code": "163031", "name": "Pickles Jalapeno Wadi Food", "unit": "kg", "maxLimit": 4}
-      ]
-    },
-    {
-      "category": "🧂 Spices & Seasonings",
-      "icon": "🧂",
-      "items": [
-        {"code": "161005", "name": "Black Pepper Corn", "unit": "kg", "maxLimit": 2},
-        {"code": "161006", "name": "Black Pepper Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161096", "name": "Black Seeds", "unit": "kg", "maxLimit": 2},
-        {"code": "161008", "name": "Black Sesame Seeds", "unit": "kg", "maxLimit": 3},
-        {"code": "161164", "name": "Cajun Seasoning", "unit": "680g jar", "maxLimit": 3},
-        {"code": "161011", "name": "Cardamom Seeds", "unit": "kg", "maxLimit": 2},
-        {"code": "161019", "name": "Chili Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161024", "name": "Cinnamon Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161026", "name": "Cinnamon Sticks", "unit": "kg", "maxLimit": 3},
-        {"code": "161028", "name": "Coriander Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161030", "name": "Cumin Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161031", "name": "Cumin Whole Seed", "unit": "kg", "maxLimit": 3},
-        {"code": "161041", "name": "Garlic Powder", "unit": "kg", "maxLimit": 4},
-        {"code": "161042", "name": "Ginger Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161052", "name": "Onion Powder", "unit": "kg", "maxLimit": 4},
-        {"code": "161053", "name": "Oregano Dry", "unit": "kg", "maxLimit": 2},
-        {"code": "161081", "name": "Oregano Dry Abu Auf", "unit": "250g pkt", "maxLimit": 5},
-        {"code": "161092", "name": "Paprika Smoked Powder", "unit": "500g pkt", "maxLimit": 4},
-        {"code": "161070", "name": "Sumacs Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161075", "name": "Turmeric Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161077", "name": "White Pepper Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161078", "name": "Salt Himalayan", "unit": "kg", "maxLimit": 3},
-        {"code": "161063", "name": "Salt Kitchen", "unit": "kg", "maxLimit": 10},
-        {"code": "161064", "name": "Salt Lemon", "unit": "kg", "maxLimit": 2},
-        {"code": "161135", "name": "Salt Sea Flakes Maldon", "unit": "each", "maxLimit": 5},
-        {"code": "161069", "name": "Salt Sea Imported", "unit": "kg", "maxLimit": 4},
-        {"code": "161067", "name": "Salt Table", "unit": "700g pkt", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🥫 Sauces & Condiments",
-      "icon": "🥫",
-      "items": [
-        {"code": "162002", "name": "Chicken Stock Knorr", "unit": "kg", "maxLimit": 5},
-        {"code": "162018", "name": "Demi Glace Sauce Knorr", "unit": "750g pkt", "maxLimit": 4},
-        {"code": "163002", "name": "Ketchup Heinz", "unit": "10kg gal", "maxLimit": 1},
-        {"code": "163165", "name": "Sauce Barbecue Heinz", "unit": "4.25kg gal", "maxLimit": 1},
-        {"code": "163051", "name": "Sauce Chipotle Tabasco", "unit": "60ml bottle", "maxLimit": 8},
-        {"code": "163169", "name": "Sauce Sriracha Hot Chili", "unit": "740g jar", "maxLimit": 4},
-        {"code": "163219", "name": "Sauce Sweet Chilli", "unit": "710ml bottle", "maxLimit": 5},
-        {"code": "163078", "name": "Sauce Worcestershire", "unit": "250g jar", "maxLimit": 4},
-        {"code": "163079", "name": "Sauce Worcestershire", "unit": "500ml bottle", "maxLimit": 4},
-        {"code": "163208", "name": "Pomegranate Molasses", "unit": "750ml bottle", "maxLimit": 4},
-        {"code": "167006", "name": "Mustard Dijon", "unit": "370g jar", "maxLimit": 5},
-        {"code": "177008", "name": "Honey Bee Hero", "unit": "650g jar", "maxLimit": 6},
-        {"code": "151018", "name": "Peanut Butter", "unit": "300g jar", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🫒 Oils & Vinegars",
-      "icon": "🫒",
-      "items": [
-        {"code": "163005", "name": "Oil Corn", "unit": "L", "maxLimit": 15},
-        {"code": "163006", "name": "Oil Fried Mix", "unit": "L", "maxLimit": 15},
-        {"code": "163008", "name": "Oil Olive", "unit": "L", "maxLimit": 8},
-        {"code": "163013", "name": "Oil Truffle", "unit": "250ml bottle", "maxLimit": 3},
-        {"code": "167014", "name": "Vinegar Apple", "unit": "500ml bottle", "maxLimit": 5},
-        {"code": "167023", "name": "Vinegar Balsamic", "unit": "500ml bottle", "maxLimit": 4},
-        {"code": "167017", "name": "Vinegar Heinz White", "unit": "L", "maxLimit": 8},
-        {"code": "167018", "name": "Vinegar Red Grape", "unit": "500ml bottle", "maxLimit": 4}
-      ]
-    },
-    {
-      "category": "🥫 Condiments & Spreads",
-      "icon": "🥫",
-      "items": [
-        {"code": "167025", "name": "Mayonnaise Heinz Gallon 18.9", "unit": "gal", "maxLimit": 50},
-        {"code": "163100", "name": "Tahina Jar El Rashidi", "unit": "460g jar", "maxLimit": 6}
-      ]
-    },
-    {
-      "category": "🍝 Pasta, Rice & Grains",
-      "icon": "🍝",
-      "items": [
-        {"code": "164050", "name": "Macaroni Gluten Free", "unit": "340g pkt", "maxLimit": 6},
-        {"code": "164129", "name": "Macaroni Gluten Free", "unit": "350g pkt", "maxLimit": 6},
-        {"code": "164053", "name": "Macaroni Linguine Agnesi", "unit": "500g pkt", "maxLimit": 8},
-        {"code": "164099", "name": "Macaroni Penne Lori Italy", "unit": "500g pkt", "maxLimit": 8},
-        {"code": "164102", "name": "Macaroni Spaghetti Lori Italy", "unit": "500g pkt", "maxLimit": 8},
-        {"code": "164021", "name": "Macaroni Penne Regina", "unit": "kg", "maxLimit": 12},
-        {"code": "164002", "name": "Glass Noodles", "unit": "250g pkt", "maxLimit": 10},
-        {"code": "164043", "name": "Rice Risotto Gallo", "unit": "kg", "maxLimit": 8},
-        {"code": "166002", "name": "Black Lentil", "unit": "kg", "maxLimit": 10},
-        {"code": "166007", "name": "Fava Beans Crushed Dry", "unit": "kg", "maxLimit": 10},
-        {"code": "166016", "name": "Sesame Seeds", "unit": "kg", "maxLimit": 5},
-        {"code": "166013", "name": "Quinoa Red Seeds Abu Auf", "unit": "400g pkt", "maxLimit": 6},
-        {"code": "166014", "name": "Quinoa White Seeds Abu Auf", "unit": "400g pkt", "maxLimit": 6}
-      ]
-    },
-    {
-      "category": "🥣 Baking & Flours",
-      "icon": "🥣",
-      "items": [
-        {"code": "175127", "name": "Baking Powder Dreem", "unit": "50 bags", "maxLimit": 3},
-        {"code": "175133", "name": "Corn Flour Dreem", "unit": "240g pkt", "maxLimit": 8},
-        {"code": "175248", "name": "Bread Crumb Imported Coarse", "unit": "kg", "maxLimit": 6},
-        {"code": "175020", "name": "Taco Shell Corn", "unit": "325g pkt", "maxLimit": 6},
-        { "code": "175036", "name": "Flour Tempura", "unit": "kg", "maxLimit": 5 }
-      ]
-    },
-    {
-      "category": "🥜 Nuts & Seeds",
-      "icon": "🥜",
-      "items": [
-        {"code": "176003", "name": "Almond Powder Abu Auf", "unit": "500g pkt", "maxLimit": 6},
-        {"code": "176001", "name": "Almond Slice Abu Auf", "unit": "500g pkt", "maxLimit": 6},
-        {"code": "176005", "name": "Almond Whole", "unit": "kg", "maxLimit": 6},
-        {"code": "176007", "name": "Cashew Abu Auf", "unit": "500g pkt", "maxLimit": 6},
-        {"code": "176025", "name": "Walnuts", "unit": "kg", "maxLimit": 6}
-      ]
-    },
-    {
-      "category": "🌶️ Peppers",
-      "icon": "🌶️",
-      "items": [
-
-        {"code": "161046", "name": "Green Pepper Corn", "unit": "700g pkt", "maxLimit": 3}
-      ]
-    }
-  ]
-}
+[
+  {"code": "110010", "name": "Beef Fillet Brazil", "unit": "kg", "maxLimit": 10},
+  {"code": "110148", "name": "Beef Rib Eye Russian", "unit": "kg", "maxLimit": 8},
+  {"code": "110051", "name": "Beef Tenderloin Australian", "unit": "kg", "maxLimit": 8},
+  {"code": "120047", "name": "Chicken Breast Size 4-5", "unit": "kg", "maxLimit": 15},
+  {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "unit": "kg", "maxLimit": 15},
+  {"code": "131014", "name": "Sea Scallop Wild Atlantic", "unit": "kg", "maxLimit": 4},
+  {"code": "130012", "name": "Calamari Baby", "unit": "kg", "maxLimit": 6},
+  {"code": "131073", "name": "Salmon Whole Side Fillet Skin On 10/10", "unit": "kg", "maxLimit": 8},
+  {"code": "131055", "name": "Salmon Whole Side Fillet Skin On Maxim", "unit": "kg", "maxLimit": 8},
+  {"code": "132006", "name": "Mussels Whole Shell", "unit": "kg", "maxLimit": 6},
+  {"code": "132010", "name": "Shrimps Large (16-20)", "unit": "kg", "maxLimit": 5},
+  {"code": "132012", "name": "Shrimps Meat (26-30)", "unit": "kg", "maxLimit": 5},
+  {"code": "132013", "name": "Shrimps Medium (20-30)", "unit": "kg", "maxLimit": 5},
+  {"code": "142002", "name": "Beans Frozen Americana", "unit": "10kg box", "maxLimit": 2},
+  {"code": "142003", "name": "Broccoli Frozen", "unit": "7.5kg box", "maxLimit": 2},
+  {"code": "142016", "name": "Peas Frozen Americana", "unit": "10kg box", "maxLimit": 3},
+  {"code": "142006", "name": "French Fried Allumettes", "unit": "12.5kg box", "maxLimit": 3},
+  {"code": "142019", "name": "Spinach Americana", "unit": "20x400g box", "maxLimit": 2},
+  {"code": "155002", "name": "Ice Cream Blackberry Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "155006", "name": "Ice Cream Espresso Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "155008", "name": "Ice Cream Lemon Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "155009", "name": "Ice Cream Mango Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "155013", "name": "Ice Cream Movenpick Vanilla", "unit": "5L gal", "maxLimit": 3},
+  {"code": "155023", "name": "Ice Cream Strawberry Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "151032", "name": "Butter Ghee Sheraton", "unit": "2kg tin", "maxLimit": 3},
+  {"code": "151008", "name": "Butter New Zealand Block", "unit": "25kg box", "maxLimit": 1},
+  {"code": "151038", "name": "Butter New Zealand Fontera Block", "unit": "25kg box", "maxLimit": 1},
+  {"code": "152003", "name": "Milk Full Cream Juhayna", "unit": "L", "maxLimit": 15},
+  {"code": "152017", "name": "Rich Cream Juhayna Cooking", "unit": "L", "maxLimit": 8},
+  {"code": "153004", "name": "Cheese Cheddar Yellow Block", "unit": "kg", "maxLimit": 6},
+  {"code": "153007", "name": "Cheese Edam Farm Cheese", "unit": "kg", "maxLimit": 5},
+  {"code": "153008", "name": "Cheese Emental Local Farm Cheese", "unit": "kg", "maxLimit": 5},
+  {"code": "153009", "name": "Cheese Feta Greece", "unit": "kg", "maxLimit": 5},
+  {"code": "153011", "name": "Cheese Goat", "unit": "150g pkt", "maxLimit": 10},
+  {"code": "153046", "name": "Cheese Grana Padano 1/4 Wheel", "unit": "kg", "maxLimit": 3},
+  {"code": "153018", "name": "Cheese Halloumi", "unit": "250g pkt", "maxLimit": 12},
+  {"code": "153038", "name": "Cheese White Gallon", "unit": "10kg gal", "maxLimit": 2},
+  {"code": "160001", "name": "Anchovies Small Tin", "unit": "50g pkt", "maxLimit": 8},
+  {"code": "160096", "name": "Capers", "unit": "910g jar", "maxLimit": 3},
+  {"code": "160022", "name": "Palm Heart Grad A", "unit": "800g tin", "maxLimit": 6},
+  {"code": "160027", "name": "Sweet Corn", "unit": "400g tin", "maxLimit": 12},
+  {"code": "160028", "name": "Sweet Corn", "unit": "425g tin", "maxLimit": 12},
+  {"code": "163152", "name": "Mix Pickles Wadi Food", "unit": "kg", "maxLimit": 5},
+  {"code": "163016", "name": "Pickles Black Olive Local", "unit": "8kg gal", "maxLimit": 1},
+  {"code": "163020", "name": "Pickles Black Olives Minced", "unit": "300g jar", "maxLimit": 6},
+  {"code": "163090", "name": "Pickles Cucumber", "unit": "300g jar", "maxLimit": 6},
+  {"code": "163211", "name": "Pickles Cucumber", "unit": "350g jar", "maxLimit": 6},
+  {"code": "163089", "name": "Pickles Green Olives Seedless", "unit": "650g jar", "maxLimit": 4},
+  {"code": "163106", "name": "Pickles Onion", "unit": "350g jar", "maxLimit": 6},
+  {"code": "163031", "name": "Pickles Jalapeno Wadi Food", "unit": "kg", "maxLimit": 4},
+  {"code": "161005", "name": "Black Pepper Corn", "unit": "kg", "maxLimit": 2},
+  {"code": "161006", "name": "Black Pepper Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161096", "name": "Black Seeds", "unit": "kg", "maxLimit": 2},
+  {"code": "161008", "name": "Black Sesame Seeds", "unit": "kg", "maxLimit": 3},
+  {"code": "161164", "name": "Cajun Seasoning", "unit": "680g jar", "maxLimit": 3},
+  {"code": "161011", "name": "Cardamom Seeds", "unit": "kg", "maxLimit": 2},
+  {"code": "161019", "name": "Chili Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161024", "name": "Cinnamon Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161026", "name": "Cinnamon Sticks", "unit": "kg", "maxLimit": 3},
+  {"code": "161028", "name": "Coriander Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161030", "name": "Cumin Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161031", "name": "Cumin Whole Seed", "unit": "kg", "maxLimit": 3},
+  {"code": "161041", "name": "Garlic Powder", "unit": "kg", "maxLimit": 4},
+  {"code": "161042", "name": "Ginger Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161052", "name": "Onion Powder", "unit": "kg", "maxLimit": 4},
+  {"code": "161053", "name": "Oregano Dry", "unit": "kg", "maxLimit": 2},
+  {"code": "161081", "name": "Oregano Dry Abu Auf", "unit": "250g pkt", "maxLimit": 5},
+  {"code": "161092", "name": "Paprika Smoked Powder", "unit": "500g pkt", "maxLimit": 4},
+  {"code": "161070", "name": "Sumacs Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161075", "name": "Turmeric Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161077", "name": "White Pepper Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161078", "name": "Salt Himalayan", "unit": "kg", "maxLimit": 3},
+  {"code": "161063", "name": "Salt Kitchen", "unit": "kg", "maxLimit": 10},
+  {"code": "161064", "name": "Salt Lemon", "unit": "kg", "maxLimit": 2},
+  {"code": "161135", "name": "Salt Sea Flakes Maldon", "unit": "each", "maxLimit": 5},
+  {"code": "161069", "name": "Salt Sea Imported", "unit": "kg", "maxLimit": 4},
+  {"code": "161067", "name": "Salt Table", "unit": "700g pkt", "maxLimit": 8},
+  {"code": "162002", "name": "Chicken Stock Knorr", "unit": "kg", "maxLimit": 5},
+  {"code": "162018", "name": "Demi Glace Sauce Knorr", "unit": "750g pkt", "maxLimit": 4},
+  {"code": "163002", "name": "Ketchup Heinz", "unit": "10kg gal", "maxLimit": 1},
+  {"code": "163165", "name": "Sauce Barbecue Heinz", "unit": "4.25kg gal", "maxLimit": 1},
+  {"code": "163051", "name": "Sauce Chipotle Tabasco", "unit": "60ml bottle", "maxLimit": 8},
+  {"code": "163169", "name": "Sauce Sriracha Hot Chili", "unit": "740g jar", "maxLimit": 4},
+  {"code": "163219", "name": "Sauce Sweet Chilli", "unit": "710ml bottle", "maxLimit": 5},
+  {"code": "163078", "name": "Sauce Worcestershire", "unit": "250g jar", "maxLimit": 4},
+  {"code": "163079", "name": "Sauce Worcestershire", "unit": "500ml bottle", "maxLimit": 4},
+  {"code": "163208", "name": "Pomegranate Molasses", "unit": "750ml bottle", "maxLimit": 4},
+  {"code": "167006", "name": "Mustard Dijon", "unit": "370g jar", "maxLimit": 5},
+  {"code": "177008", "name": "Honey Bee Hero", "unit": "650g jar", "maxLimit": 6},
+  {"code": "151018", "name": "Peanut Butter", "unit": "300g jar", "maxLimit": 8},
+  {"code": "163005", "name": "Oil Corn", "unit": "L", "maxLimit": 15},
+  {"code": "163006", "name": "Oil Fried Mix", "unit": "L", "maxLimit": 15},
+  {"code": "163008", "name": "Oil Olive", "unit": "L", "maxLimit": 8},
+  {"code": "163013", "name": "Oil Truffle", "unit": "250ml bottle", "maxLimit": 3},
+  {"code": "167014", "name": "Vinegar Apple", "unit": "500ml bottle", "maxLimit": 5},
+  {"code": "167023", "name": "Vinegar Balsamic", "unit": "500ml bottle", "maxLimit": 4},
+  {"code": "167017", "name": "Vinegar Heinz White", "unit": "L", "maxLimit": 8},
+  {"code": "167018", "name": "Vinegar Red Grape", "unit": "500ml bottle", "maxLimit": 4},
+  {"code": "167025", "name": "Mayonnaise Heinz Gallon 18.9", "unit": "gal", "maxLimit": 50},
+  {"code": "163100", "name": "Tahina Jar El Rashidi", "unit": "460g jar", "maxLimit": 6},
+  {"code": "164050", "name": "Macaroni Gluten Free", "unit": "340g pkt", "maxLimit": 6},
+  {"code": "164129", "name": "Macaroni Gluten Free", "unit": "350g pkt", "maxLimit": 6},
+  {"code": "164053", "name": "Macaroni Linguine Agnesi", "unit": "500g pkt", "maxLimit": 8},
+  {"code": "164099", "name": "Macaroni Penne Lori Italy", "unit": "500g pkt", "maxLimit": 8},
+  {"code": "164102", "name": "Macaroni Spaghetti Lori Italy", "unit": "500g pkt", "maxLimit": 8},
+  {"code": "164021", "name": "Macaroni Penne Regina", "unit": "kg", "maxLimit": 12},
+  {"code": "164002", "name": "Glass Noodles", "unit": "250g pkt", "maxLimit": 10},
+  {"code": "164043", "name": "Rice Risotto Gallo", "unit": "kg", "maxLimit": 8},
+  {"code": "166002", "name": "Black Lentil", "unit": "kg", "maxLimit": 10},
+  {"code": "166007", "name": "Fava Beans Crushed Dry", "unit": "kg", "maxLimit": 10},
+  {"code": "166016", "name": "Sesame Seeds", "unit": "kg", "maxLimit": 5},
+  {"code": "166013", "name": "Quinoa Red Seeds Abu Auf", "unit": "400g pkt", "maxLimit": 6},
+  {"code": "166014", "name": "Quinoa White Seeds Abu Auf", "unit": "400g pkt", "maxLimit": 6},
+  {"code": "175127", "name": "Baking Powder Dreem", "unit": "50 bags", "maxLimit": 3},
+  {"code": "175133", "name": "Corn Flour Dreem", "unit": "240g pkt", "maxLimit": 8},
+  {"code": "175248", "name": "Bread Crumb Imported Coarse", "unit": "kg", "maxLimit": 6},
+  {"code": "175020", "name": "Taco Shell Corn", "unit": "325g pkt", "maxLimit": 6},
+  {"code": "175036", "name": "Flour Tempura", "unit": "kg", "maxLimit": 5},
+  {"code": "176003", "name": "Almond Powder Abu Auf", "unit": "500g pkt", "maxLimit": 6},
+  {"code": "176001", "name": "Almond Slice Abu Auf", "unit": "500g pkt", "maxLimit": 6},
+  {"code": "176005", "name": "Almond Whole", "unit": "kg", "maxLimit": 6},
+  {"code": "176007", "name": "Cashew Abu Auf", "unit": "500g pkt", "maxLimit": 6},
+  {"code": "176025", "name": "Walnuts", "unit": "kg", "maxLimit": 6},
+  {"code": "161046", "name": "Green Pepper Corn", "unit": "700g pkt", "maxLimit": 3}
+]
