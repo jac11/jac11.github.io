@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Admin Dashboard - Multi-Admin Approval System</title>
+<title>Admin Dashboard - Approve Orders | Multi-Admin</title>
 <style>
 * {
     margin: 0;
@@ -18,16 +17,18 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0f2f5;
+    background: #f5f7fb;
 }
 
+/* Header */
 .header {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
-    padding: 16px 24px;
+    padding: 14px 20px;
     position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .header-content {
@@ -37,398 +38,465 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 12px;
 }
 
 .header h1 {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-.header span {
-    color: #e94560;
+.header h1 span {
+    color: #f97316;
 }
 
 .admin-info {
     display: flex;
     align-items: center;
-    gap: 15px;
-    background: rgba(255,255,255,0.15);
-    padding: 6px 15px;
+    gap: 12px;
+    background: rgba(255,255,255,0.1);
+    padding: 5px 12px;
     border-radius: 40px;
-}
-
-.admin-name {
-    font-weight: 600;
-    font-size: 0.9rem;
 }
 
 .admin-avatar {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #e94560;
+    background: #f97316;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    font-size: 14px;
+}
+
+.admin-name {
+    font-weight: 600;
+    font-size: 0.85rem;
 }
 
 .logout-btn {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.15);
     border: none;
     padding: 5px 12px;
-    border-radius: 20px;
+    border-radius: 30px;
     color: white;
     cursor: pointer;
     font-size: 12px;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
 .logout-btn:hover {
-    background: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.25);
 }
 
 .header-buttons {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .btn-header {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
     border: none;
-    padding: 8px 18px;
-    border-radius: 25px;
+    padding: 6px 14px;
+    border-radius: 30px;
     color: white;
     cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s;
-    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-size: 12px;
 }
 
 .btn-header:hover {
-    background: rgba(255,255,255,0.3);
-    transform: translateY(-2px);
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-1px);
 }
 
 .btn-analytics {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
 }
 
 .btn-danger {
-    background: #e74c3c;
+    background: #dc2626;
 }
 
+/* Stats Cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 16px;
     margin-bottom: 24px;
 }
 
 .stat-card {
     background: white;
-    padding: 20px;
-    border-radius: 16px;
+    padding: 16px;
+    border-radius: 20px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #eef2ff;
 }
 
 .stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .stat-number {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: bold;
-    color: #e94560;
+    color: #f97316;
 }
 
 .stat-label {
-    color: #666;
+    color: #64748b;
     margin-top: 5px;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 500;
 }
 
+/* Filters */
 .kitchen-filters {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 20px;
     flex-wrap: wrap;
     background: white;
-    padding: 15px 20px;
-    border-radius: 16px;
+    padding: 12px 16px;
+    border-radius: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .kitchen-filter-btn {
-    padding: 8px 20px;
-    background: #f0f2f5;
+    padding: 6px 16px;
+    background: #f1f5f9;
     border: none;
     border-radius: 30px;
     font-weight: 600;
+    font-size: 12px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
 .kitchen-filter-btn:hover {
-    background: #e0e0e0;
-    transform: translateY(-2px);
+    background: #e2e8f0;
 }
 
 .kitchen-filter-btn.active {
-    background: #1e3c72;
+    background: #1e293b;
     color: white;
 }
 
+/* Tabs */
 .tabs {
     display: flex;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 8px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
 .tab-btn {
-    padding: 10px 24px;
+    padding: 8px 20px;
     background: white;
     border: none;
     border-radius: 30px;
     font-weight: 600;
+    font-size: 13px;
     cursor: pointer;
-    transition: all 0.3s;
-}
-
-.tab-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .tab-btn.active {
-    background: #e94560;
+    background: #f97316;
     color: white;
 }
 
+/* Request Card */
 .request-card {
     background: white;
-    border-radius: 16px;
-    padding: 20px;
+    border-radius: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden;
+    border: 1px solid #eef2ff;
 }
 
 .request-header {
+    background: #f8fafc;
+    padding: 16px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #f0f0f0;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
+    border-bottom: 1px solid #eef2ff;
 }
 
 .request-id {
-    font-weight: bold;
-    font-size: 1.1rem;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1e293b;
 }
 
 .kitchen-badge {
     padding: 4px 12px;
-    border-radius: 20px;
+    border-radius: 30px;
     font-size: 0.7rem;
     font-weight: 600;
 }
 
-.kitchen-hot { background: #e74c3c; color: white; }
-.kitchen-cold { background: #3498db; color: white; }
-.kitchen-pastry { background: #f39c12; color: white; }
-.kitchen-butchery { background: #8e44ad; color: white; }
-.kitchen-beach { background: #1abc9c; color: white; }
-.kitchen-nihon { background: #e91e63; color: white; }
-.kitchen-staff { background: #95a5a6; color: white; }
+.kitchen-hot { background: #fee2e2; color: #dc2626; }
+.kitchen-cold { background: #dbeafe; color: #2563eb; }
+.kitchen-pastry { background: #fef3c7; color: #d97706; }
+.kitchen-butchery { background: #f3e8ff; color: #9333ea; }
+.kitchen-beach { background: #dcfce7; color: #16a34a; }
+.kitchen-nihon { background: #ffe4e6; color: #e11d48; }
+.kitchen-staff { background: #f1f5f9; color: #475569; }
 
 .status-badge {
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
     font-weight: 600;
 }
 
-.status-pending { background: #f39c12; color: white; }
-.status-approved { background: #27ae60; color: white; }
-.status-rejected { background: #e74c3c; color: white; }
-.status-partial { background: #8e44ad; color: white; }
+.status-pending { background: #fef3c7; color: #d97706; }
+.status-approved { background: #dcfce7; color: #16a34a; }
+.status-rejected { background: #fee2e2; color: #dc2626; }
+.status-partial { background: #f3e8ff; color: #9333ea; }
 
+/* Request Details */
 .request-details {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-    margin-bottom: 16px;
-    padding: 12px;
-    background: #f8f9fa;
-    border-radius: 12px;
+    display: flex;
+    gap: 20px;
+    padding: 14px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
+    flex-wrap: wrap;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-icon {
+    font-size: 1rem;
 }
 
 .detail-label {
     font-size: 0.7rem;
-    color: #888;
+    color: #94a3b8;
     text-transform: uppercase;
 }
 
 .detail-value {
     font-weight: 600;
-    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #1e293b;
 }
 
-.approved-by {
-    font-size: 0.7rem;
-    color: #27ae60;
-    margin-top: 3px;
-    font-weight: 500;
-}
-
-.rejected-by {
-    font-size: 0.7rem;
-    color: #e74c3c;
-    margin-top: 3px;
-    font-weight: 500;
-}
-
+/* Items Table - Mobile Optimized */
 .items-wrapper {
     overflow-x: auto;
-    margin: 16px 0;
+    padding: 0 16px 16px 16px;
 }
 
 .items-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 700px;
+    min-width: 550px;
 }
 
 .items-table th {
-    background: #f8f9fa;
-    padding: 12px;
     text-align: left;
+    padding: 12px 8px;
+    font-size: 0.7rem;
     font-weight: 600;
-    border-bottom: 2px solid #e0e0e0;
+    color: #64748b;
+    border-bottom: 1px solid #eef2ff;
 }
 
 .items-table td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-    vertical-align: middle;
+    padding: 14px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+}
+
+.item-name-cell {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.item-max {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    margin-top: 2px;
 }
 
 .requested-qty {
-    background: #f0f0f0;
-    padding: 6px 12px;
+    background: #f1f5f9;
+    padding: 4px 10px;
     border-radius: 20px;
-    display: inline-block;
     font-weight: 600;
+    font-size: 0.8rem;
+    display: inline-block;
 }
 
 .approval-input {
-    width: 100px;
-    padding: 10px 12px;
-    border: 2px solid #3498db;
-    border-radius: 8px;
+    width: 85px;
+    padding: 8px 8px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
     text-align: center;
-    font-size: 14px;
+    font-size: 0.8rem;
     font-weight: 600;
     background: white;
 }
 
 .approval-input:focus {
     outline: none;
-    border-color: #27ae60;
+    border-color: #f97316;
 }
 
 .action-buttons {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
 }
 
 .btn-approve {
-    background: #27ae60;
+    background: #16a34a;
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 5px 12px;
+    border-radius: 30px;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.3s;
+    font-size: 0.7rem;
+    transition: all 0.2s;
 }
 
 .btn-approve:hover {
-    background: #219a52;
-    transform: scale(1.02);
+    background: #15803d;
 }
 
 .btn-reject {
-    background: #e74c3c;
+    background: #dc2626;
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
+    padding: 5px 12px;
+    border-radius: 30px;
     cursor: pointer;
     font-weight: 600;
-    transition: all 0.3s;
+    font-size: 0.7rem;
+    transition: all 0.2s;
 }
 
 .btn-reject:hover {
-    background: #c0392b;
-    transform: scale(1.02);
+    background: #b91c1c;
 }
 
+/* Status Cell */
+.status-cell {
+    min-width: 100px;
+}
+
+.status-approved-cell {
+    background: #dcfce7;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #16a34a;
+    display: inline-block;
+}
+
+.status-rejected-cell {
+    background: #fee2e2;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #dc2626;
+    display: inline-block;
+}
+
+.status-pending-cell {
+    background: #fef3c7;
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #d97706;
+    display: inline-block;
+}
+
+.admin-info-text {
+    font-size: 0.65rem;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.admin-name-text {
+    font-weight: 600;
+    color: #f97316;
+}
+
+/* Request Actions */
 .request-actions {
     display: flex;
     gap: 12px;
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 2px solid #f0f0f0;
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #eef2ff;
 }
 
 .btn-approve-all {
     flex: 1;
-    background: #27ae60;
+    background: #16a34a;
     color: white;
     border: none;
-    padding: 12px;
-    border-radius: 10px;
+    padding: 10px;
+    border-radius: 40px;
     font-weight: 600;
+    font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
 .btn-reject-all {
     flex: 1;
-    background: #e74c3c;
+    background: #dc2626;
     color: white;
     border: none;
-    padding: 12px;
-    border-radius: 10px;
+    padding: 10px;
+    border-radius: 40px;
     font-weight: 600;
+    font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
 .btn-approve-all:hover, .btn-reject-all:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    filter: brightness(1.05);
 }
 
 .empty-state {
     text-align: center;
-    padding: 60px;
+    padding: 50px;
     background: white;
-    border-radius: 16px;
-    color: #999;
+    border-radius: 20px;
+    color: #94a3b8;
 }
 
 .toast {
@@ -436,16 +504,17 @@ body {
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: #333;
+    background: #1e293b;
     color: white;
-    padding: 12px 24px;
-    border-radius: 30px;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-size: 0.8rem;
     z-index: 1000;
-    animation: fadeIn 0.3s;
+    animation: fadeIn 0.2s;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
@@ -453,23 +522,23 @@ body {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: #3498db;
+    background: #f97316;
     color: white;
     border: none;
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.2s;
 }
 
 .floating-refresh:hover {
     transform: scale(1.05);
-    background: #2980b9;
 }
 
+/* Modal */
 .modal {
     display: flex;
     position: fixed;
@@ -486,67 +555,23 @@ body {
 
 .modal-content {
     background: white;
-    padding: 35px 30px;
+    padding: 28px 24px;
     border-radius: 28px;
     text-align: center;
-    max-width: 380px;
+    max-width: 360px;
     width: 90%;
 }
 
 .modal-content h2 {
-    margin-bottom: 10px;
-    color: #1a1a2e;
-    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: #1e293b;
+    font-size: 1.4rem;
 }
 
 .modal-content p {
-    color: #666;
-    margin-bottom: 25px;
-    font-size: 0.85rem;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 14px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 14px;
-    font-size: 16px;
-    text-align: center;
-}
-
-.modal-content button {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 40px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    transition: all 0.3s;
-    margin-bottom: 10px;
-}
-
-.modal-content button:hover {
-    background: #2980b9;
-    transform: scale(1.02);
-}
-
-.error-msg {
-    color: #e74c3c;
-    margin-top: 12px;
-    font-size: 0.85rem;
-}
-
-.close-modal {
-    background: #95a5a6 !important;
-    margin-top: 5px;
-}
-
-.close-modal:hover {
-    background: #7f8c8d !important;
+    color: #64748b;
+    margin-bottom: 20px;
+    font-size: 0.8rem;
 }
 
 .user-selector {
@@ -557,37 +582,158 @@ body {
 }
 
 .user-btn {
-    background: #f0f2f5;
-    color: #333;
-    border: 2px solid #e0e0e0;
+    background: #f1f5f9;
+    color: #1e293b;
+    border: 2px solid #e2e8f0;
     padding: 12px;
     border-radius: 40px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all 0.2s;
 }
 
 .user-btn:hover {
-    background: #e0e0e0;
-    transform: scale(1.02);
+    background: #e2e8f0;
+    transform: scale(1.01);
 }
 
-.user-btn[data-user="Marco"]:hover { border-color: #3498db; }
-.user-btn[data-user="Nady"]:hover { border-color: #27ae60; }
-.user-btn[data-user="Ahmed"]:hover { border-color: #e94560; }
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 40px;
+    font-size: 14px;
+    text-align: center;
+}
 
+.modal-content button {
+    background: #f97316;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.modal-content button:hover {
+    background: #ea580c;
+}
+
+.error-msg {
+    color: #dc2626;
+    margin-top: 12px;
+    font-size: 0.8rem;
+}
+
+.close-modal {
+    background: #94a3b8 !important;
+    margin-top: 10px;
+}
+
+/* Mobile Optimizations */
 @media (max-width: 768px) {
-    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .stat-card { padding: 12px; }
-    .stat-number { font-size: 1.5rem; }
-    .kitchen-filters { overflow-x: auto; flex-wrap: nowrap; padding: 12px; gap: 8px; }
-    .kitchen-filter-btn { white-space: nowrap; padding: 6px 16px; font-size: 12px; }
-    .tabs { overflow-x: auto; flex-wrap: nowrap; gap: 8px; }
-    .tab-btn { white-space: nowrap; padding: 8px 16px; font-size: 12px; }
-    .request-card { padding: 14px; }
-    .items-table th, .items-table td { padding: 8px; font-size: 12px; }
-    .approval-input { width: 70px; padding: 6px 8px; font-size: 12px; }
-    .btn-approve, .btn-reject { padding: 6px 12px; font-size: 11px; }
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .kitchen-filters {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding: 10px 14px;
+        gap: 6px;
+    }
+    
+    .kitchen-filter-btn {
+        white-space: nowrap;
+        padding: 5px 14px;
+        font-size: 11px;
+    }
+    
+    .tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
+    
+    .tab-btn {
+        white-space: nowrap;
+        padding: 6px 16px;
+        font-size: 12px;
+    }
+    
+    .request-header {
+        padding: 12px 16px;
+    }
+    
+    .request-id {
+        font-size: 0.85rem;
+    }
+    
+    .request-details {
+        padding: 10px 16px;
+        gap: 12px;
+    }
+    
+    .items-wrapper {
+        padding: 0 12px 12px 12px;
+    }
+    
+    .items-table th, .items-table td {
+        padding: 10px 6px;
+        font-size: 0.7rem;
+    }
+    
+    .approval-input {
+        width: 65px;
+        padding: 6px 6px;
+        font-size: 0.7rem;
+    }
+    
+    .btn-approve, .btn-reject {
+        padding: 4px 10px;
+        font-size: 0.65rem;
+    }
+    
+    .request-actions {
+        padding: 12px 16px;
+    }
+    
+    .btn-approve-all, .btn-reject-all {
+        padding: 8px;
+        font-size: 0.7rem;
+    }
+    
+    .header-buttons {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .stats-grid {
+        gap: 16px;
+    }
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
 }
 </style>
 </head>
@@ -596,23 +742,23 @@ body {
 <div id="passwordModal" class="modal">
     <div class="modal-content">
         <h2>🔐 Admin Login</h2>
-        <p>Select your account and enter password</p>
+        <p>Select your account</p>
         <div class="user-selector">
             <button class="user-btn" data-user="Marco" onclick="selectUser('Marco')">👨‍💼 Marco - Administrator</button>
             <button class="user-btn" data-user="Nady" onclick="selectUser('Nady')">👩‍💼 Nady - Administrator</button>
             <button class="user-btn" data-user="Ahmed" onclick="selectUser('Ahmed')">👨‍💻 Ahmed - Administrator</button>
         </div>
-        <input type="password" id="passwordInput" placeholder="Enter your password" autocomplete="off" style="display:none;">
+        <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off" style="display:none;">
         <button id="loginBtn" style="display:none;" onclick="checkAdminLogin()">Login →</button>
         <div id="loginError" class="error-msg"></div>
-        <button class="close-modal" onclick="closePasswordModal()">← Go Back</button>
+        <button class="close-modal" onclick="closePasswordModal()">← Back</button>
     </div>
 </div>
 
 <div id="mainContent" style="display: none;">
     <div class="header">
         <div class="header-content">
-            <h1>👑 Admin Dashboard <span>| Approve Orders</span></h1>
+            <h1>👑 Admin <span>Dashboard</span></h1>
             <div class="admin-info">
                 <div class="admin-avatar" id="adminAvatar">M</div>
                 <span class="admin-name" id="adminNameDisplay">Admin</span>
@@ -620,7 +766,7 @@ body {
             </div>
             <div class="header-buttons">
                 <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
-                <button class="btn-header" onclick="exportToExcel()">📎 Export Excel</button>
+                <button class="btn-header" onclick="exportToExcel()">📎 Export</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
                 <button class="btn-header btn-danger" onclick="resetOldRequests()">🗑️ Reset Old</button>
                 <button class="btn-header" onclick="refreshData()">🔄 Refresh</button>
@@ -628,7 +774,7 @@ body {
         </div>
     </div>
 
-    <div class="container" style="max-width:1400px; margin:0 auto; padding:20px;">
+    <div class="container">
         <div class="stats-grid">
             <div class="stat-card" onclick="filterStatus('pending')"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">⏳ Pending</div></div>
             <div class="stat-card" onclick="filterStatus('approved')"><div class="stat-number" id="approvedCount">0</div><div class="stat-label">✅ Approved</div></div>
@@ -637,7 +783,7 @@ body {
         </div>
 
         <div class="kitchen-filters">
-            <button class="kitchen-filter-btn active" onclick="filterKitchen('all', this)">📋 All Kitchens</button>
+            <button class="kitchen-filter-btn active" onclick="filterKitchen('all', this)">📋 All</button>
             <button class="kitchen-filter-btn" onclick="filterKitchen('Hot Kitchen', this)">🔥 Hot</button>
             <button class="kitchen-filter-btn" onclick="filterKitchen('Cold Kitchen', this)">❄️ Cold</button>
             <button class="kitchen-filter-btn" onclick="filterKitchen('Pastry / Bakery', this)">🍰 Pastry</button>
@@ -662,12 +808,7 @@ body {
 </div>
 
 <script>
-// 3 Admin Users with their own passwords
-const ADMIN_CREDENTIALS = {
-    "Marco": "marco123",
-    "Nady": "nady123",
-    "Ahmed": "ahmed123"
-};
+const ADMIN_CREDENTIALS = { "Marco": "marco123", "Nady": "nady123", "Ahmed": "ahmed123" };
 
 let currentAdminName = "";
 let currentKitchenFilter = "all";
@@ -678,36 +819,28 @@ let selectedUser = "";
 
 function selectUser(user) {
     selectedUser = user;
-    document.querySelectorAll('.user-btn').forEach(btn => {
-        btn.style.opacity = "0.6";
-        btn.style.border = "2px solid #e0e0e0";
-    });
-    const selectedBtn = document.querySelector(`.user-btn[data-user="${user}"]`);
-    selectedBtn.style.opacity = "1";
-    selectedBtn.style.border = `2px solid ${user === 'Marco' ? '#3498db' : user === 'Nady' ? '#27ae60' : '#e94560'}`;
-    
-    const passwordInput = document.getElementById("passwordInput");
+    document.querySelectorAll('.user-btn').forEach(btn => btn.style.opacity = "0.6");
+    document.querySelector(`.user-btn[data-user="${user}"]`).style.opacity = "1";
+    const passInput = document.getElementById("passwordInput");
     const loginBtn = document.getElementById("loginBtn");
-    passwordInput.style.display = "block";
+    passInput.style.display = "block";
     loginBtn.style.display = "block";
-    passwordInput.placeholder = `Enter password for ${user}`;
-    passwordInput.value = "";
+    passInput.placeholder = `Password for ${user}`;
+    passInput.value = "";
     document.getElementById("loginError").innerHTML = "";
 }
 
-function closePasswordModal() {
-    document.getElementById("passwordModal").style.display = "none";
-}
+function closePasswordModal() { document.getElementById("passwordModal").style.display = "none"; }
 
 function checkAdminLogin() {
     const password = document.getElementById("passwordInput").value;
-    
     if(selectedUser && ADMIN_CREDENTIALS[selectedUser] === password) {
         currentAdminName = selectedUser;
         document.getElementById("adminNameDisplay").innerText = currentAdminName;
         const avatar = document.getElementById("adminAvatar");
         avatar.innerText = currentAdminName.charAt(0);
-        avatar.style.background = currentAdminName === 'Marco' ? '#3498db' : currentAdminName === 'Nady' ? '#27ae60' : '#e94560';
+        const colors = { Marco: "#3b82f6", Nady: "#10b981", Ahmed: "#f97316" };
+        avatar.style.background = colors[currentAdminName];
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         localStorage.setItem("adminName", currentAdminName);
@@ -727,31 +860,20 @@ function logoutAdmin() {
     document.getElementById("passwordModal").style.display = "flex";
     document.getElementById("passwordInput").style.display = "none";
     document.getElementById("loginBtn").style.display = "none";
-    document.getElementById("passwordInput").value = "";
     document.getElementById("loginError").innerHTML = "";
-    document.querySelectorAll('.user-btn').forEach(btn => {
-        btn.style.opacity = "1";
-        btn.style.border = "2px solid #e0e0e0";
-    });
+    document.querySelectorAll('.user-btn').forEach(btn => btn.style.opacity = "1");
 }
 
-function openAnalytics() {
-    window.open("analytics.html", "_blank");
-}
+function openAnalytics() { window.open("analytics.html", "_blank"); }
 
 function setupRealtimeListener() {
     if(activeListener) return;
     activeListener = db.collection("kitchen_requests").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
-        console.log("🔄 Real-time update from Firebase");
         allRequests = [];
-        snapshot.forEach(doc => {
-            allRequests.push({ firebaseId: doc.id, ...doc.data() });
-        });
+        snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
         refreshData();
         updateStats();
-        showToast("📡 Synced with database");
-    }, (error) => {
-        console.error("Firebase listener error:", error);
+        showToast("📡 Synced");
     });
 }
 
@@ -762,29 +884,14 @@ async function loadRequests() {
         snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
         refreshData();
         updateStats();
-    } catch (error) { 
-        console.error("Firebase error:", error);
-        showToast("❌ Failed to load data");
-    }
+    } catch (error) { showToast("❌ Failed to load"); }
 }
 
 async function updateRequest(reqId, updatedItems) {
     try { 
         await db.collection("kitchen_requests").doc(reqId).update({ items: updatedItems }); 
         showToast(`✅ Updated by ${currentAdminName}`);
-    } catch (error) { 
-        console.error("Update error:", error);
-        showToast("❌ Update failed"); 
-    }
-}
-
-async function deleteRequest(reqId) {
-    try { 
-        await db.collection("kitchen_requests").doc(reqId).delete();
-        showToast("🗑️ Request deleted");
-    } catch (error) { 
-        console.error("Delete error:", error);
-    }
+    } catch (error) { showToast("❌ Update failed"); }
 }
 
 function getStatus(req) {
@@ -825,13 +932,12 @@ async function approveItem(reqId, itemIdx) {
         item.approvedBy = currentAdminName;
         item.approvedAt = new Date().toLocaleString();
         item.rejectionReason = null;
-        item.rejectedBy = null;
         await updateRequest(reqId, req.items);
     }
 }
 
 async function rejectItem(reqId, itemIdx) {
-    const reason = prompt(`Enter rejection reason (${currentAdminName}):`, "Out of stock");
+    const reason = prompt(`Rejection reason (${currentAdminName}):`, "Out of stock");
     if(reason && reason.trim()) {
         const req = allRequests.find(r => r.firebaseId === reqId);
         if(req) {
@@ -840,14 +946,13 @@ async function rejectItem(reqId, itemIdx) {
             req.items[itemIdx].rejectedBy = currentAdminName;
             req.items[itemIdx].rejectedAt = new Date().toLocaleString();
             req.items[itemIdx].approvedQty = 0;
-            req.items[itemIdx].approvedBy = null;
             await updateRequest(reqId, req.items);
         }
     }
 }
 
 async function approveAll(reqId) {
-    if(!confirm(`Approve ALL items as ${currentAdminName}?`)) return;
+    if(!confirm(`Approve ALL as ${currentAdminName}?`)) return;
     const req = allRequests.find(r => r.firebaseId === reqId);
     if(req) {
         req.items.forEach((item, idx) => {
@@ -860,14 +965,13 @@ async function approveAll(reqId) {
             item.approvedBy = currentAdminName;
             item.approvedAt = new Date().toLocaleString();
             item.rejectionReason = null;
-            item.rejectedBy = null;
         });
         await updateRequest(reqId, req.items);
     }
 }
 
 async function rejectAll(reqId) {
-    const reason = prompt(`Rejection reason for ALL items (${currentAdminName}):`, "Not available");
+    const reason = prompt(`Rejection reason for ALL (${currentAdminName}):`, "Not available");
     if(reason && reason.trim()) {
         const req = allRequests.find(r => r.firebaseId === reqId);
         if(req) {
@@ -877,7 +981,6 @@ async function rejectAll(reqId) {
                 item.rejectedBy = currentAdminName;
                 item.rejectedAt = new Date().toLocaleString();
                 item.approvedQty = 0;
-                item.approvedBy = null;
             });
             await updateRequest(reqId, req.items);
         }
@@ -885,45 +988,29 @@ async function rejectAll(reqId) {
 }
 
 async function resetOldRequests() {
-    if(confirm(`Delete ALL approved/rejected requests? (${currentAdminName})`)) {
+    if(confirm(`Delete ALL non-pending requests? (${currentAdminName})`)) {
         let deleted = 0;
         for (const req of allRequests) {
-            const status = getStatus(req);
-            if (status !== "pending") { 
-                await deleteRequest(req.firebaseId);
+            if (getStatus(req) !== "pending") { 
+                await db.collection("kitchen_requests").doc(req.firebaseId).delete();
                 deleted++;
             }
         }
-        showToast(`🗑️ Deleted ${deleted} completed requests`);
+        showToast(`🗑️ Deleted ${deleted} requests`);
         await loadRequests();
     }
 }
 
 function exportToExcel() {
-    if(allRequests.length === 0) { showToast("No data to export"); return; }
-    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Approved/Rejected By,Reason,Timestamp\n";
+    if(allRequests.length === 0) { showToast("No data"); return; }
+    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Approved/Rejected By,Reason\n";
     allRequests.forEach(req => {
         req.items.forEach(item => {
-            let status = item.status, finalQty = "", reason = "", actionBy = "", actionTime = "";
-            if(item.status === "approved") { 
-                status = "Approved"; 
-                finalQty = item.approvedQty;
-                actionBy = item.approvedBy || "Unknown";
-                actionTime = item.approvedAt || "";
-            }
-            else if(item.status === "rejected") { 
-                status = "Rejected"; 
-                finalQty = "0"; 
-                reason = item.rejectionReason || "";
-                actionBy = item.rejectedBy || "Unknown";
-                actionTime = item.rejectedAt || "";
-            }
-            else { 
-                status = "Pending"; 
-                finalQty = "Waiting";
-                actionBy = "-";
-            }
-            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${actionBy}","${reason}","${actionTime}"\n`;
+            let status = item.status, finalQty = "", actionBy = "", reason = "";
+            if(item.status === "approved") { status = "Approved"; finalQty = item.approvedQty; actionBy = item.approvedBy || ""; }
+            else if(item.status === "rejected") { status = "Rejected"; finalQty = "0"; actionBy = item.rejectedBy || ""; reason = item.rejectionReason || ""; }
+            else { status = "Pending"; finalQty = "Waiting"; actionBy = "-"; }
+            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${actionBy}","${reason}"\n`;
         });
     });
     const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
@@ -931,34 +1018,33 @@ function exportToExcel() {
     link.href = URL.createObjectURL(blob);
     link.download = `orders_${new Date().toISOString().slice(0,19)}.csv`;
     link.click();
-    showToast("📎 Exported to Excel");
+    showToast("📎 Exported");
 }
 
 function getKitchenClass(kitchen) {
-    const map = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry", "Pastry": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" };
+    const map = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" };
     return map[kitchen] || "kitchen-staff";
 }
 
-function filterKitchen(kitchen, btnElement) {
+function filterKitchen(kitchen, btn) {
     currentKitchenFilter = kitchen;
-    document.querySelectorAll('.kitchen-filter-btn').forEach(btn => btn.classList.remove('active'));
-    if(btnElement) btnElement.classList.add('active');
+    document.querySelectorAll('.kitchen-filter-btn').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
     refreshData();
 }
 
-function showTab(tab, btnElement) {
+function showTab(tab, btn) {
     currentStatusFilter = tab;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    if(btnElement) btnElement.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
     refreshData();
 }
 
 function filterStatus(status) {
     currentStatusFilter = status;
     const btns = document.querySelectorAll('.tab-btn');
-    const statusMap = { pending: 0, approved: 1, rejected: 2, partial: 3, all: 4 };
-    const idx = statusMap[status] || 0;
-    if(btns[idx]) btns[idx].classList.add('active');
+    const map = { pending: 0, approved: 1, rejected: 2, partial: 3, all: 4 };
+    btns[map[status]]?.classList.add('active');
     refreshData();
 }
 
@@ -975,43 +1061,38 @@ function refreshData() {
         const statusClass = `status-${status}`;
         const statusText = { pending: "Pending", approved: "Approved", rejected: "Rejected", partial: "Partial" }[status];
         const kitchenClass = getKitchenClass(req.section);
-        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Code</th><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status & Admin</th></tr></thead><tbody>`;
-        
+        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status & Admin</th></tr></thead><tbody>`;
         req.items.forEach((item, idx) => {
             if(item.status === "approved") {
-                itemsHtml += `<tr style="background:#e8f5e9;">
-                    <td>${item.code}</td>
-                    <td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td>
+                itemsHtml += `<tr style="background:#f0fdf4;">
+                    <td><div class="item-name-cell">${escapeHtml(item.name)}</div><div class="item-max">📦 Max: ${item.maxLimit} | ${item.code}</div></td>
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
-                    <td><strong style="color:#27ae60;">${item.approvedQty}</strong></td>
-                    <td>✅ Approved</div></td>
-                    <td><span class="status-badge status-approved">Approved</span><br><small class="approved-by">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</small></td>
+                    <td><strong style="color:#16a34a;">${item.approvedQty}</strong></td>
+                    <td>✅ Approved</td>
+                    <td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 <span class="admin-name-text">${escapeHtml(item.approvedBy || '?')}</span><br>📅 ${item.approvedAt || ''}</div></td>
                 </tr>`;
             } else if(item.status === "rejected") {
-                itemsHtml += `<tr style="background:#fee2e2;">
-                    <td>${item.code}</td>
-                    <td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td>
+                itemsHtml += `<tr style="background:#fef2f2;">
+                    <td><div class="item-name-cell">${escapeHtml(item.name)}</div><div class="item-max">📦 Max: ${item.maxLimit} | ${item.code}</div></td>
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
-                    <td><strong style="color:#e74c3c;">0</strong></td>
-                    <td>❌ Rejected</div></td>
-                    <td><span class="status-badge status-rejected">Rejected</span><br><small class="rejected-by">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</small></div></td>
+                    <td><strong style="color:#dc2626;">0</strong></td>
+                    <td>❌ Rejected</td>
+                    <td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 <span class="admin-name-text" style="color:#dc2626;">${escapeHtml(item.rejectedBy || '?')}</span><br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td>
                 </tr>`;
             } else {
                 itemsHtml += `<tr>
-                    <td>${item.code}</td>
-                    <td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td>
+                    <td><div class="item-name-cell">${escapeHtml(item.name)}</div><div class="item-max">📦 Max: ${item.maxLimit} | ${item.code}</div></td>
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
                     <td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td>
                     <td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></td>
-                    <td><span class="status-badge status-pending">Pending</span><br><small class="approved-by">Waiting for admin</small></td>
+                    <td><span class="status-pending-cell">Pending</span><div class="admin-info-text">Waiting for admin</div></td>
                 </tr>`;
             }
         });
-        itemsHtml += `</tbody>}</div>`;
-        
+        itemsHtml += `</tbody></table></div>`;
         let actions = "";
         if(status === "pending") {
             actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All (${currentAdminName})</button><button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All (${currentAdminName})</button></div>`;
@@ -1022,8 +1103,8 @@ function refreshData() {
                 <span class="status-badge ${statusClass}">${statusText}</span>
             </div>
             <div class="request-details">
-                <div><div class="detail-label">👨‍🍳 Chef</div><div class="detail-value">${escapeHtml(req.chefName)}</div></div>
-                <div><div class="detail-label">📅 Submitted</div><div class="detail-value">${req.submittedAt}</div></div>
+                <div class="detail-item"><span class="detail-icon">👨‍🍳</span><div><div class="detail-label">Chef</div><div class="detail-value">${escapeHtml(req.chefName)}</div></div></div>
+                <div class="detail-item"><span class="detail-icon">📅</span><div><div class="detail-label">Submitted</div><div class="detail-value">${req.submittedAt}</div></div></div>
             </div>
             ${itemsHtml}
             ${actions}
@@ -1042,7 +1123,7 @@ function showToast(msg) {
     toast.className = "toast"; 
     toast.innerText = msg; 
     document.body.appendChild(toast); 
-    setTimeout(() => toast.remove(), 3000); 
+    setTimeout(() => toast.remove(), 2500); 
 }
 
 window.onload = () => { 
@@ -1052,7 +1133,8 @@ window.onload = () => {
         document.getElementById("adminNameDisplay").innerText = currentAdminName;
         const avatar = document.getElementById("adminAvatar");
         avatar.innerText = currentAdminName.charAt(0);
-        avatar.style.background = currentAdminName === 'Marco' ? '#3498db' : currentAdminName === 'Nady' ? '#27ae60' : '#e94560';
+        const colors = { Marco: "#3b82f6", Nady: "#10b981", Ahmed: "#f97316" };
+        avatar.style.background = colors[currentAdminName];
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         setupRealtimeListener();
