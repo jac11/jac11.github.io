@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Admin Dashboard - Approve Orders | Real-time Sync</title>
+<title>Admin Dashboard - Approve Orders | Track Admin</title>
 <style>
 * {
     margin: 0;
@@ -49,6 +49,35 @@ body {
 
 .header span {
     color: #e94560;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255,255,255,0.15);
+    padding: 6px 15px;
+    border-radius: 40px;
+}
+
+.admin-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.logout-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background: rgba(255,255,255,0.3);
 }
 
 .header-buttons {
@@ -246,6 +275,18 @@ body {
     margin-top: 4px;
 }
 
+.approved-by {
+    font-size: 0.7rem;
+    color: #27ae60;
+    margin-top: 3px;
+}
+
+.rejected-by {
+    font-size: 0.7rem;
+    color: #e74c3c;
+    margin-top: 3px;
+}
+
 .items-wrapper {
     overflow-x: auto;
     margin: 16px 0;
@@ -254,7 +295,7 @@ body {
 .items-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px;
+    min-width: 650px;
 }
 
 .items-table th {
@@ -491,14 +532,6 @@ body {
     background: #7f8c8d;
 }
 
-.sync-indicator {
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    background: #27ae60;
-    color: white;
-}
-
 @media (max-width: 768px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -552,23 +585,18 @@ body {
         gap: 8px;
     }
 }
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .stats-grid {
-        gap: 15px;
-    }
-}
 </style>
 </head>
 <body>
 
 <div id="passwordModal" class="modal">
     <div class="modal-content">
-        <h2>🔐 Admin Access</h2>
-        <p>Enter password to continue</p>
-        <input type="password" id="passwordInput" placeholder="Enter password" autocomplete="off">
-        <button onclick="checkPassword()">Login</button>
-        <div id="passwordError" class="error-msg"></div>
+        <h2>🔐 Admin Login</h2>
+        <p>Enter your admin credentials</p>
+        <input type="text" id="adminNameInput" placeholder="Admin Name" autocomplete="off">
+        <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+        <button onclick="checkAdminLogin()">Login</button>
+        <div id="loginError" class="error-msg"></div>
         <button class="close-modal" onclick="closePasswordModal()">← Go Back</button>
     </div>
 </div>
@@ -577,6 +605,10 @@ body {
     <div class="header">
         <div class="header-content">
             <h1>👑 Admin Dashboard <span>| Approve Orders</span></h1>
+            <div class="admin-info">
+                <span class="admin-name" id="adminNameDisplay">Admin</span>
+                <button class="logout-btn" onclick="logoutAdmin()">🚪 Logout</button>
+            </div>
             <div class="header-buttons">
                 <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
                 <button class="btn-header" onclick="exportToExcel()">📎 Export Excel</button>
@@ -621,7 +653,14 @@ body {
 </div>
 
 <script>
-const ADMIN_PASSWORD = "admin123";
+const ADMIN_CREDENTIALS = {
+    "Mohamed": "admin123",
+    "Ahmed": "admin123",
+    "Sara": "admin123",
+    "Admin": "admin123"
+};
+
+let currentAdminName = "";
 let currentKitchenFilter = "all";
 let currentStatusFilter = "pending";
 let allRequests = [];
@@ -629,24 +668,37 @@ let activeListener = null;
 
 function closePasswordModal() {
     document.getElementById("passwordModal").style.display = "none";
-    window.location.href = "index.html";
 }
 
-function openAnalytics() {
-    // Open analytics in new tab - works on both mobile and laptop
-    window.open("analytics.html", "_blank");
-}
-
-function checkPassword() {
-    const input = document.getElementById("passwordInput").value;
-    if(input === ADMIN_PASSWORD) {
+function checkAdminLogin() {
+    const adminName = document.getElementById("adminNameInput").value.trim();
+    const password = document.getElementById("passwordInput").value;
+    
+    if(adminName && ADMIN_CREDENTIALS[adminName] === password) {
+        currentAdminName = adminName;
+        document.getElementById("adminNameDisplay").innerText = adminName;
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
+        localStorage.setItem("adminName", adminName);
         setupRealtimeListener();
         loadRequests();
     } else {
-        document.getElementById("passwordError").innerHTML = "❌ Wrong password!";
+        document.getElementById("loginError").innerHTML = "❌ Invalid name or password!";
     }
+}
+
+function logoutAdmin() {
+    currentAdminName = "";
+    localStorage.removeItem("adminName");
+    document.getElementById("mainContent").style.display = "none";
+    document.getElementById("passwordModal").style.display = "flex";
+    document.getElementById("adminNameInput").value = "";
+    document.getElementById("passwordInput").value = "";
+    document.getElementById("loginError").innerHTML = "";
+}
+
+function openAnalytics() {
+    window.open("analytics.html", "_blank");
 }
 
 function setupRealtimeListener() {
@@ -662,7 +714,6 @@ function setupRealtimeListener() {
         showToast("📡 Synced with database");
     }, (error) => {
         console.error("Firebase listener error:", error);
-        showToast("⚠️ Connection issue, retrying...");
     });
 }
 
@@ -682,8 +733,7 @@ async function loadRequests() {
 async function updateRequest(reqId, updatedItems) {
     try { 
         await db.collection("kitchen_requests").doc(reqId).update({ items: updatedItems }); 
-        showToast("✅ Updated successfully");
-        // No need to reload - real-time listener will update
+        showToast(`✅ Updated by ${currentAdminName}`);
     } catch (error) { 
         console.error("Update error:", error);
         showToast("❌ Update failed"); 
@@ -696,7 +746,6 @@ async function deleteRequest(reqId) {
         showToast("🗑️ Request deleted");
     } catch (error) { 
         console.error("Delete error:", error);
-        showToast("❌ Delete failed");
     }
 }
 
@@ -735,18 +784,22 @@ async function approveItem(reqId, itemIdx) {
         if(qty > item.maxLimit) { showToast(`⚠️ Max ${item.maxLimit} ${item.unit}`); return; }
         item.status = "approved";
         item.approvedQty = qty;
+        item.approvedBy = currentAdminName;
+        item.approvedAt = new Date().toLocaleString();
         item.rejectionReason = null;
         await updateRequest(reqId, req.items);
     }
 }
 
 async function rejectItem(reqId, itemIdx) {
-    const reason = prompt("Enter rejection reason:", "Out of stock");
+    const reason = prompt(`Enter rejection reason (${currentAdminName}):`, "Out of stock");
     if(reason && reason.trim()) {
         const req = allRequests.find(r => r.firebaseId === reqId);
         if(req) {
             req.items[itemIdx].status = "rejected";
             req.items[itemIdx].rejectionReason = reason;
+            req.items[itemIdx].rejectedBy = currentAdminName;
+            req.items[itemIdx].rejectedAt = new Date().toLocaleString();
             req.items[itemIdx].approvedQty = 0;
             await updateRequest(reqId, req.items);
         }
@@ -754,7 +807,7 @@ async function rejectItem(reqId, itemIdx) {
 }
 
 async function approveAll(reqId) {
-    if(!confirm("Approve ALL items with max limits?")) return;
+    if(!confirm(`Approve ALL items as ${currentAdminName}?`)) return;
     const req = allRequests.find(r => r.firebaseId === reqId);
     if(req) {
         req.items.forEach((item, idx) => {
@@ -764,6 +817,8 @@ async function approveAll(reqId) {
             if(qty > item.maxLimit) qty = item.maxLimit;
             item.status = "approved";
             item.approvedQty = qty;
+            item.approvedBy = currentAdminName;
+            item.approvedAt = new Date().toLocaleString();
             item.rejectionReason = null;
         });
         await updateRequest(reqId, req.items);
@@ -771,13 +826,15 @@ async function approveAll(reqId) {
 }
 
 async function rejectAll(reqId) {
-    const reason = prompt("Rejection reason for ALL items:", "Not available");
+    const reason = prompt(`Rejection reason for ALL items (${currentAdminName}):`, "Not available");
     if(reason && reason.trim()) {
         const req = allRequests.find(r => r.firebaseId === reqId);
         if(req) {
             req.items.forEach(item => {
                 item.status = "rejected";
                 item.rejectionReason = reason;
+                item.rejectedBy = currentAdminName;
+                item.rejectedAt = new Date().toLocaleString();
                 item.approvedQty = 0;
             });
             await updateRequest(reqId, req.items);
@@ -786,7 +843,7 @@ async function rejectAll(reqId) {
 }
 
 async function resetOldRequests() {
-    if(confirm("Delete ALL approved/rejected requests? This cannot be undone!")) {
+    if(confirm(`Delete ALL approved/rejected requests? (${currentAdminName})`)) {
         let deleted = 0;
         for (const req of allRequests) {
             const status = getStatus(req);
@@ -802,14 +859,27 @@ async function resetOldRequests() {
 
 function exportToExcel() {
     if(allRequests.length === 0) { showToast("No data to export"); return; }
-    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Reason\n";
+    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Approved/Rejected By,Reason\n";
     allRequests.forEach(req => {
         req.items.forEach(item => {
-            let status = item.status, finalQty = "", reason = "";
-            if(item.status === "approved") { status = "Approved"; finalQty = item.approvedQty; }
-            else if(item.status === "rejected") { status = "Rejected"; finalQty = "0"; reason = item.rejectionReason || ""; }
-            else { status = "Pending"; finalQty = "Waiting"; }
-            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${reason}"\n`;
+            let status = item.status, finalQty = "", reason = "", actionBy = "";
+            if(item.status === "approved") { 
+                status = "Approved"; 
+                finalQty = item.approvedQty;
+                actionBy = item.approvedBy || "Unknown";
+            }
+            else if(item.status === "rejected") { 
+                status = "Rejected"; 
+                finalQty = "0"; 
+                reason = item.rejectionReason || "";
+                actionBy = item.rejectedBy || "Unknown";
+            }
+            else { 
+                status = "Pending"; 
+                finalQty = "Waiting";
+                actionBy = "-";
+            }
+            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${finalQty},"${actionBy}","${reason}"\n`;
         });
     });
     const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
@@ -841,13 +911,10 @@ function showTab(tab, btnElement) {
 
 function filterStatus(status) {
     currentStatusFilter = status;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     const btns = document.querySelectorAll('.tab-btn');
-    if(status === 'pending') btns[0]?.classList.add('active');
-    else if(status === 'approved') btns[1]?.classList.add('active');
-    else if(status === 'rejected') btns[2]?.classList.add('active');
-    else if(status === 'partial') btns[3]?.classList.add('active');
-    else if(status === 'all') btns[4]?.classList.add('active');
+    const statusMap = { pending: 0, approved: 1, rejected: 2, partial: 3, all: 4 };
+    const idx = statusMap[status] || 0;
+    btns[idx]?.classList.add('active');
     refreshData();
 }
 
@@ -857,7 +924,7 @@ function refreshData() {
     if(currentStatusFilter !== "all") requests = requests.filter(r => getStatus(r) === currentStatusFilter);
     requests.reverse();
     const container = document.getElementById("requestsContainer");
-    if(requests.length === 0) { container.innerHTML = `<div class="empty-state">📭 No requests found</div>`; return; }
+    if(requests.length === 0) { container.innerHTML = `<div class="empty-state">📭 No requests found</div>`; updateStats(); return; }
     container.innerHTML = "";
     requests.forEach(req => {
         const status = getStatus(req);
@@ -865,22 +932,60 @@ function refreshData() {
         const statusText = { pending: "Pending", approved: "Approved", rejected: "Rejected", partial: "Partial" }[status];
         const kitchenClass = getKitchenClass(req.section);
         let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Code</th><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
+        
         req.items.forEach((item, idx) => {
             if(item.status === "approved") {
-                itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}</td><td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><strong style="color:#27ae60;">${item.approvedQty}</strong></td><td class="action-buttons">✅ Approved</div><td class="status-badge status-approved">Approved</div></tr>`;
+                itemsHtml += `<tr style="background:#e8f5e9;">
+                    <td>${item.code}</td>
+                    <td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td>
+                    <td><span class="requested-qty">${item.originalQty}</span></td>
+                    <td>${item.unit}</td>
+                    <td><strong style="color:#27ae60;">${item.approvedQty}</strong></td>
+                    <td>✅ Approved</td>
+                    <td><span class="status-badge status-approved">Approved</span><br><small class="approved-by">by: ${escapeHtml(item.approvedBy || '?')}</small></td>
+                </tr>`;
             } else if(item.status === "rejected") {
-                itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}</td><td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><strong style="color:#e74c3c;">0</strong></td><td class="action-buttons">❌ Rejected</div><td class="status-badge status-rejected">${escapeHtml(item.rejectionReason || 'Rejected')}</div></tr>`;
+                itemsHtml += `<tr style="background:#fee2e2;">
+                    <td>${item.code}</td>
+                    <td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td>
+                    <td><span class="requested-qty">${item.originalQty}</span></td>
+                    <td>${item.unit}</td>
+                    <td><strong style="color:#e74c3c;">0</strong></td>
+                    <td>❌ Rejected</td>
+                    <td><span class="status-badge status-rejected">Rejected</span><br><small class="rejected-by">by: ${escapeHtml(item.rejectedBy || '?')}<br>${escapeHtml(item.rejectionReason || '')}</small></td>
+                </tr>`;
             } else {
-                itemsHtml += `<tr><td>${item.code}</td><td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></div><td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></div><td><span class="status-badge status-pending">Pending</span></div></tr>`;
+                itemsHtml += `<tr>
+                    <td>${item.code}</td>
+                    <td><strong>${escapeHtml(item.name)}</strong><br><small>Max: ${item.maxLimit}</small></td>
+                    <td><span class="requested-qty">${item.originalQty}</span></td>
+                    <td>${item.unit}</td>
+                    <td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td>
+                    <td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></td>
+                    <td><span class="status-badge status-pending">Pending</span></td>
+                </tr>`;
             }
         });
-        itemsHtml += `</tbody>}</div>`;
+        itemsHtml += `</tbody></table></div>`;
+        
         let actions = "";
         if(status === "pending") {
-            actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All</button><button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All</button></div>`;
+            actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All (${currentAdminName})</button><button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All (${currentAdminName})</button></div>`;
         }
-        container.innerHTML += `<div class="request-card"><div class="request-header"><div><span class="request-id">📄 ${req.requestId}</span><span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div><span class="status-badge ${statusClass}">${statusText}</span></div><div class="request-details"><div><div class="detail-label">👨‍🍳 Chef</div><div class="detail-value">${escapeHtml(req.chefName)}</div></div><div><div class="detail-label">📅 Submitted</div><div class="detail-value">${req.submittedAt}</div></div></div>${itemsHtml}${actions}</div>`;
+        container.innerHTML += `<div class="request-card">
+            <div class="request-header">
+                <div><span class="request-id">📄 ${req.requestId}</span><span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div>
+                <span class="status-badge ${statusClass}">${statusText}</span>
+            </div>
+            <div class="request-details">
+                <div><div class="detail-label">👨‍🍳 Chef</div><div class="detail-value">${escapeHtml(req.chefName)}</div></div>
+                <div><div class="detail-label">📅 Submitted</div><div class="detail-value">${req.submittedAt}</div></div>
+            </div>
+            ${itemsHtml}
+            ${actions}
+        </div>`;
     });
+    updateStats();
 }
 
 function escapeHtml(str) {
@@ -897,8 +1002,17 @@ function showToast(msg) {
 }
 
 window.onload = () => { 
-    document.getElementById("passwordModal").style.display = "flex"; 
-    document.getElementById("passwordInput").focus();
+    const savedAdmin = localStorage.getItem("adminName");
+    if(savedAdmin && ADMIN_CREDENTIALS[savedAdmin]) {
+        currentAdminName = savedAdmin;
+        document.getElementById("adminNameDisplay").innerText = savedAdmin;
+        document.getElementById("passwordModal").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+        setupRealtimeListener();
+        loadRequests();
+    } else {
+        document.getElementById("passwordModal").style.display = "flex";
+    }
 };
 </script>
 </body>
