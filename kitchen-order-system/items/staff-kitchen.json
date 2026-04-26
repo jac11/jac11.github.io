@@ -1,5 +1,5 @@
 {
-  "items": [
+  "categories": [
     {"code": "110029", "name": "Beef Shoulder Indian", "unit": "kg", "maxLimit": 12, "category": "Meat & Poultry"},
     {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "unit": "kg", "maxLimit": 15, "category": "Meat & Poultry"},
     {"code": "142002", "name": "Beans Frozen Americana", "unit": "10kg box", "maxLimit": 2, "category": "Frozen Vegetables"},
