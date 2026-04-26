@@ -1,271 +1,155 @@
-{
-  "categories": [
-    {
-      "category": "❄️ Frozen Fruits",
-      "icon": "❄️",
-      "items": [
-        {"code": "143004", "name": "Mix Berries Frozen", "unit": "kg", "maxLimit": 5},
-        {"code": "143006", "name": "Raspberry Frozen", "unit": "kg", "maxLimit": 4},
-        {"code": "143008", "name": "Red Currant Frozen", "unit": "kg", "maxLimit": 4}
-      ]
-    },
-    {
-      "category": "🧈 Butter & Fats",
-      "icon": "🧈",
-      "items": [
-        {"code": "151005", "name": "Butter Fern", "unit": "kg", "maxLimit": 8},
-        {"code": "151006", "name": "Butter Flechard French Block", "unit": "10kg box", "maxLimit": 2},
-        {"code": "151032", "name": "Butter Ghee Sheraton", "unit": "2kg tin", "maxLimit": 3},
-        {"code": "151008", "name": "Butter New Zealand Block", "unit": "25kg box", "maxLimit": 1},
-        {"code": "151038", "name": "Butter New Zealand Fontera Block", "unit": "25kg box", "maxLimit": 1},
-        {"code": "151013", "name": "Butter Vegetarian", "unit": "1.5kg tin", "maxLimit": 4},
-        {"code": "151018", "name": "Peanut Butter", "unit": "300g jar", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🥛 Milk & Cream",
-      "icon": "🥛",
-      "items": [
-        {"code": "152003", "name": "Milk Full Cream Juhayna", "unit": "L", "maxLimit": 15},
-        {"code": "152006", "name": "Milk Nestle Full Cream Sweetened Condensed", "unit": "370g pkt", "maxLimit": 10},
-        {"code": "152028", "name": "Milk Oat Alpro", "unit": "L", "maxLimit": 6},
-        {"code": "152039", "name": "Milk Powder Nestle", "unit": "1.75kg pkt", "maxLimit": 4},
-        {"code": "152012", "name": "Milk Skimmed Juhayna", "unit": "L", "maxLimit": 10},
-        {"code": "152023", "name": "Milk Soya Barista", "unit": "1L bottle", "maxLimit": 6},
-        {"code": "152018", "name": "Rich Cream Juhayna Whipping", "unit": "L", "maxLimit": 8},
-        {"code": "173072", "name": "Milk Almond Juhayna", "unit": "L", "maxLimit": 6},
-        {"code": "173014", "name": "Milk Coconut", "unit": "L", "maxLimit": 6},
-        {"code": "173015", "name": "Milk Coconut", "unit": "400ml tin", "maxLimit": 8},
-        {"code": "160055", "name": "Coconut Cream", "unit": "400g tin", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🧀 Cheese & Cream",
-      "icon": "🧀",
-      "items": [
-        {"code": "153068", "name": "Cheese Cream Milkana", "unit": "6.4kg gal", "maxLimit": 1},
-        {"code": "153069", "name": "Cheese Kiri Creamy", "unit": "350g jar", "maxLimit": 10}
-      ]
-    },
-    {
-      "category": "🍦 Ice Cream",
-      "icon": "🍦",
-      "items": [
-        {"code": "155002", "name": "Ice Cream Blackberry Movenpick", "unit": "5L gal", "maxLimit": 2},
-        {"code": "155006", "name": "Ice Cream Espresso Movenpick", "unit": "5L gal", "maxLimit": 2},
-        {"code": "155008", "name": "Ice Cream Lemon Movenpick", "unit": "5L gal", "maxLimit": 2},
-        {"code": "155009", "name": "Ice Cream Mango Movenpick", "unit": "5L gal", "maxLimit": 2},
-        {"code": "155013", "name": "Ice Cream Movenpick Vanilla", "unit": "5L gal", "maxLimit": 3},
-        {"code": "155023", "name": "Ice Cream Strawberry Movenpick", "unit": "5L gal", "maxLimit": 2}
-      ]
-    },
-    {
-      "category": "🥫 Fillings & Compotes",
-      "icon": "🥫",
-      "items": [
-        {"code": "172104", "name": "Blueberry Filling 70%", "unit": "3kg tin", "maxLimit": 2},
-        {"code": "172003", "name": "Cherry Red", "unit": "4.5kg box", "maxLimit": 2},
-        {"code": "172007", "name": "Compote Peach", "unit": "800g tin", "maxLimit": 5},
-        {"code": "172101", "name": "Compote Pineapple", "unit": "820g tin", "maxLimit": 5},
-        {"code": "172082", "name": "Dark Cherry Filling", "unit": "3kg tin", "maxLimit": 2},
-        {"code": "172025", "name": "Fruffi Apple Filling", "unit": "3.3kg tin", "maxLimit": 2},
-        {"code": "172049", "name": "Fruffi Mango Filling", "unit": "3.3kg tin", "maxLimit": 2},
-        {"code": "172103", "name": "Raspberry Filling 70%", "unit": "3kg tin", "maxLimit": 2},
-        {"code": "172081", "name": "Raspberry Filling Osterberg", "unit": "3kg tin", "maxLimit": 2}
-      ]
-    },
-    {
-      "category": "🍯 Honey, Jams & Syrups",
-      "icon": "🍯",
-      "items": [
-        {"code": "173025", "name": "Maple Syrup", "unit": "709ml bottle", "maxLimit": 4},
-        {"code": "173026", "name": "Pipping Chocolate", "unit": "4kg gal", "maxLimit": 1},
-        {"code": "173029", "name": "Pipping Golden Transparent", "unit": "4kg gal", "maxLimit": 1},
-        {"code": "173064", "name": "Topping Caramel", "unit": "950ml bottle", "maxLimit": 4},
-        {"code": "173063", "name": "Topping Chocolate", "unit": "950ml bottle", "maxLimit": 4},
-        {"code": "173065", "name": "Topping Strawberry", "unit": "950ml bottle", "maxLimit": 4}
-      ]
-    },
-    {
-      "category": "🎨 Colors & Flavorings",
-      "icon": "🎨",
-      "items": [
-        {"code": "174029", "name": "Color Blue Carmozien Powder", "unit": "kg", "maxLimit": 1},
-        {"code": "174036", "name": "Color Green Tartazin Powder", "unit": "kg", "maxLimit": 1},
-        {"code": "174004", "name": "Color Red Carmozien Powder", "unit": "kg", "maxLimit": 1},
-        {"code": "174005", "name": "Color Red Raspberry Powder", "unit": "kg", "maxLimit": 1},
-        {"code": "174007", "name": "Color Yellow Tartazin Powder", "unit": "kg", "maxLimit": 1},
-        {"code": "174025", "name": "Date Paste", "unit": "kg", "maxLimit": 5},
-        {"code": "174055", "name": "Malban", "unit": "kg", "maxLimit": 5},
-        {"code": "174020", "name": "Rose Water", "unit": "300ml bottle", "maxLimit": 6}
-      ]
-    },
-    {
-      "category": "🍞 Flours & Baking Mixes",
-      "icon": "🍞",
-      "items": [
-        {"code": "175007", "name": "Cacao Powder Dark", "unit": "25kg sac", "maxLimit": 1},
-        {"code": "175024", "name": "Carbonates", "unit": "kg", "maxLimit": 3},
-        {"code": "175026", "name": "Dry Yeast Dcl", "unit": "500g pkt", "maxLimit": 6},
-        {"code": "175036", "name": "Flour Tempura", "unit": "kg", "maxLimit": 5},
-        {"code": "175041", "name": "Gelatina Powder Knorr", "unit": "kg", "maxLimit": 4},
-        {"code": "175045", "name": "Ingato Gel", "unit": "4kg gal", "maxLimit": 1},
-        {"code": "175127", "name": "Baking Powder Dreem", "unit": "50 bags", "maxLimit": 3},
-        {"code": "175128", "name": "Vanilla Dreem", "unit": "100 bags", "maxLimit": 3},
-        {"code": "175133", "name": "Corn Flour Dreem", "unit": "240g pkt", "maxLimit": 8},
-        {"code": "175234", "name": "Vanilla Liquid", "unit": "30ml bottle", "maxLimit": 10},
-        {"code": "175248", "name": "Bread Crumb Imported Coarse", "unit": "kg", "maxLimit": 6},
-        {"code": "175282", "name": "Flour Gluten Free 5 Stagioni", "unit": "kg", "maxLimit": 6},
-        {"code": "175029", "name": "Flour Gluten Free Imported", "unit": "kg", "maxLimit": 6},
-        {"code": "175031", "name": "Flour Golden Kraftkorn", "unit": "10kg sac", "maxLimit": 2},
-        {"code": "175131", "name": "Flour Golden Moult", "unit": "10kg sac", "maxLimit": 2},
-        {"code": "175281", "name": "Flour White El Magd", "unit": "50kg sac", "maxLimit": 2}
-      ]
-    },
-    {
-      "category": "🍰 Cake & Pastry Mixes",
-      "icon": "🍰",
-      "items": [
-        {"code": "175119", "name": "Cake Plain", "unit": "kg", "maxLimit": 8},
-        {"code": "175120", "name": "Cake with Dates", "unit": "kg", "maxLimit": 6},
-        {"code": "175121", "name": "Cake With Malban", "unit": "kg", "maxLimit": 6},
-        {"code": "175123", "name": "BetiFore Mix", "unit": "kg", "maxLimit": 8},
-        {"code": "175124", "name": "Ghorieba", "unit": "kg", "maxLimit": 6},
-        {"code": "175125", "name": "Biscuit Plain", "unit": "kg", "maxLimit": 8},
-        {"code": "175043", "name": "Golash", "unit": "350g pkt", "maxLimit": 8},
-        {"code": "175059", "name": "Sambousk Cheese Mini", "unit": "kg", "maxLimit": 6},
-        {"code": "175072", "name": "Sweet Tartlet 7cm Round", "unit": "144pc box", "maxLimit": 2},
-        {"code": "175134", "name": "Konafa", "unit": "400g pkt", "maxLimit": 10}
-      ]
-    },
-    {
-      "category": "🍫 Chocolate",
-      "icon": "🍫",
-      "items": [
-        {"code": "171049", "name": "Chocolate Brown Block", "unit": "2.5kg block", "maxLimit": 3},
-        {"code": "171116", "name": "Chocolate Dark Belcolade Drops 60%", "unit": "5kg gal", "maxLimit": 2},
-        {"code": "171179", "name": "Chocolate Milk Cocoamore", "unit": "kg", "maxLimit": 5},
-        {"code": "171022", "name": "Chocolate White Block", "unit": "2.5kg block", "maxLimit": 3},
-        {"code": "171174", "name": "Chocolate White Veliche", "unit": "10kg box", "maxLimit": 1}
-      ]
-    },
-    {
-      "category": "🍬 Sugar & Sweeteners",
-      "icon": "🍬",
-      "items": [
-        {"code": "178026", "name": "Sugar Brown", "unit": "kg", "maxLimit": 8},
-        {"code": "178041", "name": "Sugar Brown Portion", "unit": "200 bags", "maxLimit": 2},
-        {"code": "178010", "name": "Sugar Crystal", "unit": "kg", "maxLimit": 10},
-        {"code": "178021", "name": "Sugar Powder", "unit": "kg", "maxLimit": 10}
-      ]
-    },
-    {
-      "category": "🍪 Snacks & Cereals",
-      "icon": "🍪",
-      "items": [
-        {"code": "160068", "name": "Marshmallow", "unit": "150g pkt", "maxLimit": 10},
-        {"code": "165006", "name": "Chipsy Pringles", "unit": "each", "maxLimit": 20},
-        {"code": "165024", "name": "Chocolate Stone", "unit": "130g pkt", "maxLimit": 15},
-        {"code": "165036", "name": "Garanula Strawberry & Raspberry", "unit": "350g pkt", "maxLimit": 10},
-        {"code": "165044", "name": "Pretzels Abu Auf", "unit": "125g pkt", "maxLimit": 15}
-      ]
-    },
-    {
-      "category": "🌾 Seeds & Grains",
-      "icon": "🌾",
-      "items": [
-        {"code": "161015", "name": "Chia Seeds", "unit": "kg", "maxLimit": 4},
-        {"code": "166010", "name": "Pumpkin Seeds Abu Auf", "unit": "450g pkt", "maxLimit": 8},
-        {"code": "166013", "name": "Quinoa Red Seeds Abu Auf", "unit": "400g pkt", "maxLimit": 6},
-        {"code": "166014", "name": "Quinoa White Seeds Abu Auf", "unit": "400g pkt", "maxLimit": 6}
-      ]
-    },
-    {
-      "category": "🍇 Dried Fruits",
-      "icon": "🍇",
-      "items": [
-        {"code": "172002", "name": "Dates Majdoul", "unit": "kg", "maxLimit": 6},
-        {"code": "172066", "name": "Dried Banana Slice", "unit": "kg", "maxLimit": 4},
-        {"code": "172096", "name": "Dry Fig", "unit": "300g pkt", "maxLimit": 6},
-        {"code": "172023", "name": "Dry Plums", "unit": "kg", "maxLimit": 5},
-        {"code": "176011", "name": "Dry Raisins", "unit": "kg", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🥜 Nuts",
-      "icon": "🥜",
-      "items": [
-        {"code": "176003", "name": "Almond Powder Abu Auf", "unit": "500g pkt", "maxLimit": 6},
-        {"code": "176001", "name": "Almond Slice Abu Auf", "unit": "500g pkt", "maxLimit": 6},
-        {"code": "176005", "name": "Almond Whole", "unit": "kg", "maxLimit": 6},
-        {"code": "176007", "name": "Cashew Abu Auf", "unit": "500g pkt", "maxLimit": 6},
-        {"code": "176010", "name": "Coconut Powder Fine", "unit": "kg", "maxLimit": 6},
-        {"code": "176012", "name": "Hazelnut Abu Auf", "unit": "500g pkt", "maxLimit": 5},
-        {"code": "176053", "name": "Hazelnut Skinless Roasted", "unit": "kg", "maxLimit": 4},
-        {"code": "176016", "name": "Mix Nuts Jar", "unit": "each", "maxLimit": 15},
-        {"code": "176028", "name": "Mixed Nuts Salted", "unit": "500g pkt", "maxLimit": 6},
-        {"code": "176018", "name": "Peanuts For Pastry", "unit": "500g pkt", "maxLimit": 8},
-        {"code": "176021", "name": "Pine Nut", "unit": "500g pkt", "maxLimit": 4},
-        {"code": "176036", "name": "Pistachio Powder", "unit": "500g pkt", "maxLimit": 4},
-        {"code": "176024", "name": "Pistachio Whole", "unit": "kg", "maxLimit": 5},
-        {"code": "176025", "name": "Walnuts", "unit": "kg", "maxLimit": 6},
-        {"code": "175066", "name": "Sunflower Seeds Abu Auf", "unit": "450g pkt", "maxLimit": 6}
-      ]
-    },
-    {
-      "category": "🧂 Spices & Seasonings",
-      "icon": "🧂",
-      "items": [
-        {"code": "161005", "name": "Black Pepper Corn", "unit": "kg", "maxLimit": 2},
-        {"code": "161006", "name": "Black Pepper Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161096", "name": "Black Seeds", "unit": "kg", "maxLimit": 2},
-        {"code": "161008", "name": "Black Sesame Seeds", "unit": "kg", "maxLimit": 3},
-        {"code": "161011", "name": "Cardamom Seeds", "unit": "kg", "maxLimit": 2},
-        {"code": "161019", "name": "Chili Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161024", "name": "Cinnamon Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161026", "name": "Cinnamon Sticks", "unit": "kg", "maxLimit": 3},
-        {"code": "161027", "name": "Cloves Seeds", "unit": "kg", "maxLimit": 1},
-        {"code": "161030", "name": "Cumin Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161031", "name": "Cumin Whole Seed", "unit": "kg", "maxLimit": 3},
-        {"code": "161049", "name": "Kharoub Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161051", "name": "Nutmeg Whole", "unit": "kg", "maxLimit": 1},
-        {"code": "161052", "name": "Onion Powder", "unit": "kg", "maxLimit": 4},
-        {"code": "161053", "name": "Oregano Dry", "unit": "kg", "maxLimit": 2},
-        {"code": "161081", "name": "Oregano Dry Abu Auf", "unit": "250g pkt", "maxLimit": 5},
-        {"code": "161092", "name": "Paprika Smoked Powder", "unit": "500g pkt", "maxLimit": 4},
-        {"code": "161071", "name": "Star Anis Seeds", "unit": "kg", "maxLimit": 2},
-        {"code": "161070", "name": "Sumacs Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161075", "name": "Turmeric Powder", "unit": "kg", "maxLimit": 3},
-        {"code": "161077", "name": "White Pepper Powder", "unit": "kg", "maxLimit": 2},
-        {"code": "161078", "name": "Salt Himalayan", "unit": "kg", "maxLimit": 3},
-        {"code": "161063", "name": "Salt Kitchen", "unit": "kg", "maxLimit": 10},
-        {"code": "161064", "name": "Salt Lemon", "unit": "kg", "maxLimit": 2},
-        {"code": "161135", "name": "Salt Sea Flakes Maldon", "unit": "each", "maxLimit": 5},
-        {"code": "161069", "name": "Salt Sea Imported", "unit": "kg", "maxLimit": 4},
-        {"code": "161067", "name": "Salt Table", "unit": "700g pkt", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🫒 Oils & Vinegars",
-      "icon": "🫒",
-      "items": [
-        {"code": "163005", "name": "Oil Corn", "unit": "L", "maxLimit": 15},
-        {"code": "163006", "name": "Oil Fried Mix", "unit": "L", "maxLimit": 15},
-        {"code": "163008", "name": "Oil Olive", "unit": "L", "maxLimit": 8},
-        {"code": "163100", "name": "Tahina Jar El Rashidi", "unit": "460g jar", "maxLimit": 6},
-        {"code": "167017", "name": "Vinegar Heinz White", "unit": "L", "maxLimit": 8}
-      ]
-    },
-    {
-      "category": "🥣 Custards & Creams",
-      "icon": "🥣",
-      "items": [
-        {"code": "173003", "name": "Cream Chantey Non Sugar", "unit": "10kg sac", "maxLimit": 2},
-        {"code": "173006", "name": "Cream Patisserie", "unit": "10kg sac", "maxLimit": 2},
-        {"code": "173007", "name": "Custard Powder Dream", "unit": "240g pkt", "maxLimit": 10},
-        {"code": "173050", "name": "Jelly Powder Apricot Dream", "unit": "kg", "maxLimit": 4},
-        {"code": "173049", "name": "Jelly Powder Strawberry Dream", "unit": "kg", "maxLimit": 4}
-      ]
-    }
-  ]
-}
+[
+  {"code": "143004", "name": "Mix Berries Frozen", "unit": "kg", "maxLimit": 5},
+  {"code": "143006", "name": "Raspberry Frozen", "unit": "kg", "maxLimit": 4},
+  {"code": "143008", "name": "Red Currant Frozen", "unit": "kg", "maxLimit": 4},
+  {"code": "151005", "name": "Butter Fern", "unit": "kg", "maxLimit": 8},
+  {"code": "151006", "name": "Butter Flechard French Block", "unit": "10kg box", "maxLimit": 2},
+  {"code": "151032", "name": "Butter Ghee Sheraton", "unit": "2kg tin", "maxLimit": 3},
+  {"code": "151008", "name": "Butter New Zealand Block", "unit": "25kg box", "maxLimit": 1},
+  {"code": "151038", "name": "Butter New Zealand Fontera Block", "unit": "25kg box", "maxLimit": 1},
+  {"code": "151013", "name": "Butter Vegetarian", "unit": "1.5kg tin", "maxLimit": 4},
+  {"code": "151018", "name": "Peanut Butter", "unit": "300g jar", "maxLimit": 8},
+  {"code": "152003", "name": "Milk Full Cream Juhayna", "unit": "L", "maxLimit": 15},
+  {"code": "152006", "name": "Milk Nestle Full Cream Sweetened Condensed", "unit": "370g pkt", "maxLimit": 10},
+  {"code": "152028", "name": "Milk Oat Alpro", "unit": "L", "maxLimit": 6},
+  {"code": "152039", "name": "Milk Powder Nestle", "unit": "1.75kg pkt", "maxLimit": 4},
+  {"code": "152012", "name": "Milk Skimmed Juhayna", "unit": "L", "maxLimit": 10},
+  {"code": "152023", "name": "Milk Soya Barista", "unit": "1L bottle", "maxLimit": 6},
+  {"code": "152018", "name": "Rich Cream Juhayna Whipping", "unit": "L", "maxLimit": 8},
+  {"code": "173072", "name": "Milk Almond Juhayna", "unit": "L", "maxLimit": 6},
+  {"code": "173014", "name": "Milk Coconut", "unit": "L", "maxLimit": 6},
+  {"code": "173015", "name": "Milk Coconut", "unit": "400ml tin", "maxLimit": 8},
+  {"code": "160055", "name": "Coconut Cream", "unit": "400g tin", "maxLimit": 8},
+  {"code": "153068", "name": "Cheese Cream Milkana", "unit": "6.4kg gal", "maxLimit": 1},
+  {"code": "153069", "name": "Cheese Kiri Creamy", "unit": "350g jar", "maxLimit": 10},
+  {"code": "155002", "name": "Ice Cream Blackberry Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "155006", "name": "Ice Cream Espresso Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "155008", "name": "Ice Cream Lemon Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "155009", "name": "Ice Cream Mango Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "155013", "name": "Ice Cream Movenpick Vanilla", "unit": "5L gal", "maxLimit": 3},
+  {"code": "155023", "name": "Ice Cream Strawberry Movenpick", "unit": "5L gal", "maxLimit": 2},
+  {"code": "172104", "name": "Blueberry Filling 70%", "unit": "3kg tin", "maxLimit": 2},
+  {"code": "172003", "name": "Cherry Red", "unit": "4.5kg box", "maxLimit": 2},
+  {"code": "172007", "name": "Compote Peach", "unit": "800g tin", "maxLimit": 5},
+  {"code": "172101", "name": "Compote Pineapple", "unit": "820g tin", "maxLimit": 5},
+  {"code": "172082", "name": "Dark Cherry Filling", "unit": "3kg tin", "maxLimit": 2},
+  {"code": "172025", "name": "Fruffi Apple Filling", "unit": "3.3kg tin", "maxLimit": 2},
+  {"code": "172049", "name": "Fruffi Mango Filling", "unit": "3.3kg tin", "maxLimit": 2},
+  {"code": "172103", "name": "Raspberry Filling 70%", "unit": "3kg tin", "maxLimit": 2},
+  {"code": "172081", "name": "Raspberry Filling Osterberg", "unit": "3kg tin", "maxLimit": 2},
+  {"code": "173025", "name": "Maple Syrup", "unit": "709ml bottle", "maxLimit": 4},
+  {"code": "173026", "name": "Pipping Chocolate", "unit": "4kg gal", "maxLimit": 1},
+  {"code": "173029", "name": "Pipping Golden Transparent", "unit": "4kg gal", "maxLimit": 1},
+  {"code": "173064", "name": "Topping Caramel", "unit": "950ml bottle", "maxLimit": 4},
+  {"code": "173063", "name": "Topping Chocolate", "unit": "950ml bottle", "maxLimit": 4},
+  {"code": "173065", "name": "Topping Strawberry", "unit": "950ml bottle", "maxLimit": 4},
+  {"code": "174029", "name": "Color Blue Carmozien Powder", "unit": "kg", "maxLimit": 1},
+  {"code": "174036", "name": "Color Green Tartazin Powder", "unit": "kg", "maxLimit": 1},
+  {"code": "174004", "name": "Color Red Carmozien Powder", "unit": "kg", "maxLimit": 1},
+  {"code": "174005", "name": "Color Red Raspberry Powder", "unit": "kg", "maxLimit": 1},
+  {"code": "174007", "name": "Color Yellow Tartazin Powder", "unit": "kg", "maxLimit": 1},
+  {"code": "174025", "name": "Date Paste", "unit": "kg", "maxLimit": 5},
+  {"code": "174055", "name": "Malban", "unit": "kg", "maxLimit": 5},
+  {"code": "174020", "name": "Rose Water", "unit": "300ml bottle", "maxLimit": 6},
+  {"code": "175007", "name": "Cacao Powder Dark", "unit": "25kg sac", "maxLimit": 1},
+  {"code": "175024", "name": "Carbonates", "unit": "kg", "maxLimit": 3},
+  {"code": "175026", "name": "Dry Yeast Dcl", "unit": "500g pkt", "maxLimit": 6},
+  {"code": "175036", "name": "Flour Tempura", "unit": "kg", "maxLimit": 5},
+  {"code": "175041", "name": "Gelatina Powder Knorr", "unit": "kg", "maxLimit": 4},
+  {"code": "175045", "name": "Ingato Gel", "unit": "4kg gal", "maxLimit": 1},
+  {"code": "175127", "name": "Baking Powder Dreem", "unit": "50 bags", "maxLimit": 3},
+  {"code": "175128", "name": "Vanilla Dreem", "unit": "100 bags", "maxLimit": 3},
+  {"code": "175133", "name": "Corn Flour Dreem", "unit": "240g pkt", "maxLimit": 8},
+  {"code": "175234", "name": "Vanilla Liquid", "unit": "30ml bottle", "maxLimit": 10},
+  {"code": "175248", "name": "Bread Crumb Imported Coarse", "unit": "kg", "maxLimit": 6},
+  {"code": "175282", "name": "Flour Gluten Free 5 Stagioni", "unit": "kg", "maxLimit": 6},
+  {"code": "175029", "name": "Flour Gluten Free Imported", "unit": "kg", "maxLimit": 6},
+  {"code": "175031", "name": "Flour Golden Kraftkorn", "unit": "10kg sac", "maxLimit": 2},
+  {"code": "175131", "name": "Flour Golden Moult", "unit": "10kg sac", "maxLimit": 2},
+  {"code": "175281", "name": "Flour White El Magd", "unit": "50kg sac", "maxLimit": 2},
+  {"code": "175119", "name": "Cake Plain", "unit": "kg", "maxLimit": 8},
+  {"code": "175120", "name": "Cake with Dates", "unit": "kg", "maxLimit": 6},
+  {"code": "175121", "name": "Cake With Malban", "unit": "kg", "maxLimit": 6},
+  {"code": "175123", "name": "BetiFore Mix", "unit": "kg", "maxLimit": 8},
+  {"code": "175124", "name": "Ghorieba", "unit": "kg", "maxLimit": 6},
+  {"code": "175125", "name": "Biscuit Plain", "unit": "kg", "maxLimit": 8},
+  {"code": "175043", "name": "Golash", "unit": "350g pkt", "maxLimit": 8},
+  {"code": "175059", "name": "Sambousk Cheese Mini", "unit": "kg", "maxLimit": 6},
+  {"code": "175072", "name": "Sweet Tartlet 7cm Round", "unit": "144pc box", "maxLimit": 2},
+  {"code": "175134", "name": "Konafa", "unit": "400g pkt", "maxLimit": 10},
+  {"code": "171049", "name": "Chocolate Brown Block", "unit": "2.5kg block", "maxLimit": 3},
+  {"code": "171116", "name": "Chocolate Dark Belcolade Drops 60%", "unit": "5kg gal", "maxLimit": 2},
+  {"code": "171179", "name": "Chocolate Milk Cocoamore", "unit": "kg", "maxLimit": 5},
+  {"code": "171022", "name": "Chocolate White Block", "unit": "2.5kg block", "maxLimit": 3},
+  {"code": "171174", "name": "Chocolate White Veliche", "unit": "10kg box", "maxLimit": 1},
+  {"code": "178026", "name": "Sugar Brown", "unit": "kg", "maxLimit": 8},
+  {"code": "178041", "name": "Sugar Brown Portion", "unit": "200 bags", "maxLimit": 2},
+  {"code": "178010", "name": "Sugar Crystal", "unit": "kg", "maxLimit": 10},
+  {"code": "178021", "name": "Sugar Powder", "unit": "kg", "maxLimit": 10},
+  {"code": "160068", "name": "Marshmallow", "unit": "150g pkt", "maxLimit": 10},
+  {"code": "165006", "name": "Chipsy Pringles", "unit": "each", "maxLimit": 20},
+  {"code": "165024", "name": "Chocolate Stone", "unit": "130g pkt", "maxLimit": 15},
+  {"code": "165036", "name": "Garanula Strawberry & Raspberry", "unit": "350g pkt", "maxLimit": 10},
+  {"code": "165044", "name": "Pretzels Abu Auf", "unit": "125g pkt", "maxLimit": 15},
+  {"code": "161015", "name": "Chia Seeds", "unit": "kg", "maxLimit": 4},
+  {"code": "166010", "name": "Pumpkin Seeds Abu Auf", "unit": "450g pkt", "maxLimit": 8},
+  {"code": "166013", "name": "Quinoa Red Seeds Abu Auf", "unit": "400g pkt", "maxLimit": 6},
+  {"code": "166014", "name": "Quinoa White Seeds Abu Auf", "unit": "400g pkt", "maxLimit": 6},
+  {"code": "172002", "name": "Dates Majdoul", "unit": "kg", "maxLimit": 6},
+  {"code": "172066", "name": "Dried Banana Slice", "unit": "kg", "maxLimit": 4},
+  {"code": "172096", "name": "Dry Fig", "unit": "300g pkt", "maxLimit": 6},
+  {"code": "172023", "name": "Dry Plums", "unit": "kg", "maxLimit": 5},
+  {"code": "176011", "name": "Dry Raisins", "unit": "kg", "maxLimit": 8},
+  {"code": "176003", "name": "Almond Powder Abu Auf", "unit": "500g pkt", "maxLimit": 6},
+  {"code": "176001", "name": "Almond Slice Abu Auf", "unit": "500g pkt", "maxLimit": 6},
+  {"code": "176005", "name": "Almond Whole", "unit": "kg", "maxLimit": 6},
+  {"code": "176007", "name": "Cashew Abu Auf", "unit": "500g pkt", "maxLimit": 6},
+  {"code": "176010", "name": "Coconut Powder Fine", "unit": "kg", "maxLimit": 6},
+  {"code": "176012", "name": "Hazelnut Abu Auf", "unit": "500g pkt", "maxLimit": 5},
+  {"code": "176053", "name": "Hazelnut Skinless Roasted", "unit": "kg", "maxLimit": 4},
+  {"code": "176016", "name": "Mix Nuts Jar", "unit": "each", "maxLimit": 15},
+  {"code": "176028", "name": "Mixed Nuts Salted", "unit": "500g pkt", "maxLimit": 6},
+  {"code": "176018", "name": "Peanuts For Pastry", "unit": "500g pkt", "maxLimit": 8},
+  {"code": "176021", "name": "Pine Nut", "unit": "500g pkt", "maxLimit": 4},
+  {"code": "176036", "name": "Pistachio Powder", "unit": "500g pkt", "maxLimit": 4},
+  {"code": "176024", "name": "Pistachio Whole", "unit": "kg", "maxLimit": 5},
+  {"code": "176025", "name": "Walnuts", "unit": "kg", "maxLimit": 6},
+  {"code": "175066", "name": "Sunflower Seeds Abu Auf", "unit": "450g pkt", "maxLimit": 6},
+  {"code": "161005", "name": "Black Pepper Corn", "unit": "kg", "maxLimit": 2},
+  {"code": "161006", "name": "Black Pepper Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161096", "name": "Black Seeds", "unit": "kg", "maxLimit": 2},
+  {"code": "161008", "name": "Black Sesame Seeds", "unit": "kg", "maxLimit": 3},
+  {"code": "161011", "name": "Cardamom Seeds", "unit": "kg", "maxLimit": 2},
+  {"code": "161019", "name": "Chili Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161024", "name": "Cinnamon Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161026", "name": "Cinnamon Sticks", "unit": "kg", "maxLimit": 3},
+  {"code": "161027", "name": "Cloves Seeds", "unit": "kg", "maxLimit": 1},
+  {"code": "161030", "name": "Cumin Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161031", "name": "Cumin Whole Seed", "unit": "kg", "maxLimit": 3},
+  {"code": "161049", "name": "Kharoub Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161051", "name": "Nutmeg Whole", "unit": "kg", "maxLimit": 1},
+  {"code": "161052", "name": "Onion Powder", "unit": "kg", "maxLimit": 4},
+  {"code": "161053", "name": "Oregano Dry", "unit": "kg", "maxLimit": 2},
+  {"code": "161081", "name": "Oregano Dry Abu Auf", "unit": "250g pkt", "maxLimit": 5},
+  {"code": "161092", "name": "Paprika Smoked Powder", "unit": "500g pkt", "maxLimit": 4},
+  {"code": "161071", "name": "Star Anis Seeds", "unit": "kg", "maxLimit": 2},
+  {"code": "161070", "name": "Sumacs Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161075", "name": "Turmeric Powder", "unit": "kg", "maxLimit": 3},
+  {"code": "161077", "name": "White Pepper Powder", "unit": "kg", "maxLimit": 2},
+  {"code": "161078", "name": "Salt Himalayan", "unit": "kg", "maxLimit": 3},
+  {"code": "161063", "name": "Salt Kitchen", "unit": "kg", "maxLimit": 10},
+  {"code": "161064", "name": "Salt Lemon", "unit": "kg", "maxLimit": 2},
+  {"code": "161135", "name": "Salt Sea Flakes Maldon", "unit": "each", "maxLimit": 5},
+  {"code": "161069", "name": "Salt Sea Imported", "unit": "kg", "maxLimit": 4},
+  {"code": "161067", "name": "Salt Table", "unit": "700g pkt", "maxLimit": 8},
+  {"code": "163005", "name": "Oil Corn", "unit": "L", "maxLimit": 15},
+  {"code": "163006", "name": "Oil Fried Mix", "unit": "L", "maxLimit": 15},
+  {"code": "163008", "name": "Oil Olive", "unit": "L", "maxLimit": 8},
+  {"code": "163100", "name": "Tahina Jar El Rashidi", "unit": "460g jar", "maxLimit": 6},
+  {"code": "167017", "name": "Vinegar Heinz White", "unit": "L", "maxLimit": 8},
+  {"code": "173003", "name": "Cream Chantey Non Sugar", "unit": "10kg sac", "maxLimit": 2},
+  {"code": "173006", "name": "Cream Patisserie", "unit": "10kg sac", "maxLimit": 2},
+  {"code": "173007", "name": "Custard Powder Dream", "unit": "240g pkt", "maxLimit": 10},
+  {"code": "173050", "name": "Jelly Powder Apricot Dream", "unit": "kg", "maxLimit": 4},
+  {"code": "173049", "name": "Jelly Powder Strawberry Dream", "unit": "kg", "maxLimit": 4}
+]
