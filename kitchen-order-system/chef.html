@@ -508,25 +508,45 @@ input:focus {
     background: #7f8c8d !important;
 }
 
+/* Category sections */
+.category-section {
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.category-header {
+    background: #f8f9fa;
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #1e3c72;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.category-items {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .items-scroll-container {
-    max-height: 500px;
+    max-height: 600px;
     overflow-y: auto;
     border: 1px solid #eef2f6;
     border-radius: 12px;
     background: #fafcfc;
 }
 
-.items-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px;
-}
-
 .item-card {
     background: white;
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: 10px;
+    padding: 10px 12px;
     border: 1px solid #e9ecef;
     transition: background 0.15s ease;
 }
@@ -640,15 +660,6 @@ input:focus {
     transform: scale(0.96);
 }
 
-.scroll-info {
-    text-align: center;
-    font-size: 11px;
-    color: #5a6e8a;
-    padding: 8px;
-    background: #f1f5f9;
-    border-radius: 0 0 12px 12px;
-}
-
 @media screen and (min-width: 769px) {
     .button-group {
         flex-direction: row;
@@ -724,7 +735,7 @@ const kitchenPasswords = {
     "Staff Kitchen": "staff123"
 };
 
-// CORRECT FILE MAPPING - matches your actual files
+// File mapping
 const kitchenToFileMap = {
     "Hot Kitchen": "hot-kitchen.json",
     "Cold Kitchen": "cold-kitchen.json",
@@ -747,7 +758,7 @@ let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "B
 let selectedQuantities = {};
 let addedItemsStatus = {};
 
-// ============ LOAD ITEMS FROM INDIVIDUAL JSON FILES ============
+// ============ LOAD ITEMS FROM JSON WITH CATEGORY STRUCTURE ============
 async function loadItemsForKitchen(kitchen, forceRefresh = false) {
     if (kitchenItemsCache[kitchen] && !forceRefresh) {
         console.log(`Using cached items for ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
@@ -773,35 +784,58 @@ async function loadItemsForKitchen(kitchen, forceRefresh = false) {
         if (!response.ok) {
             console.warn(`File not found: ${jsonPath} - HTTP ${response.status}`);
             kitchenItemsCache[kitchen] = [];
-            showToast(`⚠️ No items file for ${kitchen}. Create items/${fileName}`);
+            showToast(`⚠️ No items file for ${kitchen}`);
             return [];
         }
         
         const data = await response.json();
         
-        // Support both formats: direct array or { items: [...] }
-        let itemsArray = Array.isArray(data) ? data : (data.items || []);
+        // Handle the category-based structure
+        let itemsArray = [];
         
-        if (!itemsArray.length) {
-            console.warn(`No items found in ${jsonPath} - file may be empty`);
+        if (data.categories && Array.isArray(data.categories)) {
+            // New format with categories
+            for (const category of data.categories) {
+                if (category.items && Array.isArray(category.items)) {
+                    for (const item of category.items) {
+                        itemsArray.push({
+                            ...item,
+                            category: category.name,
+                            categoryIcon: category.icon || '📦'
+                        });
+                    }
+                }
+            }
+            console.log(`✅ Extracted ${itemsArray.length} items from categories for ${kitchen}`);
+        } else if (Array.isArray(data)) {
+            // Simple array format
+            itemsArray = data;
+        } else if (data.items && Array.isArray(data.items)) {
+            // Object with items array
+            itemsArray = data.items;
+        } else {
+            console.warn(`Unknown format in ${jsonPath}`);
+            itemsArray = [];
         }
         
-        // Add section property to each item if missing
-        itemsArray = itemsArray.map(item => ({
-            ...item,
-            section: item.section || kitchen
-        }));
+        // Filter items for this specific kitchen if section is specified
+        const filteredItems = itemsArray.filter(item => {
+            if (item.section) {
+                return item.section === kitchen;
+            }
+            return true;
+        });
         
-        kitchenItemsCache[kitchen] = itemsArray;
-        console.log(`✅ Loaded ${itemsArray.length} items for ${kitchen} from ${jsonPath}`);
-        showToast(`✅ ${kitchen}: ${itemsArray.length} items loaded`);
+        kitchenItemsCache[kitchen] = filteredItems;
+        console.log(`✅ Loaded ${filteredItems.length} items for ${kitchen} from ${jsonPath}`);
+        showToast(`✅ ${kitchen}: ${filteredItems.length} items loaded`);
         
-        return itemsArray;
+        return filteredItems;
         
     } catch (error) {
         console.error(`Error loading ${jsonPath}:`, error);
         kitchenItemsCache[kitchen] = [];
-        showToast(`❌ Failed to load ${kitchen} items. Check items/${fileName}`);
+        showToast(`❌ Failed to load ${kitchen} items`);
         return [];
     }
 }
@@ -967,56 +1001,79 @@ async function renderItemsList(kitchen) {
         return;
     }
     
-    // Load items for this specific kitchen from its JSON file
     let items = await loadItemsForKitchen(kitchen, false);
     
     if (!items || items.length === 0) {
-        const fileName = kitchenToFileMap[kitchen];
-        container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen}<br><br>
-        <strong>Expected file:</strong> items/${fileName}<br>
-        <small>Check that the file exists and has the correct format</small></div>`;
+        container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen}<br><br>Check that items/${kitchenToFileMap[kitchen]} exists and has the correct format with "categories" array.</div>`;
         return;
     }
     
     if (!selectedQuantities[kitchen]) selectedQuantities[kitchen] = {};
     if (!addedItemsStatus[kitchen]) addedItemsStatus[kitchen] = {};
     
-    const sortedItems = [...items].sort((a,b) => (a.name || "").localeCompare(b.name || ""));
-    let html = `<div class="items-scroll-container"><div class="items-grid">`;
+    // Group items by category
+    const groupedItems = {};
+    for (const item of items) {
+        const category = item.category || "Uncategorized";
+        if (!groupedItems[category]) {
+            groupedItems[category] = [];
+        }
+        groupedItems[category].push(item);
+    }
     
-    sortedItems.forEach(item => {
-        const currentQty = selectedQuantities[kitchen][item.code] || 0;
-        const isSelected = addedItemsStatus[kitchen][item.code] || false;
-        const selectedClass = isSelected ? 'selected' : '';
-        const safeCode = (item.code || "").replace(/[^a-zA-Z0-9]/g, '_');
-        const itemName = item.name || "Unknown";
-        const itemUnit = item.unit || "pcs";
-        const maxLimit = item.maxLimit || 99;
-        
+    let html = `<div class="items-scroll-container">`;
+    
+    for (const [category, categoryItems] of Object.entries(groupedItems)) {
+        const categoryIcon = categoryItems[0]?.categoryIcon || "📦";
         html += `
-            <div class="item-card ${selectedClass}" data-code="${item.code}" id="itemCard_${kitchenId}_${safeCode}">
-                <div class="item-main-row">
-                    <div class="item-info">
-                        <div class="item-name">${escapeHtml(itemName)}</div>
-                        <div class="item-code">${item.code || "N/A"}</div>
-                    </div>
-                    <div class="item-meta">
-                        <span class="item-unit">${itemUnit}</span>
-                        <div class="item-max">max ${maxLimit}</div>
-                    </div>
-                    <div class="item-actions">
-                        <div class="qty-picker">
-                            <button class="qty-btn" data-step="-0.5" data-code="${item.code}" data-max="${maxLimit}">−</button>
-                            <span class="qty-value" id="qtySpan_${kitchenId}_${safeCode}">${currentQty.toFixed(1)}</span>
-                            <button class="qty-btn" data-step="0.5" data-code="${item.code}" data-max="${maxLimit}">+</button>
+            <div class="category-section">
+                <div class="category-header">
+                    <span>${categoryIcon}</span>
+                    <span>${category}</span>
+                    <span style="margin-left:auto; font-size:11px; color:#666;">${categoryItems.length} items</span>
+                </div>
+                <div class="category-items">
+        `;
+        
+        const sortedItems = [...categoryItems].sort((a,b) => (a.name || "").localeCompare(b.name || ""));
+        
+        for (const item of sortedItems) {
+            const currentQty = selectedQuantities[kitchen][item.code] || 0;
+            const isSelected = addedItemsStatus[kitchen][item.code] || false;
+            const selectedClass = isSelected ? 'selected' : '';
+            const safeCode = (item.code || "").replace(/[^a-zA-Z0-9]/g, '_');
+            const itemName = item.name || "Unknown";
+            const itemUnit = item.unit || "pcs";
+            const maxLimit = item.maxLimit || 99;
+            
+            html += `
+                <div class="item-card ${selectedClass}" id="itemCard_${kitchenId}_${safeCode}">
+                    <div class="item-main-row">
+                        <div class="item-info">
+                            <div class="item-name">${escapeHtml(itemName)}</div>
+                            <div class="item-code">${item.code || "N/A"}</div>
                         </div>
-                        <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(itemName)}" data-unit="${itemUnit}" data-max="${maxLimit}">Add</button>
+                        <div class="item-meta">
+                            <span class="item-unit">${itemUnit}</span>
+                            <div class="item-max">max ${maxLimit}</div>
+                        </div>
+                        <div class="item-actions">
+                            <div class="qty-picker">
+                                <button class="qty-btn" data-step="-0.5" data-code="${item.code}" data-max="${maxLimit}">−</button>
+                                <span class="qty-value" id="qtySpan_${kitchenId}_${safeCode}">${currentQty.toFixed(1)}</span>
+                                <button class="qty-btn" data-step="0.5" data-code="${item.code}" data-max="${maxLimit}">+</button>
+                            </div>
+                            <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(itemName)}" data-unit="${itemUnit}" data-max="${maxLimit}">Add</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-    });
-    html += `</div><div class="scroll-info">📜 ${sortedItems.length} items • Use +/− (0.5 steps) → Add</div></div>`;
+            `;
+        }
+        
+        html += `</div></div>`;
+    }
+    
+    html += `<div style="text-align:center; font-size:11px; color:#5a6e8a; padding:8px; background:#f1f5f9;">📜 ${items.length} total items • Use +/− (0.5 steps) → Add</div></div>`;
     container.innerHTML = html;
     
     container.querySelectorAll('.qty-btn').forEach(btn => {
@@ -1109,7 +1166,7 @@ function renderCart(kitchen) {
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if(desktopBody) {
         if(cart.length === 0) {
-            desktopBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No items</div>';
+            desktopBody.innerHTML = '<td><td colspan="6" style="text-align:center;">No items</div>';
         } else {
             desktopBody.innerHTML = "";
             cart.forEach((item, idx) => {
@@ -1117,10 +1174,10 @@ function renderCart(kitchen) {
                     <tr>
                         <td>${item.code}</td>
                         <td><strong>${escapeHtml(item.name)}</strong></td>
-                        <td>${item.qty.toFixed(1)}</div>
-                        <td>${item.unit}</div>
-                        <td>${item.qty.toFixed(1)}/${item.maxLimit}</div>
-                        <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">Remove</button></div>
+                        <td>${item.qty.toFixed(1)}</td>
+                        <td>${item.unit}</td>
+                        <td>${item.qty.toFixed(1)}/${item.maxLimit}</td>
+                        <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">Remove</button></td>
                     </tr>
                 `;
             });
