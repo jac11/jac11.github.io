@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -723,11 +724,11 @@ const kitchenPasswords = {
     "Staff Kitchen": "staff123"
 };
 
-// CORRECTED FILE MAPPING - based on actual files in your /items/ folder
+// CORRECT FILE MAPPING - matches your actual files
 const kitchenToFileMap = {
     "Hot Kitchen": "hot-kitchen.json",
     "Cold Kitchen": "cold-kitchen.json",
-    "Pastry / Bakery": "pastry.json",        // You may need to create this file
+    "Pastry / Bakery": "pastry.json",
     "Butchery": "butchery.json",
     "Beach House": "beach-house.json",
     "Nihon Kitchen": "nihon-kitchen.json",
@@ -746,7 +747,7 @@ let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "B
 let selectedQuantities = {};
 let addedItemsStatus = {};
 
-// ============ LOAD ITEMS FROM INDIVIDUAL JSON FILES IN /items/ FOLDER ============
+// ============ LOAD ITEMS FROM INDIVIDUAL JSON FILES ============
 async function loadItemsForKitchen(kitchen, forceRefresh = false) {
     if (kitchenItemsCache[kitchen] && !forceRefresh) {
         console.log(`Using cached items for ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
@@ -771,7 +772,6 @@ async function loadItemsForKitchen(kitchen, forceRefresh = false) {
         
         if (!response.ok) {
             console.warn(`File not found: ${jsonPath} - HTTP ${response.status}`);
-            // Return empty array but don't throw - show helpful message
             kitchenItemsCache[kitchen] = [];
             showToast(`⚠️ No items file for ${kitchen}. Create items/${fileName}`);
             return [];
@@ -974,10 +974,7 @@ async function renderItemsList(kitchen) {
         const fileName = kitchenToFileMap[kitchen];
         container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen}<br><br>
         <strong>Expected file:</strong> items/${fileName}<br>
-        <small>Check that the file exists and has the correct format:
-        <pre style="text-align:left; margin-top:10px;">[{"code":"001","name":"Item Name","unit":"kg","maxLimit":10}]</pre>
-        Or: {"items": [{"code":"001","name":"Item Name","unit":"kg","maxLimit":10}]}
-        </small></div>`;
+        <small>Check that the file exists and has the correct format</small></div>`;
         return;
     }
     
@@ -1267,11 +1264,11 @@ function loadMyRequests(kitchen) {
             else if(item.status === "rejected") resultText = item.rejectionReason || "Rejected";
             else resultText = "Waiting...";
             itemsHtml += `<tr>
-                <td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></div>
-                <td>${item.originalQty.toFixed(1)} ${item.unit}</div>
-                <td>${item.status === "approved" ? "✅" : item.status === "rejected" ? "❌" : "⏳"} ${item.status === "approved" ? "Approved" : item.status === "rejected" ? "Rejected" : "Pending"}</div>
-                <td>${resultText}</div>
-            <tr>`;
+                <td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td>
+                <td>${item.originalQty.toFixed(1)} ${item.unit}</td>
+                <td>${item.status === "approved" ? "✅" : item.status === "rejected" ? "❌" : "⏳"} ${item.status === "approved" ? "Approved" : item.status === "rejected" ? "Rejected" : "Pending"}</td>
+                <td>${resultText}</td>
+            </tr>`;
         });
         itemsHtml += `</tbody></table>`;
         
