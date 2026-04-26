@@ -20,7 +20,6 @@ body {
     background: #f5f7fb;
 }
 
-/* Header */
 .header {
     background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
@@ -124,7 +123,6 @@ body {
     background: #dc2626;
 }
 
-/* Stats Cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -161,7 +159,6 @@ body {
     font-weight: 500;
 }
 
-/* Filters */
 .kitchen-filters {
     display: flex;
     gap: 8px;
@@ -193,7 +190,6 @@ body {
     color: white;
 }
 
-/* Tabs */
 .tabs {
     display: flex;
     gap: 8px;
@@ -218,7 +214,6 @@ body {
     color: white;
 }
 
-/* Request Card */
 .request-card {
     background: white;
     border-radius: 20px;
@@ -272,7 +267,6 @@ body {
 .status-rejected { background: #fee2e2; color: #dc2626; }
 .status-partial { background: #f3e8ff; color: #9333ea; }
 
-/* Request Details */
 .request-details {
     display: flex;
     gap: 20px;
@@ -304,7 +298,6 @@ body {
     color: #1e293b;
 }
 
-/* Items Table - Mobile Optimized */
 .items-wrapper {
     overflow-x: auto;
     padding: 0 16px 16px 16px;
@@ -313,7 +306,7 @@ body {
 .items-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 550px;
+    min-width: 600px;
 }
 
 .items-table th {
@@ -328,7 +321,7 @@ body {
 .items-table td {
     padding: 14px 8px;
     border-bottom: 1px solid #f1f5f9;
-    vertical-align: top;
+    vertical-align: middle;
 }
 
 .item-name-cell {
@@ -367,9 +360,14 @@ body {
     border-color: #f97316;
 }
 
+.action-status-cell {
+    min-width: 160px;
+}
+
 .action-buttons {
     display: flex;
     gap: 6px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
 }
 
@@ -405,11 +403,6 @@ body {
     background: #b91c1c;
 }
 
-/* Status Cell */
-.status-cell {
-    min-width: 100px;
-}
-
 .status-approved-cell {
     background: #dcfce7;
     padding: 4px 10px;
@@ -443,7 +436,8 @@ body {
 .admin-info-text {
     font-size: 0.65rem;
     color: #64748b;
-    margin-top: 4px;
+    margin-top: 6px;
+    line-height: 1.4;
 }
 
 .admin-name-text {
@@ -451,7 +445,6 @@ body {
     color: #f97316;
 }
 
-/* Request Actions */
 .request-actions {
     display: flex;
     gap: 12px;
@@ -538,7 +531,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Modal */
 .modal {
     display: flex;
     position: fixed;
@@ -635,98 +627,68 @@ body {
     margin-top: 10px;
 }
 
-/* Mobile Optimizations */
 @media (max-width: 768px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
-    
     .stat-card {
         padding: 12px;
     }
-    
     .stat-number {
         font-size: 1.5rem;
     }
-    
     .kitchen-filters {
         overflow-x: auto;
         flex-wrap: nowrap;
         padding: 10px 14px;
         gap: 6px;
     }
-    
     .kitchen-filter-btn {
         white-space: nowrap;
         padding: 5px 14px;
         font-size: 11px;
     }
-    
     .tabs {
         overflow-x: auto;
         flex-wrap: nowrap;
         gap: 6px;
     }
-    
     .tab-btn {
         white-space: nowrap;
         padding: 6px 16px;
         font-size: 12px;
     }
-    
     .request-header {
         padding: 12px 16px;
     }
-    
-    .request-id {
-        font-size: 0.85rem;
-    }
-    
     .request-details {
         padding: 10px 16px;
         gap: 12px;
     }
-    
     .items-wrapper {
         padding: 0 12px 12px 12px;
     }
-    
     .items-table th, .items-table td {
         padding: 10px 6px;
         font-size: 0.7rem;
     }
-    
     .approval-input {
         width: 65px;
         padding: 6px 6px;
         font-size: 0.7rem;
     }
-    
     .btn-approve, .btn-reject {
         padding: 4px 10px;
         font-size: 0.65rem;
     }
-    
     .request-actions {
         padding: 12px 16px;
     }
-    
-    .btn-approve-all, .btn-reject-all {
-        padding: 8px;
-        font-size: 0.7rem;
-    }
-    
     .header-buttons {
         order: 3;
         width: 100%;
         justify-content: center;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .stats-grid {
-        gap: 16px;
     }
 }
 
@@ -1061,7 +1023,8 @@ function refreshData() {
         const statusClass = `status-${status}`;
         const statusText = { pending: "Pending", approved: "Approved", rejected: "Rejected", partial: "Partial" }[status];
         const kitchenClass = getKitchenClass(req.section);
-        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status & Admin</th></tr></thead><tbody>`;
+        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action & Status</th></tr></thead><tbody>`;
+        
         req.items.forEach((item, idx) => {
             if(item.status === "approved") {
                 itemsHtml += `<tr style="background:#f0fdf4;">
@@ -1069,8 +1032,10 @@ function refreshData() {
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
                     <td><strong style="color:#16a34a;">${item.approvedQty}</strong></td>
-                    <td>✅ Approved</td>
-                    <td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 <span class="admin-name-text">${escapeHtml(item.approvedBy || '?')}</span><br>📅 ${item.approvedAt || ''}</div></td>
+                    <td class="action-status-cell">
+                        <div class="action-buttons"><span class="btn-approve" style="background:#16a34a; opacity:0.7; cursor:default;">✅ Approved</span></div>
+                        <div class="admin-info-text"><span class="status-approved-cell">Approved</span><br>👤 <span class="admin-name-text">${escapeHtml(item.approvedBy || '?')}</span><br>📅 ${item.approvedAt || ''}</div>
+                    </td>
                 </tr>`;
             } else if(item.status === "rejected") {
                 itemsHtml += `<tr style="background:#fef2f2;">
@@ -1078,8 +1043,10 @@ function refreshData() {
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
                     <td><strong style="color:#dc2626;">0</strong></td>
-                    <td>❌ Rejected</td>
-                    <td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 <span class="admin-name-text" style="color:#dc2626;">${escapeHtml(item.rejectedBy || '?')}</span><br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td>
+                    <td class="action-status-cell">
+                        <div class="action-buttons"><span class="btn-reject" style="background:#dc2626; opacity:0.7; cursor:default;">❌ Rejected</span></div>
+                        <div class="admin-info-text"><span class="status-rejected-cell">Rejected</span><br>👤 <span class="admin-name-text" style="color:#dc2626;">${escapeHtml(item.rejectedBy || '?')}</span><br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div>
+                    </td>
                 </tr>`;
             } else {
                 itemsHtml += `<tr>
@@ -1087,12 +1054,15 @@ function refreshData() {
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
                     <td><input type="number" id="qty_${req.firebaseId}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td>
-                    <td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></td>
-                    <td><span class="status-pending-cell">Pending</span><div class="admin-info-text">Waiting for admin</div></td>
+                    <td class="action-status-cell">
+                        <div class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.firebaseId}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.firebaseId}', ${idx})">❌ Reject</button></div>
+                        <div class="admin-info-text"><span class="status-pending-cell">Pending</span><br>Waiting for admin</div>
+                    </td>
                 </tr>`;
             }
         });
         itemsHtml += `</tbody></table></div>`;
+        
         let actions = "";
         if(status === "pending") {
             actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.firebaseId}')">✅ Approve All (${currentAdminName})</button><button class="btn-reject-all" onclick="rejectAll('${req.firebaseId}')">❌ Reject All (${currentAdminName})</button></div>`;
