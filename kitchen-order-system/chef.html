@@ -17,7 +17,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0f4f8;
+    background: #f5f7fb;
 }
 
 .header {
@@ -60,7 +60,7 @@ body {
     gap: 8px;
 }
 
-.refresh-btn, .logout-btn, .hard-reload-btn {
+.refresh-btn, .logout-btn {
     background: rgba(255,255,255,0.2);
     border: none;
     padding: 6px 12px;
@@ -72,17 +72,9 @@ body {
     transition: all 0.3s;
 }
 
-.refresh-btn:hover, .logout-btn:hover, .hard-reload-btn:hover {
+.refresh-btn:hover, .logout-btn:hover {
     background: rgba(255,255,255,0.3);
     transform: scale(1.02);
-}
-
-.hard-reload-btn {
-    background: rgba(230, 126, 34, 0.8);
-}
-
-.hard-reload-btn:hover {
-    background: rgba(230, 126, 34, 1);
 }
 
 .kitchen-tabs {
@@ -127,6 +119,12 @@ body {
     color: white;
 }
 
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
 .kitchen-page {
     display: none;
 }
@@ -137,10 +135,10 @@ body {
 
 .card {
     background: white;
-    border-radius: 16px;
-    padding: 18px;
+    border-radius: 14px;
+    padding: 16px;
     margin-bottom: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .card h3 {
@@ -168,6 +166,12 @@ body {
 .required {
     color: #e74c3c;
     margin-left: 4px;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 11px;
+    margin-top: 4px;
 }
 
 input {
@@ -203,6 +207,12 @@ input:focus {
 .btn-success { background: #27ae60; color: white; }
 .btn-danger { background: #e74c3c; color: white; }
 .btn-warning { background: #f39c12; color: white; }
+
+.search-add-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
 .button-group {
     display: flex;
@@ -252,7 +262,7 @@ input:focus {
 
 .status-badge {
     display: inline-block;
-    padding: 4px 12px;
+    padding: 3px 10px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 600;
@@ -359,15 +369,15 @@ input:focus {
 .request-item {
     background: #f8f9fa;
     border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
     border-left: 4px solid;
 }
 
-.request-item.pending { border-left-color: #f39c12; background: #fff8e7; }
-.request-item.approved { border-left-color: #27ae60; background: #e8f5e9; }
-.request-item.rejected { border-left-color: #e74c3c; background: #fdeaea; }
-.request-item.partial { border-left-color: #8e44ad; background: #f3e8ff; }
+.request-item.pending { border-left-color: #f39c12; }
+.request-item.approved { border-left-color: #27ae60; }
+.request-item.rejected { border-left-color: #e74c3c; }
+.request-item.partial { border-left-color: #8e44ad; }
 
 .request-header {
     display: flex;
@@ -380,7 +390,7 @@ input:focus {
 
 .request-id {
     font-weight: bold;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
 }
 
 .request-date {
@@ -400,8 +410,28 @@ input:focus {
 .request-item-detail {
     display: flex;
     justify-content: space-between;
-    padding: 5px 0;
+    padding: 4px 0;
     border-bottom: 1px dashed #e0e0e0;
+}
+
+.request-item-name {
+    font-weight: 500;
+}
+
+.request-item-qty {
+    color: #333;
+}
+
+.admin-info {
+    font-size: 0.6rem;
+    color: #27ae60;
+    margin-top: 2px;
+}
+
+.admin-info-rejected {
+    font-size: 0.6rem;
+    color: #e74c3c;
+    margin-top: 2px;
 }
 
 .approved-items-table {
@@ -430,7 +460,7 @@ input:focus {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.85);
-    z-index: 10000;
+    z-index: 1000;
     justify-content: center;
     align-items: center;
     padding: 20px;
@@ -438,24 +468,23 @@ input:focus {
 
 .modal-content {
     background: white;
-    padding: 30px 25px;
-    border-radius: 28px;
+    padding: 30px;
+    border-radius: 24px;
     text-align: center;
-    max-width: 360px;
+    max-width: 400px;
     width: 90%;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
 .modal-content h2 {
-    margin-bottom: 12px;
-    color: #1e3c72;
-    font-size: 1.4rem;
+    margin-bottom: 15px;
+    color: #1a1a2e;
+    font-size: 1.3rem;
 }
 
 .modal-content p {
     color: #666;
     margin-bottom: 20px;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 .modal-content input {
@@ -463,14 +492,9 @@ input:focus {
     padding: 12px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
-    border-radius: 14px;
+    border-radius: 12px;
     font-size: 16px;
     text-align: center;
-}
-
-.modal-content input:focus {
-    border-color: #3498db;
-    outline: none;
 }
 
 .modal-content button {
@@ -478,13 +502,12 @@ input:focus {
     color: white;
     border: none;
     padding: 12px;
-    border-radius: 40px;
+    border-radius: 12px;
     font-weight: 600;
     cursor: pointer;
     width: 100%;
     font-size: 1rem;
-    transition: all 0.2s;
-    margin-bottom: 10px;
+    transition: all 0.3s;
 }
 
 .modal-content button:hover {
@@ -494,176 +517,45 @@ input:focus {
 
 .error-msg {
     color: #e74c3c;
-    margin: 10px 0;
-    font-size: 0.8rem;
+    margin-top: 12px;
+    font-size: 0.85rem;
 }
 
 .close-modal {
-    background: #95a5a6 !important;
-    margin-top: 5px;
+    background: #95a5a6;
+    margin-top: 10px;
 }
 
 .close-modal:hover {
-    background: #7f8c8d !important;
-}
-
-.items-scroll-container {
-    max-height: 500px;
-    overflow-y: auto;
-    border: 1px solid #eef2f6;
-    border-radius: 12px;
-    background: #fafcfc;
-}
-
-.items-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px;
-}
-
-.item-card {
-    background: white;
-    border-radius: 12px;
-    padding: 12px;
-    border: 1px solid #e9ecef;
-    transition: background 0.15s ease;
-}
-
-.item-card.selected {
-    background: #d4edda;
-    border-color: #27ae60;
-}
-
-.item-main-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.item-info {
-    flex: 2;
-    min-width: 150px;
-}
-
-.item-name {
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #2c3e50;
-}
-
-.item-code {
-    font-size: 0.65rem;
-    color: #7f8c8d;
-    font-family: monospace;
-    margin-top: 3px;
-}
-
-.item-meta {
-    text-align: right;
-    min-width: 90px;
-}
-
-.item-unit {
-    background: #ecf0f1;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-size: 0.65rem;
-    font-weight: 500;
-    display: inline-block;
-}
-
-.item-max {
-    font-size: 0.65rem;
-    color: #e67e22;
-    margin-top: 4px;
-}
-
-.item-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.qty-picker {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #f1f5f9;
-    padding: 5px 10px;
-    border-radius: 40px;
-}
-
-.qty-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 30px;
-    border: none;
-    background: white;
-    font-weight: bold;
-    font-size: 1.3rem;
-    cursor: pointer;
-    color: #3498db;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: 0.1s;
-}
-
-.qty-btn:active {
-    transform: scale(0.95);
-}
-
-.qty-value {
-    min-width: 50px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 1rem;
-    font-family: monospace;
-}
-
-.add-item-btn {
-    background: #27ae60;
-    color: white;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 30px;
-    font-weight: 600;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: 0.1s;
-}
-
-.add-item-btn:active {
-    transform: scale(0.96);
-}
-
-.scroll-info {
-    text-align: center;
-    font-size: 11px;
-    color: #5a6e8a;
-    padding: 8px;
-    background: #f1f5f9;
-    border-radius: 0 0 12px 12px;
+    background: #7f8c8d;
 }
 
 @media screen and (min-width: 769px) {
+    .search-add-row {
+        flex-direction: row;
+        align-items: flex-end;
+    }
+    
     .button-group {
         flex-direction: row;
     }
+    
     .button-group .btn {
         width: auto;
     }
+    
     .mobile-cards-view {
         display: none;
     }
+    
     .desktop-table-view {
         display: block;
     }
+    
     .admin-btn-mobile {
         display: none;
     }
+    
     .admin-fab {
         display: block;
     }
@@ -671,13 +563,12 @@ input:focus {
 
 .loading-spinner {
     display: inline-block;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border: 2px solid #f3f3f3;
     border-top: 2px solid #3498db;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-right: 8px;
 }
 
 @keyframes spin {
@@ -695,9 +586,8 @@ input:focus {
             <span>Kitchen Order <span>| Chef</span></span>
         </div>
         <div class="header-buttons">
-            <button class="refresh-btn" onclick="manualRefresh()" title="Refresh Orders">🔄</button>
-            <button class="hard-reload-btn" onclick="forceReloadItems()" title="Force Reload Items from JSON">📦 Reload Items</button>
-            <button class="logout-btn" onclick="logout()" title="Logout">🚪</button>
+            <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
+            <button class="logout-btn" onclick="logout()">🚪</button>
         </div>
     </div>
 </div>
@@ -713,6 +603,9 @@ input:focus {
 <div class="sync-status" id="syncStatus">🔄 Connecting...</div>
 
 <script>
+// ========================
+// KITCHEN PASSWORD PROTECTION
+// ========================
 const kitchenPasswords = {
     "Hot Kitchen": "hot123",
     "Cold Kitchen": "cold123", 
@@ -723,7 +616,7 @@ const kitchenPasswords = {
     "Staff Kitchen": "staff123"
 };
 
-// CORRECT FILE MAPPING - matches your actual files
+// File mapping
 const kitchenToFileMap = {
     "Hot Kitchen": "hot-kitchen.json",
     "Cold Kitchen": "cold-kitchen.json",
@@ -737,6 +630,7 @@ const kitchenToFileMap = {
 let unlockedKitchens = {};
 let currentKitchen = null;
 let pendingKitchen = null;
+let allItems = null;
 let kitchenItemsCache = {};
 let kitchenData = {};
 let allRequests = [];
@@ -746,81 +640,51 @@ let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "B
 let selectedQuantities = {};
 let addedItemsStatus = {};
 
-// ============ LOAD ITEMS FROM INDIVIDUAL JSON FILES ============
+// Load items from individual JSON files
 async function loadItemsForKitchen(kitchen, forceRefresh = false) {
     if (kitchenItemsCache[kitchen] && !forceRefresh) {
-        console.log(`Using cached items for ${kitchen}: ${kitchenItemsCache[kitchen].length} items`);
         return kitchenItemsCache[kitchen];
     }
     
     const fileName = kitchenToFileMap[kitchen];
-    if (!fileName) {
-        console.error(`No file mapping for kitchen: ${kitchen}`);
-        return [];
-    }
+    if (!fileName) return [];
     
     const jsonPath = `items/${fileName}`;
     const cacheBuster = new Date().getTime();
     const url = `${jsonPath}?t=${cacheBuster}`;
     
-    showToast(`📦 Loading ${kitchen} items...`);
-    console.log(`Fetching: ${url}`);
-    
     try {
         const response = await fetch(url);
-        
-        if (!response.ok) {
-            console.warn(`File not found: ${jsonPath} - HTTP ${response.status}`);
-            kitchenItemsCache[kitchen] = [];
-            showToast(`⚠️ No items file for ${kitchen}. Create items/${fileName}`);
-            return [];
-        }
+        if (!response.ok) return [];
         
         const data = await response.json();
+        let itemsArray = [];
         
-        // Support both formats: direct array or { items: [...] }
-        let itemsArray = Array.isArray(data) ? data : (data.items || []);
-        
-        if (!itemsArray.length) {
-            console.warn(`No items found in ${jsonPath} - file may be empty`);
+        if (data.categories && Array.isArray(data.categories)) {
+            for (const category of data.categories) {
+                if (category.items && Array.isArray(category.items)) {
+                    for (const item of category.items) {
+                        itemsArray.push({
+                            code: item.code,
+                            name: item.name,
+                            unit: item.unit,
+                            maxLimit: item.maxLimit,
+                            category: category.category
+                        });
+                    }
+                }
+            }
+        } else if (Array.isArray(data)) {
+            itemsArray = data;
+        } else if (data.items && Array.isArray(data.items)) {
+            itemsArray = data.items;
         }
         
-        // Add section property to each item if missing
-        itemsArray = itemsArray.map(item => ({
-            ...item,
-            section: item.section || kitchen
-        }));
-        
         kitchenItemsCache[kitchen] = itemsArray;
-        console.log(`✅ Loaded ${itemsArray.length} items for ${kitchen} from ${jsonPath}`);
-        showToast(`✅ ${kitchen}: ${itemsArray.length} items loaded`);
-        
         return itemsArray;
-        
     } catch (error) {
         console.error(`Error loading ${jsonPath}:`, error);
-        kitchenItemsCache[kitchen] = [];
-        showToast(`❌ Failed to load ${kitchen} items. Check items/${fileName}`);
         return [];
-    }
-}
-
-// Force reload all kitchen items
-async function forceReloadItems() {
-    showToast("🔄 Force reloading all kitchen items...");
-    
-    for (const kitchen of kitchens) {
-        kitchenItemsCache[kitchen] = null;
-    }
-    
-    if (currentKitchen) {
-        await loadItemsForKitchen(currentKitchen, true);
-        await renderItemsList(currentKitchen);
-        renderCart(currentKitchen);
-        const count = kitchenItemsCache[currentKitchen]?.length || 0;
-        showToast(`✅ Reloaded ${count} items for ${currentKitchen}`);
-    } else {
-        showToast("✅ Cache cleared. Select a kitchen to reload.");
     }
 }
 
@@ -917,7 +781,7 @@ function verifyKitchenPassword() {
         closePasswordModal();
         selectKitchen(kitchen);
     } else {
-        document.getElementById("kitchenPasswordError").innerHTML = "❌ Wrong password!";
+        document.getElementById("kitchenPasswordError").innerHTML = "Wrong password!";
     }
 }
 
@@ -929,7 +793,6 @@ async function loadRequestsFromFirebase() {
         if (currentKitchen) loadMyRequests(currentKitchen);
         document.getElementById("syncStatus").innerHTML = "✅ Connected • " + allRequests.length + " orders";
     } catch (error) {
-        console.error("Firebase error:", error);
         document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
     }
 }
@@ -941,13 +804,12 @@ async function saveRequestToFirebase(request) {
         await loadRequestsFromFirebase();
         if (currentKitchen) loadMyRequests(currentKitchen);
     } catch (error) {
-        console.error("Save error:", error);
         showToast("❌ Error saving");
     }
 }
 
 async function manualRefresh() {
-    showToast("🔄 Refreshing orders...");
+    showToast("🔄 Refreshing...");
     await loadRequestsFromFirebase();
     if (currentKitchen) {
         loadMyRequests(currentKitchen);
@@ -966,14 +828,10 @@ async function renderItemsList(kitchen) {
         return;
     }
     
-    // Load items for this specific kitchen from its JSON file
     let items = await loadItemsForKitchen(kitchen, false);
     
     if (!items || items.length === 0) {
-        const fileName = kitchenToFileMap[kitchen];
-        container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen}<br><br>
-        <strong>Expected file:</strong> items/${fileName}<br>
-        <small>Check that the file exists and has the correct format</small></div>`;
+        container.innerHTML = `<div class="empty-state">📭 No items found for ${kitchen}</div>`;
         return;
     }
     
@@ -993,7 +851,7 @@ async function renderItemsList(kitchen) {
         const maxLimit = item.maxLimit || 99;
         
         html += `
-            <div class="item-card ${selectedClass}" data-code="${item.code}" id="itemCard_${kitchenId}_${safeCode}">
+            <div class="item-card ${selectedClass}" id="itemCard_${kitchenId}_${safeCode}">
                 <div class="item-main-row">
                     <div class="item-info">
                         <div class="item-name">${escapeHtml(itemName)}</div>
@@ -1221,13 +1079,13 @@ async function submitRequest(kitchen) {
     if (currentKitchen) loadMyRequests(currentKitchen);
 }
 
-function getOverallStatus(items) {
+function getRequestStatus(items) {
     if(!items || items.length === 0) return "pending";
     const approved = items.filter(i => i.status === "approved").length;
     const rejected = items.filter(i => i.status === "rejected").length;
-    if (approved === items.length) return "approved";
-    if (rejected === items.length) return "rejected";
-    if (approved > 0 && rejected > 0) return "partial";
+    if(approved === items.length) return "approved";
+    if(rejected === items.length) return "rejected";
+    if(approved > 0 && rejected > 0) return "partial";
     return "pending";
 }
 
@@ -1250,34 +1108,59 @@ function loadMyRequests(kitchen) {
     
     container.innerHTML = "";
     [...myRequests].reverse().forEach(req => {
-        const status = getOverallStatus(req.items);
+        const status = getRequestStatus(req.items);
         let statusClass = "status-pending", statusText = "⏳ Pending";
         if (status === "approved") { statusClass = "status-approved"; statusText = "✅ Fully Approved"; }
         else if (status === "rejected") { statusClass = "status-rejected"; statusText = "❌ Rejected"; }
         else if (status === "partial") { statusClass = "status-partial"; statusText = "⚠️ Partially Approved"; }
         
-        let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Status</th><th>Result</th></tr></thead><tbody>`;
+        let itemsHtml = `<table class="approved-items-table"><thead><tr><th>Item</th><th>Requested</th><th>Approved/Rejected</th><th>Action By</th></tr></thead><tbody>`;
+        
         req.items.forEach(item => {
             let resultText = "";
-            if(item.status === "approved") resultText = `${item.approvedQty} ${item.unit} approved`;
-            else if(item.status === "rejected") resultText = item.rejectionReason || "Rejected";
-            else resultText = "Waiting...";
-            itemsHtml += `<tr>
-                <td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></td>
-                <td>${item.originalQty.toFixed(1)} ${item.unit}</td>
-                <td>${item.status === "approved" ? "✅" : item.status === "rejected" ? "❌" : "⏳"} ${item.status === "approved" ? "Approved" : item.status === "rejected" ? "Rejected" : "Pending"}</td>
-                <td>${resultText}</td>
-            </tr>`;
+            let actionBy = "";
+            let actionTime = "";
+            
+            if(item.status === "approved") {
+                resultText = `${item.approvedQty} ${item.unit} approved`;
+                actionBy = item.approvedBy || "Unknown Admin";
+                actionTime = item.approvedAt || "";
+                itemsHtml += `<tr style="background:#e8f5e9;">
+                    <td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></div>
+                    <td>${item.originalQty.toFixed(1)} ${item.unit}</div>
+                    <td><span style="color:#27ae60;">✅ ${resultText}</span></div>
+                    <td><span style="color:#27ae60;">👤 ${escapeHtml(actionBy)}</span><br><small>📅 ${actionTime}</small></div>
+                </tr>`;
+            } else if(item.status === "rejected") {
+                resultText = item.rejectionReason || "Rejected";
+                actionBy = item.rejectedBy || "Unknown Admin";
+                actionTime = item.rejectedAt || "";
+                itemsHtml += `<tr style="background:#fee2e2;">
+                    <td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></div>
+                    <td>${item.originalQty.toFixed(1)} ${item.unit}</div>
+                    <td><span style="color:#e74c3c;">❌ ${escapeHtml(resultText)}</span></div>
+                    <td><span style="color:#e74c3c;">👤 ${escapeHtml(actionBy)}</span><br><small>📅 ${actionTime}</small></div>
+                </tr>`;
+            } else {
+                itemsHtml += `<tr>
+                    <td><strong>${escapeHtml(item.name)}</strong><br><small>${item.code}</small></div>
+                    <td>${item.originalQty.toFixed(1)} ${item.unit}</div>
+                    <td><span style="color:#f39c12;">⏳ Waiting for approval</span></div>
+                    <td>-</div>
+                </tr>`;
+            }
         });
-        itemsHtml += `</tbody></table>`;
+        itemsHtml += `</tbody>}</div>`;
         
         container.innerHTML += `
-            <div style="border-left:4px solid ${status === 'approved' ? '#27ae60' : status === 'rejected' ? '#e74c3c' : status === 'partial' ? '#8e44ad' : '#f39c12'}; border-radius:12px; padding:14px; margin-bottom:16px; background:#fff;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span style="font-weight:bold;">📄 ${req.requestId}</span>
+            <div style="border-left: 4px solid ${status === 'approved' ? '#27ae60' : status === 'rejected' ? '#e74c3c' : status === 'partial' ? '#8e44ad' : '#f39c12'}; border-radius:12px; padding:14px; margin-bottom:16px; background:#fff;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap;">
+                    <span style="font-weight:bold; font-size:0.85rem;">📄 ${req.requestId}</span>
                     <span class="status-badge ${statusClass}">${statusText}</span>
                 </div>
-                <div style="font-size:0.7rem; color:#666; margin-bottom:10px;">📅 ${req.submittedAt}</div>
+                <div style="background:#f8f9fa; padding:8px; border-radius:8px; margin-bottom:10px; font-size:0.7rem;">
+                    <span>📅 ${req.submittedAt}</span>
+                </div>
                 ${itemsHtml}
             </div>
         `;
@@ -1380,7 +1263,7 @@ function createKitchenPage(kitchen) {
                 </div>
             </div>
             <div class="card">
-                <h3>📜 My Requests</h3>
+                <h3>📜 My Requests <span style="font-size:11px; font-weight:normal;">(Shows who approved/rejected)</span></h3>
                 <div id="myRequestsDesktop_${id}"></div>
             </div>
         </div>
@@ -1400,7 +1283,10 @@ function generatePages() {
 
 generatePages();
 loadRequestsFromFirebase();
-db.collection("kitchen_requests").onSnapshot(() => loadRequestsFromFirebase());
+db.collection("kitchen_requests").onSnapshot(() => {
+    console.log("🔄 Real-time update!");
+    loadRequestsFromFirebase();
+});
 setInterval(() => { if(currentKitchen) loadRequestsFromFirebase(); }, 4000);
 </script>
 </body>
