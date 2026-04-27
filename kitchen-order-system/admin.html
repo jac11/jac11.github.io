@@ -6,7 +6,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Admin Dashboard - Approve Orders</title>
+<title>Admin Dashboard - Approve Orders | Real-time Status</title>
 <style>
 * {
     margin: 0;
@@ -83,6 +83,23 @@ body {
 
 .btn-danger {
     background: #e74c3c;
+}
+
+.btn-back {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    padding: 6px 15px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.02);
 }
 
 .stats-grid {
@@ -258,7 +275,7 @@ body {
 .items-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 550px;
+    min-width: 650px;
 }
 
 .items-table th {
@@ -331,6 +348,11 @@ body {
     cursor: pointer;
     font-weight: 600;
     font-size: 0.7rem;
+    transition: all 0.2s;
+}
+
+.btn-approve:hover {
+    background: #219a52;
 }
 
 .btn-reject {
@@ -342,6 +364,11 @@ body {
     cursor: pointer;
     font-weight: 600;
     font-size: 0.7rem;
+    transition: all 0.2s;
+}
+
+.btn-reject:hover {
+    background: #c0392b;
 }
 
 .status-cell {
@@ -382,6 +409,7 @@ body {
     font-size: 0.65rem;
     color: #666;
     margin-top: 5px;
+    line-height: 1.4;
 }
 
 .request-actions {
@@ -497,10 +525,17 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
+    font-size: 14px;
 }
 
 .user-btn:hover {
     background: #e0e0e0;
+}
+
+.user-title {
+    font-size: 11px;
+    color: #666;
+    margin-top: 3px;
 }
 
 .modal-content input {
@@ -534,6 +569,10 @@ body {
 .close-modal {
     background: #95a5a6 !important;
     margin-top: 10px;
+}
+
+.close-modal:hover {
+    background: #7f8c8d !important;
 }
 
 @media (max-width: 768px) {
@@ -580,14 +619,23 @@ body {
     <div class="modal-content">
         <h2>🔐 Admin Login</h2>
         <div class="user-selector">
-            <button class="user-btn" onclick="selectUser('Marco')">👨‍💼 Marco</button>
-            <button class="user-btn" onclick="selectUser('Nady')">👩‍💼 Nady</button>
-            <button class="user-btn" onclick="selectUser('Ahmed')">👨‍💻 Ahmed</button>
+            <button class="user-btn" onclick="selectUser('Marco')">
+                👨‍💼 Marco<br>
+                <span class="user-title">Administrator</span>
+            </button>
+            <button class="user-btn" onclick="selectUser('Nady')">
+                👩‍💼 Nady<br>
+                <span class="user-title">Administrator</span>
+            </button>
+            <button class="user-btn" onclick="selectUser('Ahmed')">
+                👨‍💻 Ahmed<br>
+                <span class="user-title">Administrator</span>
+            </button>
         </div>
         <input type="password" id="passwordInput" placeholder="Enter password" style="display:none;">
         <button id="loginBtn" style="display:none;" onclick="checkLogin()">Login</button>
         <div id="loginError" class="error-msg"></div>
-        <button class="close-modal" onclick="closeModal()">Back</button>
+        <button class="close-modal" onclick="goBackToIndex()">← Back to Home</button>
     </div>
 </div>
 
@@ -600,7 +648,9 @@ body {
             </div>
             <div style="display: flex; align-items: center; gap: 15px;">
                 <span id="adminNameDisplay" style="font-weight: 600;"></span>
+                <span style="font-size: 10px; opacity: 0.8;">Administrator</span>
                 <button class="btn-header" onclick="logout()">🚪 Logout</button>
+                <button class="btn-back" onclick="goBackToIndex()">← Back</button>
             </div>
             <div class="header-buttons">
                 <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
@@ -637,15 +687,16 @@ let currentKitchen = "all";
 let currentStatus = "pending";
 let allRequests = [];
 
+function goBackToIndex() {
+    window.location.href = "index.html";
+}
+
 function selectUser(user) {
     document.getElementById("passwordInput").style.display = "block";
     document.getElementById("loginBtn").style.display = "block";
     document.getElementById("passwordInput").placeholder = `Password for ${user}`;
     window.selectedUser = user;
-}
-
-function closeModal() {
-    document.getElementById("passwordModal").style.display = "none";
+    document.getElementById("loginError").innerHTML = "";
 }
 
 function checkLogin() {
@@ -657,10 +708,20 @@ function checkLogin() {
         document.getElementById("mainContent").style.display = "block";
         localStorage.setItem("admin", currentAdmin);
         loadRequests();
-        db.collection("kitchen_requests").onSnapshot(() => loadRequests());
+        setupRealtimeListener();
     } else {
         document.getElementById("loginError").innerHTML = "Wrong password!";
     }
+}
+
+function setupRealtimeListener() {
+    db.collection("kitchen_requests").onSnapshot((snapshot) => {
+        console.log("🔄 Real-time update received");
+        allRequests = [];
+        snapshot.forEach(doc => allRequests.push({ id: doc.id, ...doc.data() }));
+        renderUI();
+        updateStats();
+    });
 }
 
 function logout() {
@@ -671,6 +732,7 @@ function logout() {
     document.getElementById("passwordInput").style.display = "none";
     document.getElementById("loginBtn").style.display = "none";
     document.getElementById("loginError").innerHTML = "";
+    window.selectedUser = null;
 }
 
 function openAnalytics() { window.open("analytics.html", "_blank"); }
@@ -681,16 +743,31 @@ async function loadRequests() {
         allRequests = [];
         snap.forEach(doc => allRequests.push({ id: doc.id, ...doc.data() }));
         renderUI();
+        updateStats();
     } catch(e) { showToast("Error loading"); }
 }
 
-function getStatus(req) {
-    if(!req.items?.length) return "pending";
-    const approved = req.items.filter(i => i.status === "approved").length;
-    const rejected = req.items.filter(i => i.status === "rejected").length;
-    if(approved === req.items.length) return "approved";
-    if(rejected === req.items.length) return "rejected";
-    if(approved > 0 || rejected > 0) return "partial";
+// Calculate request status based on ALL items
+function getRequestStatus(items) {
+    if(!items || items.length === 0) return "pending";
+    
+    let approvedCount = 0;
+    let rejectedCount = 0;
+    let pendingCount = 0;
+    
+    items.forEach(item => {
+        if(item.status === "approved") approvedCount++;
+        else if(item.status === "rejected") rejectedCount++;
+        else pendingCount++;
+    });
+    
+    // If all items are approved
+    if(approvedCount === items.length) return "approved";
+    // If all items are rejected
+    if(rejectedCount === items.length) return "rejected";
+    // If there are BOTH approved AND rejected items (mixed status)
+    if(approvedCount > 0 && rejectedCount > 0) return "partial";
+    // Otherwise still pending (some items not processed yet)
     return "pending";
 }
 
@@ -698,21 +775,26 @@ async function updateRequest(id, items) {
     try {
         await db.collection("kitchen_requests").doc(id).update({ items });
         showToast(`✅ Updated by ${currentAdmin}`);
-    } catch(e) { showToast("Error"); }
+        // The real-time listener will automatically refresh the UI
+    } catch(e) { showToast("Update error"); }
 }
 
 async function approveItem(reqId, idx) {
     const input = document.getElementById(`qty_${reqId}_${idx}`);
     let qty = parseFloat(input?.value || 0);
     if(!qty || qty <= 0) { showToast("Enter quantity"); return; }
+    
     const req = allRequests.find(r => r.id === reqId);
     if(req) {
         const item = req.items[idx];
         if(qty > item.maxLimit) { showToast(`Max ${item.maxLimit}`); return; }
+        
+        // Update this item
         item.status = "approved";
         item.approvedQty = qty;
         item.approvedBy = currentAdmin;
         item.approvedAt = new Date().toLocaleString();
+        
         await updateRequest(reqId, req.items);
     }
 }
@@ -766,7 +848,8 @@ async function rejectAll(reqId) {
 async function resetOld() {
     if(confirm("Delete all non-pending requests?")) {
         for(const req of allRequests) {
-            if(getStatus(req) !== "pending") {
+            const status = getRequestStatus(req.items);
+            if(status !== "pending") {
                 await db.collection("kitchen_requests").doc(req.id).delete();
             }
         }
@@ -777,14 +860,29 @@ async function resetOld() {
 
 function exportExcel() {
     if(!allRequests.length) { showToast("No data"); return; }
-    let csv = "ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved,Action By\n";
+    let csv = "Request ID,Kitchen,Chef,Date,Item,Requested,Unit,Status,Approved Qty,Action By,Reason,Action Time\n";
     allRequests.forEach(req => {
         req.items.forEach(item => {
-            let status = item.status, approved = "", by = "";
-            if(item.status === "approved") { status = "Approved"; approved = item.approvedQty; by = item.approvedBy || ""; }
-            else if(item.status === "rejected") { status = "Rejected"; approved = "0"; by = item.rejectedBy || ""; }
-            else { status = "Pending"; approved = "Waiting"; by = "-"; }
-            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${approved},"${by}"\n`;
+            let status = item.status, approvedQty = "", actionBy = "", reason = "", actionTime = "";
+            if(item.status === "approved") { 
+                status = "Approved"; 
+                approvedQty = item.approvedQty; 
+                actionBy = item.approvedBy || ""; 
+                actionTime = item.approvedAt || "";
+            }
+            else if(item.status === "rejected") { 
+                status = "Rejected"; 
+                approvedQty = "0"; 
+                actionBy = item.rejectedBy || ""; 
+                reason = item.rejectionReason || "";
+                actionTime = item.rejectedAt || "";
+            }
+            else { 
+                status = "Pending"; 
+                approvedQty = "Waiting"; 
+                actionBy = "-";
+            }
+            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}",${item.originalQty},"${item.unit}","${status}",${approvedQty},"${actionBy}","${reason}","${actionTime}"\n`;
         });
     });
     const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8"});
@@ -794,44 +892,47 @@ function exportExcel() {
     link.click();
 }
 
-function setFilter(status) { currentStatus = status; renderUI(); }
-function filterKitchen(kitchen) { currentKitchen = kitchen; renderUI(); }
-
-function renderUI() {
-    // Render kitchen filters
-    const kitchenDiv = document.getElementById("kitchenFilters");
-    kitchenDiv.innerHTML = `<button class="kitchen-filter-btn ${currentKitchen === 'all' ? 'active' : ''}" onclick="filterKitchen('all')">📋 All</button>`;
-    KITCHENS.forEach(k => {
-        kitchenDiv.innerHTML += `<button class="kitchen-filter-btn ${currentKitchen === k ? 'active' : ''}" onclick="filterKitchen('${k}')">${k === 'Hot Kitchen' ? '🔥' : k === 'Cold Kitchen' ? '❄️' : k === 'Pastry / Bakery' ? '🍰' : k === 'Butchery' ? '🥩' : k === 'Beach House' ? '🏖️' : k === 'Nihon Kitchen' ? '🍜' : '👥'} ${k.replace(' Kitchen', '')}</button>`;
-    });
-    
-    // Render status tabs
-    const tabsDiv = document.getElementById("statusTabs");
-    const statuses = ["pending", "approved", "rejected", "partial", "all"];
-    const statusNames = ["Pending", "Approved", "Rejected", "Partial", "All"];
-    tabsDiv.innerHTML = "";
-    statuses.forEach((s, i) => {
-        tabsDiv.innerHTML += `<button class="tab-btn ${currentStatus === s ? 'active' : ''}" onclick="setFilter('${s}')">${statusNames[i]}</button>`;
-    });
-    
-    // Stats
-    let pending=0, approved=0, rejected=0, partial=0;
-    allRequests.forEach(r => {
-        const s = getStatus(r);
-        if(s === "pending") pending++;
-        else if(s === "approved") approved++;
-        else if(s === "rejected") rejected++;
-        else if(s === "partial") partial++;
+function updateStats() {
+    let pending = 0, approved = 0, rejected = 0, partial = 0;
+    allRequests.forEach(req => {
+        const status = getRequestStatus(req.items);
+        if(status === "pending") pending++;
+        else if(status === "approved") approved++;
+        else if(status === "rejected") rejected++;
+        else if(status === "partial") partial++;
     });
     document.getElementById("pendingCount").innerText = pending;
     document.getElementById("approvedCount").innerText = approved;
     document.getElementById("rejectedCount").innerText = rejected;
     document.getElementById("totalCount").innerText = allRequests.length;
+}
+
+function setFilter(status) { currentStatus = status; renderUI(); }
+function filterKitchen(kitchen) { currentKitchen = kitchen; renderUI(); }
+
+function renderUI() {
+    // Kitchen filters
+    const kitchenDiv = document.getElementById("kitchenFilters");
+    kitchenDiv.innerHTML = `<button class="kitchen-filter-btn ${currentKitchen === 'all' ? 'active' : ''}" onclick="filterKitchen('all')">📋 All Kitchens</button>`;
+    KITCHENS.forEach(k => {
+        let icon = k === 'Hot Kitchen' ? '🔥' : k === 'Cold Kitchen' ? '❄️' : k === 'Pastry / Bakery' ? '🍰' : k === 'Butchery' ? '🥩' : k === 'Beach House' ? '🏖️' : k === 'Nihon Kitchen' ? '🍜' : '👥';
+        let name = k.replace(' Kitchen', '').replace(' / Bakery', '');
+        kitchenDiv.innerHTML += `<button class="kitchen-filter-btn ${currentKitchen === k ? 'active' : ''}" onclick="filterKitchen('${k}')">${icon} ${name}</button>`;
+    });
+    
+    // Status tabs
+    const tabsDiv = document.getElementById("statusTabs");
+    const statuses = ["pending", "approved", "rejected", "partial", "all"];
+    const statusNames = ["⏳ Pending", "✅ Approved", "❌ Rejected", "🟣 Partial", "📋 All"];
+    tabsDiv.innerHTML = "";
+    statuses.forEach((s, i) => {
+        tabsDiv.innerHTML += `<button class="tab-btn ${currentStatus === s ? 'active' : ''}" onclick="setFilter('${s}')">${statusNames[i]}</button>`;
+    });
     
     // Filter requests
     let filtered = [...allRequests];
     if(currentKitchen !== "all") filtered = filtered.filter(r => r.section === currentKitchen);
-    if(currentStatus !== "all") filtered = filtered.filter(r => getStatus(r) === currentStatus);
+    if(currentStatus !== "all") filtered = filtered.filter(r => getRequestStatus(r.items) === currentStatus);
     filtered.reverse();
     
     const container = document.getElementById("requestsContainer");
@@ -839,13 +940,15 @@ function renderUI() {
     
     container.innerHTML = "";
     filtered.forEach(req => {
-        const status = getStatus(req);
+        const requestStatus = getRequestStatus(req.items);
         const kitchenClass = {
             "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry",
             "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff"
         }[req.section] || "kitchen-staff";
         
-        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead><tr><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
+        let itemsHtml = `<div class="items-wrapper"><table class="items-table"><thead>
+            <tr><th>Item</th><th>Requested</th><th>Unit</th><th>Admin Qty</th><th>Action</th><th>Status & Admin</th></tr>
+        </thead><tbody>`;
         
         req.items.forEach((item, idx) => {
             if(item.status === "approved") {
@@ -854,7 +957,7 @@ function renderUI() {
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
                     <td><strong style="color:#27ae60;">${item.approvedQty}</strong></td>
-                    <td><span class="btn-approve" style="background:#27ae60;opacity:0.7;cursor:default;">✅ Approved</span></td>
+                    <td><span style="background:#27ae60;color:white;padding:4px 12px;border-radius:20px;font-size:0.7rem;">✅ Approved</span></td>
                     <td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</div></td>
                 </tr>`;
             } else if(item.status === "rejected") {
@@ -863,7 +966,7 @@ function renderUI() {
                     <td><span class="requested-qty">${item.originalQty}</span></td>
                     <td>${item.unit}</td>
                     <td><strong style="color:#e74c3c;">0</strong></td>
-                    <td><span class="btn-reject" style="background:#e74c3c;opacity:0.7;cursor:default;">❌ Rejected</span></td>
+                    <td><span style="background:#e74c3c;color:white;padding:4px 12px;border-radius:20px;font-size:0.7rem;">❌ Rejected</span></td>
                     <td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td>
                 </tr>`;
             } else {
@@ -880,14 +983,16 @@ function renderUI() {
         itemsHtml += `</tbody></table></div>`;
         
         let actions = "";
-        if(status === "pending") {
+        if(requestStatus === "pending") {
             actions = `<div class="request-actions"><button class="btn-approve-all" onclick="approveAll('${req.id}')">✅ Approve All (${currentAdmin})</button><button class="btn-reject-all" onclick="rejectAll('${req.id}')">❌ Reject All (${currentAdmin})</button></div>`;
         }
+        
+        const statusText = requestStatus === "pending" ? "Pending" : requestStatus === "approved" ? "Approved" : requestStatus === "rejected" ? "Rejected" : "Partial";
         
         container.innerHTML += `<div class="request-card">
             <div class="request-header">
                 <div><span class="request-id">📄 ${req.requestId}</span><span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div>
-                <span class="status-badge status-${status}">${status === "pending" ? "Pending" : status === "approved" ? "Approved" : status === "rejected" ? "Rejected" : "Partial"}</span>
+                <span class="status-badge status-${requestStatus}">${statusText}</span>
             </div>
             <div class="request-info">
                 <div class="info-item"><div class="info-label">👨‍🍳 CHEF</div><div class="info-value">${escapeHtml(req.chefName)}</div></div>
@@ -897,6 +1002,7 @@ function renderUI() {
             ${actions}
         </div>`;
     });
+    updateStats();
 }
 
 function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ''; }
@@ -914,7 +1020,7 @@ if(saved && ADMIN_PASSWORDS[saved]) {
     document.getElementById("passwordModal").style.display = "none";
     document.getElementById("mainContent").style.display = "block";
     loadRequests();
-    db.collection("kitchen_requests").onSnapshot(() => loadRequests());
+    setupRealtimeListener();
 }
 </script>
 </body>
