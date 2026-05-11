@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Restaurant Analytics | Pro Dashboard</title>
-  <!-- Google Fonts + Tailwind-like smoothness -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+  <title>Restaurant Manager • Smart Analytics</title>
+  <!-- Google Fonts Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-  <!-- Chart.js CDN -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <!-- Firebase Modular (v10) -->
+  <!-- Firebase Modular v10 -->
   <script type="importmap">
     {
       "imports": {
@@ -22,137 +22,143 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: #f4f7fc;
+      background: #f5f9ff;
       font-family: 'Inter', sans-serif;
-      padding: 16px;
-      color: #0a2540;
+      padding: 16px 14px 40px 14px;
+      color: #0b2b3b;
     }
 
-    /* main container – full width, mobile first */
-    .dashboard {
-      max-width: 1280px;
+    /* smooth container */
+    .app-container {
+      max-width: 600px;
       margin: 0 auto;
+      width: 100%;
     }
 
-    /* header */
-    .header {
-      background: linear-gradient(135deg, #0f2b3d 0%, #1a4a6f 100%);
-      border-radius: 28px;
-      padding: 20px 24px;
+    /* header card */
+    .hero {
+      background: linear-gradient(125deg, #0f2c39 0%, #1b4e6e 100%);
+      border-radius: 32px;
+      padding: 22px 20px;
       margin-bottom: 24px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+      box-shadow: 0 12px 24px -10px rgba(0,0,0,0.15);
     }
-    .header h1 {
+    .hero h1 {
       color: white;
-      font-size: 1.8rem;
-      font-weight: 700;
+      font-size: 1.65rem;
+      font-weight: 800;
       letter-spacing: -0.3px;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
       justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .date-badge {
+    .datetime-chip {
       background: rgba(255,255,255,0.2);
       backdrop-filter: blur(8px);
-      padding: 8px 18px;
-      border-radius: 40px;
-      font-size: 0.9rem;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.75rem;
       font-weight: 500;
       color: white;
+      font-family: monospace;
+      letter-spacing: 0.3px;
     }
-    .sub {
-      color: #cbd5e6;
-      margin-top: 8px;
-      font-size: 0.9rem;
+    .subhead {
+      color: #cae3f2;
+      font-size: 0.8rem;
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    /* KPI cards grid - responsive */
-    .stats-grid {
+    /* KPI Grid — clean cards */
+    .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
     }
-    .stat-card {
+    .kpi-card {
       background: white;
       border-radius: 24px;
-      padding: 18px 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      transition: all 0.2s ease;
-      border: 1px solid #e9edf2;
+      padding: 16px 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      border: 1px solid #e9f0f5;
+      transition: transform 0.1s ease;
     }
-    .stat-card h3 {
-      font-size: 0.8rem;
-      font-weight: 600;
+    .kpi-label {
+      font-size: 0.7rem;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #5c6f87;
+      color: #5b7c99;
       margin-bottom: 8px;
     }
-    .stat-number {
-      font-size: 2rem;
+    .kpi-number {
+      font-size: 1.8rem;
       font-weight: 800;
       line-height: 1.2;
+      word-break: break-word;
     }
-    .green { color: #1e7b48; }
-    .blue { color: #2c6e9e; }
-    .orange { color: #c96b0c; }
-    .red { color: #bc3f2e; }
+    .text-green { color: #1f8a4c; }
+    .text-blue { color: #2c7cb6; }
+    .text-orange { color: #dd7c1f; }
+    .text-red { color: #cd5c5c; }
 
-    /* two column layout (flex/grid) */
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 28px;
-    }
-
-    .card-panel {
+    /* form panel */
+    .form-panel {
       background: white;
       border-radius: 28px;
       padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid #eef3fc;
       box-shadow: 0 6px 14px rgba(0,0,0,0.02);
-      border: 1px solid #eef2f6;
     }
-    .card-panel h2 {
-      font-size: 1.3rem;
+    .section-title {
+      font-size: 1.25rem;
       font-weight: 700;
       margin-bottom: 18px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .form-row {
-      margin-bottom: 18px;
+    .input-group {
+      margin-bottom: 16px;
     }
     label {
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       display: block;
       margin-bottom: 6px;
-      color: #2c3e4e;
+      color: #1f567d;
     }
-    select, input {
+    select, input, textarea {
       width: 100%;
       padding: 14px 16px;
       border-radius: 20px;
-      border: 1.5px solid #e2e8f0;
-      font-size: 0.95rem;
+      border: 1.5px solid #e2edf5;
+      font-size: 0.9rem;
       font-family: 'Inter', sans-serif;
       background: white;
-      transition: 0.2s;
+      transition: all 0.2s;
     }
-    select:focus, input:focus {
+    select:focus, input:focus, textarea:focus {
       outline: none;
-      border-color: #2c6e9e;
-      box-shadow: 0 0 0 3px rgba(44,110,158,0.1);
+      border-color: #2c7cb6;
+      box-shadow: 0 0 0 3px rgba(44,124,182,0.1);
     }
-    .btn-primary {
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+    .btn-save {
       background: #1f6392;
       color: white;
       border: none;
@@ -164,192 +170,198 @@
       cursor: pointer;
       transition: all 0.2s;
       margin-top: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.05);
     }
-    .btn-primary:hover {
-      background: #0f4b70;
-      transform: translateY(-2px);
-    }
+    .btn-save:active { transform: scale(0.97); background: #0e4b70; }
 
-    /* chart container */
-    .chart-wrapper {
-      height: 280px;
+    /* chart panel */
+    .chart-panel {
+      background: white;
+      border-radius: 28px;
+      padding: 18px 16px;
+      margin-bottom: 24px;
+      border: 1px solid #eef3fc;
+    }
+    .chart-container {
+      height: 260px;
       margin-top: 8px;
     }
 
-    /* table responsive */
-    .table-container {
-      overflow-x: auto;
-      border-radius: 24px;
+    /* table / reports list - mobile friendly card style */
+    .reports-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 6px 12px 6px;
+      flex-wrap: wrap;
+    }
+    .report-list {
       background: white;
-      padding: 0px;
-      border: 1px solid #eef2f6;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid #eef3fc;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 460px;
+    .report-item {
+      padding: 16px;
+      border-bottom: 1px solid #eff5fa;
+      transition: background 0.1s;
     }
-    th {
-      text-align: left;
-      padding: 16px 14px;
-      background: #f8fafd;
-      font-weight: 700;
-      font-size: 0.8rem;
-      color: #2c5a7a;
+    .report-item:last-child { border-bottom: none; }
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
-    td {
-      padding: 14px;
-      border-bottom: 1px solid #edf2f7;
-      font-weight: 500;
-    }
-    .badge {
-      background: #e0f2e9;
-      color: #146b3a;
+    .resto-badge {
+      font-weight: 800;
+      background: #eef3fc;
       padding: 5px 12px;
       border-radius: 40px;
+      font-size: 0.75rem;
+      color: #1f567d;
+    }
+    .timestamp {
       font-size: 0.7rem;
-      font-weight: 700;
-      display: inline-block;
+      color: #7895b2;
+      font-family: monospace;
     }
-    .empty-message td {
-      text-align: center;
-      padding: 40px;
-      color: #8ba0bc;
-    }
-
-    /* alerts */
-    .alert {
-      padding: 14px 18px;
-      border-radius: 24px;
-      margin-bottom: 20px;
-      font-weight: 500;
+    .details-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 8px 0 6px;
       font-size: 0.85rem;
     }
-    .alert-error {
-      background: #ffe6e5;
-      color: #b91c1c;
-      border-left: 4px solid #dc2626;
+    .detail {
+      background: #f8fbfe;
+      padding: 4px 12px;
+      border-radius: 30px;
     }
-    .alert-success {
-      background: #e0f2e9;
-      color: #0a5c36;
-      border-left: 4px solid #2e7d32;
+    .note-text {
+      background: #fef7e0;
+      padding: 8px 12px;
+      border-radius: 18px;
+      font-size: 0.75rem;
+      color: #7a6300;
+      margin-top: 8px;
+      border-left: 3px solid #ffb347;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #8db3cf;
     }
 
-    /* mobile tweaks */
-    @media (max-width: 780px) {
-      body {
-        padding: 12px;
-      }
-      .two-col {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-      .header h1 {
-        font-size: 1.4rem;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .stat-number {
-        font-size: 1.7rem;
-      }
-      .card-panel {
-        padding: 18px;
-      }
-    }
-    footer {
+    /* alert snackbar */
+    .alert-message {
+      background: #1e2f3b;
+      color: white;
+      border-radius: 60px;
+      padding: 10px 18px;
+      font-size: 0.8rem;
+      margin-bottom: 16px;
       text-align: center;
-      margin-top: 28px;
-      font-size: 0.75rem;
-      color: #7a8eaa;
+      animation: fadeSlide 0.2s ease;
+    }
+    .alert-error { background: #c2412c; }
+    .alert-success { background: #2b7a4b; }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(-8px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+
+    /* mobile extra love */
+    @media (max-width: 480px) {
+      body { padding: 12px 12px 32px 12px; }
+      .kpi-number { font-size: 1.5rem; }
+      .section-title { font-size: 1.1rem; }
+      .btn-save { padding: 12px; }
     }
   </style>
 </head>
 <body>
-<div class="dashboard">
-  <!-- Header with live date -->
-  <div class="header">
+<div class="app-container">
+  <!-- header with live timestamp -->
+  <div class="hero">
     <h1>
-      <span>🍽️ RESTO INSIGHTS</span>
-      <span class="date-badge" id="todayDate"></span>
+      🍽️ RESTO FLOW
+      <span class="datetime-chip" id="liveTimestamp">--:--</span>
     </h1>
-    <div class="sub">Real-time restaurant performance • Firestore powered</div>
-  </div>
-
-  <!-- Alert container for feedback -->
-  <div id="alertBox"></div>
-
-  <!-- KPI cards -->
-  <div class="stats-grid">
-    <div class="stat-card"><h3>💰 TOTAL REVENUE</h3><div class="stat-number green" id="totalRevenue">0 EGP</div></div>
-    <div class="stat-card"><h3>🍽️ TOTAL COVERS</h3><div class="stat-number blue" id="totalCovers">0</div></div>
-    <div class="stat-card"><h3>📊 AVG SPEND</h3><div class="stat-number orange" id="avgSpend">0 EGP</div></div>
-    <div class="stat-card"><h3>🏆 BEST RESTAURANT</h3><div class="stat-number red" id="bestRestaurant">—</div></div>
-  </div>
-
-  <!-- 2 columns: Entry Form + Chart -->
-  <div class="two-col">
-    <!-- LEFT: daily report entry -->
-    <div class="card-panel">
-      <h2>📝 Daily Report Entry</h2>
-      <div class="form-row">
-        <label>🏢 Restaurant name</label>
-        <select id="restaurantSelect">
-          <option value="" disabled selected>--- Select Restaurant ---</option>
-          <option value="The Restaurant">The Restaurant</option>
-          <option value="The Beach House">The Beach House</option>
-          <option value="Nihon">Nihon</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <label>👥 Covers (guests served)</label>
-        <input type="number" id="coversInput" placeholder="e.g., 85" step="1" min="1">
-      </div>
-      <div class="form-row">
-        <label>💰 Revenue (EGP)</label>
-        <input type="number" id="revenueInput" placeholder="e.g., 24500" step="1" min="1">
-      </div>
-      <div class="form-row">
-        <label>🧑‍💼 Manager name</label>
-        <input type="text" id="managerInput" placeholder="e.g., Ahmed Hassan">
-      </div>
-      <button class="btn-primary" id="saveBtn">💾 Save Report</button>
-    </div>
-
-    <!-- RIGHT: chart panel -->
-    <div class="card-panel">
-      <h2>📊 Revenue Analytics (today)</h2>
-      <div class="chart-wrapper">
-        <canvas id="revenueChartCanvas"></canvas>
-      </div>
+    <div class="subhead">
+      <span>📅 Auto date + time</span>
+      <span>✏️ Notes included</span>
     </div>
   </div>
 
-  <!-- Table section -->
-  <div class="card-panel" style="padding: 0px; overflow: hidden;">
-    <div style="padding: 18px 20px 0 20px;"><h2>📋 Today's Reports</h2></div>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr><th>Restaurant</th><th>Covers</th><th>Revenue (EGP)</th><th>Manager</th><th>Status</th></tr>
-        </thead>
-        <tbody id="reportTableBody">
-          <tr class="empty-message"><td colspan="5">Loading reports... 📡</td></tr>
-        </tbody>
-      </table>
+  <!-- dynamic alert container -->
+  <div id="alertContainer"></div>
+
+  <!-- KPI grid 2x2 -->
+  <div class="kpi-grid">
+    <div class="kpi-card"><div class="kpi-label">💰 TOTAL REVENUE</div><div class="kpi-number text-green" id="totalRevenueVal">0 EGP</div></div>
+    <div class="kpi-card"><div class="kpi-label">👥 TOTAL COVERS</div><div class="kpi-number text-blue" id="totalCoversVal">0</div></div>
+    <div class="kpi-card"><div class="kpi-label">📊 AVG SPEND</div><div class="kpi-number text-orange" id="avgSpendVal">0 EGP</div></div>
+    <div class="kpi-card"><div class="kpi-label">🏆 TOP SPOT</div><div class="kpi-number text-red" id="bestRestVal">—</div></div>
+  </div>
+
+  <!-- Entry Form -->
+  <div class="form-panel">
+    <div class="section-title">📝 New Report Entry</div>
+    <div class="input-group">
+      <label>🏢 Restaurant *</label>
+      <select id="restaurantSelect">
+        <option value="" disabled selected>--- Select restaurant ---</option>
+        <option value="The Restaurant">The Restaurant</option>
+        <option value="The Beach House">The Beach House</option>
+        <option value="Nihon">Nihon</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>🍽️ Covers (guests) *</label>
+      <input type="number" id="coversInput" placeholder="e.g., 64" min="1">
+    </div>
+    <div class="input-group">
+      <label>💰 Revenue (EGP) *</label>
+      <input type="number" id="revenueInput" placeholder="e.g., 18700" min="1">
+    </div>
+    <div class="input-group">
+      <label>🧑‍💼 Manager name *</label>
+      <input type="text" id="managerInput" placeholder="Full name">
+    </div>
+    <div class="input-group">
+      <label>📝 Notes (optional)</label>
+      <textarea id="notesInput" placeholder="Any special events, feedback, or comments..."></textarea>
+    </div>
+    <button class="btn-save" id="saveReportBtn">✓ Save Report (auto timestamp)</button>
+  </div>
+
+  <!-- Chart panel -->
+  <div class="chart-panel">
+    <div class="section-title">📊 Today's Revenue by Restaurant</div>
+    <div class="chart-container">
+      <canvas id="revenueChartCanvas"></canvas>
     </div>
   </div>
-  <footer>Secure Firebase sync • Real-time dashboard</footer>
+
+  <!-- Reports list (mobile card style, no status badge, includes notes) -->
+  <div class="reports-header">
+    <div class="section-title" style="margin-bottom: 0;">📋 Today's Reports</div>
+    <span style="font-size: 0.7rem; color: #5f88a8;">🕒 auto date+time</span>
+  </div>
+  <div class="report-list" id="reportsListContainer">
+    <div class="empty-state">Loading reports...</div>
+  </div>
 </div>
 
 <script type="module">
-  // ------------------------------
-  // FIREBASE MODULAR IMPORTS (YOUR EXACT CONFIG)
-  // ------------------------------
   import { initializeApp } from "firebase/app";
-  import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp } from "firebase/firestore";
+  import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "firebase/firestore";
 
+  // YOUR FIREBASE CONFIG
   const firebaseConfig = {
     apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
     authDomain: "restaurant-analytics-27bd8.firebaseapp.com",
@@ -360,126 +372,139 @@
     appId: "1:280901089364:web:26958c4c5334092194d5c1"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  console.log("✅ Firebase connected — Firestore ready");
+  console.log("🔥 Firebase ready");
 
-  // ----- helpers -----
-  const getToday = () => new Date().toISOString().split('T')[0];
-  const todayStr = getToday();
-  document.getElementById("todayDate").innerText = todayStr;
-
-  // DOM elements
+  // DOM references
   const restaurantSelect = document.getElementById("restaurantSelect");
   const coversInput = document.getElementById("coversInput");
   const revenueInput = document.getElementById("revenueInput");
   const managerInput = document.getElementById("managerInput");
-  const saveBtn = document.getElementById("saveBtn");
-  const totalRevenueSpan = document.getElementById("totalRevenue");
-  const totalCoversSpan = document.getElementById("totalCovers");
-  const avgSpendSpan = document.getElementById("avgSpend");
-  const bestRestaurantSpan = document.getElementById("bestRestaurant");
-  const tableBody = document.getElementById("reportTableBody");
+  const notesInput = document.getElementById("notesInput");
+  const saveBtn = document.getElementById("saveReportBtn");
+  const totalRevenueSpan = document.getElementById("totalRevenueVal");
+  const totalCoversSpan = document.getElementById("totalCoversVal");
+  const avgSpendSpan = document.getElementById("avgSpendVal");
+  const bestRestSpan = document.getElementById("bestRestVal");
+  const reportsContainer = document.getElementById("reportsListContainer");
 
-  // Chart initialization (will update later)
+  // Chart setup
   let revenueChart;
   const chartCtx = document.getElementById("revenueChartCanvas").getContext("2d");
 
-  // predefined list of active restaurants (exactly as required)
-  const RESTAURANT_LIST = ["The Restaurant", "The Beach House", "Nihon"];
+  const RESTAURANTS = ["The Restaurant", "The Beach House", "Nihon"];
   
-  // Helper to show temporary message (good look)
-  function showAlert(message, isError = false) {
-    const alertDiv = document.getElementById("alertBox");
-    const className = isError ? "alert-error" : "alert-success";
-    alertDiv.innerHTML = `<div class="alert ${className}">${message}</div>`;
+  // Helper: show toast message
+  function showMessage(text, isError = false) {
+    const alertDiv = document.getElementById("alertContainer");
+    alertDiv.innerHTML = `<div class="alert-message ${isError ? 'alert-error' : 'alert-success'}">${text}</div>`;
     setTimeout(() => {
-      if (alertDiv.innerHTML.includes(message)) alertDiv.innerHTML = "";
-    }, 3800);
+      if (alertDiv.firstChild) alertDiv.innerHTML = "";
+    }, 3000);
   }
 
-  // reset form fields after save + keep selected placeholder? we'll set to default select placeholder
-  function resetForm() {
-    restaurantSelect.value = "";     // back to "--- Select Restaurant ---"
-    coversInput.value = "";
-    revenueInput.value = "";
-    managerInput.value = "";
-  }
-
-  // ----- load Today's reports & update KPI + Chart -----
-  async function loadDashboardData() {
+  // Format readable time from Firestore timestamp or fallback
+  function formatTimeFromDate(dateObj) {
+    if (!dateObj) return "just now";
     try {
-      // query: dailyReports where date == todayStr
-      const q = query(collection(db, "dailyReports"), where("date", "==", todayStr));
+      let d = dateObj.toDate ? dateObj.toDate() : new Date(dateObj);
+      return `${d.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}`;
+    } catch(e) { return "recent"; }
+  }
+
+  // Live clock updating (local time)
+  function updateLiveClock() {
+    const now = new Date();
+    const formatted = `${now.toLocaleDateString()} ${now.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}`;
+    document.getElementById("liveTimestamp").innerText = formatted;
+  }
+  updateLiveClock();
+  setInterval(updateLiveClock, 60000);
+
+  // get today's date string YYYY-MM-DD
+  const getTodayStr = () => new Date().toISOString().split('T')[0];
+  let currentDate = getTodayStr();
+
+  // load data from Firestore (today's reports, order by createdAt)
+  async function loadData() {
+    try {
+      const q = query(
+        collection(db, "dailyReports"),
+        where("date", "==", currentDate),
+        orderBy("createdAt", "desc")
+      );
       const snapshot = await getDocs(q);
       
-      // initialize metrics
       let totalRevenue = 0;
       let totalCovers = 0;
-      // revenue map per restaurant (only the 3 brands)
       let revenueMap = {
         "The Restaurant": 0,
         "The Beach House": 0,
         "Nihon": 0
       };
       
-      let rowsHtml = "";
+      let reportsHTML = "";
       
       if (snapshot.empty) {
-        rowsHtml = `<tr class="empty-message"><td colspan="5">✨ No reports added yet. Create your first entry! ✨</td></tr>`;
+        reportsHTML = `<div class="empty-state">✨ No reports yet for today. Tap "Save Report" ✨</div>`;
       } else {
         snapshot.forEach(doc => {
           const data = doc.data();
           const restName = data.restaurant;
-          const rev = data.revenue || 0;
-          const cov = data.covers || 0;
+          const rev = Number(data.revenue) || 0;
+          const cov = Number(data.covers) || 0;
+          const managerName = data.manager || "—";
+          const notes = data.notes || "";
+          const createdAtRaw = data.createdAt;
+          let timeStr = "";
+          if (createdAtRaw) {
+            timeStr = formatTimeFromDate(createdAtRaw);
+          } else {
+            timeStr = "saved today";
+          }
           
           totalRevenue += rev;
           totalCovers += cov;
+          if (revenueMap.hasOwnProperty(restName)) revenueMap[restName] += rev;
+          else revenueMap[restName] = (revenueMap[restName] || 0) + rev;
           
-          // update revenue map if restaurant matches our list
-          if (revenueMap.hasOwnProperty(restName)) {
-            revenueMap[restName] += rev;
-          } else {
-            // edge: if somehow other restaurant appears, still count but won't affect chart best
-            revenueMap[restName] = (revenueMap[restName] || 0) + rev;
-          }
-          
-          rowsHtml += `
-            <tr>
-              <td><strong>${escapeHtml(restName)}</strong></td>
-              <td>${cov.toLocaleString()}</td>
-              <td>${rev.toLocaleString()} EGP</td>
-              <td>${escapeHtml(data.manager || '—')}</td>
-              <td><span class="badge">✓ Synced</span></td>
-            </tr>
+          // build card style row, no status badge, but notes if exist
+          reportsHTML += `
+            <div class="report-item">
+              <div class="report-header">
+                <span class="resto-badge">${escapeHtml(restName)}</span>
+                <span class="timestamp">🕘 ${escapeHtml(timeStr)}</span>
+              </div>
+              <div class="details-row">
+                <span class="detail">🧾 ${cov} covers</span>
+                <span class="detail">💰 ${rev.toLocaleString()} EGP</span>
+                <span class="detail">👤 ${escapeHtml(managerName)}</span>
+              </div>
+              ${notes ? `<div class="note-text">📌 ${escapeHtml(notes)}</div>` : ''}
+            </div>
           `;
         });
       }
       
-      // update table
-      tableBody.innerHTML = rowsHtml;
+      reportsContainer.innerHTML = reportsHTML;
       
-      // Update KPI numbers
+      // update KPIs
       totalRevenueSpan.innerText = totalRevenue.toLocaleString() + " EGP";
       totalCoversSpan.innerText = totalCovers.toLocaleString();
-      const avgSpend = totalCovers > 0 ? (totalRevenue / totalCovers).toFixed(2) : 0;
-      avgSpendSpan.innerText = avgSpend.toLocaleString() + " EGP";
+      const avg = totalCovers > 0 ? (totalRevenue / totalCovers).toFixed(2) : 0;
+      avgSpendSpan.innerText = avg.toLocaleString() + " EGP";
       
-      // Determine best restaurant (by revenue from our main 3)
-      let bestRest = "—";
-      let maxRevValue = 0;
-      for (let [rest, revVal] of Object.entries(revenueMap)) {
-        if (revVal > maxRevValue) {
-          maxRevValue = revVal;
-          bestRest = rest;
-        }
+      // best restaurant among 3
+      let best = "—";
+      let maxVal = 0;
+      for (let [r, val] of Object.entries(revenueMap)) {
+        if (val > maxVal) { maxVal = val; best = r; }
       }
-      if (maxRevValue === 0) bestRest = "—";
-      bestRestaurantSpan.innerText = bestRest;
+      if (maxVal === 0) best = "—";
+      bestRestSpan.innerText = best;
       
-      // Update Chart data (always reflect Restaurant A/B/C names as per requirement)
+      // update chart
       if (revenueChart) {
         revenueChart.data.datasets[0].data = [
           revenueMap["The Restaurant"] || 0,
@@ -490,85 +515,75 @@
       }
       
     } catch (error) {
-      console.error("Load error:", error);
-      showAlert(`⚠️ Firebase load error: ${error.message}. Check Firestore rules (allow read/write)`, true);
-      tableBody.innerHTML = `<tr class="empty-message"><td colspan="5">⚠️ Unable to load data. Permission denied? Update rules.</td></tr>`;
+      console.error("Load err", error);
+      showMessage(`⚠️ Load error: ${error.message} — check Firestore rules`, true);
+      reportsContainer.innerHTML = `<div class="empty-state">⚠️ Could not fetch reports. Permission issue? Update rules.</div>`;
     }
   }
-  
-  // simple escape to avoid injection
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    });
-  }
-  
-  // ----- Save report function -----
+
+  // Save report with auto date & time (using serverTimestamp)
   async function saveReport() {
-    // 1. Validate restaurant selection (must not be placeholder)
-    const selectedRestaurant = restaurantSelect.value;
-    if (!selectedRestaurant || selectedRestaurant === "") {
-      showAlert("❌ Please select a restaurant from the list (--- Select Restaurant ---)", true);
+    const selectedRest = restaurantSelect.value;
+    if (!selectedRest || selectedRest === "") {
+      showMessage("❌ Please select a restaurant first", true);
       return;
     }
-    // Validate covers & revenue
     const covers = parseInt(coversInput.value);
     const revenue = parseInt(revenueInput.value);
     const manager = managerInput.value.trim();
     
     if (!covers || covers <= 0 || isNaN(covers)) {
-      showAlert("❌ Please enter a valid positive number for Covers", true);
+      showMessage("❌ Covers must be a positive number", true);
       return;
     }
     if (!revenue || revenue <= 0 || isNaN(revenue)) {
-      showAlert("❌ Please enter valid Revenue amount (EGP)", true);
+      showMessage("❌ Revenue must be a positive number", true);
       return;
     }
     if (!manager || manager.length < 2) {
-      showAlert("❌ Manager name is required (minimum 2 characters)", true);
+      showMessage("❌ Please enter manager name", true);
       return;
     }
     
-    // Check that selected restaurant is within our official list (extra safety)
-    if (!RESTAURANT_LIST.includes(selectedRestaurant)) {
-      showAlert("❌ Invalid restaurant selection", true);
-      return;
-    }
+    const optionalNotes = notesInput.value.trim();
     
     try {
-      // save to Firestore collection "dailyReports"
+      // Firestore document with auto serverTimestamp + date field
       await addDoc(collection(db, "dailyReports"), {
-        restaurant: selectedRestaurant,
+        restaurant: selectedRest,
         covers: covers,
         revenue: revenue,
         manager: manager,
-        date: todayStr,
-        createdAt: serverTimestamp()
+        notes: optionalNotes || "",
+        date: currentDate,           // YYYY-MM-DD for filtering
+        createdAt: serverTimestamp() // ✅ auto date + time (firestore timestamp)
       });
       
-      showAlert(`✅ Report saved for ${selectedRestaurant} (${revenue} EGP | ${covers} covers)`);
-      // reset form to default state: select placeholder, empty fields
-      resetForm();
-      // refresh dashboard data (table & metrics & chart)
-      await loadDashboardData();
+      showMessage(`✅ Saved! ${selectedRest} | ${revenue} EGP — ${new Date().toLocaleTimeString()}`);
+      
+      // reset form (keep restaurant placeholder, clear fields)
+      restaurantSelect.value = "";
+      coversInput.value = "";
+      revenueInput.value = "";
+      managerInput.value = "";
+      notesInput.value = "";
+      
+      // reload dashboard to show new entry instantly
+      await loadData();
       
     } catch (error) {
       console.error("Save error:", error);
-      let errorMsg = error.message;
-      if (errorMsg.includes("permission") || errorMsg.includes("denied")) {
-        showAlert("🚫 Firebase permission denied! Update Firestore rules: allow read, write: if true; (for development)", true);
+      let msg = error.message;
+      if (msg.includes("permission") || msg.includes("denied")) {
+        showMessage("🚫 Firebase permission denied! Please update Firestore rules → allow read, write: if true;", true);
       } else {
-        showAlert(`❌ Save failed: ${errorMsg}`, true);
+        showMessage(`❌ Save failed: ${msg}`, true);
       }
     }
   }
-  
-  // ----- Initialize Chart (bar chart with dynamic labels) -----
-  function setupChart() {
+
+  // Chart init (bar)
+  function initChart() {
     revenueChart = new Chart(chartCtx, {
       type: 'bar',
       data: {
@@ -576,50 +591,43 @@
         datasets: [{
           label: 'Revenue (EGP)',
           data: [0, 0, 0],
-          backgroundColor: ['#2c6e9e', '#48a0c0', '#e6b17e'],
-          borderRadius: 12,
-          barPercentage: 0.7,
+          backgroundColor: ['#2c7cb6', '#4fa3c4', '#e2a65a'],
+          borderRadius: 10,
+          barPercentage: 0.7
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
-          legend: { position: 'top', labels: { font: { size: 12 } } },
+          legend: { position: 'top', labels: { font: { size: 11 } } },
           tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toLocaleString()} EGP` } }
         },
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: { callback: (val) => val.toLocaleString() + ' EGP', stepSize: 1 }
-          }
-        }
+        scales: { y: { beginAtZero: true, ticks: { callback: (val) => val.toLocaleString() } } }
       }
     });
   }
   
-  // attach event listener to save button
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // event listener
   saveBtn.addEventListener("click", saveReport);
   
-  // On page load: init chart, load data from Firestore
-  setupChart();
-  loadDashboardData().catch(e => console.warn(e));
+  // init chart and load data
+  initChart();
+  loadData();
   
-  // small auto-refresh for realism but not needed too frequent, but fine
   // optional: refresh on visibility change
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) loadDashboardData();
-  });
-  
-  // also add some UX: pressing enter on any input doesn't accidentally submit form (prevent default)
-  const formInputs = [coversInput, revenueInput, managerInput];
-  formInputs.forEach(inp => {
-    inp.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        saveReport();
-      }
-    });
+    if (!document.hidden) loadData();
   });
 </script>
 </body>
