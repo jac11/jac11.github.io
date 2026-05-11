@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-  <title>RESTRO PRO | Executive Dashboard</title>
+  <title>CHROMA RESTRO | Pro Analytics + Reset</title>
   <!-- Google Fonts + Font Awesome 6 -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script type="importmap">
@@ -25,10 +25,10 @@
     }
 
     body {
-      background: #f0f4f9;
+      background: linear-gradient(145deg, #f6f9fc 0%, #edf2f9 100%);
       font-family: 'Inter', sans-serif;
       padding: 24px 20px 56px 20px;
-      color: #101d2f;
+      color: #121926;
     }
 
     .dashboard {
@@ -36,24 +36,24 @@
       margin: 0 auto;
     }
 
-    /* premium glass header */
-    .hero-pro {
-      background: linear-gradient(115deg, #0A2A38 0%, #124E6B 100%);
-      border-radius: 44px;
-      padding: 28px 32px;
+    /* VIBRANT HEADER */
+    .hero-vibrant {
+      background: linear-gradient(125deg, #0F2C3D 0%, #1E5A7D 45%, #2D8F6E 100%);
+      border-radius: 48px;
+      padding: 32px 36px;
       margin-bottom: 32px;
-      box-shadow: 0 22px 35px -12px rgba(0,0,0,0.25);
+      box-shadow: 0 25px 40px -14px rgba(0,0,0,0.28);
       position: relative;
       overflow: hidden;
     }
-    .hero-pro::after {
+    .hero-vibrant::before {
       content: '';
       position: absolute;
-      top: -30px;
-      right: -20px;
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%);
+      top: -30%;
+      right: -5%;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(255,215,150,0.2) 0%, rgba(255,255,255,0) 70%);
       border-radius: 50%;
     }
     .hero-flex {
@@ -61,125 +61,133 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 18px;
     }
     .brand h1 {
-      font-size: 1.9rem;
+      font-size: 2rem;
       font-weight: 800;
-      color: white;
+      background: linear-gradient(135deg, #FFF8E7, #FFE6B3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
       letter-spacing: -0.3px;
     }
     .brand p {
-      color: #bcd9f0;
+      color: #CFE9FF;
       font-size: 0.85rem;
       margin-top: 6px;
+      font-weight: 500;
     }
     .live-tag {
-      background: rgba(255,255,255,0.12);
-      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(12px);
       padding: 8px 24px;
       border-radius: 80px;
       font-family: monospace;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.85rem;
-      color: white;
-      border: 1px solid rgba(255,255,255,0.2);
+      color: #FFECB3;
+      border: 1px solid rgba(255,215,140,0.5);
     }
 
-    /* KPI 4-grid */
+    /* COLORFUL KPI CARDS */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 22px;
-      margin-bottom: 32px;
+      gap: 24px;
+      margin-bottom: 36px;
     }
     .kpi-card {
-      background: white;
-      border-radius: 32px;
-      padding: 22px 20px;
-      transition: all 0.25s;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.04);
-      border: 1px solid #eef2f8;
+      border-radius: 36px;
+      padding: 22px 22px;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      box-shadow: 0 12px 22px -10px rgba(0,0,0,0.08);
+      border: none;
     }
-    .kpi-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 20px 28px -12px rgba(0,0,0,0.12);
-    }
+    .kpi-card:nth-child(1) { background: linear-gradient(135deg, #FFF2E6, #FFE0C2); border-bottom: 4px solid #E67E22; }
+    .kpi-card:nth-child(2) { background: linear-gradient(135deg, #E8F0FE, #D4E4FF); border-bottom: 4px solid #2C7DA0; }
+    .kpi-card:nth-child(3) { background: linear-gradient(135deg, #E6F7F0, #C8F0DC); border-bottom: 4px solid #2E8B57; }
+    .kpi-card:nth-child(4) { background: linear-gradient(135deg, #FCE4EC, #F8D7E3); border-bottom: 4px solid #C44569; }
+    .kpi-card:hover { transform: translateY(-6px) scale(1.01); }
     .kpi-title {
       font-size: 0.7rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #5c7c9e;
+      letter-spacing: 1.2px;
+      color: #4A5B6E;
       margin-bottom: 12px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
     .kpi-value {
-      font-size: 2.4rem;
+      font-size: 2.5rem;
       font-weight: 800;
       line-height: 1.2;
+      color: #1A2C3C;
     }
 
-    /* 2 columns layout */
-    .two-col-pro {
+    /* TWO COLUMN LAYOUT */
+    .two-col-chroma {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 26px;
-      margin-bottom: 36px;
+      gap: 28px;
+      margin-bottom: 38px;
     }
-    .card-pro {
-      background: white;
-      border-radius: 36px;
-      padding: 26px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.03);
-      border: 1px solid #edf2f9;
+    .glass-panel {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(2px);
+      border-radius: 40px;
+      padding: 28px;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,240,0.8);
     }
-    .card-header {
+    .panel-header {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       font-weight: 800;
-      font-size: 1.25rem;
-      margin-bottom: 24px;
-      border-left: 4px solid #1F6E8C;
-      padding-left: 16px;
+      font-size: 1.3rem;
+      margin-bottom: 26px;
+      background: linear-gradient(120deg, #1F5E74, #2C7A47);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-    /* form styling */
-    .input-row {
-      margin-bottom: 18px;
+    /* FORM STYLES */
+    .input-group {
+      margin-bottom: 20px;
     }
-    .input-row label {
-      font-weight: 600;
+    .input-group label {
+      font-weight: 700;
       font-size: 0.75rem;
       display: block;
       margin-bottom: 8px;
-      color: #274e6b;
+      color: #2C5F7A;
     }
     select, input {
       width: 100%;
-      padding: 14px 18px;
-      border-radius: 26px;
-      border: 1.5px solid #e3ecf3;
+      padding: 14px 20px;
+      border-radius: 34px;
+      border: 1.5px solid #E9F0F5;
       font-size: 0.9rem;
       background: white;
-      transition: 0.2s;
+      transition: all 0.2s;
     }
     select:focus, input:focus {
+      border-color: #F4A261;
       outline: none;
-      border-color: #1F6E8C;
-      box-shadow: 0 0 0 3px rgba(31,110,140,0.12);
+      box-shadow: 0 0 0 3px rgba(244,162,97,0.2);
     }
-    .btn-save-pro {
-      background: #1F6E8C;
+    .btn-chroma {
+      background: linear-gradient(95deg, #2C7DA0, #3A9B6E);
       color: white;
       border: none;
       width: 100%;
-      padding: 15px;
-      border-radius: 44px;
-      font-weight: 700;
+      padding: 16px;
+      border-radius: 50px;
+      font-weight: 800;
       font-size: 0.95rem;
       cursor: pointer;
       transition: 0.2s;
@@ -187,44 +195,53 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
+      box-shadow: 0 6px 14px rgba(44,125,160,0.3);
     }
-    .btn-save-pro:active { transform: scale(0.97); background: #0f556f; }
+    .btn-chroma:active { transform: scale(0.97); }
+    .btn-reset {
+      background: linear-gradient(95deg, #C44536, #A8321F);
+      box-shadow: 0 6px 14px rgba(196,69,54,0.3);
+      margin-top: 8px;
+    }
+    .btn-reset:active { transform: scale(0.97); }
 
-    /* chart container */
-    .chart-box {
-      height: 280px;
-      width: 100%;
-      margin-top: 6px;
+    /* CHART CONTAINER */
+    .chart-area {
+      height: 290px;
+      margin-top: 8px;
     }
 
-    /* reports timeline - pro card style */
-    .reports-pro-container {
+    /* REPORTS TIMELINE */
+    .timeline-wrapper {
       background: white;
-      border-radius: 36px;
+      border-radius: 44px;
       overflow: hidden;
-      border: 1px solid #edf2f9;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.03);
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+      border: 1px solid #F0F4FA;
     }
-    .reports-header-pro {
-      padding: 24px 28px 14px 28px;
+    .timeline-header {
+      padding: 22px 32px 14px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #f0f5fc;
+      background: #FEFCF5;
+      border-bottom: 2px solid #FFE5B4;
       flex-wrap: wrap;
     }
-    .reports-feed {
-      max-height: 480px;
+    .report-feed {
+      max-height: 500px;
       overflow-y: auto;
     }
-    .report-item-pro {
-      padding: 22px 28px;
-      border-bottom: 1px solid #f0f5fc;
-      transition: background 0.15s;
+    .report-entry {
+      padding: 22px 32px;
+      border-bottom: 1px solid #F2F0E6;
+      transition: background 0.2s;
     }
-    .report-item-pro:last-child { border-bottom: none; }
-    .row-flex {
+    .report-entry:hover {
+      background: #FFFCF7;
+    }
+    .entry-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -232,154 +249,214 @@
       gap: 14px;
       margin-bottom: 14px;
     }
-    .resto-badge-pro {
+    .resto-badge {
       font-weight: 800;
-      background: #eef3fc;
-      padding: 6px 22px;
+      background: linear-gradient(110deg, #F8F0E7, #FEE9D4);
+      padding: 6px 24px;
       border-radius: 60px;
       font-size: 0.9rem;
-      color: #1a5d7a;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      color: #C44536;
+      border-left: 3px solid #E67E22;
     }
-    .datetime-badge {
+    .timestamp-badge {
       font-size: 0.7rem;
-      color: #7b99b5;
       font-family: monospace;
-      background: #f8fafd;
-      padding: 5px 12px;
+      background: #ECF7F0;
+      padding: 5px 16px;
       border-radius: 40px;
+      color: #2C6B2F;
+      font-weight: 600;
     }
-    .metrics-inline {
+    .stats-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 24px;
-      margin: 12px 0 6px;
+      gap: 22px;
+      margin: 12px 0 4px;
     }
-    .metric-pill {
-      background: #f9fbfe;
-      padding: 6px 16px;
+    .stat-bubble {
+      background: #F7F9FE;
+      padding: 6px 18px;
       border-radius: 40px;
       font-weight: 600;
       font-size: 0.8rem;
+      color: #2F5D7A;
     }
-    .empty-state-pro {
+    .empty-state {
       text-align: center;
       padding: 70px 24px;
-      color: #9bb7d0;
+      color: #9FAFC6;
+      font-weight: 500;
     }
 
-    /* alert toast */
-    .alert-toast {
-      background: #124E6B;
+    /* ALERT SYSTEM */
+    .alert-glass {
+      background: #2C7DA0;
       color: white;
-      border-radius: 60px;
+      border-radius: 70px;
       padding: 12px 24px;
-      margin-bottom: 20px;
-      font-weight: 500;
+      margin-bottom: 22px;
+      font-weight: 600;
       font-size: 0.85rem;
       text-align: center;
-      animation: fadeSlide 0.2s ease;
+      animation: slideUp 0.2s ease;
     }
-    .alert-error { background: #c2412c; }
-    .alert-success { background: #1f7a5a; }
-    @keyframes fadeSlide {
-      from { opacity: 0; transform: translateY(-10px);}
+    .alert-error {
+      background: #C44536;
+    }
+    .alert-success {
+      background: #2E8B57;
+    }
+    .alert-warning {
+      background: #E67E22;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px);}
       to { opacity: 1; transform: translateY(0);}
     }
 
-    @media (max-width: 900px) {
-      .kpi-grid { grid-template-columns: repeat(2,1fr); gap: 16px; }
-      .two-col-pro { grid-template-columns: 1fr; gap: 24px; }
+    /* reset confirmation modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+ backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-card {
+      background: white;
+      max-width: 400px;
+      width: 90%;
+      border-radius: 48px;
+      padding: 32px 28px;
+      text-align: center;
+      box-shadow: 0 30px 40px rgba(0,0,0,0.3);
+    }
+    .modal-card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: #C44536;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 16px;
+      margin-top: 28px;
+    }
+    .modal-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 60px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-confirm {
+      background: #C44536;
+      color: white;
+    }
+    .btn-cancel {
+      background: #E9ECF2;
+      color: #2C5F7A;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @media (max-width: 950px) {
+      .kpi-grid { grid-template-columns: repeat(2,1fr); gap: 18px; }
+      .two-col-chroma { grid-template-columns: 1fr; gap: 28px; }
       body { padding: 16px; }
-      .kpi-value { font-size: 1.9rem; }
+      .kpi-value { font-size: 2rem; }
     }
     @media (max-width: 550px) {
-      .report-item-pro { padding: 18px; }
-      .resto-badge-pro { font-size: 0.8rem; }
+      .report-entry { padding: 18px; }
+      .resto-badge { font-size: 0.75rem; }
     }
     i { margin-right: 6px; }
   </style>
 </head>
 <body>
 <div class="dashboard">
-  <!-- Header premium -->
-  <div class="hero-pro">
+  <div class="hero-vibrant">
     <div class="hero-flex">
       <div class="brand">
-        <h1><i class="fas fa-chart-simple"></i> RESTRO PRO</h1>
-        <p>Executive analytics · Real-time firestore</p>
+        <h1><i class="fas fa-fire-flame-curved"></i> CHROMA RESTRO</h1>
+        <p><i class="fas fa-chart-line"></i> Color intelligence · Real-time Firestore</p>
       </div>
-      <div class="live-tag" id="liveClock"></div>
+      <div class="live-tag" id="liveClock"><i class="far fa-clock"></i> --:--</div>
     </div>
   </div>
 
-  <div id="globalAlert"></div>
+  <div id="alertToast"></div>
 
-  <!-- KPI Cards -->
+  <!-- KPI with vivid colors -->
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-coins"></i> TOTAL REVENUE</div><div class="kpi-value" id="totalRevenueSpan">0 EGP</div></div>
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-utensils"></i> TOTAL COVERS</div><div class="kpi-value" id="totalCoversSpan">0</div></div>
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-chart-line"></i> AVG SPEND</div><div class="kpi-value" id="avgSpendSpan">0 EGP</div></div>
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-crown"></i> BEST PERFORMER</div><div class="kpi-value" id="bestRestSpan">—</div></div>
+    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-coins" style="color:#E67E22;"></i> TOTAL REVENUE</div><div class="kpi-value" id="totalRevenueVal">0 EGP</div></div>
+    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-utensils" style="color:#2C7DA0;"></i> TOTAL COVERS</div><div class="kpi-value" id="totalCoversVal">0</div></div>
+    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-chart-simple" style="color:#2E8B57;"></i> AVG SPEND</div><div class="kpi-value" id="avgSpendVal">0 EGP</div></div>
+    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-crown" style="color:#C44569;"></i> BEST PERFORMER</div><div class="kpi-value" id="bestRestVal">—</div></div>
   </div>
 
-  <!-- Entry + Chart -->
-  <div class="two-col-pro">
-    <!-- LEFT: SAVE REPORT (no notes, each report gets own date & time) -->
-    <div class="card-pro">
-      <div class="card-header"><i class="fas fa-pen-ruler"></i> New Report Entry</div>
-      <div class="input-row">
+  <!-- ENTRY + CHART -->
+  <div class="two-col-chroma">
+    <div class="glass-panel">
+      <div class="panel-header"><i class="fas fa-calendar-plus" style="color:#E67E22;"></i> New Report Entry</div>
+      <div class="input-group">
         <label><i class="fas fa-store"></i> Restaurant</label>
         <select id="restaurantSelect">
-          <option value="" disabled selected>— Select restaurant —</option>
+          <option value="" disabled selected>— Select venue —</option>
           <option value="The Restaurant">The Restaurant</option>
           <option value="The Beach House">The Beach House</option>
           <option value="Nihon">Nihon</option>
         </select>
       </div>
-      <div class="input-row">
+      <div class="input-group">
         <label><i class="fas fa-chair"></i> Covers (guests)</label>
-        <input type="number" id="coversInput" placeholder="e.g., 84">
+        <input type="number" id="coversInput" placeholder="e.g., 94">
       </div>
-      <div class="input-row">
+      <div class="input-group">
         <label><i class="fas fa-money-bill-wave"></i> Revenue (EGP)</label>
-        <input type="number" id="revenueInput" placeholder="e.g., 32450">
+        <input type="number" id="revenueInput" placeholder="e.g., 41800">
       </div>
-      <div class="input-row">
-        <label><i class="fas fa-user-check"></i> Manager</label>
+      <div class="input-group">
+        <label><i class="fas fa-user-tie"></i> Manager</label>
         <input type="text" id="managerInput" placeholder="Full name">
       </div>
-      <button class="btn-save-pro" id="saveReportBtn"><i class="fas fa-cloud-upload-alt"></i> Save report (auto date & time)</button>
+      <button class="btn-chroma" id="saveReportBtn"><i class="fas fa-cloud-save"></i> Save report · Auto date & time</button>
+      <button class="btn-chroma btn-reset" id="resetDataBtn"><i class="fas fa-trash-alt"></i> 🧹 Reset All Data (Today)</button>
     </div>
 
-    <!-- RIGHT: CHART -->
-    <div class="card-pro">
-      <div class="card-header"><i class="fas fa-chart-column"></i> Today's Revenue by Venue</div>
-      <div class="chart-box">
+    <div class="glass-panel">
+      <div class="panel-header"><i class="fas fa-chart-bar" style="color:#3A9B6E;"></i> Today's Revenue by Venue</div>
+      <div class="chart-area">
         <canvas id="revenueCanvas"></canvas>
       </div>
     </div>
   </div>
 
-  <!-- REPORTS SECTION: each line shows its own full date + time (no notes/comments) -->
-  <div class="reports-pro-container">
-    <div class="reports-header-pro">
-      <span style="font-weight: 800; font-size: 1.2rem;"><i class="fas fa-list-ul"></i> Activity timeline</span>
-      <span style="font-size: 0.7rem; background: #eef3fc; padding: 6px 14px; border-radius: 50px;"><i class="far fa-calendar-alt"></i> each report with own timestamp</span>
+  <!-- TIMELINE: each report shows its own date + time -->
+  <div class="timeline-wrapper">
+    <div class="timeline-header">
+      <span style="font-weight: 800; font-size: 1.2rem; color: #2C5F7A;"><i class="fas fa-waveform"></i> Activity feed</span>
+      <span style="font-size: 0.7rem; background: #FFEFD6; padding: 5px 15px; border-radius: 50px; font-weight:600;"><i class="far fa-calendar-check"></i> each record = own timestamp</span>
     </div>
-    <div class="reports-feed" id="reportsFeed">
-      <div class="empty-state-pro"><i class="fas fa-spinner fa-pulse"></i> Loading executive data...</div>
+    <div class="report-feed" id="reportsFeed">
+      <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i> Loading colorful insights...</div>
     </div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "firebase/app";
-  import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp } from "firebase/firestore";
+  import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "firebase/firestore";
 
-  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
     authDomain: "restaurant-analytics-27bd8.firebaseapp.com",
@@ -399,105 +476,87 @@
   const revenueInput = document.getElementById("revenueInput");
   const managerInput = document.getElementById("managerInput");
   const saveBtn = document.getElementById("saveReportBtn");
-  const totalRevenueSpan = document.getElementById("totalRevenueSpan");
-  const totalCoversSpan = document.getElementById("totalCoversSpan");
-  const avgSpendSpan = document.getElementById("avgSpendSpan");
-  const bestRestSpan = document.getElementById("bestRestSpan");
+  const resetBtn = document.getElementById("resetDataBtn");
+  const totalRevenueSpan = document.getElementById("totalRevenueVal");
+  const totalCoversSpan = document.getElementById("totalCoversVal");
+  const avgSpendSpan = document.getElementById("avgSpendVal");
+  const bestRestSpan = document.getElementById("bestRestVal");
   const reportsFeed = document.getElementById("reportsFeed");
 
   let revenueChart;
   const chartCtx = document.getElementById("revenueCanvas").getContext("2d");
 
-  // Helper: show toast
-  function showMessage(text, isError = false) {
-    const alertDiv = document.getElementById("globalAlert");
-    const cls = isError ? "alert-error" : "alert-success";
-    alertDiv.innerHTML = `<div class="alert-toast ${cls}"><i class="fas ${isError ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i> ${text}</div>`;
+  function showMessage(text, isError = false, isWarning = false) {
+    const alertDiv = document.getElementById("alertToast");
+    let typeClass = "alert-success";
+    if (isError) typeClass = "alert-error";
+    if (isWarning) typeClass = "alert-warning";
+    alertDiv.innerHTML = `<div class="alert-glass ${typeClass}"><i class="fas ${isError ? 'fa-exclamation-circle' : (isWarning ? 'fa-triangle-exclamation' : 'fa-check-circle')}"></i> ${text}</div>`;
     setTimeout(() => { if (alertDiv.firstChild) alertDiv.innerHTML = ""; }, 3200);
   }
 
-  // format readable date + time from Firebase timestamp OR fallback
-  function formatFullDateTime(timestamp) {
+  function formatOwnDateTime(timestamp) {
     if (!timestamp) return "just now";
     try {
       const date = timestamp.toDate();
-      const day = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-      const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      return `${day} at ${time}`;
-    } catch(e) {
-      return "recent";
-    }
+      const dayStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return `${dayStr} · ${timeStr}`;
+    } catch(e) { return "recent entry"; }
   }
 
-  // live clock
-  function updateClock() {
+  function setLiveClock() {
     const now = new Date();
-    const formatted = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} • ${now.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}`;
-    document.getElementById("liveClock").innerText = formatted;
+    const formatted = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${now.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}`;
+    document.getElementById("liveClock").innerHTML = `<i class="far fa-calendar-alt"></i> ${formatted}`;
   }
-  updateClock();
-  setInterval(updateClock, 60000);
+  setLiveClock();
+  setInterval(setLiveClock, 60000);
 
   const getTodayStr = () => new Date().toISOString().split('T')[0];
-  let todayDate = getTodayStr();
+  let currentDate = getTodayStr();
 
-  // LOAD DATA (no notes, each report includes its own date & time based on createdAt)
-  async function loadDashboard() {
+  async function loadData() {
     try {
-      const q = query(collection(db, "dailyReports"), where("date", "==", todayDate));
+      const q = query(collection(db, "dailyReports"), where("date", "==", currentDate));
       const snapshot = await getDocs(q);
       
       let totalRevenue = 0;
       let totalCovers = 0;
-      let revenueMap = {
-        "The Restaurant": 0,
-        "The Beach House": 0,
-        "Nihon": 0
-      };
-      let allReports = [];
+      let revenueMap = { "The Restaurant": 0, "The Beach House": 0, "Nihon": 0 };
+      let reportsArray = [];
       
       snapshot.forEach(doc => {
         const data = doc.data();
-        allReports.push(data);
+        reportsArray.push({ id: doc.id, ...data });
         const rev = Number(data.revenue) || 0;
         const cov = Number(data.covers) || 0;
         totalRevenue += rev;
         totalCovers += cov;
-        if (revenueMap.hasOwnProperty(data.restaurant)) {
-          revenueMap[data.restaurant] += rev;
-        }
+        if (revenueMap.hasOwnProperty(data.restaurant)) revenueMap[data.restaurant] += rev;
       });
       
-      // sort reports by creation time (newest first)
-      allReports.sort((a,b) => {
+      reportsArray.sort((a,b) => {
         const timeA = a.createdAt?.toMillis?.() || 0;
         const timeB = b.createdAt?.toMillis?.() || 0;
         return timeB - timeA;
       });
       
-      // build PRO timeline (each entry shows its own exact date & time)
-      if (allReports.length === 0) {
-        reportsFeed.innerHTML = `<div class="empty-state-pro"><i class="fas fa-file-alt"></i> No reports today. Start by saving new entry.</div>`;
+      if (reportsArray.length === 0) {
+        reportsFeed.innerHTML = `<div class="empty-state"><i class="fas fa-glass-cheers"></i> No reports yet. Add your first entry or reset to fresh start.</div>`;
       } else {
         let html = "";
-        allReports.forEach(rep => {
-          const restName = rep.restaurant;
-          const rev = Number(rep.revenue);
-          const cov = Number(rep.covers);
-          const manager = rep.manager || "—";
-          const createdAtTimestamp = rep.createdAt;
-          const displayDateTime = formatFullDateTime(createdAtTimestamp);
-          
+        reportsArray.forEach(rep => {
           html += `
-            <div class="report-item-pro">
-              <div class="row-flex">
-                <span class="resto-badge-pro"><i class="fas fa-flag-checkered"></i> ${escapeHtml(restName)}</span>
-                <span class="datetime-badge"><i class="far fa-calendar-clock"></i> ${escapeHtml(displayDateTime)}</span>
+            <div class="report-entry">
+              <div class="entry-row">
+                <span class="resto-badge"><i class="fas fa-flag-checkered"></i> ${escapeHtml(rep.restaurant)}</span>
+                <span class="timestamp-badge"><i class="far fa-hourglass-half"></i> ${escapeHtml(formatOwnDateTime(rep.createdAt))}</span>
               </div>
-              <div class="metrics-inline">
-                <span class="metric-pill"><i class="fas fa-group"></i> ${cov.toLocaleString()} covers</span>
-                <span class="metric-pill"><i class="fas fa-chart-simple"></i> ${rev.toLocaleString()} EGP</span>
-                <span class="metric-pill"><i class="fas fa-user"></i> ${escapeHtml(manager)}</span>
+              <div class="stats-row">
+                <span class="stat-bubble"><i class="fas fa-group"></i> ${rep.covers.toLocaleString()} covers</span>
+                <span class="stat-bubble"><i class="fas fa-chart-line"></i> ${rep.revenue.toLocaleString()} EGP</span>
+                <span class="stat-bubble"><i class="fas fa-user-check"></i> ${escapeHtml(rep.manager)}</span>
               </div>
             </div>
           `;
@@ -505,140 +564,124 @@
         reportsFeed.innerHTML = html;
       }
       
-      // update KPIs
       totalRevenueSpan.innerText = totalRevenue.toLocaleString() + " EGP";
       totalCoversSpan.innerText = totalCovers.toLocaleString();
       const avg = totalCovers > 0 ? (totalRevenue / totalCovers).toFixed(2) : 0;
       avgSpendSpan.innerText = avg.toLocaleString() + " EGP";
       
       let best = "—";
-      let maxVal = 0;
+      let maxRev = 0;
       for (let [r, val] of Object.entries(revenueMap)) {
-        if (val > maxVal) {
-          maxVal = val;
-          best = r;
-        }
+        if (val > maxRev) { maxRev = val; best = r; }
       }
-      bestRestSpan.innerText = (maxVal === 0) ? "—" : best;
+      bestRestSpan.innerText = (maxRev === 0) ? "—" : best;
       
-      // update chart
       if (revenueChart) {
-        revenueChart.data.datasets[0].data = [
-          revenueMap["The Restaurant"] || 0,
-          revenueMap["The Beach House"] || 0,
-          revenueMap["Nihon"] || 0
-        ];
+        revenueChart.data.datasets[0].data = [revenueMap["The Restaurant"] || 0, revenueMap["The Beach House"] || 0, revenueMap["Nihon"] || 0];
         revenueChart.update();
       }
-      
     } catch (err) {
       console.error(err);
-      showMessage("Firestore load error: update security rules (allow read/write)", true);
-      reportsFeed.innerHTML = `<div class="empty-state-pro"><i class="fas fa-database"></i> Connection issue. Check Firebase rules.</div>`;
+      showMessage("Firebase load error: check security rules", true);
+      reportsFeed.innerHTML = `<div class="empty-state"><i class="fas fa-plug"></i> Connection issue. Update Firestore rules.</div>`;
     }
   }
 
-  // SAVE REPORT (auto adds full serverTimestamp + date field) — NO NOTES field
-  async function saveReportToFirebase() {
+  async function saveReport() {
     const selectedRest = restaurantSelect.value;
-    if (!selectedRest || selectedRest === "") {
-      showMessage("Please select a restaurant", true);
-      return;
-    }
+    if (!selectedRest || selectedRest === "") { showMessage("Please select a restaurant", true); return; }
     const covers = parseInt(coversInput.value);
     const revenue = parseInt(revenueInput.value);
     const manager = managerInput.value.trim();
-    
-    if (!covers || covers <= 0 || isNaN(covers)) {
-      showMessage("Covers must be a positive number", true);
-      return;
-    }
-    if (!revenue || revenue <= 0 || isNaN(revenue)) {
-      showMessage("Revenue must be a positive number", true);
-      return;
-    }
-    if (!manager || manager.length < 2) {
-      showMessage("Manager name is required", true);
-      return;
-    }
+    if (!covers || covers <= 0 || isNaN(covers)) { showMessage("Covers must be a positive number", true); return; }
+    if (!revenue || revenue <= 0 || isNaN(revenue)) { showMessage("Revenue must be a positive number", true); return; }
+    if (!manager || manager.length < 2) { showMessage("Manager name required", true); return; }
     
     try {
-      // Each report stores its own date + serverTimestamp (exact date & time)
       await addDoc(collection(db, "dailyReports"), {
-        restaurant: selectedRest,
-        covers: covers,
-        revenue: revenue,
-        manager: manager,
-        date: todayDate,          // used for daily filtering
-        createdAt: serverTimestamp()  // 🔥 precise date & time per report
+        restaurant: selectedRest, covers, revenue, manager, date: currentDate, createdAt: serverTimestamp()
       });
-      
-      showMessage(`✅ ${selectedRest} — ${revenue.toLocaleString()} EGP saved with timestamp`, false);
-      
-      // reset form
-      restaurantSelect.value = "";
-      coversInput.value = "";
-      revenueInput.value = "";
-      managerInput.value = "";
-      
-      // refresh dashboard
-      await loadDashboard();
-      
+      showMessage(`✨ ${selectedRest} — ${revenue.toLocaleString()} EGP saved with own timestamp`, false);
+      restaurantSelect.value = ""; coversInput.value = ""; revenueInput.value = ""; managerInput.value = "";
+      await loadData();
     } catch (err) {
-      console.error(err);
-      showMessage(`Save error: ${err.message}. Ensure Firestore allows writes`, true);
+      showMessage(`Save failed: ${err.message}`, true);
     }
   }
-  
-  // Chart initialization (premium style)
-  function initRevenueChart() {
+
+  // RESET FUNCTION: deletes all documents for today's date
+  async function resetTodayData() {
+    try {
+      const q = query(collection(db, "dailyReports"), where("date", "==", currentDate));
+      const snapshot = await getDocs(q);
+      if (snapshot.empty) {
+        showMessage("No data to reset for today", false);
+        return;
+      }
+      const deletePromises = [];
+      snapshot.forEach(doc => {
+        deletePromises.push(deleteDoc(doc.ref));
+      });
+      await Promise.all(deletePromises);
+      showMessage("🗑️ All today's reports have been reset successfully", false);
+      await loadData();
+    } catch (err) {
+      console.error(err);
+      showMessage(`Reset error: ${err.message}. Check Firebase permissions`, true);
+    }
+  }
+
+  // Modal confirmation for reset
+  function showResetConfirmation() {
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'modal-overlay';
+    modalDiv.innerHTML = `
+      <div class="modal-card">
+        <i class="fas fa-trash-alt" style="font-size: 3rem; color: #C44536; margin-bottom: 12px;"></i>
+        <h3>Reset Today's Data</h3>
+        <p style="margin: 16px 0; color: #4A627A;">This will permanently delete <strong>ALL reports</strong> for ${currentDate}. This action cannot be undone.</p>
+        <div class="modal-buttons">
+          <button class="modal-btn btn-cancel" id="cancelResetBtn">Cancel</button>
+          <button class="modal-btn btn-confirm" id="confirmResetBtn">Yes, Reset</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modalDiv);
+    
+    const cancelBtn = document.getElementById('cancelResetBtn');
+    const confirmBtn = document.getElementById('confirmResetBtn');
+    
+    const closeModal = () => modalDiv.remove();
+    cancelBtn.addEventListener('click', closeModal);
+    confirmBtn.addEventListener('click', async () => {
+      await resetTodayData();
+      closeModal();
+    });
+    modalDiv.addEventListener('click', (e) => { if (e.target === modalDiv) closeModal(); });
+  }
+
+  function initChart() {
     revenueChart = new Chart(chartCtx, {
       type: 'bar',
       data: {
         labels: ['The Restaurant', 'The Beach House', 'Nihon'],
-        datasets: [{
-          label: 'Revenue (EGP)',
-          data: [0, 0, 0],
-          backgroundColor: ['#226688', '#308A6E', '#C27E3A'],
-          borderRadius: 14,
-          barPercentage: 0.7,
-          categoryPercentage: 0.8
-        }]
+        datasets: [{ label: 'Revenue (EGP)', data: [0, 0, 0], backgroundColor: ['#F4A261', '#2A9D8F', '#E76F51'], borderRadius: 16 }]
       },
       options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { position: 'top', labels: { font: { size: 11, weight: '600' } } },
-          tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toLocaleString()} EGP` } }
-        },
-        scales: {
-          y: { beginAtZero: true, grid: { color: '#eef2f5' }, ticks: { callback: (val) => val.toLocaleString() } },
-          x: { ticks: { font: { weight: '500' } } }
-        }
+        responsive: true, maintainAspectRatio: true,
+        plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' } } }, tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toLocaleString()} EGP` } } },
+        scales: { y: { beginAtZero: true, ticks: { callback: (val) => val.toLocaleString() } } }
       }
     });
   }
   
-  function escapeHtml(str) {
-    if (!str) return "";
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    });
-  }
+  function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
   
-  // event binding
-  saveBtn.addEventListener("click", saveReportToFirebase);
-  initRevenueChart();
-  loadDashboard();
-  
-  // optional refresh on visibility
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) loadDashboard();
-  });
+  saveBtn.addEventListener("click", saveReport);
+  resetBtn.addEventListener("click", showResetConfirmation);
+  initChart();
+  loadData();
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) loadData(); });
 </script>
 </body>
 </html>
