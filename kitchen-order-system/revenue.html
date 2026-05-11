@@ -3,308 +3,333 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Restaurant Analytics Dashboard | Live Firebase</title>
 
-<title>Premium Restaurant Analytics Dashboard</title>
-
+<!-- Google Fonts & Libraries -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<!-- Firebase Modular SDK v9+ (compatible with your import config) -->
+<script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+    }
+  }
+</script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <style>
-
-:root{
-    --primary:#2563eb;
-    --success:#16a34a;
-    --warning:#ea580c;
-    --danger:#dc2626;
-    --dark:#0f172a;
-    --card:#ffffff;
-    --bg:#f1f5f9;
-    --border:#e2e8f0;
+:root {
+    --primary: #2563eb;
+    --success: #16a34a;
+    --warning: #ea580c;
+    --danger: #dc2626;
+    --dark: #0f172a;
+    --card: #ffffff;
+    --bg: #f1f5f9;
+    --border: #e2e8f0;
 }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Inter',sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
-body{
-    background:var(--bg);
-    color:#111827;
+body {
+    background: var(--bg);
+    color: #111827;
 }
 
-.sidebar{
-    position:fixed;
-    width:260px;
-    height:100vh;
-    background:var(--dark);
-    color:white;
-    padding:25px;
+.sidebar {
+    position: fixed;
+    width: 260px;
+    height: 100vh;
+    background: var(--dark);
+    color: white;
+    padding: 25px;
+    z-index: 10;
 }
 
-.logo{
-    font-size:28px;
-    font-weight:800;
-    margin-bottom:40px;
+.logo {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    letter-spacing: -0.5px;
 }
 
-.menu{
-    display:flex;
-    flex-direction:column;
-    gap:15px;
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.menu a{
-    text-decoration:none;
-    color:#cbd5e1;
-    padding:14px;
-    border-radius:12px;
-    transition:.2s;
-    font-weight:500;
+.menu a {
+    text-decoration: none;
+    color: #cbd5e1;
+    padding: 14px;
+    border-radius: 12px;
+    transition: .2s;
+    font-weight: 500;
+    cursor: pointer;
 }
 
-.menu a:hover{
-    background:#1e293b;
-    color:white;
+.menu a:hover {
+    background: #1e293b;
+    color: white;
 }
 
-.main{
-    margin-left:260px;
-    padding:30px;
+.main {
+    margin-left: 260px;
+    padding: 30px;
 }
 
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:30px;
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
 
-.topbar h1{
-    font-size:32px;
-    font-weight:800;
+.topbar h1 {
+    font-size: 32px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #1e293b, #2563eb);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
-.date{
-    background:white;
-    padding:12px 18px;
-    border-radius:14px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
+.date {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    font-weight: 600;
 }
 
-.cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-    margin-bottom:25px;
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
 }
 
-.card{
-    background:var(--card);
-    padding:25px;
-    border-radius:24px;
-    box-shadow:0 5px 20px rgba(0,0,0,.05);
-    border:1px solid var(--border);
+.card {
+    background: var(--card);
+    padding: 25px;
+    border-radius: 24px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.05);
+    border: 1px solid var(--border);
+    transition: transform 0.2s ease;
 }
 
-.card h3{
-    color:#64748b;
-    font-size:15px;
-    margin-bottom:10px;
+.card:hover {
+    transform: translateY(-3px);
 }
 
-.card .value{
-    font-size:36px;
-    font-weight:800;
+.card h3 {
+    color: #64748b;
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-weight: 600;
 }
 
-.blue{color:var(--primary);}
-.green{color:var(--success);}
-.orange{color:var(--warning);}
-.red{color:var(--danger);}
-
-.grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:25px;
-    margin-bottom:25px;
+.card .value {
+    font-size: 36px;
+    font-weight: 800;
 }
 
-.panel{
-    background:white;
-    padding:25px;
-    border-radius:24px;
-    box-shadow:0 5px 20px rgba(0,0,0,.05);
-    border:1px solid var(--border);
+.blue { color: var(--primary); }
+.green { color: var(--success); }
+.orange { color: var(--warning); }
+.red { color: var(--danger); }
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
 }
 
-.panel h2{
-    margin-bottom:20px;
+.panel {
+    background: white;
+    padding: 25px;
+    border-radius: 24px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.05);
+    border: 1px solid var(--border);
 }
 
-.form-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:18px;
+.panel h2 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 700;
 }
 
-.input-group{
-    display:flex;
-    flex-direction:column;
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
 }
 
-.input-group label{
-    margin-bottom:8px;
-    font-weight:600;
-    font-size:14px;
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #334155;
 }
 
 .input-group input,
-.input-group select{
-    padding:14px;
-    border:1px solid var(--border);
-    border-radius:14px;
-    outline:none;
-    font-size:15px;
+.input-group select {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    outline: none;
+    font-size: 15px;
+    transition: 0.2s;
 }
 
-button{
-    background:var(--primary);
-    color:white;
-    border:none;
-    padding:14px 22px;
-    border-radius:14px;
-    font-weight:700;
-    cursor:pointer;
-    transition:.2s;
+.input-group input:focus,
+.input-group select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
 }
 
-button:hover{
-    transform:translateY(-2px);
+button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 100%;
+    font-size: 15px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+button:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(37,99,235,0.3);
 }
 
-th{
-    background:#eff6ff;
-    color:#1e3a8a;
-    text-align:left;
-    padding:14px;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-td{
-    padding:14px;
-    border-bottom:1px solid #f1f5f9;
+th {
+    background: #eff6ff;
+    color: #1e3a8a;
+    text-align: left;
+    padding: 14px;
+    font-weight: 700;
 }
 
-.badge{
-    background:#dcfce7;
-    color:#166534;
-    padding:6px 12px;
-    border-radius:999px;
-    font-size:12px;
-    font-weight:700;
+td {
+    padding: 14px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.chart-container{
-    height:350px;
+.badge {
+    background: #dcfce7;
+    color: #166534;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
 }
 
-@media(max-width:1000px){
+.chart-container {
+    height: 350px;
+}
 
-    .grid{
-        grid-template-columns:1fr;
+.empty-row td {
+    text-align: center;
+    color: #94a3b8;
+    padding: 40px;
+}
+
+@media (max-width: 1000px) {
+    .grid {
+        grid-template-columns: 1fr;
     }
-
-    .form-grid{
-        grid-template-columns:1fr;
+    .form-grid {
+        grid-template-columns: 1fr;
     }
 }
 
-@media(max-width:768px){
-
-    .sidebar{
-        position:relative;
-        width:100%;
-        height:auto;
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
     }
-
-    .main{
-        margin-left:0;
+    .main {
+        margin-left: 0;
+    }
+    .cards {
+        grid-template-columns: 1fr;
     }
 }
-
 </style>
 </head>
-
 <body>
 
 <div class="sidebar">
-
-    <div class="logo">RESTO PRO</div>
-
+    <div class="logo">🍽️ RESTO PRO</div>
     <div class="menu">
-        <a href="#">Dashboard</a>
-        <a href="#">Revenue</a>
-        <a href="#">Reports</a>
-        <a href="#">Managers</a>
-        <a href="#">Settings</a>
+        <a>📊 Dashboard</a>
+        <a>💰 Revenue</a>
+        <a>📑 Reports</a>
+        <a>👥 Managers</a>
+        <a>⚙️ Settings</a>
     </div>
-
 </div>
 
 <div class="main">
-
     <div class="topbar">
         <h1>Restaurant Analytics</h1>
         <div class="date" id="todayDate"></div>
     </div>
 
-    <!-- STATISTICS -->
-
+    <!-- STATISTICS CARDS -->
     <div class="cards">
-
         <div class="card">
-            <h3>Total Revenue</h3>
+            <h3>📈 Total Revenue</h3>
             <div class="value green" id="totalRevenue">0 EGP</div>
         </div>
-
         <div class="card">
-            <h3>Total Covers</h3>
+            <h3>🍽️ Total Covers</h3>
             <div class="value blue" id="totalCovers">0</div>
         </div>
-
         <div class="card">
-            <h3>Average Spend</h3>
+            <h3>💵 Average Spend</h3>
             <div class="value orange" id="avgSpend">0 EGP</div>
         </div>
-
         <div class="card">
-            <h3>Best Restaurant</h3>
+            <h3>🏆 Best Restaurant</h3>
             <div class="value red" id="bestRestaurant">-</div>
         </div>
-
     </div>
 
     <div class="grid">
-
-        <!-- ENTRY PANEL -->
-
+        <!-- DAILY REPORT ENTRY -->
         <div class="panel">
-
-            <h2>Daily Report Entry</h2>
-
+            <h2>📝 Daily Report Entry</h2>
             <div class="form-grid">
-
                 <div class="input-group">
                     <label>Restaurant</label>
                     <select id="restaurant">
@@ -313,239 +338,246 @@ td{
                         <option>Restaurant C</option>
                     </select>
                 </div>
-
                 <div class="input-group">
-                    <label>Covers</label>
-                    <input type="number" id="covers">
+                    <label>Covers (number of guests)</label>
+                    <input type="number" id="covers" placeholder="e.g., 45">
                 </div>
-
                 <div class="input-group">
                     <label>Revenue (EGP)</label>
-                    <input type="number" id="revenue">
+                    <input type="number" id="revenue" placeholder="e.g., 12500">
                 </div>
-
                 <div class="input-group">
-                    <label>Manager</label>
-                    <input type="text" id="manager">
+                    <label>Manager Name</label>
+                    <input type="text" id="manager" placeholder="Full name">
                 </div>
-
             </div>
-
             <br>
-
-            <button onclick="saveData()">Save Report</button>
-
+            <button onclick="saveData()">💾 Save Report</button>
         </div>
 
-        <!-- CHART -->
-
+        <!-- REVENUE CHART -->
         <div class="panel">
-
-            <h2>Revenue Analytics</h2>
-
+            <h2>📊 Revenue Analytics (Today)</h2>
             <div class="chart-container">
                 <canvas id="revenueChart"></canvas>
             </div>
-
         </div>
-
     </div>
 
-    <!-- TABLE -->
-
+    <!-- TODAY'S REPORTS TABLE -->
     <div class="panel">
-
-        <h2>Today Reports</h2>
-
+        <h2>📋 Today's Reports</h2>
         <table>
-
             <thead>
-                <tr>
-                    <th>Restaurant</th>
-                    <th>Covers</th>
-                    <th>Revenue</th>
-                    <th>Manager</th>
-                    <th>Status</th>
-                </tr>
+                <tr><th>Restaurant</th><th>Covers</th><th>Revenue</th><th>Manager</th><th>Status</th></tr>
             </thead>
-
-            <tbody id="tableBody"></tbody>
-
+            <tbody id="tableBody">
+                <tr class="empty-row"><td colspan="5">Loading reports...</td></tr>
+            </tbody>
         </table>
-
     </div>
-
 </div>
 
-<script>
+<script type="module">
+    // ------------------------------
+    // FIREBASE MODULAR IMPORT (YOUR CONFIG)
+    // ------------------------------
+    import { initializeApp } from "firebase/app";
+    import { getFirestore, collection, addDoc, query, where, getDocs, serverTimestamp } from "firebase/firestore";
 
-// FIREBASE CONFIG
-
-const firebaseConfig = {
-
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID"
-
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.firestore();
-
-// DATE
-
-const today = new Date().toISOString().split('T')[0];
-document.getElementById("todayDate").innerText = today;
-
-// CHART
-
-const ctx = document.getElementById('revenueChart');
-
-const revenueChart = new Chart(ctx, {
-
-    type: 'bar',
-
-    data: {
-        labels: ['Restaurant A', 'Restaurant B', 'Restaurant C'],
-        datasets: [{
-            label: 'Revenue',
-            data: [0,0,0],
-            borderWidth: 2
-        }]
-    },
-
-    options: {
-        responsive:true,
-        maintainAspectRatio:false
-    }
-
-});
-
-// SAVE DATA
-
-async function saveData(){
-
-    const restaurant = document.getElementById("restaurant").value;
-    const covers = Number(document.getElementById("covers").value);
-    const revenue = Number(document.getElementById("revenue").value);
-    const manager = document.getElementById("manager").value;
-
-    if(!covers || !revenue || !manager){
-
-        alert("Please fill all fields");
-        return;
-    }
-
-    await db.collection("dailyReports").add({
-
-        restaurant,
-        covers,
-        revenue,
-        manager,
-        date: today,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-
-    });
-
-    alert("Saved Successfully");
-
-    loadData();
-
-    document.getElementById("covers").value = "";
-    document.getElementById("revenue").value = "";
-    document.getElementById("manager").value = "";
-}
-
-// LOAD DATA
-
-async function loadData(){
-
-    const snapshot = await db.collection("dailyReports")
-    .where("date","==",today)
-    .get();
-
-    let tableHTML = "";
-
-    let totalRevenue = 0;
-    let totalCovers = 0;
-
-    let revenueMap = {
-        "Restaurant A":0,
-        "Restaurant B":0,
-        "Restaurant C":0
+    // Your exact Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
+      authDomain: "restaurant-analytics-27bd8.firebaseapp.com",
+      databaseURL: "https://restaurant-analytics-27bd8-default-rtdb.firebaseio.com",
+      projectId: "restaurant-analytics-27bd8",
+      storageBucket: "restaurant-analytics-27bd8.firebasestorage.app",
+      messagingSenderId: "280901089364",
+      appId: "1:280901089364:web:26958c4c5334092194d5c1"
     };
 
-    snapshot.forEach(doc=>{
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    console.log("🔥 Firebase initialized successfully with Firestore");
 
-        const data = doc.data();
+    // Helper: Get today's date in YYYY-MM-DD format
+    const getTodayStr = () => {
+        const today = new Date();
+        return today.toISOString().split('T')[0];
+    };
+    
+    const todayDate = getTodayStr();
+    document.getElementById("todayDate").innerText = todayDate;
 
-        totalRevenue += data.revenue;
-        totalCovers += data.covers;
-
-        revenueMap[data.restaurant] += data.revenue;
-
-        tableHTML += `
-
-        <tr>
-            <td>${data.restaurant}</td>
-            <td>${data.covers}</td>
-            <td>${data.revenue.toLocaleString()} EGP</td>
-            <td>${data.manager}</td>
-            <td><span class="badge">Submitted</span></td>
-        </tr>
-
-        `;
+    // ---------- CHART INITIALIZATION ----------
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    let revenueChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Restaurant A', 'Restaurant B', 'Restaurant C'],
+            datasets: [{
+                label: 'Revenue (EGP)',
+                data: [0, 0, 0],
+                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                borderRadius: 10,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toLocaleString()} EGP` } }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { callback: (val) => val.toLocaleString() + ' EGP' } }
+            }
+        }
     });
 
-    document.getElementById("tableBody").innerHTML = tableHTML;
-
-    document.getElementById("totalRevenue").innerText =
-        totalRevenue.toLocaleString() + " EGP";
-
-    document.getElementById("totalCovers").innerText =
-        totalCovers;
-
-    const avg =
-        totalCovers > 0
-        ? (totalRevenue / totalCovers).toFixed(2)
-        : 0;
-
-    document.getElementById("avgSpend").innerText =
-        avg + " EGP";
-
-    // BEST RESTAURANT
-
-    let best = "-";
-    let maxRevenue = 0;
-
-    for(let key in revenueMap){
-
-        if(revenueMap[key] > maxRevenue){
-
-            maxRevenue = revenueMap[key];
-            best = key;
+    // ---------- LOAD DATA FROM FIRESTORE (TODAY'S REPORTS) ----------
+    async function loadData() {
+        try {
+            const reportsRef = collection(db, "dailyReports");
+            const q = query(reportsRef, where("date", "==", todayDate));
+            const querySnapshot = await getDocs(q);
+            
+            let tableHTML = "";
+            let totalRevenue = 0;
+            let totalCovers = 0;
+            let revenueMap = {
+                "Restaurant A": 0,
+                "Restaurant B": 0,
+                "Restaurant C": 0
+            };
+            
+            // If no documents
+            if (querySnapshot.empty) {
+                tableHTML = `<tr class="empty-row"><td colspan="5">✨ No reports for today. Add your first entry!</td></tr>`;
+            } else {
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    totalRevenue += data.revenue;
+                    totalCovers += data.covers;
+                    
+                    if (revenueMap.hasOwnProperty(data.restaurant)) {
+                        revenueMap[data.restaurant] += data.revenue;
+                    } else {
+                        // fallback in case restaurant name is new but we only track A/B/C
+                        revenueMap[data.restaurant] = (revenueMap[data.restaurant] || 0) + data.revenue;
+                    }
+                    
+                    tableHTML += `
+                        <tr>
+                            <td><strong>${escapeHtml(data.restaurant)}</strong></td>
+                            <td>${data.covers.toLocaleString()}</td>
+                            <td>${data.revenue.toLocaleString()} EGP</td>
+                            <td>${escapeHtml(data.manager)}</td>
+                            <td><span class="badge">✅ Submitted</span></td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            document.getElementById("tableBody").innerHTML = tableHTML;
+            
+            // Update KPI cards
+            document.getElementById("totalRevenue").innerHTML = totalRevenue.toLocaleString() + " EGP";
+            document.getElementById("totalCovers").innerHTML = totalCovers.toLocaleString();
+            const avgSpend = totalCovers > 0 ? (totalRevenue / totalCovers).toFixed(2) : 0;
+            document.getElementById("avgSpend").innerHTML = avgSpend.toLocaleString() + " EGP";
+            
+            // Determine best restaurant by revenue
+            let bestRestaurant = "-";
+            let maxRev = 0;
+            for (let [rest, rev] of Object.entries(revenueMap)) {
+                if (rev > maxRev) {
+                    maxRev = rev;
+                    bestRestaurant = rest;
+                }
+            }
+            if (maxRev === 0) bestRestaurant = "—";
+            document.getElementById("bestRestaurant").innerText = bestRestaurant;
+            
+            // Update Chart Data
+            revenueChart.data.datasets[0].data = [
+                revenueMap["Restaurant A"] || 0,
+                revenueMap["Restaurant B"] || 0,
+                revenueMap["Restaurant C"] || 0
+            ];
+            revenueChart.update();
+            
+        } catch (error) {
+            console.error("Error loading data: ", error);
+            document.getElementById("tableBody").innerHTML = `<tr class="empty-row"><td colspan="5">⚠️ Firebase error: ${error.message}</td></tr>`;
         }
     }
+    
+    // Helper to prevent XSS
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
 
-    document.getElementById("bestRestaurant").innerText = best;
-
-    // UPDATE CHART
-
-    revenueChart.data.datasets[0].data = [
-
-        revenueMap["Restaurant A"],
-        revenueMap["Restaurant B"],
-        revenueMap["Restaurant C"]
-
-    ];
-
-    revenueChart.update();
-}
-
-loadData();
-
+    // ---------- SAVE DATA TO FIRESTORE ----------
+    window.saveData = async function() {
+        const restaurant = document.getElementById("restaurant").value;
+        const coversInput = document.getElementById("covers").value;
+        const revenueInput = document.getElementById("revenue").value;
+        const manager = document.getElementById("manager").value.trim();
+        
+        if (!coversInput || !revenueInput || !manager) {
+            alert("❌ Please fill all fields: Covers, Revenue, and Manager name.");
+            return;
+        }
+        
+        const covers = Number(coversInput);
+        const revenue = Number(revenueInput);
+        
+        if (isNaN(covers) || covers <= 0 || isNaN(revenue) || revenue <= 0) {
+            alert("⚠️ Covers and Revenue must be positive numbers.");
+            return;
+        }
+        
+        try {
+            const docData = {
+                restaurant: restaurant,
+                covers: covers,
+                revenue: revenue,
+                manager: manager,
+                date: todayDate,
+                createdAt: serverTimestamp()
+            };
+            
+            await addDoc(collection(db, "dailyReports"), docData);
+            alert(`✅ Report saved for ${restaurant} on ${todayDate}`);
+            
+            // Clear input fields
+            document.getElementById("covers").value = "";
+            document.getElementById("revenue").value = "";
+            document.getElementById("manager").value = "";
+            
+            // Reload dashboard data
+            await loadData();
+        } catch (error) {
+            console.error("Error adding document: ", error);
+            alert("🔥 Firebase Save Error: " + error.message + "\nPlease check Firestore rules/permissions.");
+        }
+    };
+    
+    // Initialize data on page load
+    loadData().catch(err => console.error("Initial load error", err));
+    
+    // Optional: real-time vibe refresh (but loadData on demand is enough)
+    window.addEventListener('focus', () => { loadData(); });
 </script>
-
 </body>
 </html>
