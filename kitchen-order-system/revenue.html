@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-  <title>CHROMA RESTRO | Dine-in + Room Service Pro</title>
-  <!-- Google Fonts + Font Awesome 6 -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <title>Restaurant Management System | The Restaurant • Room Service • Beach House • Nihon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script type="importmap">
     {
@@ -25,427 +23,491 @@
     }
 
     body {
-      background: linear-gradient(145deg, #f6f9fc 0%, #edf2f9 100%);
+      background: #f0f4f8;
       font-family: 'Inter', sans-serif;
-      padding: 24px 20px 56px 20px;
-      color: #121926;
+      padding: 16px 14px 40px 14px;
+      color: #1a2c3e;
     }
 
-    .dashboard {
-      max-width: 1400px;
+    .app-container {
+      max-width: 700px;
       margin: 0 auto;
+      width: 100%;
     }
 
-    /* VIBRANT HEADER */
-    .hero-vibrant {
-      background: linear-gradient(125deg, #0F2C3D 0%, #1E5A7D 45%, #2D8F6E 100%);
-      border-radius: 48px;
-      padding: 32px 36px;
-      margin-bottom: 32px;
-      box-shadow: 0 25px 40px -14px rgba(0,0,0,0.28);
-      position: relative;
-      overflow: hidden;
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #0f2c3d 0%, #1b5a7a 100%);
+      border-radius: 28px;
+      padding: 20px;
+      margin-bottom: 20px;
+      color: white;
     }
-    .hero-vibrant::before {
-      content: '';
-      position: absolute;
-      top: -30%;
-      right: -5%;
-      width: 320px;
-      height: 320px;
-      background: radial-gradient(circle, rgba(255,215,150,0.2) 0%, rgba(255,255,255,0) 70%);
-      border-radius: 50%;
-    }
-    .hero-flex {
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 18px;
+      gap: 10px;
     }
-    .brand h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #FFF8E7, #FFE6B3);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.3px;
-    }
-    .brand p {
-      color: #CFE9FF;
-      font-size: 0.85rem;
-      margin-top: 6px;
-      font-weight: 500;
-    }
-    .live-tag {
-      background: rgba(0,0,0,0.3);
-      backdrop-filter: blur(12px);
-      padding: 8px 24px;
-      border-radius: 80px;
+    .date-badge {
+      background: rgba(255,255,255,0.2);
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 0.7rem;
       font-family: monospace;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: #FFECB3;
-      border: 1px solid rgba(255,215,140,0.5);
     }
 
-    /* KPI CARDS */
-    .kpi-grid {
+    /* Navigation Icons Grid */
+    .nav-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      margin-bottom: 36px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
     }
-    .kpi-card {
-      border-radius: 36px;
-      padding: 22px 22px;
-      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-      box-shadow: 0 12px 22px -10px rgba(0,0,0,0.08);
-      border: none;
+    .nav-card {
+      background: white;
+      border-radius: 20px;
+      padding: 14px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-    .kpi-card:nth-child(1) { background: linear-gradient(135deg, #FFF2E6, #FFE0C2); border-bottom: 4px solid #E67E22; }
-    .kpi-card:nth-child(2) { background: linear-gradient(135deg, #E8F0FE, #D4E4FF); border-bottom: 4px solid #2C7DA0; }
-    .kpi-card:nth-child(3) { background: linear-gradient(135deg, #E6F7F0, #C8F0DC); border-bottom: 4px solid #2E8B57; }
-    .kpi-card:nth-child(4) { background: linear-gradient(135deg, #FCE4EC, #F8D7E3); border-bottom: 4px solid #C44569; }
-    .kpi-card:hover { transform: translateY(-6px) scale(1.01); }
-    .kpi-title {
+    .nav-card.active {
+      border-color: #1b5a7a;
+      background: #e8f0f5;
+    }
+    .nav-card:active { transform: scale(0.96); }
+    .nav-icon {
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+    .nav-title {
       font-size: 0.7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: #4A5B6E;
-      margin-bottom: 12px;
+      font-weight: 600;
+      color: #1a2c3e;
+    }
+    .reset-card {
+      background: #fff5f0;
+    }
+    .reset-card .nav-title {
+      color: #e67e22;
+    }
+    .analytics-card {
+      background: #e8f0f5;
+    }
+
+    /* Form Panel */
+    .form-panel {
+      background: white;
+      border-radius: 28px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      border: 1px solid #e2ecf3;
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 18px;
       display: flex;
       align-items: center;
       gap: 8px;
+      color: #1b5a7a;
     }
-    .kpi-value {
-      font-size: 2.5rem;
-      font-weight: 800;
-      line-height: 1.2;
-      color: #1A2C3C;
-    }
-
-    /* TWO COLUMN LAYOUT */
-    .two-col-chroma {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
-      margin-bottom: 38px;
-    }
-    .glass-panel {
-      background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(2px);
-      border-radius: 40px;
-      padding: 28px;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
-      border: 1px solid rgba(255,255,240,0.8);
-    }
-    .panel-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      font-size: 1.3rem;
-      margin-bottom: 26px;
-      background: linear-gradient(120deg, #1F5E74, #2C7A47);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    /* FORM STYLES */
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
-    .input-group label {
-      font-weight: 700;
+    label {
+      font-weight: 600;
       font-size: 0.75rem;
       display: block;
-      margin-bottom: 8px;
-      color: #2C5F7A;
+      margin-bottom: 6px;
+      color: #4a6a7f;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
-    select, input {
+    input, select {
       width: 100%;
-      padding: 14px 20px;
-      border-radius: 34px;
-      border: 1.5px solid #E9F0F5;
-      font-size: 0.9rem;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1.5px solid #e2ecf3;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
       background: white;
-      transition: all 0.2s;
+      transition: 0.2s;
     }
-    select:focus, input:focus {
-      border-color: #F4A261;
+    input:focus, select:focus {
       outline: none;
-      box-shadow: 0 0 0 3px rgba(244,162,97,0.2);
+      border-color: #1b5a7a;
+      box-shadow: 0 0 0 3px rgba(27,90,122,0.1);
     }
-    .btn-chroma {
-      background: linear-gradient(95deg, #2C7DA0, #3A9B6E);
+    input:disabled {
+      background: #f5f7fa;
+      color: #8ba0b0;
+      cursor: not-allowed;
+    }
+    .row-2cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .row-3cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .btn-save {
+      background: #1f8a4c;
       color: white;
       border: none;
       width: 100%;
-      padding: 16px;
-      border-radius: 50px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      box-shadow: 0 6px 14px rgba(44,125,160,0.3);
-    }
-    .btn-chroma:active { transform: scale(0.97); }
-    .btn-reset {
-      background: linear-gradient(95deg, #C44536, #A8321F);
-      box-shadow: 0 6px 14px rgba(196,69,54,0.3);
-      margin-top: 8px;
-    }
-
-    /* CHART CONTAINER */
-    .chart-area {
-      height: 290px;
-      margin-top: 8px;
-    }
-
-    /* REPORTS TIMELINE */
-    .timeline-wrapper {
-      background: white;
-      border-radius: 44px;
-      overflow: hidden;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
-      border: 1px solid #F0F4FA;
-    }
-    .timeline-header {
-      padding: 22px 32px 14px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #FEFCF5;
-      border-bottom: 2px solid #FFE5B4;
-      flex-wrap: wrap;
-    }
-    .report-feed {
-      max-height: 500px;
-      overflow-y: auto;
-    }
-    .report-entry {
-      padding: 22px 32px;
-      border-bottom: 1px solid #F2F0E6;
-      transition: background 0.2s;
-    }
-    .report-entry:hover {
-      background: #FFFCF7;
-    }
-    .entry-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-    .resto-badge {
-      font-weight: 800;
-      background: linear-gradient(110deg, #F8F0E7, #FEE9D4);
-      padding: 6px 24px;
+      padding: 15px;
       border-radius: 60px;
-      font-size: 0.9rem;
-      color: #C44536;
-      border-left: 3px solid #E67E22;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.2s;
     }
-    .service-badge {
+    .btn-save:active { transform: scale(0.97); background: #156b3a; }
+    .btn-reset-danger {
+      background: #e67e22;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 15px;
+      border-radius: 60px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* KPIs */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: white;
+      border-radius: 24px;
+      padding: 14px;
+      border: 1px solid #e2ecf3;
+    }
+    .kpi-label {
+      font-size: 0.65rem;
       font-weight: 700;
-      background: #E8F0FE;
-      padding: 4px 16px;
-      border-radius: 40px;
+      color: #6b8aa3;
+      margin-bottom: 6px;
+    }
+    .kpi-number {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+    .text-green { color: #1f8a4c; }
+    .text-blue { color: #1b5a7a; }
+    .text-orange { color: #e67e22; }
+    .text-red { color: #c0392b; }
+
+    /* Chart */
+    .chart-panel {
+      background: white;
+      border-radius: 28px;
+      padding: 18px;
+      margin-bottom: 24px;
+      border: 1px solid #e2ecf3;
+    }
+    .chart-container {
+      height: 220px;
+    }
+
+    /* Analytics Section */
+    .analytics-panel {
+      background: white;
+      border-radius: 28px;
+      padding: 18px;
+      margin-bottom: 24px;
+      border: 1px solid #e2ecf3;
+    }
+
+    /* Table */
+    .table-wrapper {
+      background: white;
+      border-radius: 28px;
+      overflow-x: auto;
+      border: 1px solid #e2ecf3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+    th {
+      text-align: left;
+      padding: 14px 12px;
+      background: #f8fbfd;
       font-size: 0.7rem;
-      color: #2C7DA0;
+      font-weight: 700;
+      color: #1b5a7a;
     }
-    .timestamp-badge {
-      font-size: 0.7rem;
-      font-family: monospace;
-      background: #ECF7F0;
-      padding: 5px 16px;
-      border-radius: 40px;
-      color: #2C6B2F;
-      font-weight: 600;
-    }
-    .stats-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 22px;
-      margin: 12px 0 4px;
-    }
-    .stat-bubble {
-      background: #F7F9FE;
-      padding: 6px 18px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      color: #2F5D7A;
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eff3f8;
+      font-size: 0.85rem;
     }
     .empty-state {
       text-align: center;
-      padding: 70px 24px;
-      color: #9FAFC6;
-      font-weight: 500;
+      padding: 40px;
+      color: #9bb7ce;
     }
-
-    /* ALERT SYSTEM */
-    .alert-glass {
-      background: #2C7DA0;
-      color: white;
-      border-radius: 70px;
-      padding: 12px 24px;
-      margin-bottom: 22px;
-      font-weight: 600;
-      font-size: 0.85rem;
+    .alert {
+      padding: 10px 16px;
+      border-radius: 50px;
+      margin-bottom: 16px;
+      font-size: 0.8rem;
       text-align: center;
-      animation: slideUp 0.2s ease;
     }
-    .alert-error { background: #C44536; }
-    .alert-success { background: #2E8B57; }
-    .alert-warning { background: #E67E22; }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(8px);}
-      to { opacity: 1; transform: translateY(0);}
+    .alert-success { background: #e1f7e8; color: #1f8a4c; }
+    .alert-error { background: #fee2e2; color: #c0392b; }
+
+    .hidden-section {
+      display: none;
     }
 
-    /* MODAL */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      animation: fadeIn 0.2s ease;
-    }
-    .modal-card {
-      background: white;
-      max-width: 400px;
-      width: 90%;
-      border-radius: 48px;
-      padding: 32px 28px;
-      text-align: center;
-      box-shadow: 0 30px 40px rgba(0,0,0,0.3);
-    }
-    .modal-card h3 { font-size: 1.6rem; margin-bottom: 12px; color: #C44536; }
-    .modal-buttons { display: flex; gap: 16px; margin-top: 28px; }
-    .modal-btn { flex: 1; padding: 14px; border-radius: 60px; font-weight: 700; border: none; cursor: pointer; }
-    .btn-confirm { background: #C44536; color: white; }
-    .btn-cancel { background: #E9ECF2; color: #2C5F7A; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    @media (max-width: 950px) {
-      .kpi-grid { grid-template-columns: repeat(2,1fr); gap: 18px; }
-      .two-col-chroma { grid-template-columns: 1fr; gap: 28px; }
-      body { padding: 16px; }
-      .kpi-value { font-size: 2rem; }
-    }
     @media (max-width: 550px) {
-      .report-entry { padding: 18px; }
-      .resto-badge { font-size: 0.75rem; }
+      body { padding: 12px; }
+      .nav-grid { grid-template-columns: repeat(3, 1fr); }
+      .nav-title { font-size: 0.6rem; }
+      .nav-icon { font-size: 1.5rem; }
+      .section-title { font-size: 1rem; }
+      .kpi-number { font-size: 1.2rem; }
+      .row-3cols { grid-template-columns: 1fr; gap: 12px; }
+      .row-2cols { grid-template-columns: 1fr; }
     }
-    i { margin-right: 6px; }
   </style>
 </head>
 <body>
-<div class="dashboard">
-  <div class="hero-vibrant">
-    <div class="hero-flex">
-      <div class="brand">
-        <h1><i class="fas fa-fire-flame-curved"></i> CHROMA RESTRO</h1>
-        <p><i class="fas fa-concierge-bell"></i> Dine-in + Room Service · Unified Dashboard</p>
-      </div>
-      <div class="live-tag" id="liveClock"><i class="far fa-clock"></i> --:--</div>
+<div class="app-container">
+  <div class="header">
+    <h1>
+      🍽️ RESTO PRO
+      <span class="date-badge" id="liveDateTime"></span>
+    </h1>
+    <div style="font-size: 0.75rem; margin-top: 8px;">Food + Beverage + Covers tracking | Auto timestamps</div>
+  </div>
+
+  <div id="alertContainer"></div>
+
+  <!-- Navigation Icons -->
+  <div class="nav-grid">
+    <div class="nav-card" data-section="therestaurant">
+      <div class="nav-icon">🏛️</div>
+      <div class="nav-title">The Restaurant</div>
+    </div>
+    <div class="nav-card" data-section="roomservice">
+      <div class="nav-icon">🛎️</div>
+      <div class="nav-title">Room Service</div>
+    </div>
+    <div class="nav-card" data-section="beachhouse">
+      <div class="nav-icon">🏖️</div>
+      <div class="nav-title">Beach House</div>
+    </div>
+    <div class="nav-card" data-section="nihon">
+      <div class="nav-icon">🍣</div>
+      <div class="nav-title">Nihon</div>
+    </div>
+    <div class="nav-card analytics-card" data-section="analytics">
+      <div class="nav-icon">📊</div>
+      <div class="nav-title">Analytics</div>
+    </div>
+    <div class="nav-card reset-card" data-section="reset">
+      <div class="nav-icon">🗑️</div>
+      <div class="nav-title">Reset Data</div>
     </div>
   </div>
 
-  <div id="alertToast"></div>
-
-  <!-- KPI with vivid colors -->
-  <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-coins" style="color:#E67E22;"></i> TOTAL REVENUE</div><div class="kpi-value" id="totalRevenueVal">0 EGP</div></div>
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-utensils" style="color:#2C7DA0;"></i> TOTAL COVERS/ORDERS</div><div class="kpi-value" id="totalCoversVal">0</div></div>
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-chart-simple" style="color:#2E8B57;"></i> AVG SPEND</div><div class="kpi-value" id="avgSpendVal">0 EGP</div></div>
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-crown" style="color:#C44569;"></i> TOP PERFORMER</div><div class="kpi-value" id="bestRestVal">—</div></div>
-  </div>
-
-  <!-- ENTRY + CHART -->
-  <div class="two-col-chroma">
-    <div class="glass-panel">
-      <div class="panel-header"><i class="fas fa-calendar-plus" style="color:#E67E22;"></i> New Report Entry</div>
+  <!-- SECTION: The Restaurant -->
+  <div id="therestaurant-section" class="section-content">
+    <div class="form-panel">
+      <div class="section-title">🏛️ The Restaurant - Report Entry</div>
       <div class="input-group">
-        <label><i class="fas fa-store"></i> Venue / Restaurant</label>
-        <select id="restaurantSelect">
-          <option value="" disabled selected>— Select venue —</option>
-          <option value="The Restaurant">The Restaurant</option>
-          <option value="The Beach House">The Beach House</option>
-          <option value="Nihon">Nihon</option>
-        </select>
+        <label>👨‍💼 MANAGER NAME *</label>
+        <input type="text" id="restManager" placeholder="e.g., Ahmed Hassan">
       </div>
-      <div class="input-group">
-        <label><i class="fas fa-tag"></i> Service Type</label>
-        <select id="serviceTypeSelect">
-          <option value="" disabled selected>— Select service —</option>
-          <option value="Dine-in">🍽️ Dine-in</option>
-          <option value="Room Service">🛎️ Room Service</option>
-        </select>
+      <div class="row-3cols">
+        <div class="input-group">
+          <label>👥 COVERS (guests) *</label>
+          <input type="number" id="restCovers" placeholder="0" min="0" step="1">
+        </div>
+        <div class="input-group">
+          <label>🍕 FOOD REVENUE (EGP) *</label>
+          <input type="number" id="restFood" placeholder="0" min="0" step="1">
+        </div>
+        <div class="input-group">
+          <label>🥂 BEVERAGE REVENUE (EGP) *</label>
+          <input type="number" id="restBev" placeholder="0" min="0" step="1">
+        </div>
       </div>
       <div class="input-group">
-        <label><i class="fas fa-chair"></i> Covers / Orders</label>
-        <input type="number" id="coversInput" placeholder="Number of guests or orders">
+        <label>💰 TOTAL REVENUE (AUTO)</label>
+        <input type="number" id="restTotal" disabled placeholder="Disabled until both food & beverage filled">
       </div>
-      <div class="input-group">
-        <label><i class="fas fa-money-bill-wave"></i> Revenue (EGP)</label>
-        <input type="number" id="revenueInput" placeholder="Total revenue amount">
-      </div>
-      <div class="input-group">
-        <label><i class="fas fa-user-tie"></i> Staff / Manager</label>
-        <input type="text" id="managerInput" placeholder="Responsible person">
-      </div>
-      <button class="btn-chroma" id="saveReportBtn"><i class="fas fa-cloud-save"></i> Save report · Auto date & time</button>
-      <button class="btn-chroma btn-reset" id="resetDataBtn"><i class="fas fa-trash-alt"></i> 🧹 Reset All Data (Today)</button>
-    </div>
-
-    <div class="glass-panel">
-      <div class="panel-header"><i class="fas fa-chart-bar" style="color:#3A9B6E;"></i> Today's Revenue by Venue</div>
-      <div class="chart-area">
-        <canvas id="revenueCanvas"></canvas>
-      </div>
+      <button class="btn-save" data-save="The Restaurant">💾 SAVE REPORT</button>
     </div>
   </div>
 
-  <!-- TIMELINE: unified feed showing both Dine-in and Room Service -->
-  <div class="timeline-wrapper">
-    <div class="timeline-header">
-      <span style="font-weight: 800; font-size: 1.2rem; color: #2C5F7A;"><i class="fas fa-waveform"></i> Activity feed</span>
-      <span style="font-size: 0.7rem; background: #FFEFD6; padding: 5px 15px; border-radius: 50px; font-weight:600;"><i class="far fa-calendar-check"></i> Dine-in + Room Service</span>
+  <!-- SECTION: Room Service -->
+  <div id="roomservice-section" class="section-content hidden-section">
+    <div class="form-panel">
+      <div class="section-title">🛎️ Room Service - Report Entry</div>
+      <div class="input-group">
+        <label>👨‍💼 MANAGER NAME *</label>
+        <input type="text" id="roomManager" placeholder="e.g., Mohamed Ali">
+      </div>
+      <div class="row-3cols">
+        <div class="input-group">
+          <label>👥 COVERS (guests) *</label>
+          <input type="number" id="roomCovers" placeholder="0" min="0" step="1">
+        </div>
+        <div class="input-group">
+          <label>🍕 FOOD REVENUE (EGP) *</label>
+          <input type="number" id="roomFood" placeholder="0" min="0" step="1">
+        </div>
+        <div class="input-group">
+          <label>🥂 BEVERAGE REVENUE (EGP) *</label>
+          <input type="number" id="roomBev" placeholder="0" min="0" step="1">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>💰 TOTAL REVENUE (AUTO)</label>
+        <input type="number" id="roomTotal" disabled placeholder="Disabled until both food & beverage filled">
+      </div>
+      <button class="btn-save" data-save="Room Service">💾 SAVE REPORT</button>
     </div>
-    <div class="report-feed" id="reportsFeed">
-      <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i> Loading unified data...</div>
+  </div>
+
+  <!-- SECTION: Beach House -->
+  <div id="beachhouse-section" class="section-content hidden-section">
+    <div class="form-panel">
+      <div class="section-title">🏖️ Beach House - Report Entry</div>
+      <div class="input-group">
+        <label>👨‍💼 MANAGER NAME *</label>
+        <input type="text" id="beachManager" placeholder="e.g., Youssef Kamel">
+      </div>
+      <div class="row-3cols">
+        <div class="input-group">
+          <label>👥 COVERS (guests) *</label>
+          <input type="number" id="beachCovers" placeholder="0" min="0" step="1">
+        </div>
+        <div class="input-group">
+          <label>🍕 FOOD REVENUE (EGP) *</label>
+          <input type="number" id="beachFood" placeholder="0" min="0" step="1">
+        </div>
+        <div class="input-group">
+          <label>🥂 BEVERAGE REVENUE (EGP) *</label>
+          <input type="number" id="beachBev" placeholder="0" min="0" step="1">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>💰 TOTAL REVENUE (AUTO)</label>
+        <input type="number" id="beachTotal" disabled placeholder="Disabled until both food & beverage filled">
+      </div>
+      <button class="btn-save" data-save="The Beach House">💾 SAVE REPORT</button>
+    </div>
+  </div>
+
+  <!-- SECTION: Nihon -->
+  <div id="nihon-section" class="section-content hidden-section">
+    <div class="form-panel">
+      <div class="section-title">🍣 Nihon - Report Entry</div>
+      <div class="input-group">
+        <label>👨‍💼 MANAGER NAME *</label>
+        <input type="text" id="nihonManager" placeholder="e.g., Kenji Tanaka">
+      </div>
+      <div class="row-3cols">
+        <div class="input-group">
+          <label>👥 COVERS (guests) *</label>
+          <input type="number" id="nihonCovers" placeholder="0" min="0" step="1">
+        </div>
+        <div class="input-group">
+          <label>🍕 FOOD REVENUE (EGP) *</label>
+          <input type="number" id="nihonFood" placeholder="0" min="0" step="1">
+        </div>
+        <div class="input-group">
+          <label>🥂 BEVERAGE REVENUE (EGP) *</label>
+          <input type="number" id="nihonBev" placeholder="0" min="0" step="1">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>💰 TOTAL REVENUE (AUTO)</label>
+        <input type="number" id="nihonTotal" disabled placeholder="Disabled until both food & beverage filled">
+      </div>
+      <button class="btn-save" data-save="Nihon">💾 SAVE REPORT</button>
+    </div>
+  </div>
+
+  <!-- SECTION: Analytics Dashboard -->
+  <div id="analytics-section" class="section-content hidden-section">
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-label">💰 TOTAL REVENUE (ALL)</div><div class="kpi-number text-green" id="analyticsTotalRev">0 EGP</div></div>
+      <div class="kpi-card"><div class="kpi-label">👥 TOTAL COVERS</div><div class="kpi-number text-blue" id="analyticsTotalCovers">0</div></div>
+      <div class="kpi-card"><div class="kpi-label">🍽️ TOTAL FOOD REV</div><div class="kpi-number text-orange" id="analyticsFoodRev">0 EGP</div></div>
+      <div class="kpi-card"><div class="kpi-label">🥂 TOTAL BEVERAGE REV</div><div class="kpi-number text-red" id="analyticsBevRev">0 EGP</div></div>
+    </div>
+
+    <div class="chart-panel">
+      <div class="section-title">📊 Revenue by Restaurant</div>
+      <div class="chart-container">
+        <canvas id="restaurantChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-panel">
+      <div class="section-title">📊 Food vs Beverage (All)</div>
+      <div class="chart-container">
+        <canvas id="fbChart"></canvas>
+      </div>
+    </div>
+
+    <div class="analytics-panel">
+      <div class="section-title">📋 All Reports</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr><th>Restaurant</th><th>Manager</th><th>Covers</th><th>Food</th><th>Beverage</th><th>Total</th><th>Date & Time</th></tr>
+          </thead>
+          <tbody id="analyticsTableBody">
+            <tr><td colspan="7" class="empty-state">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Reset Data -->
+  <div id="reset-section" class="section-content hidden-section">
+    <div class="form-panel" style="text-align: center;">
+      <div class="section-title">⚠️ DANGER ZONE</div>
+      <p style="margin-bottom: 20px; color: #c0392b;">This will delete ALL reports from ALL restaurants. This action cannot be undone!</p>
+      <button class="btn-reset-danger" id="confirmResetBtn">🗑️ DELETE ALL DATA</button>
     </div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "firebase/app";
-  import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc, serverTimestamp } from "firebase/firestore";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp } from "firebase/firestore";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
     authDomain: "restaurant-analytics-27bd8.firebaseapp.com",
-    databaseURL: "https://restaurant-analytics-27bd8-default-rtdb.firebaseio.com",
     projectId: "restaurant-analytics-27bd8",
     storageBucket: "restaurant-analytics-27bd8.firebasestorage.app",
     messagingSenderId: "280901089364",
@@ -455,239 +517,283 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // DOM elements
-  const restaurantSelect = document.getElementById("restaurantSelect");
-  const serviceTypeSelect = document.getElementById("serviceTypeSelect");
-  const coversInput = document.getElementById("coversInput");
-  const revenueInput = document.getElementById("revenueInput");
-  const managerInput = document.getElementById("managerInput");
-  const saveBtn = document.getElementById("saveReportBtn");
-  const resetBtn = document.getElementById("resetDataBtn");
-  const totalRevenueSpan = document.getElementById("totalRevenueVal");
-  const totalCoversSpan = document.getElementById("totalCoversVal");
-  const avgSpendSpan = document.getElementById("avgSpendVal");
-  const bestRestSpan = document.getElementById("bestRestVal");
-  const reportsFeed = document.getElementById("reportsFeed");
+  let currentSection = 'therestaurant';
+  let restaurantChart, fbChart;
 
-  let revenueChart;
-  const chartCtx = document.getElementById("revenueCanvas").getContext("2d");
-
-  function showMessage(text, isError = false, isWarning = false) {
-    const alertDiv = document.getElementById("alertToast");
-    let typeClass = "alert-success";
-    if (isError) typeClass = "alert-error";
-    if (isWarning) typeClass = "alert-warning";
-    alertDiv.innerHTML = `<div class="alert-glass ${typeClass}"><i class="fas ${isError ? 'fa-exclamation-circle' : (isWarning ? 'fa-triangle-exclamation' : 'fa-check-circle')}"></i> ${text}</div>`;
-    setTimeout(() => { if (alertDiv.firstChild) alertDiv.innerHTML = ""; }, 3200);
+  function showSection(sectionId) {
+    document.querySelectorAll('.section-content').forEach(section => {
+      section.classList.add('hidden-section');
+    });
+    document.getElementById(`${sectionId}-section`).classList.remove('hidden-section');
+    
+    document.querySelectorAll('.nav-card').forEach(card => {
+      card.classList.remove('active');
+      if (card.getAttribute('data-section') === sectionId) {
+        card.classList.add('active');
+      }
+    });
+    
+    currentSection = sectionId;
+    if (sectionId === 'analytics') {
+      loadAnalyticsData();
+    }
   }
 
-  function formatOwnDateTime(timestamp) {
-    if (!timestamp) return "just now";
+  document.querySelectorAll('.nav-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const section = card.getAttribute('data-section');
+      showSection(section);
+    });
+  });
+
+  // Auto-calculate total for each section
+  function setupAutoTotal(foodId, bevId, totalId) {
+    const foodInput = document.getElementById(foodId);
+    const bevInput = document.getElementById(bevId);
+    const totalInput = document.getElementById(totalId);
+    
+    function update() {
+      const foodVal = parseFloat(foodInput.value);
+      const bevVal = parseFloat(bevInput.value);
+      const hasFood = !isNaN(foodVal) && foodVal > 0;
+      const hasBev = !isNaN(bevVal) && bevVal > 0;
+      
+      if (hasFood && hasBev) {
+        totalInput.value = foodVal + bevVal;
+        totalInput.disabled = false;
+      } else {
+        totalInput.value = "";
+        totalInput.disabled = true;
+      }
+    }
+    
+    foodInput.addEventListener('input', update);
+    bevInput.addEventListener('input', update);
+  }
+
+  setupAutoTotal('restFood', 'restBev', 'restTotal');
+  setupAutoTotal('roomFood', 'roomBev', 'roomTotal');
+  setupAutoTotal('beachFood', 'beachBev', 'beachTotal');
+  setupAutoTotal('nihonFood', 'nihonBev', 'nihonTotal');
+
+  async function saveReport(restaurantName, data) {
     try {
-      const date = timestamp.toDate();
-      const dayStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-      const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      return `${dayStr} · ${timeStr}`;
-    } catch(e) { return "recent entry"; }
+      await addDoc(collection(db, "dailyReports"), {
+        restaurant: restaurantName,
+        manager: data.manager,
+        covers: data.covers,
+        foodRevenue: data.food,
+        beverageRevenue: data.bev,
+        totalRevenue: data.food + data.bev,
+        createdAt: serverTimestamp(),
+        date: new Date().toISOString().split('T')[0]
+      });
+      showMessage(`✅ Saved! ${restaurantName} | ${data.covers} covers | Total: ${data.food + data.bev} EGP`, false);
+      return true;
+    } catch (error) {
+      showMessage("❌ Firebase error: " + error.message, true);
+      return false;
+    }
   }
 
-  function setLiveClock() {
-    const now = new Date();
-    const formatted = `${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} ${now.toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' })}`;
-    document.getElementById("liveClock").innerHTML = `<i class="far fa-calendar-alt"></i> ${formatted}`;
-  }
-  setLiveClock();
-  setInterval(setLiveClock, 60000);
+  // Save buttons
+  document.querySelector('[data-save="The Restaurant"]').addEventListener('click', async () => {
+    const manager = document.getElementById('restManager').value.trim();
+    const covers = parseInt(document.getElementById('restCovers').value);
+    const food = parseFloat(document.getElementById('restFood').value);
+    const bev = parseFloat(document.getElementById('restBev').value);
+    
+    if (!manager) { showMessage("❌ Enter manager name", true); return; }
+    if (!covers || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
+    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) {
+      showMessage("❌ BOTH Food AND Beverage must be > 0", true);
+      return;
+    }
+    
+    await saveReport("The Restaurant", { manager, covers, food, bev });
+    document.getElementById('restManager').value = '';
+    document.getElementById('restCovers').value = '';
+    document.getElementById('restFood').value = '';
+    document.getElementById('restBev').value = '';
+    document.getElementById('restTotal').value = '';
+  });
 
-  const getTodayStr = () => new Date().toISOString().split('T')[0];
-  let currentDate = getTodayStr();
+  document.querySelector('[data-save="Room Service"]').addEventListener('click', async () => {
+    const manager = document.getElementById('roomManager').value.trim();
+    const covers = parseInt(document.getElementById('roomCovers').value);
+    const food = parseFloat(document.getElementById('roomFood').value);
+    const bev = parseFloat(document.getElementById('roomBev').value);
+    
+    if (!manager) { showMessage("❌ Enter manager name", true); return; }
+    if (!covers || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
+    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) {
+      showMessage("❌ BOTH Food AND Beverage must be > 0", true);
+      return;
+    }
+    
+    await saveReport("Room Service", { manager, covers, food, bev });
+    document.getElementById('roomManager').value = '';
+    document.getElementById('roomCovers').value = '';
+    document.getElementById('roomFood').value = '';
+    document.getElementById('roomBev').value = '';
+    document.getElementById('roomTotal').value = '';
+  });
 
-  async function loadData() {
+  document.querySelector('[data-save="The Beach House"]').addEventListener('click', async () => {
+    const manager = document.getElementById('beachManager').value.trim();
+    const covers = parseInt(document.getElementById('beachCovers').value);
+    const food = parseFloat(document.getElementById('beachFood').value);
+    const bev = parseFloat(document.getElementById('beachBev').value);
+    
+    if (!manager) { showMessage("❌ Enter manager name", true); return; }
+    if (!covers || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
+    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) {
+      showMessage("❌ BOTH Food AND Beverage must be > 0", true);
+      return;
+    }
+    
+    await saveReport("The Beach House", { manager, covers, food, bev });
+    document.getElementById('beachManager').value = '';
+    document.getElementById('beachCovers').value = '';
+    document.getElementById('beachFood').value = '';
+    document.getElementById('beachBev').value = '';
+    document.getElementById('beachTotal').value = '';
+  });
+
+  document.querySelector('[data-save="Nihon"]').addEventListener('click', async () => {
+    const manager = document.getElementById('nihonManager').value.trim();
+    const covers = parseInt(document.getElementById('nihonCovers').value);
+    const food = parseFloat(document.getElementById('nihonFood').value);
+    const bev = parseFloat(document.getElementById('nihonBev').value);
+    
+    if (!manager) { showMessage("❌ Enter manager name", true); return; }
+    if (!covers || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
+    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) {
+      showMessage("❌ BOTH Food AND Beverage must be > 0", true);
+      return;
+    }
+    
+    await saveReport("Nihon", { manager, covers, food, bev });
+    document.getElementById('nihonManager').value = '';
+    document.getElementById('nihonCovers').value = '';
+    document.getElementById('nihonFood').value = '';
+    document.getElementById('nihonBev').value = '';
+    document.getElementById('nihonTotal').value = '';
+  });
+
+  // Reset all data
+  document.getElementById('confirmResetBtn').addEventListener('click', async () => {
+    if (!confirm("⚠️ WARNING: This will delete ALL reports from ALL restaurants. Are you ABSOLUTELY sure?")) return;
+    const confirmText = prompt("Type 'DELETE' to confirm:");
+    if (confirmText !== "DELETE") { showMessage("Reset cancelled", false); return; }
+    
     try {
-      const q = query(collection(db, "dailyReports"), where("date", "==", currentDate));
+      const snapshot = await getDocs(collection(db, "dailyReports"));
+      let count = 0;
+      for (const doc of snapshot.docs) {
+        await deleteDoc(doc.ref);
+        count++;
+      }
+      showMessage(`✅ Deleted ${count} reports successfully`, false);
+      if (currentSection === 'analytics') loadAnalyticsData();
+    } catch (error) {
+      showMessage("❌ Delete failed: " + error.message, true);
+    }
+  });
+
+  // Analytics data loading
+  async function loadAnalyticsData() {
+    try {
+      const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
       
-      let totalRevenue = 0;
-      let totalCovers = 0;
-      let revenueMap = { "The Restaurant": 0, "The Beach House": 0, "Nihon": 0 };
-      let reportsArray = [];
+      let totalRev = 0, totalFood = 0, totalBev = 0, totalCovers = 0;
+      let restaurantMap = new Map();
+      let reportsHTML = '';
       
       snapshot.forEach(doc => {
         const data = doc.data();
-        reportsArray.push({ id: doc.id, ...data });
-        const rev = Number(data.revenue) || 0;
-        const cov = Number(data.covers) || 0;
-        totalRevenue += rev;
-        totalCovers += cov;
-        if (revenueMap.hasOwnProperty(data.restaurant)) revenueMap[data.restaurant] += rev;
+        const resto = data.restaurant || '?';
+        const total = data.totalRevenue || 0;
+        const food = data.foodRevenue || 0;
+        const bev = data.beverageRevenue || 0;
+        const covers = data.covers || 0;
+        
+        totalRev += total;
+        totalFood += food;
+        totalBev += bev;
+        totalCovers += covers;
+        restaurantMap.set(resto, (restaurantMap.get(resto) || 0) + total);
+        
+        const timeStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleString() : 'no date';
+        reportsHTML += `<tr>
+          <td>${escapeHtml(resto)}</td>
+          <td>${escapeHtml(data.manager || '—')}</td>
+          <td><strong>${covers}</strong></td>
+          <td>${food.toLocaleString()} EGP</td>
+          <td>${bev.toLocaleString()} EGP</td>
+          <td><strong>${total.toLocaleString()} EGP</strong></td>
+          <td style="font-size:0.7rem;">${escapeHtml(timeStr)}</td>
+        </tr>`;
       });
       
-      reportsArray.sort((a,b) => {
-        const timeA = a.createdAt?.toMillis?.() || 0;
-        const timeB = b.createdAt?.toMillis?.() || 0;
-        return timeB - timeA;
-      });
+      document.getElementById('analyticsTotalRev').innerText = totalRev.toLocaleString() + " EGP";
+      document.getElementById('analyticsTotalCovers').innerText = totalCovers.toLocaleString();
+      document.getElementById('analyticsFoodRev').innerText = totalFood.toLocaleString() + " EGP";
+      document.getElementById('analyticsBevRev').innerText = totalBev.toLocaleString() + " EGP";
       
-      if (reportsArray.length === 0) {
-        reportsFeed.innerHTML = `<div class="empty-state"><i class="fas fa-glass-cheers"></i> No reports yet. Add Dine-in or Room Service entry.</div>`;
-      } else {
-        let html = "";
-        reportsArray.forEach(rep => {
-          const serviceIcon = rep.serviceType === 'Room Service' ? '🛎️' : '🍽️';
-          const serviceLabel = rep.serviceType === 'Room Service' ? 'Room Service' : 'Dine-in';
-          const unitLabel = rep.serviceType === 'Room Service' ? 'orders' : 'covers';
-          
-          html += `
-            <div class="report-entry">
-              <div class="entry-row">
-                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                  <span class="resto-badge"><i class="fas fa-flag-checkered"></i> ${escapeHtml(rep.restaurant)}</span>
-                  <span class="service-badge"><i class="fas ${rep.serviceType === 'Room Service' ? 'fa-bed' : 'fa-utensils'}"></i> ${serviceIcon} ${serviceLabel}</span>
-                </div>
-                <span class="timestamp-badge"><i class="far fa-hourglass-half"></i> ${escapeHtml(formatOwnDateTime(rep.createdAt))}</span>
-              </div>
-              <div class="stats-row">
-                <span class="stat-bubble"><i class="fas fa-group"></i> ${rep.covers.toLocaleString()} ${unitLabel}</span>
-                <span class="stat-bubble"><i class="fas fa-chart-line"></i> ${rep.revenue.toLocaleString()} EGP</span>
-                <span class="stat-bubble"><i class="fas fa-user-check"></i> ${escapeHtml(rep.manager)}</span>
-              </div>
-            </div>
-          `;
-        });
-        reportsFeed.innerHTML = html;
+      document.getElementById('analyticsTableBody').innerHTML = reportsHTML || '<tr><td colspan="7" class="empty-state">No reports yet</td></tr>';
+      
+      if (restaurantChart) {
+        restaurantChart.data.datasets[0].data = [
+          restaurantMap.get("The Restaurant") || 0,
+          restaurantMap.get("Room Service") || 0,
+          restaurantMap.get("The Beach House") || 0,
+          restaurantMap.get("Nihon") || 0
+        ];
+        restaurantChart.update();
       }
-      
-      totalRevenueSpan.innerText = totalRevenue.toLocaleString() + " EGP";
-      totalCoversSpan.innerText = totalCovers.toLocaleString();
-      const avg = totalCovers > 0 ? (totalRevenue / totalCovers).toFixed(2) : 0;
-      avgSpendSpan.innerText = avg.toLocaleString() + " EGP";
-      
-      let best = "—";
-      let maxRev = 0;
-      for (let [r, val] of Object.entries(revenueMap)) {
-        if (val > maxRev) { maxRev = val; best = r; }
+      if (fbChart) {
+        fbChart.data.datasets[0].data = [totalFood, totalBev];
+        fbChart.update();
       }
-      bestRestSpan.innerText = (maxRev === 0) ? "—" : best;
-      
-      if (revenueChart) {
-        revenueChart.data.datasets[0].data = [revenueMap["The Restaurant"] || 0, revenueMap["The Beach House"] || 0, revenueMap["Nihon"] || 0];
-        revenueChart.update();
-      }
-    } catch (err) {
-      console.error(err);
-      showMessage("Firebase load error: check security rules", true);
-      reportsFeed.innerHTML = `<div class="empty-state"><i class="fas fa-plug"></i> Connection issue. Update Firestore rules.</div>`;
+    } catch (error) {
+      console.error(error);
     }
   }
 
-  async function saveReport() {
-    const selectedRest = restaurantSelect.value;
-    const serviceType = serviceTypeSelect.value;
-    
-    if (!selectedRest || selectedRest === "") { showMessage("Please select a venue (The Restaurant, The Beach House, or Nihon)", true); return; }
-    if (!serviceType || serviceType === "") { showMessage("Please select service type (Dine-in or Room Service)", true); return; }
-    
-    const covers = parseInt(coversInput.value);
-    const revenue = parseInt(revenueInput.value);
-    const manager = managerInput.value.trim();
-    
-    if (!covers || covers <= 0 || isNaN(covers)) { showMessage("Covers/Orders must be a positive number", true); return; }
-    if (!revenue || revenue <= 0 || isNaN(revenue)) { showMessage("Revenue must be a positive number", true); return; }
-    if (!manager || manager.length < 2) { showMessage("Staff/Manager name required", true); return; }
-    
-    try {
-      await addDoc(collection(db, "dailyReports"), {
-        restaurant: selectedRest,
-        serviceType: serviceType,
-        covers: covers,
-        revenue: revenue,
-        manager: manager,
-        date: currentDate,
-        createdAt: serverTimestamp()
-      });
-      
-      const serviceEmoji = serviceType === 'Room Service' ? '🛎️' : '🍽️';
-      showMessage(`${serviceEmoji} ${serviceType} · ${selectedRest} — ${revenue.toLocaleString()} EGP saved`, false);
-      
-      restaurantSelect.value = "";
-      serviceTypeSelect.value = "";
-      coversInput.value = "";
-      revenueInput.value = "";
-      managerInput.value = "";
-      await loadData();
-    } catch (err) {
-      showMessage(`Save failed: ${err.message}`, true);
-    }
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
   }
 
-  async function resetTodayData() {
-    try {
-      const q = query(collection(db, "dailyReports"), where("date", "==", currentDate));
-      const snapshot = await getDocs(q);
-      if (snapshot.empty) {
-        showMessage("No data to reset for today", false);
-        return;
-      }
-      const deletePromises = [];
-      snapshot.forEach(doc => { deletePromises.push(deleteDoc(doc.ref)); });
-      await Promise.all(deletePromises);
-      showMessage("🗑️ All today's reports (Dine-in + Room Service) have been reset", false);
-      await loadData();
-    } catch (err) {
-      console.error(err);
-      showMessage(`Reset error: ${err.message}. Check Firebase permissions`, true);
-    }
-  }
-
-  function showResetConfirmation() {
-    const modalDiv = document.createElement('div');
-    modalDiv.className = 'modal-overlay';
-    modalDiv.innerHTML = `
-      <div class="modal-card">
-        <i class="fas fa-trash-alt" style="font-size: 3rem; color: #C44536; margin-bottom: 12px;"></i>
-        <h3>Reset Today's Data</h3>
-        <p style="margin: 16px 0; color: #4A627A;">This will delete <strong>ALL reports</strong> (Dine-in + Room Service) for ${currentDate}. This action cannot be undone.</p>
-        <div class="modal-buttons">
-          <button class="modal-btn btn-cancel" id="cancelResetBtn">Cancel</button>
-          <button class="modal-btn btn-confirm" id="confirmResetBtn">Yes, Reset All</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modalDiv);
-    
-    const cancelBtn = document.getElementById('cancelResetBtn');
-    const confirmBtn = document.getElementById('confirmResetBtn');
-    const closeModal = () => modalDiv.remove();
-    cancelBtn.addEventListener('click', closeModal);
-    confirmBtn.addEventListener('click', async () => {
-      await resetTodayData();
-      closeModal();
-    });
-    modalDiv.addEventListener('click', (e) => { if (e.target === modalDiv) closeModal(); });
-  }
-
-  function initChart() {
-    revenueChart = new Chart(chartCtx, {
+  function initCharts() {
+    const ctx1 = document.getElementById('restaurantChart').getContext('2d');
+    restaurantChart = new Chart(ctx1, {
       type: 'bar',
-      data: {
-        labels: ['The Restaurant', 'The Beach House', 'Nihon'],
-        datasets: [{ label: 'Revenue (EGP)', data: [0, 0, 0], backgroundColor: ['#F4A261', '#2A9D8F', '#E76F51'], borderRadius: 16 }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: true,
-        plugins: { legend: { position: 'top', labels: { font: { size: 11, weight: 'bold' } } }, tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toLocaleString()} EGP` } } },
-        scales: { y: { beginAtZero: true, ticks: { callback: (val) => val.toLocaleString() } } }
-      }
+      data: { labels: ['The Restaurant', 'Room Service', 'The Beach House', 'Nihon'], datasets: [{ label: 'Revenue (EGP)', data: [0,0,0,0], backgroundColor: ['#1b5a7a', '#e67e22', '#1f8a4c', '#c0392b'], borderRadius: 8 }] },
+      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true } } }
+    });
+    const ctx2 = document.getElementById('fbChart').getContext('2d');
+    fbChart = new Chart(ctx2, {
+      type: 'doughnut',
+      data: { labels: ['Food Revenue', 'Beverage Revenue'], datasets: [{ data: [0, 0], backgroundColor: ['#1b5a7a', '#e67e22'], borderWidth: 0 }] },
+      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
     });
   }
+
+  function updateDateTime() { document.getElementById('liveDateTime').innerText = new Date().toLocaleString(); }
+  updateDateTime();
+  setInterval(updateDateTime, 1000);
   
-  function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
-  
-  saveBtn.addEventListener("click", saveReport);
-  resetBtn.addEventListener("click", showResetConfirmation);
-  initChart();
-  loadData();
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) loadData(); });
+  function showMessage(text, isError = false) {
+    const container = document.getElementById('alertContainer');
+    container.innerHTML = `<div class="alert ${isError ? 'alert-error' : 'alert-success'}">${text}</div>`;
+    setTimeout(() => { if(container.firstChild) container.innerHTML = ''; }, 3000);
+  }
+
+  initCharts();
+  showSection('therestaurant');
 </script>
 </body>
 </html>
