@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-  <title>CHROMA RESTRO | Pro Analytics + Reset</title>
+  <title>CHROMA RESTRO | Restaurant + Room Service Pro</title>
   <!-- Google Fonts + Font Awesome 6 -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -90,7 +90,7 @@
       border: 1px solid rgba(255,215,140,0.5);
     }
 
-    /* COLORFUL KPI CARDS */
+    /* KPI CARDS */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -204,7 +204,6 @@
       box-shadow: 0 6px 14px rgba(196,69,54,0.3);
       margin-top: 8px;
     }
-    .btn-reset:active { transform: scale(0.97); }
 
     /* CHART CONTAINER */
     .chart-area {
@@ -258,6 +257,14 @@
       color: #C44536;
       border-left: 3px solid #E67E22;
     }
+    .service-badge {
+      font-weight: 700;
+      background: #E8F0FE;
+      padding: 4px 16px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      color: #2C7DA0;
+    }
     .timestamp-badge {
       font-size: 0.7rem;
       font-family: monospace;
@@ -300,21 +307,15 @@
       text-align: center;
       animation: slideUp 0.2s ease;
     }
-    .alert-error {
-      background: #C44536;
-    }
-    .alert-success {
-      background: #2E8B57;
-    }
-    .alert-warning {
-      background: #E67E22;
-    }
+    .alert-error { background: #C44536; }
+    .alert-success { background: #2E8B57; }
+    .alert-warning { background: #E67E22; }
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(8px);}
       to { opacity: 1; transform: translateY(0);}
     }
 
-    /* reset confirmation modal */
+    /* MODAL */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -322,7 +323,7 @@
       right: 0;
       bottom: 0;
       background: rgba(0,0,0,0.6);
- backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -338,36 +339,12 @@
       text-align: center;
       box-shadow: 0 30px 40px rgba(0,0,0,0.3);
     }
-    .modal-card h3 {
-      font-size: 1.6rem;
-      margin-bottom: 12px;
-      color: #C44536;
-    }
-    .modal-buttons {
-      display: flex;
-      gap: 16px;
-      margin-top: 28px;
-    }
-    .modal-btn {
-      flex: 1;
-      padding: 14px;
-      border-radius: 60px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-confirm {
-      background: #C44536;
-      color: white;
-    }
-    .btn-cancel {
-      background: #E9ECF2;
-      color: #2C5F7A;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    .modal-card h3 { font-size: 1.6rem; margin-bottom: 12px; color: #C44536; }
+    .modal-buttons { display: flex; gap: 16px; margin-top: 28px; }
+    .modal-btn { flex: 1; padding: 14px; border-radius: 60px; font-weight: 700; border: none; cursor: pointer; }
+    .btn-confirm { background: #C44536; color: white; }
+    .btn-cancel { background: #E9ECF2; color: #2C5F7A; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     @media (max-width: 950px) {
       .kpi-grid { grid-template-columns: repeat(2,1fr); gap: 18px; }
@@ -388,7 +365,7 @@
     <div class="hero-flex">
       <div class="brand">
         <h1><i class="fas fa-fire-flame-curved"></i> CHROMA RESTRO</h1>
-        <p><i class="fas fa-chart-line"></i> Color intelligence · Real-time Firestore</p>
+        <p><i class="fas fa-concierge-bell"></i> Restaurant + Room Service · Real-time Firestore</p>
       </div>
       <div class="live-tag" id="liveClock"><i class="far fa-clock"></i> --:--</div>
     </div>
@@ -401,7 +378,7 @@
     <div class="kpi-card"><div class="kpi-title"><i class="fas fa-coins" style="color:#E67E22;"></i> TOTAL REVENUE</div><div class="kpi-value" id="totalRevenueVal">0 EGP</div></div>
     <div class="kpi-card"><div class="kpi-title"><i class="fas fa-utensils" style="color:#2C7DA0;"></i> TOTAL COVERS</div><div class="kpi-value" id="totalCoversVal">0</div></div>
     <div class="kpi-card"><div class="kpi-title"><i class="fas fa-chart-simple" style="color:#2E8B57;"></i> AVG SPEND</div><div class="kpi-value" id="avgSpendVal">0 EGP</div></div>
-    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-crown" style="color:#C44569;"></i> BEST PERFORMER</div><div class="kpi-value" id="bestRestVal">—</div></div>
+    <div class="kpi-card"><div class="kpi-title"><i class="fas fa-crown" style="color:#C44569;"></i> TOP PERFORMER</div><div class="kpi-value" id="bestRestVal">—</div></div>
   </div>
 
   <!-- ENTRY + CHART -->
@@ -409,7 +386,15 @@
     <div class="glass-panel">
       <div class="panel-header"><i class="fas fa-calendar-plus" style="color:#E67E22;"></i> New Report Entry</div>
       <div class="input-group">
-        <label><i class="fas fa-store"></i> Restaurant</label>
+        <label><i class="fas fa-tag"></i> Service Type</label>
+        <select id="serviceTypeSelect">
+          <option value="" disabled selected>— Select service —</option>
+          <option value="Restaurant">🍽️ Restaurant</option>
+          <option value="Room Service">🛎️ Room Service</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label><i class="fas fa-store"></i> Venue / Outlet</label>
         <select id="restaurantSelect">
           <option value="" disabled selected>— Select venue —</option>
           <option value="The Restaurant">The Restaurant</option>
@@ -418,7 +403,7 @@
         </select>
       </div>
       <div class="input-group">
-        <label><i class="fas fa-chair"></i> Covers (guests)</label>
+        <label><i class="fas fa-chair"></i> Covers / Orders</label>
         <input type="number" id="coversInput" placeholder="e.g., 94">
       </div>
       <div class="input-group">
@@ -426,8 +411,8 @@
         <input type="number" id="revenueInput" placeholder="e.g., 41800">
       </div>
       <div class="input-group">
-        <label><i class="fas fa-user-tie"></i> Manager</label>
-        <input type="text" id="managerInput" placeholder="Full name">
+        <label><i class="fas fa-user-tie"></i> Responsible</label>
+        <input type="text" id="managerInput" placeholder="Manager / Staff name">
       </div>
       <button class="btn-chroma" id="saveReportBtn"><i class="fas fa-cloud-save"></i> Save report · Auto date & time</button>
       <button class="btn-chroma btn-reset" id="resetDataBtn"><i class="fas fa-trash-alt"></i> 🧹 Reset All Data (Today)</button>
@@ -441,14 +426,14 @@
     </div>
   </div>
 
-  <!-- TIMELINE: each report shows its own date + time -->
+  <!-- TIMELINE: shows service type + venue + own timestamp -->
   <div class="timeline-wrapper">
     <div class="timeline-header">
       <span style="font-weight: 800; font-size: 1.2rem; color: #2C5F7A;"><i class="fas fa-waveform"></i> Activity feed</span>
       <span style="font-size: 0.7rem; background: #FFEFD6; padding: 5px 15px; border-radius: 50px; font-weight:600;"><i class="far fa-calendar-check"></i> each record = own timestamp</span>
     </div>
     <div class="report-feed" id="reportsFeed">
-      <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i> Loading colorful insights...</div>
+      <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i> Loading data...</div>
     </div>
   </div>
 </div>
@@ -471,6 +456,7 @@
   const db = getFirestore(app);
 
   // DOM elements
+  const serviceTypeSelect = document.getElementById("serviceTypeSelect");
   const restaurantSelect = document.getElementById("restaurantSelect");
   const coversInput = document.getElementById("coversInput");
   const revenueInput = document.getElementById("revenueInput");
@@ -543,18 +529,22 @@
       });
       
       if (reportsArray.length === 0) {
-        reportsFeed.innerHTML = `<div class="empty-state"><i class="fas fa-glass-cheers"></i> No reports yet. Add your first entry or reset to fresh start.</div>`;
+        reportsFeed.innerHTML = `<div class="empty-state"><i class="fas fa-glass-cheers"></i> No reports yet. Add restaurant or room service entry.</div>`;
       } else {
         let html = "";
         reportsArray.forEach(rep => {
+          const serviceIcon = rep.serviceType === 'Room Service' ? '🛎️' : '🍽️';
           html += `
             <div class="report-entry">
               <div class="entry-row">
-                <span class="resto-badge"><i class="fas fa-flag-checkered"></i> ${escapeHtml(rep.restaurant)}</span>
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                  <span class="resto-badge"><i class="fas fa-flag-checkered"></i> ${escapeHtml(rep.restaurant)}</span>
+                  <span class="service-badge"><i class="fas ${rep.serviceType === 'Room Service' ? 'fa-bed' : 'fa-utensils'}"></i> ${serviceIcon} ${escapeHtml(rep.serviceType)}</span>
+                </div>
                 <span class="timestamp-badge"><i class="far fa-hourglass-half"></i> ${escapeHtml(formatOwnDateTime(rep.createdAt))}</span>
               </div>
               <div class="stats-row">
-                <span class="stat-bubble"><i class="fas fa-group"></i> ${rep.covers.toLocaleString()} covers</span>
+                <span class="stat-bubble"><i class="fas fa-group"></i> ${rep.covers.toLocaleString()} ${rep.serviceType === 'Room Service' ? 'orders' : 'covers'}</span>
                 <span class="stat-bubble"><i class="fas fa-chart-line"></i> ${rep.revenue.toLocaleString()} EGP</span>
                 <span class="stat-bubble"><i class="fas fa-user-check"></i> ${escapeHtml(rep.manager)}</span>
               </div>
@@ -588,28 +578,42 @@
   }
 
   async function saveReport() {
+    const serviceType = serviceTypeSelect.value;
     const selectedRest = restaurantSelect.value;
-    if (!selectedRest || selectedRest === "") { showMessage("Please select a restaurant", true); return; }
+    
+    if (!serviceType || serviceType === "") { showMessage("Please select service type (Restaurant / Room Service)", true); return; }
+    if (!selectedRest || selectedRest === "") { showMessage("Please select a venue", true); return; }
+    
     const covers = parseInt(coversInput.value);
     const revenue = parseInt(revenueInput.value);
     const manager = managerInput.value.trim();
-    if (!covers || covers <= 0 || isNaN(covers)) { showMessage("Covers must be a positive number", true); return; }
+    
+    if (!covers || covers <= 0 || isNaN(covers)) { showMessage("Covers/Orders must be a positive number", true); return; }
     if (!revenue || revenue <= 0 || isNaN(revenue)) { showMessage("Revenue must be a positive number", true); return; }
-    if (!manager || manager.length < 2) { showMessage("Manager name required", true); return; }
+    if (!manager || manager.length < 2) { showMessage("Responsible name required", true); return; }
     
     try {
       await addDoc(collection(db, "dailyReports"), {
-        restaurant: selectedRest, covers, revenue, manager, date: currentDate, createdAt: serverTimestamp()
+        serviceType: serviceType,
+        restaurant: selectedRest,
+        covers: covers,
+        revenue: revenue,
+        manager: manager,
+        date: currentDate,
+        createdAt: serverTimestamp()
       });
-      showMessage(`✨ ${selectedRest} — ${revenue.toLocaleString()} EGP saved with own timestamp`, false);
-      restaurantSelect.value = ""; coversInput.value = ""; revenueInput.value = ""; managerInput.value = "";
+      showMessage(`✨ ${serviceType} · ${selectedRest} — ${revenue.toLocaleString()} EGP saved`, false);
+      serviceTypeSelect.value = "";
+      restaurantSelect.value = "";
+      coversInput.value = "";
+      revenueInput.value = "";
+      managerInput.value = "";
       await loadData();
     } catch (err) {
       showMessage(`Save failed: ${err.message}`, true);
     }
   }
 
-  // RESET FUNCTION: deletes all documents for today's date
   async function resetTodayData() {
     try {
       const q = query(collection(db, "dailyReports"), where("date", "==", currentDate));
@@ -619,11 +623,9 @@
         return;
       }
       const deletePromises = [];
-      snapshot.forEach(doc => {
-        deletePromises.push(deleteDoc(doc.ref));
-      });
+      snapshot.forEach(doc => { deletePromises.push(deleteDoc(doc.ref)); });
       await Promise.all(deletePromises);
-      showMessage("🗑️ All today's reports have been reset successfully", false);
+      showMessage("🗑️ All today's reports (Restaurant + Room Service) have been reset", false);
       await loadData();
     } catch (err) {
       console.error(err);
@@ -631,7 +633,6 @@
     }
   }
 
-  // Modal confirmation for reset
   function showResetConfirmation() {
     const modalDiv = document.createElement('div');
     modalDiv.className = 'modal-overlay';
@@ -639,7 +640,7 @@
       <div class="modal-card">
         <i class="fas fa-trash-alt" style="font-size: 3rem; color: #C44536; margin-bottom: 12px;"></i>
         <h3>Reset Today's Data</h3>
-        <p style="margin: 16px 0; color: #4A627A;">This will permanently delete <strong>ALL reports</strong> for ${currentDate}. This action cannot be undone.</p>
+        <p style="margin: 16px 0; color: #4A627A;">This will delete <strong>ALL reports</strong> (Restaurant + Room Service) for ${currentDate}. This action cannot be undone.</p>
         <div class="modal-buttons">
           <button class="modal-btn btn-cancel" id="cancelResetBtn">Cancel</button>
           <button class="modal-btn btn-confirm" id="confirmResetBtn">Yes, Reset</button>
@@ -650,7 +651,6 @@
     
     const cancelBtn = document.getElementById('cancelResetBtn');
     const confirmBtn = document.getElementById('confirmResetBtn');
-    
     const closeModal = () => modalDiv.remove();
     cancelBtn.addEventListener('click', closeModal);
     confirmBtn.addEventListener('click', async () => {
