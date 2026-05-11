@@ -1,4 +1,6 @@
 [
+  {"code": "177018", "name": "Jam Apricot", "name_ar": "مربى مشمش", "unit": "5kg gal", "maxLimit": 2, "AVE": 247.29595},
+  {"code": "177033", "name": "Jam Strawberry", "name_ar": "مربى فراولة", "unit": "5kg gal", "maxLimit": 2, "AVE": 251.77745},
   {"code": "143004", "name": "Mix Berries Frozen", "name_ar": "توت مشكل مجمد", "unit": "kg", "maxLimit": 2.5, "AVE": 590},
   {"code": "143006", "name": "Raspberry Frozen", "name_ar": "توت أحمر مجمد", "unit": "kg", "maxLimit": 2.5, "AVE": 665},
   {"code": "143008", "name": "Red Currant Frozen", "name_ar": "كشمش أحمر مجمد", "unit": "kg", "maxLimit": 3, "AVE": 410},
