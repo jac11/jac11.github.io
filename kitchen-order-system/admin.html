@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
 <title>Admin Dashboard - Approve Orders</title>
 
@@ -79,10 +80,6 @@ body {
 
 .btn-analytics {
     background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-.btn-revenue {
-    background: linear-gradient(135deg, #27ae60, #1e8449);
 }
 
 .btn-danger {
@@ -498,6 +495,21 @@ body {
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
+.floating-refresh {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
 .modal {
     display: flex;
     position: fixed;
@@ -591,12 +603,6 @@ body {
     background: #7f8c8d;
 }
 
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
 @media (max-width: 768px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -652,6 +658,12 @@ body {
         text-align: center;
     }
 }
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
 </style>
 </head>
 <body>
@@ -684,8 +696,7 @@ body {
                 <button class="btn-header" onclick="logout()">🚪 Logout</button>
             </div>
             <div class="header-buttons">
-                <button class="btn-header btn-revenue" onclick="openRevenue()">📊 Revenue Analytics</button>
-                <button class="btn-header btn-analytics" onclick="openAnalytics()">📈 Analytics</button>
+                <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
                 <button class="btn-header" onclick="exportExcel()">📎 Export</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
                 <button class="btn-header btn-danger" onclick="resetCompleted()">🗑️ Reset</button>
@@ -709,27 +720,7 @@ body {
 </div>
 
 <script>
-// Firebase Configuration (embedded - no external file needed)
-const firebaseConfig = {
-    apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
-    authDomain: "restaurant-analytics-27bd8.firebaseapp.com",
-    projectId: "restaurant-analytics-27bd8",
-    storageBucket: "restaurant-analytics-27bd8.firebasestorage.app",
-    messagingSenderId: "280901089364",
-    appId: "1:280901089364:web:26958c4c5334092194d5c1"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// Admin passwords (case-sensitive)
-const ADMIN_PASSWORDS = { 
-    "Marco": "marco123", 
-    "Nady": "nady123", 
-    "Ahmed": "ahmed123" 
-};
-
+const ADMIN_PASSWORDS = { "Marco": "marco123", "Nady": "nady123", "Ahmed": "ahmed123" };
 const KITCHENS = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
 let currentAdmin = "";
@@ -747,16 +738,11 @@ function openAnalytics() {
     window.open("analytics.html", "_blank");
 }
 
-function openRevenue() {
-    window.open("revenue.html", "_blank");
-}
-
 function selectUser(user) {
     selectedUser = user;
     document.getElementById("passwordInput").style.display = "block";
     document.getElementById("loginBtn").style.display = "block";
     document.getElementById("passwordInput").placeholder = `Password for ${user}`;
-    document.getElementById("passwordInput").value = "";
     document.getElementById("loginError").innerHTML = "";
 }
 
@@ -770,7 +756,7 @@ function checkLogin() {
         localStorage.setItem("admin", currentAdmin);
         loadRequests();
     } else {
-        document.getElementById("loginError").innerHTML = "❌ Wrong password! Try: marco123, nady123, or ahmed123";
+        document.getElementById("loginError").innerHTML = "❌ Wrong password!";
     }
 }
 
@@ -781,10 +767,7 @@ async function loadRequests() {
         snapshot.forEach(doc => allRequests.push({ id: doc.id, ...doc.data() }));
         renderUI();
         updateStats();
-    } catch(e) { 
-        console.error("Error loading:", e);
-        showToast("Error loading: " + e.message); 
-    }
+    } catch(e) { showToast("Error loading"); }
 }
 
 function getRequestStatus(items) {
@@ -792,6 +775,7 @@ function getRequestStatus(items) {
     let allProcessed = true;
     let approved = 0;
     let rejected = 0;
+    let accepted = false;
     
     items.forEach(item => {
         if(item.status === "approved") approved++;
@@ -799,6 +783,7 @@ function getRequestStatus(items) {
         else allProcessed = false;
     });
     
+    // Check if this request was completed via Accept button
     if(items.length > 0 && items[0].completedVia === "accept") {
         return "accepted";
     }
@@ -814,6 +799,7 @@ function getRequestStatus(items) {
 async function updateRequest(id, items, completedVia = null) {
     try {
         if(completedVia) {
+            // Mark all items with completed status
             items.forEach(item => {
                 item.completedVia = completedVia;
             });
@@ -822,10 +808,7 @@ async function updateRequest(id, items, completedVia = null) {
         showToast(`✅ Updated by ${currentAdmin}`);
         await loadRequests();
         return true;
-    } catch(e) { 
-        showToast("Update error: " + e.message); 
-        return false; 
-    }
+    } catch(e) { showToast("Update error"); return false; }
 }
 
 async function approveItem(reqId, idx) {
@@ -903,6 +886,7 @@ async function acceptRequest(reqId) {
     if(!confirm(`Accept this request? It will be locked and moved to Accepted section.`)) return;
     const req = allRequests.find(r => r.id === reqId);
     if(req) {
+        let hasChanges = false;
         req.items.forEach(item => {
             if(item.status !== "approved" && item.status !== "rejected") {
                 item.status = "rejected";
@@ -910,6 +894,7 @@ async function acceptRequest(reqId) {
                 item.rejectedBy = currentAdmin;
                 item.rejectedAt = new Date().toLocaleString();
                 item.approvedQty = 0;
+                hasChanges = true;
             }
             item.completedVia = "accept";
         });
@@ -1016,6 +1001,7 @@ function renderUI() {
             "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff"
         }[req.section] || "kitchen-staff";
         
+        // Calculate requested total value (ALL items)
         let requestedTotalValue = 0;
         let approvedTotalValue = 0;
         req.items.forEach(item => {
@@ -1028,6 +1014,7 @@ function renderUI() {
             }
         });
         
+        // Check if any individual action has been taken (for pending requests only)
         let hasIndividualAction = false;
         let isCompleted = false;
         if(requestStatus === "pending") {
@@ -1087,6 +1074,7 @@ function renderUI() {
                     <td><span class="status-pending-cell">Pending</span><div class="admin-info-text">Waiting for approval</div></td>
                 </tr>`;
                 
+                // Add input event listener to update total value preview and enable accept button
                 setTimeout(() => {
                     const input = document.getElementById(`qty_${req.id}_${idx}`);
                     const totalSpan = document.getElementById(`totalValuePreview_${req.id}_${idx}`);
@@ -1095,6 +1083,7 @@ function renderUI() {
                             const newQty = parseFloat(this.value) || 0;
                             const newTotal = newQty * price;
                             totalSpan.innerText = newTotal.toFixed(2);
+                            // Enable accept button when any change is made
                             const acceptBtn = document.getElementById(`acceptBtn_${req.id}`);
                             const approveAllBtn = document.getElementById(`approveAllBtn_${req.id}`);
                             const rejectAllBtn = document.getElementById(`rejectAllBtn_${req.id}`);
@@ -1154,33 +1143,27 @@ function renderUI() {
     });
     updateStats();
 }
-
 function logout() {
     if(confirm("Are you sure you want to logout?")) {
+        // Stop real-time listener if exists
         if(unsubscribeListener) {
             unsubscribeListener();
             unsubscribeListener = null;
         }
+        // Clear admin from localStorage
         localStorage.removeItem("admin");
+        // Clear any cached data
         sessionStorage.clear();
+        // Redirect to index page
         window.location.href = "index.html";
     }
 }
-
-function escapeHtml(str) { 
-    if(!str) return "";
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ''; 
-}
-
+function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ''; }
 function showToast(msg) { 
-    const t = document.createElement("div"); 
-    t.className = "toast"; 
-    t.innerText = msg; 
-    document.body.appendChild(t); 
-    setTimeout(() => t.remove(), 2500); 
+    const t = document.createElement("div"); t.className = "toast"; t.innerText = msg; 
+    document.body.appendChild(t); setTimeout(() => t.remove(), 2500); 
 }
 
-// Check for saved admin session
 const saved = localStorage.getItem("admin");
 if(saved && ADMIN_PASSWORDS[saved]) {
     currentAdmin = saved;
