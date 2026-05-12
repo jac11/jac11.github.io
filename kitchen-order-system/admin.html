@@ -82,10 +82,6 @@ body {
     background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
-.btn-revenue {
-    background: linear-gradient(135deg, #27ae60, #1e8449);
-}
-
 .btn-danger {
     background: #e74c3c;
 }
@@ -700,8 +696,7 @@ body {
                 <button class="btn-header" onclick="logout()">🚪 Logout</button>
             </div>
             <div class="header-buttons">
-                <button class="btn-header btn-revenue" onclick="openRevenue()">📊 Revenue Analytics</button>
-                <button class="btn-header btn-analytics" onclick="openAnalytics()">📈 Analytics</button>
+                <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
                 <button class="btn-header" onclick="exportExcel()">📎 Export</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
                 <button class="btn-header btn-danger" onclick="resetCompleted()">🗑️ Reset</button>
@@ -725,20 +720,6 @@ body {
 </div>
 
 <script>
-// Firebase Configuration - Same as your revenue.html
-const firebaseConfig = {
-    apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
-    authDomain: "restaurant-analytics-27bd8.firebaseapp.com",
-    projectId: "restaurant-analytics-27bd8",
-    storageBucket: "restaurant-analytics-27bd8.firebasestorage.app",
-    messagingSenderId: "280901089364",
-    appId: "1:280901089364:web:26958c4c5334092194d5c1"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
 const ADMIN_PASSWORDS = { "Marco": "marco123", "Nady": "nady123", "Ahmed": "ahmed123" };
 const KITCHENS = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
@@ -755,11 +736,6 @@ function goBackToIndex() {
 
 function openAnalytics() {
     window.open("analytics.html", "_blank");
-}
-
-// NEW: Function to open revenue.html
-function openRevenue() {
-    window.open("revenue.html", "_blank");
 }
 
 function selectUser(user) {
