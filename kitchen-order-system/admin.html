@@ -699,6 +699,7 @@ body {
                 <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
                 <button class="btn-header" onclick="exportExcel()">📎 Export</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
+                <button class="btn-header" onclick="openRevenue()">💰 Revenue</button>
                 <button class="btn-header btn-danger" onclick="resetCompleted()">🗑️ Reset</button>
             </div>
         </div>
@@ -720,7 +721,7 @@ body {
 </div>
 
 <script>
-const ADMIN_PASSWORDS = { "Marco": "marco123", "Nady": "nady123", "Ahmed": "ahmed123" };
+const ADMIN_PASSWORDS = { "Marco": "M1r50123", "Nady": "Nn639123", "Ahmed": "j1cadm1n" };
 const KITCHENS = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
 let currentAdmin = "";
@@ -737,7 +738,9 @@ function goBackToIndex() {
 function openAnalytics() {
     window.open("analytics.html", "_blank");
 }
-
+function openRevenue() {
+    window.open("revenue.html", "_blank");
+}
 function selectUser(user) {
     selectedUser = user;
     document.getElementById("passwordInput").style.display = "block";
