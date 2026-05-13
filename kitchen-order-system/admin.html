@@ -603,6 +603,94 @@ body {
     background: #7f8c8d;
 }
 
+/* Confirmation Modal Styles */
+.confirm-modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.confirm-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.confirm-modal-content h3 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+.confirm-modal-content .warning-text {
+    color: #e74c3c;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.confirm-modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin: 20px 0;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.confirm-modal-content input:focus {
+    outline: none;
+    border-color: #e74c3c;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.confirm-buttons button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+}
+
+.btn-confirm-delete {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-confirm-delete:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+}
+
+.btn-cancel-delete {
+    background: #95a5a6;
+    color: white;
+}
+
+.btn-cancel-delete:hover {
+    background: #7f8c8d;
+}
+
 @media (max-width: 768px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -700,7 +788,7 @@ body {
                 <button class="btn-header" onclick="exportExcel()">📎 Export</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
                 <button class="btn-header" onclick="openRevenue()">💰 Revenue</button>
-                <button class="btn-header btn-danger" onclick="resetCompleted()">🗑️ Reset</button>
+                <button class="btn-header btn-danger" onclick="showResetConfirmModal()">🗑️ Reset</button>
             </div>
         </div>
     </div>
@@ -786,7 +874,6 @@ function getRequestStatus(items) {
         else allProcessed = false;
     });
     
-    // Check if this request was completed via Accept button
     if(items.length > 0 && items[0].completedVia === "accept") {
         return "accepted";
     }
@@ -802,7 +889,6 @@ function getRequestStatus(items) {
 async function updateRequest(id, items, completedVia = null) {
     try {
         if(completedVia) {
-            // Mark all items with completed status
             items.forEach(item => {
                 item.completedVia = completedVia;
             });
@@ -889,7 +975,6 @@ async function acceptRequest(reqId) {
     if(!confirm(`Accept this request? It will be locked and moved to Accepted section.`)) return;
     const req = allRequests.find(r => r.id === reqId);
     if(req) {
-        let hasChanges = false;
         req.items.forEach(item => {
             if(item.status !== "approved" && item.status !== "rejected") {
                 item.status = "rejected";
@@ -897,7 +982,6 @@ async function acceptRequest(reqId) {
                 item.rejectedBy = currentAdmin;
                 item.rejectedAt = new Date().toLocaleString();
                 item.approvedQty = 0;
-                hasChanges = true;
             }
             item.completedVia = "accept";
         });
@@ -905,16 +989,82 @@ async function acceptRequest(reqId) {
     }
 }
 
-async function resetCompleted() {
-    if(confirm("Delete ALL completed requests (approved/rejected/accepted)?")) {
-        for(const req of allRequests) {
-            const status = getRequestStatus(req.items);
-            if(status !== "pending") {
-                await db.collection("kitchen_requests").doc(req.id).delete();
-            }
+// Show confirmation modal that requires typing "DELETE"
+function showResetConfirmModal() {
+    const toDelete = allRequests.filter(req => {
+        const status = getRequestStatus(req.items);
+        return status !== "pending";
+    });
+    
+    if(toDelete.length === 0) {
+        showToast("ℹ️ No completed requests to delete");
+        return;
+    }
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'confirm-modal';
+    modal.innerHTML = `
+        <div class="confirm-modal-content">
+            <h3>⚠️ PERMANENT DELETION ⚠️</h3>
+            <p>You are about to delete <strong>${toDelete.length}</strong> completed request(s).</p>
+            <p class="warning-text">This action cannot be undone!</p>
+            <p>Type <strong style="color:#e74c3c;">DELETE</strong> below to confirm:</p>
+            <input type="text" id="confirmDeleteInput" placeholder="Type DELETE" autocomplete="off">
+            <div class="confirm-buttons">
+                <button class="btn-cancel-delete" onclick="this.closest('.confirm-modal').remove()">Cancel</button>
+                <button class="btn-confirm-delete" id="confirmDeleteBtn" disabled>Delete Permanently</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    const input = modal.querySelector('#confirmDeleteInput');
+    const confirmBtn = modal.querySelector('#confirmDeleteBtn');
+    
+    input.focus();
+    
+    input.addEventListener('input', function(e) {
+        if(e.target.value === 'DELETE') {
+            confirmBtn.disabled = false;
+        } else {
+            confirmBtn.disabled = true;
         }
-        await loadRequests();
-        showToast("Reset complete");
+    });
+    
+    confirmBtn.onclick = async () => {
+        const typedValue = input.value;
+        if(typedValue === 'DELETE') {
+            modal.remove();
+            await executeResetCompleted(toDelete);
+        } else {
+            showToast("❌ Deletion cancelled - incorrect confirmation text");
+            modal.remove();
+        }
+    };
+}
+
+async function executeResetCompleted(toDelete) {
+    let deletedCount = 0;
+    let errorCount = 0;
+    
+    showToast(`⚠️ Deleting ${toDelete.length} completed requests...`);
+    
+    for(const req of toDelete) {
+        try {
+            await db.collection("kitchen_requests").doc(req.id).delete();
+            deletedCount++;
+        } catch(e) {
+            console.error("Delete error:", e);
+            errorCount++;
+        }
+    }
+    
+    await loadRequests();
+    if(errorCount === 0) {
+        showToast(`✅ Reset complete! Deleted ${deletedCount} completed requests.`);
+    } else {
+        showToast(`⚠️ Deleted ${deletedCount} requests, ${errorCount} failed.`);
     }
 }
 
@@ -1004,7 +1154,6 @@ function renderUI() {
             "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff"
         }[req.section] || "kitchen-staff";
         
-        // Calculate requested total value (ALL items)
         let requestedTotalValue = 0;
         let approvedTotalValue = 0;
         req.items.forEach(item => {
@@ -1017,7 +1166,6 @@ function renderUI() {
             }
         });
         
-        // Check if any individual action has been taken (for pending requests only)
         let hasIndividualAction = false;
         let isCompleted = false;
         if(requestStatus === "pending") {
@@ -1032,7 +1180,7 @@ function renderUI() {
         }
         
         let itemsHtml = `<div class="table-wrapper"><table class="admin-table"><thead>
-            <tr><th>Code</th><th>Item</th><th>Requested Qty</th><th>Unit</th><th>Price/Unit (EGP)</th><th>Approved Qty</th><th>Total Value (EGP)</th><th>Action</th><th>Status</th></tr>
+            <tr><th>Code</th><th>Item</th><th>Requested Qty</th><th>Unit</th><th>Price/Unit (EGP)</th><th>Approved Qty</th><th>Total Value (EGP)</th><th>Action</th><th>Status</th>
         </thead><tbody>`;
         
         req.items.forEach((item, idx) => {
@@ -1041,43 +1189,12 @@ function renderUI() {
             const totalValue = approvedQty * price;
             
             if(item.status === "approved") {
-                itemsHtml += `<tr style="background:#e8f5e9;">
-                    <td>${item.code}</td>
-                    <td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit}</div></td>
-                    <td><span class="requested-qty">${item.originalQty}</span></td>
-                    <td>${item.unit}</td>
-                    <td><span class="item-price">${price.toFixed(2)}</span></td>
-                    <td>${approvedQty.toFixed(1)}</div></td>
-                    <td><strong style="color:#27ae60;">${totalValue.toFixed(2)}</strong></div></td>
-                    <td><span class="btn-approve" style="background:#27ae60;opacity:0.7;cursor:default;padding:4px 10px;">✅ Approved</span></div></td>
-                    <td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</div></div></td>
-                </tr>`;
+                itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-max">Max: ${item.maxLimit}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td>${approvedQty.toFixed(1)}</td><td><strong style="color:#27ae60;">${totalValue.toFixed(2)}</strong></td><td><span class="btn-approve" style="background:#27ae60;opacity:0.7;cursor:default;">✅ Approved</span></td><td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</div></td></tr>`;
             } else if(item.status === "rejected") {
-                itemsHtml += `<tr style="background:#fee2e2;">
-                    <td>${item.code}</td>
-                    <td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit}</div></td>
-                    <td><span class="requested-qty">${item.originalQty}</span></td>
-                    <td>${item.unit}</td>
-                    <td><span class="item-price">${price.toFixed(2)}</span></td>
-                    <td><strong style="color:#e74c3c;">0</strong></td>
-                    <td><strong style="color:#e74c3c;">0.00</strong></td>
-                    <td><span class="btn-reject" style="background:#e74c3c;opacity:0.7;cursor:default;padding:4px 10px;">❌ Rejected</span></td>
-                    <td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td>
-                </tr>`;
+                itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-max">Max: ${item.maxLimit}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td><strong style="color:#e74c3c;">0</strong></td><td><strong style="color:#e74c3c;">0.00</strong></td><td><span class="btn-reject" style="background:#e74c3c;opacity:0.7;cursor:default;">❌ Rejected</span></td><td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td></tr>`;
             } else {
-                itemsHtml += `<tr>
-                    <td>${item.code}</td>
-                    <td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-code">${item.code}</div><div class="item-max">Max: ${item.maxLimit}</div></td>
-                    <td><span class="requested-qty">${item.originalQty}</span></td>
-                    <td>${item.unit}</td>
-                    <td><span class="item-price">${price.toFixed(2)}</span></td>
-                    <td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td>
-                    <td><span id="totalValuePreview_${req.id}_${idx}" style="font-weight:600; color:#1e3c72;">${(item.originalQty * price).toFixed(2)}</span></td>
-                    <td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.id}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.id}', ${idx})">❌ Reject</button></div></td>
-                    <td><span class="status-pending-cell">Pending</span><div class="admin-info-text">Waiting for approval</div></td>
-                </tr>`;
+                itemsHtml += `<tr><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-max">Max: ${item.maxLimit}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td><td><span id="totalValuePreview_${req.id}_${idx}" style="font-weight:600; color:#1e3c72;">${(item.originalQty * price).toFixed(2)}</span></td><td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.id}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.id}', ${idx})">❌ Reject</button></td><td><span class="status-pending-cell">Pending</span><div class="admin-info-text">Waiting for approval</div></td></tr>`;
                 
-                // Add input event listener to update total value preview and enable accept button
                 setTimeout(() => {
                     const input = document.getElementById(`qty_${req.id}_${idx}`);
                     const totalSpan = document.getElementById(`totalValuePreview_${req.id}_${idx}`);
@@ -1086,7 +1203,6 @@ function renderUI() {
                             const newQty = parseFloat(this.value) || 0;
                             const newTotal = newQty * price;
                             totalSpan.innerText = newTotal.toFixed(2);
-                            // Enable accept button when any change is made
                             const acceptBtn = document.getElementById(`acceptBtn_${req.id}`);
                             const approveAllBtn = document.getElementById(`approveAllBtn_${req.id}`);
                             const rejectAllBtn = document.getElementById(`rejectAllBtn_${req.id}`);
@@ -1098,7 +1214,7 @@ function renderUI() {
                 }, 100);
             }
         });
-        itemsHtml += `</tbody>}</div>`;
+        itemsHtml += `</tbody></table></div>`;
         
         let actions = "";
         if(!isCompleted) {
@@ -1111,21 +1227,11 @@ function renderUI() {
             actions = `<div class="request-actions"><button class="btn-accept" style="background:#6c757d; cursor:default;" disabled>✅ Request Completed - Locked</button></div>`;
         }
         
-        let statusText = "";
-        let statusClass = "";
-        if(requestStatus === "pending") {
-            statusText = "Pending";
-            statusClass = "status-pending";
-        } else if(requestStatus === "approved") {
-            statusText = "Fully Approved";
-            statusClass = "status-approved";
-        } else if(requestStatus === "rejected") {
-            statusText = "Rejected";
-            statusClass = "status-rejected";
-        } else {
-            statusText = "Accepted";
-            statusClass = "status-accepted";
-        }
+        let statusText = "", statusClass = "";
+        if(requestStatus === "pending") { statusText = "Pending"; statusClass = "status-pending"; }
+        else if(requestStatus === "approved") { statusText = "Fully Approved"; statusClass = "status-approved"; }
+        else if(requestStatus === "rejected") { statusText = "Rejected"; statusClass = "status-rejected"; }
+        else { statusText = "Accepted"; statusClass = "status-accepted"; }
         
         container.innerHTML += `<div class="request-card">
             <div class="request-header">
@@ -1146,21 +1252,16 @@ function renderUI() {
     });
     updateStats();
 }
+
 function logout() {
     if(confirm("Are you sure you want to logout?")) {
-        // Stop real-time listener if exists
-        if(unsubscribeListener) {
-            unsubscribeListener();
-            unsubscribeListener = null;
-        }
-        // Clear admin from localStorage
+        if(unsubscribeListener) unsubscribeListener();
         localStorage.removeItem("admin");
-        // Clear any cached data
         sessionStorage.clear();
-        // Redirect to index page
         window.location.href = "index.html";
     }
 }
+
 function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ''; }
 function showToast(msg) { 
     const t = document.createElement("div"); t.className = "toast"; t.innerText = msg; 
