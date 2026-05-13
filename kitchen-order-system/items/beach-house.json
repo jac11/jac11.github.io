@@ -4,6 +4,7 @@
   {"code": "161005", "name": "Black Pepper Corn", "name_ar": "حب الفلفل الأسود", "unit": "kg", "maxLimit": 2, "price": 45.50},
   {"code": "161006", "name": "Black Pepper Powder", "name_ar": "مسحوق الفلفل الأسود", "unit": "kg", "maxLimit": 2, "price": 48.00},
   {"code": "110010", "name": "Beef Fillet Brazil", "name_ar": "فيليه لحم برازيلي", "unit": "kg", "maxLimit": 10, "AVE": 689.2963},
+  {"code": "131008", "name": "Fish Fillet Seabass", "name_ar": "فيليه سمك القاروص", "unit": "kg", "maxLimit": 40, "AVE": 433.437},
   {"code": "110148", "name": "Beef Rib Eye Russian", "name_ar": "ريب آي لحم روسي", "unit": "kg", "maxLimit": 8, "AVE": 1950},
   {"code": "110051", "name": "Beef Tenderloin Australian", "name_ar": "تندرلوين لحم أسترالي", "unit": "kg", "maxLimit": 8, "AVE": 2400},
   {"code": "120047", "name": "Chicken Breast Size 4-5", "name_ar": "صدر دجاج مقاس 4-5", "unit": "kg", "maxLimit": 15, "AVE": 221.75556},
