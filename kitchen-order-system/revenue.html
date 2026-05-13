@@ -193,7 +193,7 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
     .kpi-card {
       background: white;
@@ -281,6 +281,11 @@
       display: none;
     }
 
+    /* FIX: Extra kpi-wrapper for avg cards to avoid broken layout */
+    .kpi-single-row {
+      margin-bottom: 20px;
+    }
+
     @media (max-width: 550px) {
       body { padding: 12px; }
       .nav-grid { grid-template-columns: repeat(3, 1fr); }
@@ -357,7 +362,7 @@
       </div>
       <div class="input-group">
         <label>💰 TOTAL REVENUE (AUTO)</label>
-        <input type="number" id="restTotal" disabled placeholder="Disabled until both food & beverage filled">
+        <input type="number" id="restTotal" disabled placeholder="Auto when both filled">
       </div>
       <button class="btn-save" data-save="The Restaurant">💾 SAVE REPORT</button>
     </div>
@@ -387,7 +392,7 @@
       </div>
       <div class="input-group">
         <label>💰 TOTAL REVENUE (AUTO)</label>
-        <input type="number" id="roomTotal" disabled placeholder="Disabled until both food & beverage filled">
+        <input type="number" id="roomTotal" disabled placeholder="Auto when both filled">
       </div>
       <button class="btn-save" data-save="Room Service">💾 SAVE REPORT</button>
     </div>
@@ -417,7 +422,7 @@
       </div>
       <div class="input-group">
         <label>💰 TOTAL REVENUE (AUTO)</label>
-        <input type="number" id="beachTotal" disabled placeholder="Disabled until both food & beverage filled">
+        <input type="number" id="beachTotal" disabled placeholder="Auto when both filled">
       </div>
       <button class="btn-save" data-save="The Beach House">💾 SAVE REPORT</button>
     </div>
@@ -447,7 +452,7 @@
       </div>
       <div class="input-group">
         <label>💰 TOTAL REVENUE (AUTO)</label>
-        <input type="number" id="nihonTotal" disabled placeholder="Disabled until both food & beverage filled">
+        <input type="number" id="nihonTotal" disabled placeholder="Auto when both filled">
       </div>
       <button class="btn-save" data-save="Nihon">💾 SAVE REPORT</button>
     </div>
@@ -461,14 +466,20 @@
       <div class="kpi-card"><div class="kpi-label">🍽️ TOTAL FOOD REV</div><div class="kpi-number text-orange" id="analyticsFoodRev">0 EGP</div></div>
       <div class="kpi-card"><div class="kpi-label">🥂 TOTAL BEVERAGE REV</div><div class="kpi-number text-red" id="analyticsBevRev">0 EGP</div></div>
     </div>
-    <div class="kpi-card">
-    <div class="kpi-label">📈 AVG REVENUE / COVER</div>
-    <div class="kpi-number text-blue" id="analyticsAvgCover">0 EGP</div>
+    <!-- FIX: Wrap additional KPI cards in separate containers to fix layout break -->
+    <div class="kpi-single-row" style="margin-bottom: 16px;">
+      <div class="kpi-card">
+        <div class="kpi-label">📈 AVG REVENUE / COVER</div>
+        <div class="kpi-number text-blue" id="analyticsAvgCover">0 EGP</div>
+      </div>
+    </div>
+    <div class="kpi-single-row" style="margin-bottom: 20px;">
+      <div class="kpi-card">
+        <div class="kpi-label">👥 AVG COVERS / REPORT</div>
+        <div class="kpi-number text-orange" id="analyticsAvgGuests">0</div>
+      </div>
     </div>
 
-  <div class="kpi-label">👥 AVG COVERS / REPORT</div>
-  <div class="kpi-number text-orange" id="analyticsAvgGuests">0</div>
-  </div>
     <div class="chart-panel">
       <div class="section-title">📊 Revenue by Restaurant</div>
       <div class="chart-container">
@@ -482,19 +493,15 @@
         <canvas id="fbChart"></canvas>
       </div>
     </div>
+    
     <div class="form-panel">
       <div class="section-title">📤 Export Reports</div>
-
       <div class="row-2cols">
-        <button class="btn-save" id="exportPdfBtn">
-          📄 EXPORT PDF
-        </button>
-
-        <button class="btn-save" id="exportExcelBtn">
-          📊 EXPORT EXCEL
-        </button>
+        <button class="btn-save" id="exportPdfBtn">📄 EXPORT PDF</button>
+        <button class="btn-save" id="exportExcelBtn">📊 EXPORT EXCEL</button>
       </div>
     </div>
+
     <div class="analytics-panel">
       <div class="section-title">📋 All Reports</div>
       <div class="table-wrapper">
@@ -503,7 +510,7 @@
             <tr><th>Restaurant</th><th>Manager</th><th>Covers</th><th>Food</th><th>Beverage</th><th>Total</th><th>Date & Time</th></tr>
           </thead>
           <tbody id="analyticsTableBody">
-            <tr><td colspan="7" class="empty-state">Loading...</td></tr>
+            <tr><td colspan="7" class="empty-state">Loading reports...</td></tr>
           </tbody>
         </table>
       </div>
@@ -519,14 +526,14 @@
     </div>
   </div>
 </div>
+
 <!-- PDF Export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
 <!-- AutoTable for PDF tables -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
 <!-- Excel Export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 <script type="module">
   import { initializeApp } from "firebase/app";
   import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp } from "firebase/firestore";
@@ -550,7 +557,8 @@
     document.querySelectorAll('.section-content').forEach(section => {
       section.classList.add('hidden-section');
     });
-    document.getElementById(`${sectionId}-section`).classList.remove('hidden-section');
+    const targetSection = document.getElementById(`${sectionId}-section`);
+    if (targetSection) targetSection.classList.remove('hidden-section');
     
     document.querySelectorAll('.nav-card').forEach(card => {
       card.classList.remove('active');
@@ -568,23 +576,23 @@
   document.querySelectorAll('.nav-card').forEach(card => {
     card.addEventListener('click', () => {
       const section = card.getAttribute('data-section');
-      showSection(section);
+      if (section === 'reset') showSection('reset');
+      else if (section === 'analytics') showSection('analytics');
+      else showSection(section);
     });
   });
 
-  // Auto-calculate total for each section
+  // Auto-calculate total for each section (both positive values required)
   function setupAutoTotal(foodId, bevId, totalId) {
     const foodInput = document.getElementById(foodId);
     const bevInput = document.getElementById(bevId);
     const totalInput = document.getElementById(totalId);
-    
     function update() {
       const foodVal = parseFloat(foodInput.value);
       const bevVal = parseFloat(bevInput.value);
-      const hasFood = !isNaN(foodVal) && foodVal > 0;
-      const hasBev = !isNaN(bevVal) && bevVal > 0;
-      
-      if (hasFood && hasBev) {
+      const isValidFood = !isNaN(foodVal) && foodVal > 0;
+      const isValidBev = !isNaN(bevVal) && bevVal > 0;
+      if (isValidFood && isValidBev) {
         totalInput.value = foodVal + bevVal;
         totalInput.disabled = false;
       } else {
@@ -592,7 +600,6 @@
         totalInput.disabled = true;
       }
     }
-    
     foodInput.addEventListener('input', update);
     bevInput.addEventListener('input', update);
   }
@@ -622,20 +629,15 @@
     }
   }
 
-  // Save buttons
+  // Save listeners for each restaurant
   document.querySelector('[data-save="The Restaurant"]').addEventListener('click', async () => {
     const manager = document.getElementById('restManager').value.trim();
     const covers = parseInt(document.getElementById('restCovers').value);
     const food = parseFloat(document.getElementById('restFood').value);
     const bev = parseFloat(document.getElementById('restBev').value);
-    
     if (!manager) { showMessage("❌ Enter manager name", true); return; }
-    if (!covers || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
-    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) {
-      showMessage("❌ BOTH Food AND Beverage must be > 0", true);
-      return;
-    }
-    
+    if (isNaN(covers) || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
+    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) { showMessage("❌ BOTH Food AND Beverage must be > 0", true); return; }
     await saveReport("The Restaurant", { manager, covers, food, bev });
     document.getElementById('restManager').value = '';
     document.getElementById('restCovers').value = '';
@@ -649,14 +651,9 @@
     const covers = parseInt(document.getElementById('roomCovers').value);
     const food = parseFloat(document.getElementById('roomFood').value);
     const bev = parseFloat(document.getElementById('roomBev').value);
-    
     if (!manager) { showMessage("❌ Enter manager name", true); return; }
-    if (!covers || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
-    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) {
-      showMessage("❌ BOTH Food AND Beverage must be > 0", true);
-      return;
-    }
-    
+    if (isNaN(covers) || covers <= 0) { showMessage("❌ Enter valid covers", true); return; }
+    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) { showMessage("❌ BOTH Food AND Beverage > 0", true); return; }
     await saveReport("Room Service", { manager, covers, food, bev });
     document.getElementById('roomManager').value = '';
     document.getElementById('roomCovers').value = '';
@@ -670,14 +667,9 @@
     const covers = parseInt(document.getElementById('beachCovers').value);
     const food = parseFloat(document.getElementById('beachFood').value);
     const bev = parseFloat(document.getElementById('beachBev').value);
-    
     if (!manager) { showMessage("❌ Enter manager name", true); return; }
-    if (!covers || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
-    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) {
-      showMessage("❌ BOTH Food AND Beverage must be > 0", true);
-      return;
-    }
-    
+    if (isNaN(covers) || covers <= 0) { showMessage("❌ Enter valid covers", true); return; }
+    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) { showMessage("❌ BOTH Food AND Beverage > 0", true); return; }
     await saveReport("The Beach House", { manager, covers, food, bev });
     document.getElementById('beachManager').value = '';
     document.getElementById('beachCovers').value = '';
@@ -691,14 +683,9 @@
     const covers = parseInt(document.getElementById('nihonCovers').value);
     const food = parseFloat(document.getElementById('nihonFood').value);
     const bev = parseFloat(document.getElementById('nihonBev').value);
-    
     if (!manager) { showMessage("❌ Enter manager name", true); return; }
-    if (!covers || covers <= 0) { showMessage("❌ Enter valid covers (guests count)", true); return; }
-    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) {
-      showMessage("❌ BOTH Food AND Beverage must be > 0", true);
-      return;
-    }
-    
+    if (isNaN(covers) || covers <= 0) { showMessage("❌ Enter valid covers", true); return; }
+    if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) { showMessage("❌ BOTH Food AND Beverage > 0", true); return; }
     await saveReport("Nihon", { manager, covers, food, bev });
     document.getElementById('nihonManager').value = '';
     document.getElementById('nihonCovers').value = '';
@@ -712,12 +699,11 @@
     if (!confirm("⚠️ WARNING: This will delete ALL reports from ALL restaurants. Are you ABSOLUTELY sure?")) return;
     const confirmText = prompt("Type 'DELETE' to confirm:");
     if (confirmText !== "DELETE") { showMessage("Reset cancelled", false); return; }
-    
     try {
       const snapshot = await getDocs(collection(db, "dailyReports"));
       let count = 0;
-      for (const doc of snapshot.docs) {
-        await deleteDoc(doc.ref);
+      for (const docSnap of snapshot.docs) {
+        await deleteDoc(docSnap.ref);
         count++;
       }
       showMessage(`✅ Deleted ${count} reports successfully`, false);
@@ -732,30 +718,22 @@
     try {
       const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
-      
-      let totalRev = 0,
-      totalFood = 0,
-      totalBev = 0,
-      totalCovers = 0,
-      totalReports = 0;
+      let totalRev = 0, totalFood = 0, totalBev = 0, totalCovers = 0, totalReports = 0;
       let restaurantMap = new Map();
       let reportsHTML = '';
-      
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const resto = data.restaurant || '?';
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const resto = data.restaurant || 'Unknown';
         const total = data.totalRevenue || 0;
         const food = data.foodRevenue || 0;
         const bev = data.beverageRevenue || 0;
         const covers = data.covers || 0;
         totalReports++;
-        
         totalRev += total;
         totalFood += food;
         totalBev += bev;
         totalCovers += covers;
         restaurantMap.set(resto, (restaurantMap.get(resto) || 0) + total);
-        
         const timeStr = data.createdAt ? new Date(data.createdAt.toDate()).toLocaleString() : 'no date';
         reportsHTML += `<tr>
           <td>${escapeHtml(resto)}</td>
@@ -767,22 +745,14 @@
           <td style="font-size:0.7rem;">${escapeHtml(timeStr)}</td>
         </tr>`;
       });
-      
       document.getElementById('analyticsTotalRev').innerText = totalRev.toLocaleString() + " EGP";
       document.getElementById('analyticsTotalCovers').innerText = totalCovers.toLocaleString();
       document.getElementById('analyticsFoodRev').innerText = totalFood.toLocaleString() + " EGP";
       document.getElementById('analyticsBevRev').innerText = totalBev.toLocaleString() + " EGP";
-      const avgRevenuePerCover =
-      totalCovers > 0 ? (totalRev / totalCovers).toFixed(2) : 0;
-
-      const avgGuestsPerReport =
-        totalReports > 0 ? (totalCovers / totalReports).toFixed(1) : 0;
-
-      document.getElementById('analyticsAvgCover').innerText =
-        avgRevenuePerCover + " EGP";
-
-      document.getElementById('analyticsAvgGuests').innerText =
-        avgGuestsPerReport;
+      const avgRevenuePerCover = totalCovers > 0 ? (totalRev / totalCovers).toFixed(2) : 0;
+      const avgGuestsPerReport = totalReports > 0 ? (totalCovers / totalReports).toFixed(1) : 0;
+      document.getElementById('analyticsAvgCover').innerText = avgRevenuePerCover + " EGP";
+      document.getElementById('analyticsAvgGuests').innerText = avgGuestsPerReport;
       document.getElementById('analyticsTableBody').innerHTML = reportsHTML || '<tr><td colspan="7" class="empty-state">No reports yet</td></tr>';
       
       if (restaurantChart) {
@@ -799,14 +769,11 @@
         fbChart.update();
       }
     } catch (error) {
-      console.error(error);
+      console.error("Analytics load error", error);
     }
   }
 
-  function escapeHtml(str) {
-    if (!str) return "";
-    return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-  }
+  function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'); }
 
   function initCharts() {
     const ctx1 = document.getElementById('restaurantChart').getContext('2d');
@@ -832,88 +799,51 @@
     container.innerHTML = `<div class="alert ${isError ? 'alert-error' : 'alert-success'}">${text}</div>`;
     setTimeout(() => { if(container.firstChild) container.innerHTML = ''; }, 3000);
   }
-  // EXPORT PDF
+
+  // Export PDF
   document.getElementById('exportPdfBtn').addEventListener('click', async () => {
-      const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-
-      doc.setFontSize(18);
-      doc.text("Restaurant Reports", 14, 20);
-
-      let rows = [];
-
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-
-        rows.push([
-          data.restaurant || '',
-          data.manager || '',
-          data.covers || 0,
-          data.foodRevenue || 0,
-          data.beverageRevenue || 0,
-          data.totalRevenue || 0,
-          data.createdAt
-            ? new Date(data.createdAt.toDate()).toLocaleString()
-            : ''
-        ]);
-      });
-
-      doc.autoTable({
-        startY: 30,
-        head: [[
-          'Restaurant',
-          'Manager',
-          'Covers',
-          'Food',
-          'Beverage',
-          'Total',
-          'Date'
-        ]],
-        body: rows,
-        styles: {
-          fontSize: 8
-        }
-      });
-
-      doc.save("restaurant_reports.pdf");
+    const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Restaurant Reports", 14, 20);
+    let rows = [];
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      rows.push([
+        data.restaurant || '', data.manager || '', data.covers || 0,
+        data.foodRevenue || 0, data.beverageRevenue || 0, data.totalRevenue || 0,
+        data.createdAt ? new Date(data.createdAt.toDate()).toLocaleString() : ''
+      ]);
     });
-  // EXPORT EXCEL
-    document.getElementById('exportExcelBtn').addEventListener('click', async () => {
-      const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-
-      let exportData = [];
-
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-
-        exportData.push({
-          Restaurant: data.restaurant || '',
-          Manager: data.manager || '',
-          Covers: data.covers || 0,
-          FoodRevenue: data.foodRevenue || 0,
-          BeverageRevenue: data.beverageRevenue || 0,
-          TotalRevenue: data.totalRevenue || 0,
-          Date: data.createdAt
-            ? new Date(data.createdAt.toDate()).toLocaleString()
-            : ''
-        });
+    doc.autoTable({ startY: 30, head: [['Restaurant','Manager','Covers','Food','Beverage','Total','Date']], body: rows, styles: { fontSize: 8 } });
+    doc.save("restaurant_reports.pdf");
+  });
+  
+  // Export Excel
+  document.getElementById('exportExcelBtn').addEventListener('click', async () => {
+    const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    let exportData = [];
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      exportData.push({
+        Restaurant: data.restaurant || '',
+        Manager: data.manager || '',
+        Covers: data.covers || 0,
+        FoodRevenue: data.foodRevenue || 0,
+        BeverageRevenue: data.beverageRevenue || 0,
+        TotalRevenue: data.totalRevenue || 0,
+        Date: data.createdAt ? new Date(data.createdAt.toDate()).toLocaleString() : ''
       });
-
-      const worksheet = XLSX.utils.json_to_sheet(exportData);
-      const workbook = XLSX.utils.book_new();
-
-      XLSX.utils.book_append_sheet(
-        workbook,
-        worksheet,
-        "Reports"
-      );
-
-      XLSX.writeFile(workbook, "restaurant_reports.xlsx");
     });
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Reports");
+    XLSX.writeFile(workbook, "restaurant_reports.xlsx");
+  });
+
   initCharts();
   showSection('therestaurant');
 </script>
