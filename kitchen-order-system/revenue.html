@@ -461,7 +461,14 @@
       <div class="kpi-card"><div class="kpi-label">🍽️ TOTAL FOOD REV</div><div class="kpi-number text-orange" id="analyticsFoodRev">0 EGP</div></div>
       <div class="kpi-card"><div class="kpi-label">🥂 TOTAL BEVERAGE REV</div><div class="kpi-number text-red" id="analyticsBevRev">0 EGP</div></div>
     </div>
+    <div class="kpi-card">
+    <div class="kpi-label">📈 AVG REVENUE / COVER</div>
+    <div class="kpi-number text-blue" id="analyticsAvgCover">0 EGP</div>
+    </div>
 
+  <div class="kpi-label">👥 AVG COVERS / REPORT</div>
+  <div class="kpi-number text-orange" id="analyticsAvgGuests">0</div>
+  </div>
     <div class="chart-panel">
       <div class="section-title">📊 Revenue by Restaurant</div>
       <div class="chart-container">
@@ -475,7 +482,19 @@
         <canvas id="fbChart"></canvas>
       </div>
     </div>
+    <div class="form-panel">
+      <div class="section-title">📤 Export Reports</div>
 
+      <div class="row-2cols">
+        <button class="btn-save" id="exportPdfBtn">
+          📄 EXPORT PDF
+        </button>
+
+        <button class="btn-save" id="exportExcelBtn">
+          📊 EXPORT EXCEL
+        </button>
+      </div>
+    </div>
     <div class="analytics-panel">
       <div class="section-title">📋 All Reports</div>
       <div class="table-wrapper">
@@ -500,7 +519,14 @@
     </div>
   </div>
 </div>
+<!-- PDF Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<!-- AutoTable for PDF tables -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<!-- Excel Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script type="module">
   import { initializeApp } from "firebase/app";
   import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp } from "firebase/firestore";
@@ -707,7 +733,11 @@
       const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
       
-      let totalRev = 0, totalFood = 0, totalBev = 0, totalCovers = 0;
+      let totalRev = 0,
+      totalFood = 0,
+      totalBev = 0,
+      totalCovers = 0,
+      totalReports = 0;
       let restaurantMap = new Map();
       let reportsHTML = '';
       
@@ -718,6 +748,7 @@
         const food = data.foodRevenue || 0;
         const bev = data.beverageRevenue || 0;
         const covers = data.covers || 0;
+        totalReports++;
         
         totalRev += total;
         totalFood += food;
@@ -741,7 +772,17 @@
       document.getElementById('analyticsTotalCovers').innerText = totalCovers.toLocaleString();
       document.getElementById('analyticsFoodRev').innerText = totalFood.toLocaleString() + " EGP";
       document.getElementById('analyticsBevRev').innerText = totalBev.toLocaleString() + " EGP";
-      
+      const avgRevenuePerCover =
+      totalCovers > 0 ? (totalRev / totalCovers).toFixed(2) : 0;
+
+      const avgGuestsPerReport =
+        totalReports > 0 ? (totalCovers / totalReports).toFixed(1) : 0;
+
+      document.getElementById('analyticsAvgCover').innerText =
+        avgRevenuePerCover + " EGP";
+
+      document.getElementById('analyticsAvgGuests').innerText =
+        avgGuestsPerReport;
       document.getElementById('analyticsTableBody').innerHTML = reportsHTML || '<tr><td colspan="7" class="empty-state">No reports yet</td></tr>';
       
       if (restaurantChart) {
@@ -791,7 +832,88 @@
     container.innerHTML = `<div class="alert ${isError ? 'alert-error' : 'alert-success'}">${text}</div>`;
     setTimeout(() => { if(container.firstChild) container.innerHTML = ''; }, 3000);
   }
+  // EXPORT PDF
+  document.getElementById('exportPdfBtn').addEventListener('click', async () => {
+      const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
 
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(18);
+      doc.text("Restaurant Reports", 14, 20);
+
+      let rows = [];
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+
+        rows.push([
+          data.restaurant || '',
+          data.manager || '',
+          data.covers || 0,
+          data.foodRevenue || 0,
+          data.beverageRevenue || 0,
+          data.totalRevenue || 0,
+          data.createdAt
+            ? new Date(data.createdAt.toDate()).toLocaleString()
+            : ''
+        ]);
+      });
+
+      doc.autoTable({
+        startY: 30,
+        head: [[
+          'Restaurant',
+          'Manager',
+          'Covers',
+          'Food',
+          'Beverage',
+          'Total',
+          'Date'
+        ]],
+        body: rows,
+        styles: {
+          fontSize: 8
+        }
+      });
+
+      doc.save("restaurant_reports.pdf");
+    });
+  // EXPORT EXCEL
+    document.getElementById('exportExcelBtn').addEventListener('click', async () => {
+      const q = query(collection(db, "dailyReports"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+
+      let exportData = [];
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+
+        exportData.push({
+          Restaurant: data.restaurant || '',
+          Manager: data.manager || '',
+          Covers: data.covers || 0,
+          FoodRevenue: data.foodRevenue || 0,
+          BeverageRevenue: data.beverageRevenue || 0,
+          TotalRevenue: data.totalRevenue || 0,
+          Date: data.createdAt
+            ? new Date(data.createdAt.toDate()).toLocaleString()
+            : ''
+        });
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+
+      XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Reports"
+      );
+
+      XLSX.writeFile(workbook, "restaurant_reports.xlsx");
+    });
   initCharts();
   showSection('therestaurant');
 </script>
