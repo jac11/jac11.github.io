@@ -8,6 +8,7 @@
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 
 <!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -56,7 +57,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .empty-state { text-align: center; padding: 50px; background: white; border-radius: 16px; color: #999; }
 .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 30px; font-size: 12px; z-index: 1000; }
 .modal { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
-.modal-content { background: white; padding: 30px; border-radius: 24px; text-align: center; max-width: 450px; width: 90%; }
+.modal-content { background: white; padding: 30px; border-radius: 24px; text-align: center; max-width: 400px; width: 90%; }
 .modal-content input { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; text-align: center; }
 .modal-content button { background: #3498db; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; font-size: 1rem; margin-top: 8px; }
 .error-msg { color: #e74c3c; margin-top: 12px; }
@@ -65,8 +66,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .btn-danger { background: #e74c3c !important; }
 .btn-secondary { background: #7f8c8d !important; }
 .restore-btn { background: #27ae60 !important; font-size: 12px !important; padding: 5px 12px !important; margin-left: 10px; }
-.firebase-config-panel { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
-.firebase-config-panel input { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 6px; font-family: monospace; font-size: 12px; }
 @media (max-width: 768px) { .filters { flex-direction: column; align-items: stretch; } .export-buttons { margin-left: 0; width: 100%; } .data-table th, .data-table td { font-size: 11px; padding: 8px 6px; } }
 </style>
 </head>
@@ -80,24 +79,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         <input type="password" id="passwordInput" placeholder="Enter password">
         <button onclick="checkPassword()">Login</button>
         <div id="passwordError" class="error-msg"></div>
-        <hr style="margin: 15px 0;">
-        <h3>⚙️ Firebase Configuration</h3>
-        <input type="text" id="fbApiKey" placeholder="API Key">
-        <input type="text" id="fbProjectId" placeholder="Project ID">
-        <input type="text" id="fbAuthDomain" placeholder="Auth Domain (optional)">
-        <button onclick="saveFirebaseConfig()">💾 Save & Connect to YOUR Firebase</button>
-        <div id="configStatus" style="font-size: 12px; margin-top: 10px; color: #666;"></div>
+        <button class="close-modal" onclick="window.location.href='index.html'" style="background:#95a5a6;">← Back</button>
     </div>
 </div>
 
 <!-- ARCHIVE CONFIRMATION MODAL -->
 <div id="archiveWarningModal" class="modal" style="display:none;">
     <div class="modal-content">
-        <h2>⚠️ Archive Completed Orders</h2>
-        <p>Move ALL approved orders to archive?</p>
-        <p style="color:#e67e22;">Archived orders will be moved to "archived_orders" collection</p>
+        <h2>⚠️ WARNING: Archive Completed Orders</h2>
+        <p>This will move ALL approved orders to the ARCHIVE.</p>
+        <p style="color:#e67e22;">Archived orders go to: <strong>archived_orders</strong> collection</p>
         <div class="warning-buttons">
-            <button class="btn-danger" onclick="confirmArchiveAndClean()">✅ Yes, Archive</button>
+            <button class="btn-danger" onclick="confirmArchiveAndClean()">🗄️ Yes, Archive</button>
             <button class="btn-secondary" onclick="closeArchiveModal()">Cancel</button>
         </div>
     </div>
@@ -107,7 +100,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 <div id="mainContent" style="display:none;">
     <div class="header">
         <div class="header-content">
-            <div class="logo">📦 <span>Storekeeper | REAL Orders</span></div>
+            <div class="logo">📦 <span>Storekeeper | Your Real Data</span></div>
             <div class="header-buttons">
                 <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
@@ -131,9 +124,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     <div id="archivedPanel" style="display:none;">
         <div class="container">
             <div class="card">
-                <h3>📦 Archived Orders</h3>
+                <h3>📦 Archived Orders History</h3>
                 <div class="filters">
-                    <input type="text" id="archiveSearch" placeholder="Search archived..." oninput="renderArchivedOrders()">
+                    <input type="text" id="archiveSearch" placeholder="Search archived orders..." oninput="renderArchivedOrders()">
                 </div>
                 <div id="archivedOrdersList"></div>
             </div>
@@ -143,85 +136,48 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 <script>
 const STOREKEEPER_PASSWORD = "store123";
-let db = null;
+let db;
 let allOrders = [];
 let archivedOrders = [];
 let currentKitchen = "all";
 let currentMainTab = "active";
 let filterState = { search: "" };
 
-// Save/Load Firebase config from localStorage
-function saveFirebaseConfig() {
-    const config = {
-        apiKey: document.getElementById("fbApiKey").value,
-        projectId: document.getElementById("fbProjectId").value,
-        authDomain: document.getElementById("fbAuthDomain").value || `${document.getElementById("fbProjectId").value}.firebaseapp.com`
-    };
-    if (!config.apiKey || !config.projectId) {
-        document.getElementById("configStatus").innerHTML = "❌ API Key and Project ID are required!";
-        return;
-    }
-    localStorage.setItem("firebase_config", JSON.stringify(config));
-    document.getElementById("configStatus").innerHTML = "✅ Config saved! Click Login again.";
-    showToast("Firebase config saved!");
-}
-
-function loadFirebaseConfig() {
-    const saved = localStorage.getItem("firebase_config");
-    if (saved) {
-        const config = JSON.parse(saved);
-        document.getElementById("fbApiKey").value = config.apiKey;
-        document.getElementById("fbProjectId").value = config.projectId;
-        document.getElementById("fbAuthDomain").value = config.authDomain;
-        return config;
-    }
-    return null;
-}
-
-function initFirebase() {
-    const config = loadFirebaseConfig();
-    if (!config || !config.apiKey || config.apiKey === "") {
-        console.log("No Firebase config yet");
-        return false;
-    }
-    
-    try {
-        if (!firebase.apps.length) {
-            const firebaseConfig = {
-                apiKey: config.apiKey,
-                authDomain: config.authDomain,
-                projectId: config.projectId,
-                storageBucket: `${config.projectId}.appspot.com`,
-                messagingSenderId: "000000000000",
-                appId: "1:000000000000:web:0000000000000000"
-            };
-            firebase.initializeApp(firebaseConfig);
-        }
-        db = firebase.firestore();
-        console.log("✅ Firebase connected!");
-        showToast("Connected to YOUR Firebase!");
-        return true;
-    } catch (error) {
-        console.error("Firebase error:", error);
-        showToast("❌ Firebase error: " + error.message);
-        return false;
-    }
+// Wait for Firebase to initialize from firebase-config.js
+function waitForFirebase() {
+    return new Promise((resolve) => {
+        const checkInterval = setInterval(() => {
+            if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+                clearInterval(checkInterval);
+                db = firebase.firestore();
+                console.log("✅ Firebase connected from firebase-config.js");
+                resolve(true);
+            }
+        }, 100);
+        
+        setTimeout(() => {
+            clearInterval(checkInterval);
+            console.warn("Firebase not found. Make sure firebase-config.js exists.");
+            resolve(false);
+        }, 5000);
+    });
 }
 
 function checkPassword() {
     if (document.getElementById("passwordInput").value === STOREKEEPER_PASSWORD) {
-        const fbConnected = initFirebase();
         document.getElementById("passwordModal").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         
-        if (fbConnected && db) {
-            startRealtimeListener();
-        } else {
-            showToast("⚠️ Configure Firebase in the login panel first!");
-            document.getElementById("configStatus").innerHTML = "⚠️ Enter your Firebase credentials above";
-        }
+        waitForFirebase().then(connected => {
+            if (connected && db) {
+                startRealtimeListener();
+                showToast("✅ Connected to your Firebase! Loading your real data...");
+            } else {
+                showToast("⚠️ Firebase config not found. Check firebase-config.js file.");
+            }
+        });
     } else {
-        document.getElementById("passwordError").innerHTML = "❌ Wrong password! Use: store123";
+        document.getElementById("passwordError").innerHTML = "❌ Wrong password!";
     }
 }
 
@@ -229,7 +185,9 @@ function startRealtimeListener() {
     if (!db) return;
     
     // Listen to active orders (not archived)
-    db.collection("kitchen_requests").where("archived", "!=", true).onSnapshot(snapshot => {
+    db.collection("kitchen_requests")
+      .where("archived", "!=", true)
+      .onSnapshot(snapshot => {
         allOrders = [];
         snapshot.forEach(doc => {
             const data = doc.data();
@@ -239,10 +197,15 @@ function startRealtimeListener() {
         });
         renderTabs();
         renderActiveOrders();
-        showToast(`📦 Loaded ${allOrders.length} active orders`);
+        console.log(`Loaded ${allOrders.length} active orders from your Firebase`);
+        if (allOrders.length === 0) {
+            showToast("📭 No approved orders found in your Firebase");
+        } else {
+            showToast(`📦 Loaded ${allOrders.length} orders from your data`);
+        }
     }, error => {
-        console.error("Snapshot error:", error);
-        showToast("Error loading data: " + error.message);
+        console.error("Firestore error:", error);
+        showToast("Error: " + error.message);
     });
     
     // Load archived orders
@@ -257,16 +220,30 @@ function startRealtimeListener() {
 
 function manualRefresh() {
     if (db) {
+        showToast("🔄 Refreshing your data...");
         startRealtimeListener();
     } else {
-        showToast("Firebase not connected. Configure first.");
+        showToast("⚠️ Waiting for Firebase connection...");
     }
 }
 
 function formatDate(dateValue) {
     if (!dateValue) return "N/A";
-    let d = dateValue.seconds ? new Date(dateValue.seconds * 1000) : new Date(dateValue);
-    return d.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    let d;
+    if (dateValue.seconds) {
+        d = new Date(dateValue.seconds * 1000);
+    } else if (typeof dateValue === "string") {
+        d = new Date(dateValue);
+    } else {
+        d = new Date(dateValue);
+    }
+    return d.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
 }
 
 function renderTabs() {
@@ -288,16 +265,21 @@ function renderActiveOrders() {
     if (!container) return;
     
     let filtered = [...allOrders];
-    if (currentKitchen !== "all") filtered = filtered.filter(o => o.section === currentKitchen);
+    if (currentKitchen !== "all") {
+        filtered = filtered.filter(o => o.section === currentKitchen);
+    }
     if (filterState.search) {
         const s = filterState.search.toLowerCase();
-        filtered = filtered.filter(o => o.requestId?.toLowerCase().includes(s) || o.items.some(i => i.name?.toLowerCase().includes(s)));
+        filtered = filtered.filter(o => 
+            o.requestId?.toLowerCase().includes(s) || 
+            o.items.some(i => i.name?.toLowerCase().includes(s))
+        );
     }
     
     container.innerHTML = `
         <div class="container">
             <div class="card">
-                <h3>📋 Approved Orders ${allOrders.length > 0 ? `(${allOrders.length})` : ''}</h3>
+                <h3>📋 Approved Orders from Your Firebase ${allOrders.length > 0 ? `(${allOrders.length})` : ''}</h3>
                 <div class="filters">
                     <input type="text" id="searchInput" placeholder="Search by item or request ID..." oninput="updateSearch()">
                     <div class="export-buttons">
@@ -343,7 +325,9 @@ function displayOrdersList(orders) {
             </div>
             <div class="table-wrapper">
                 <table class="data-table">
-                    <thead><tr><th>Code</th><th>Item Name</th><th>Qty</th><th>Unit</th><th>Price</th><th>Total</th><th>Approved By</th></tr></thead>
+                    <thead>
+                        <tr><th>Code</th><th>Item Name</th><th>Qty</th><th>Unit</th><th>Price</th><th>Total</th><th>Approved By</th></tr>
+                    </thead>
                     <tbody>`;
         approvedItems.forEach(item => {
             const qty = item.approvedQty || item.originalQty || 0;
@@ -360,7 +344,9 @@ function displayOrdersList(orders) {
                 <td><span class="badge badge-approved">✔ ${item.approvedBy || ""}</span></td>
             </tr>`;
         });
-        html += `</tbody></table></div>
+        html += `</tbody>
+                </table>
+            </div>
             <div style="padding: 10px 15px; background: #f0fdf4; text-align: right;">
                 <span class="order-total">💰 Total: ${total.toFixed(2)} EGP</span>
             </div>
@@ -382,7 +368,7 @@ function renderArchivedOrders() {
     }
     
     let html = `<div style="padding: 10px; background: #e8f5e9; border-radius: 8px; margin-bottom: 15px;">📊 Total Archived: ${filtered.length}</div>`;
-    filtered.forEach((order, idx) => {
+    filtered.forEach(order => {
         const approvedItems = order.items?.filter(item => item.status === "approved") || [];
         let total = 0;
         html += `<div class="order-group">
@@ -394,7 +380,10 @@ function renderArchivedOrders() {
                     <button class="restore-btn" onclick="restoreOrder('${order.id}')">↩️ Restore</button>
                 </div>
             </div>
-            <div class="table-wrapper"><table class="data-table"><thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Price</th><th>Total</th></tr></thead><tbody>`;
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead><tr><th>Code</th><th>Item</th><th>Qty</th><th>Unit</th><th>Price</th><th>Total</th></tr></thead>
+                    <tbody>`;
         approvedItems.forEach(item => {
             const qty = item.approvedQty || item.originalQty || 0;
             const price = item.price || 0;
@@ -402,7 +391,13 @@ function renderArchivedOrders() {
             total += rowTotal;
             html += `<tr><td>${item.code || ""}</td><td>${escapeHtml(item.name)}</td><td>${qty}</td><td>${item.unit || ""}</td><td>${price.toFixed(2)}</td><td>${rowTotal.toFixed(2)}</td></tr>`;
         });
-        html += `</tbody></table></div><div style="padding:10px 15px;background:#fff3cd;text-align:right;"><span class="order-total">💰 Total: ${total.toFixed(2)} EGP</span></div></div>`;
+        html += `</tbody>
+                </table>
+            </div>
+            <div style="padding:10px 15px;background:#fff3cd;text-align:right;">
+                <span class="order-total">💰 Total: ${total.toFixed(2)} EGP</span>
+            </div>
+        </div>`;
     });
     container.innerHTML = html;
 }
@@ -446,7 +441,7 @@ async function confirmArchiveAndClean() {
             await db.collection("kitchen_requests").doc(order.id).update({ archived: true });
         } catch (e) { console.error(e); }
     }
-    showToast(`✅ Archived ${allOrders.length} orders`);
+    showToast(`✅ Archived ${allOrders.length} orders to archived_orders collection`);
 }
 
 function switchMainTab(tab) {
@@ -517,7 +512,6 @@ function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m =
 function showToast(msg) { const toast = document.createElement("div"); toast.className = "toast"; toast.innerText = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2500); }
 
 window.onload = () => {
-    loadFirebaseConfig();
     document.getElementById("passwordModal").style.display = "flex";
 };
 </script>
