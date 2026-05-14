@@ -1,542 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-  <title>Restaurant Management System | The Restaurant • Room Service • Beach House • Nihon</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script type="importmap">
-    {
-      "imports": {
-        "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
-        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
-      }
-    }
-  </script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background: #f0f4f8;
-      font-family: 'Inter', sans-serif;
-      padding: 16px 14px 40px 14px;
-      color: #1a2c3e;
-    }
-
-    .app-container {
-      max-width: 700px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    /* Header */
-    .header {
-      background: linear-gradient(135deg, #0f2c3d 0%, #1b5a7a 100%);
-      border-radius: 28px;
-      padding: 20px;
-      margin-bottom: 20px;
-      color: white;
-    }
-    .header h1 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .date-badge {
-      background: rgba(255,255,255,0.2);
-      padding: 5px 14px;
-      border-radius: 50px;
-      font-size: 0.7rem;
-      font-family: monospace;
-    }
-
-    /* Navigation Icons Grid */
-    .nav-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .nav-card {
-      background: white;
-      border-radius: 20px;
-      padding: 14px 8px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 2px solid transparent;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    .nav-card.active {
-      border-color: #1b5a7a;
-      background: #e8f0f5;
-    }
-    .nav-card:active { transform: scale(0.96); }
-    .nav-icon {
-      font-size: 1.8rem;
-      margin-bottom: 6px;
-    }
-    .nav-title {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #1a2c3e;
-    }
-    .reset-card {
-      background: #fff5f0;
-    }
-    .reset-card .nav-title {
-      color: #e67e22;
-    }
-    .analytics-card {
-      background: #e8f0f5;
-    }
-
-    /* Form Panel */
-    .form-panel {
-      background: white;
-      border-radius: 28px;
-      padding: 22px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      border: 1px solid #e2ecf3;
-    }
-    .section-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #1b5a7a;
-    }
-    .input-group {
-      margin-bottom: 16px;
-    }
-    label {
-      font-weight: 600;
-      font-size: 0.75rem;
-      display: block;
-      margin-bottom: 6px;
-      color: #4a6a7f;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-    }
-    input, select {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 18px;
-      border: 1.5px solid #e2ecf3;
-      font-size: 0.95rem;
-      font-family: 'Inter', sans-serif;
-      background: white;
-      transition: 0.2s;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #1b5a7a;
-      box-shadow: 0 0 0 3px rgba(27,90,122,0.1);
-    }
-    input:disabled {
-      background: #f5f7fa;
-      color: #8ba0b0;
-      cursor: not-allowed;
-    }
-    .row-2cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-    .row-3cols {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-    }
-    .btn-save {
-      background: #1f8a4c;
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 15px;
-      border-radius: 60px;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: 0.2s;
-    }
-    .btn-save:active { transform: scale(0.97); background: #156b3a; }
-    .btn-reset-danger {
-      background: #e67e22;
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 15px;
-      border-radius: 60px;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    /* KPIs */
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .kpi-card {
-      background: white;
-      border-radius: 24px;
-      padding: 14px;
-      border: 1px solid #e2ecf3;
-    }
-    .kpi-label {
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #6b8aa3;
-      margin-bottom: 6px;
-    }
-    .kpi-number {
-      font-size: 1.5rem;
-      font-weight: 800;
-    }
-    .text-green { color: #1f8a4c; }
-    .text-blue { color: #1b5a7a; }
-    .text-orange { color: #e67e22; }
-    .text-red { color: #c0392b; }
-
-    /* Chart */
-    .chart-panel {
-      background: white;
-      border-radius: 28px;
-      padding: 18px;
-      margin-bottom: 24px;
-      border: 1px solid #e2ecf3;
-    }
-    .chart-container {
-      height: 220px;
-    }
-
-    /* Analytics Section */
-    .analytics-panel {
-      background: white;
-      border-radius: 28px;
-      padding: 18px;
-      margin-bottom: 24px;
-      border: 1px solid #e2ecf3;
-    }
-
-    /* Table */
-    .table-wrapper {
-      background: white;
-      border-radius: 28px;
-      overflow-x: auto;
-      border: 1px solid #e2ecf3;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 600px;
-    }
-    th {
-      text-align: left;
-      padding: 14px 12px;
-      background: #f8fbfd;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: #1b5a7a;
-    }
-    td {
-      padding: 12px;
-      border-bottom: 1px solid #eff3f8;
-      font-size: 0.85rem;
-    }
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: #9bb7ce;
-    }
-    .alert {
-      padding: 10px 16px;
-      border-radius: 50px;
-      margin-bottom: 16px;
-      font-size: 0.8rem;
-      text-align: center;
-    }
-    .alert-success { background: #e1f7e8; color: #1f8a4c; }
-    .alert-error { background: #fee2e2; color: #c0392b; }
-
-    .hidden-section {
-      display: none;
-    }
-
-    /* FIX: Extra kpi-wrapper for avg cards to avoid broken layout */
-    .kpi-single-row {
-      margin-bottom: 20px;
-    }
-
-    @media (max-width: 550px) {
-      body { padding: 12px; }
-      .nav-grid { grid-template-columns: repeat(3, 1fr); }
-      .nav-title { font-size: 0.6rem; }
-      .nav-icon { font-size: 1.5rem; }
-      .section-title { font-size: 1rem; }
-      .kpi-number { font-size: 1.2rem; }
-      .row-3cols { grid-template-columns: 1fr; gap: 12px; }
-      .row-2cols { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
-<div class="app-container">
-  <div class="header">
-    <h1>
-      🍽️ RESTO PRO
-      <span class="date-badge" id="liveDateTime"></span>
-    </h1>
-    <div style="font-size: 0.75rem; margin-top: 8px;">Food + Beverage + Covers tracking | Auto timestamps</div>
-  </div>
-
-  <div id="alertContainer"></div>
-
-  <!-- Navigation Icons -->
-  <div class="nav-grid">
-    <div class="nav-card" data-section="therestaurant">
-      <div class="nav-icon">🏛️</div>
-      <div class="nav-title">The Restaurant</div>
-    </div>
-    <div class="nav-card" data-section="roomservice">
-      <div class="nav-icon">🛎️</div>
-      <div class="nav-title">Room Service</div>
-    </div>
-    <div class="nav-card" data-section="beachhouse">
-      <div class="nav-icon">🏖️</div>
-      <div class="nav-title">Beach House</div>
-    </div>
-    <div class="nav-card" data-section="nihon">
-      <div class="nav-icon">🍣</div>
-      <div class="nav-title">Nihon</div>
-    </div>
-    <div class="nav-card analytics-card" data-section="analytics">
-      <div class="nav-icon">📊</div>
-      <div class="nav-title">Analytics</div>
-    </div>
-    <div class="nav-card reset-card" data-section="reset">
-      <div class="nav-icon">🗑️</div>
-      <div class="nav-title">Reset Data</div>
-    </div>
-  </div>
-
-  <!-- SECTION: The Restaurant -->
-  <div id="therestaurant-section" class="section-content">
-    <div class="form-panel">
-      <div class="section-title">🏛️ The Restaurant - Report Entry</div>
-      <div class="input-group">
-        <label>👨‍💼 MANAGER NAME *</label>
-        <input type="text" id="restManager" placeholder="e.g., Ahmed Hassan">
-      </div>
-      <div class="row-3cols">
-        <div class="input-group">
-          <label>👥 COVERS (guests) *</label>
-          <input type="number" id="restCovers" placeholder="0" min="0" step="1">
-        </div>
-        <div class="input-group">
-          <label>🍕 FOOD REVENUE (EGP) *</label>
-          <input type="number" id="restFood" placeholder="0" min="0" step="1">
-        </div>
-        <div class="input-group">
-          <label>🥂 BEVERAGE REVENUE (EGP) *</label>
-          <input type="number" id="restBev" placeholder="0" min="0" step="1">
-        </div>
-      </div>
-      <div class="input-group">
-        <label>💰 TOTAL REVENUE (AUTO)</label>
-        <input type="number" id="restTotal" disabled placeholder="Auto when both filled">
-      </div>
-      <button class="btn-save" data-save="The Restaurant">💾 SAVE REPORT</button>
-    </div>
-  </div>
-
-  <!-- SECTION: Room Service -->
-  <div id="roomservice-section" class="section-content hidden-section">
-    <div class="form-panel">
-      <div class="section-title">🛎️ Room Service - Report Entry</div>
-      <div class="input-group">
-        <label>👨‍💼 MANAGER NAME *</label>
-        <input type="text" id="roomManager" placeholder="e.g., Mohamed Ali">
-      </div>
-      <div class="row-3cols">
-        <div class="input-group">
-          <label>👥 COVERS (guests) *</label>
-          <input type="number" id="roomCovers" placeholder="0" min="0" step="1">
-        </div>
-        <div class="input-group">
-          <label>🍕 FOOD REVENUE (EGP) *</label>
-          <input type="number" id="roomFood" placeholder="0" min="0" step="1">
-        </div>
-        <div class="input-group">
-          <label>🥂 BEVERAGE REVENUE (EGP) *</label>
-          <input type="number" id="roomBev" placeholder="0" min="0" step="1">
-        </div>
-      </div>
-      <div class="input-group">
-        <label>💰 TOTAL REVENUE (AUTO)</label>
-        <input type="number" id="roomTotal" disabled placeholder="Auto when both filled">
-      </div>
-      <button class="btn-save" data-save="Room Service">💾 SAVE REPORT</button>
-    </div>
-  </div>
-
-  <!-- SECTION: Beach House -->
-  <div id="beachhouse-section" class="section-content hidden-section">
-    <div class="form-panel">
-      <div class="section-title">🏖️ Beach House - Report Entry</div>
-      <div class="input-group">
-        <label>👨‍💼 MANAGER NAME *</label>
-        <input type="text" id="beachManager" placeholder="e.g., Youssef Kamel">
-      </div>
-      <div class="row-3cols">
-        <div class="input-group">
-          <label>👥 COVERS (guests) *</label>
-          <input type="number" id="beachCovers" placeholder="0" min="0" step="1">
-        </div>
-        <div class="input-group">
-          <label>🍕 FOOD REVENUE (EGP) *</label>
-          <input type="number" id="beachFood" placeholder="0" min="0" step="1">
-        </div>
-        <div class="input-group">
-          <label>🥂 BEVERAGE REVENUE (EGP) *</label>
-          <input type="number" id="beachBev" placeholder="0" min="0" step="1">
-        </div>
-      </div>
-      <div class="input-group">
-        <label>💰 TOTAL REVENUE (AUTO)</label>
-        <input type="number" id="beachTotal" disabled placeholder="Auto when both filled">
-      </div>
-      <button class="btn-save" data-save="The Beach House">💾 SAVE REPORT</button>
-    </div>
-  </div>
-
-  <!-- SECTION: Nihon -->
-  <div id="nihon-section" class="section-content hidden-section">
-    <div class="form-panel">
-      <div class="section-title">🍣 Nihon - Report Entry</div>
-      <div class="input-group">
-        <label>👨‍💼 MANAGER NAME *</label>
-        <input type="text" id="nihonManager" placeholder="e.g., Kenji Tanaka">
-      </div>
-      <div class="row-3cols">
-        <div class="input-group">
-          <label>👥 COVERS (guests) *</label>
-          <input type="number" id="nihonCovers" placeholder="0" min="0" step="1">
-        </div>
-        <div class="input-group">
-          <label>🍕 FOOD REVENUE (EGP) *</label>
-          <input type="number" id="nihonFood" placeholder="0" min="0" step="1">
-        </div>
-        <div class="input-group">
-          <label>🥂 BEVERAGE REVENUE (EGP) *</label>
-          <input type="number" id="nihonBev" placeholder="0" min="0" step="1">
-        </div>
-      </div>
-      <div class="input-group">
-        <label>💰 TOTAL REVENUE (AUTO)</label>
-        <input type="number" id="nihonTotal" disabled placeholder="Auto when both filled">
-      </div>
-      <button class="btn-save" data-save="Nihon">💾 SAVE REPORT</button>
-    </div>
-  </div>
-
-  <!-- SECTION: Analytics Dashboard -->
-  <div id="analytics-section" class="section-content hidden-section">
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">💰 TOTAL REVENUE (ALL)</div><div class="kpi-number text-green" id="analyticsTotalRev">0 EGP</div></div>
-      <div class="kpi-card"><div class="kpi-label">👥 TOTAL COVERS</div><div class="kpi-number text-blue" id="analyticsTotalCovers">0</div></div>
-      <div class="kpi-card"><div class="kpi-label">🍽️ TOTAL FOOD REV</div><div class="kpi-number text-orange" id="analyticsFoodRev">0 EGP</div></div>
-      <div class="kpi-card"><div class="kpi-label">🥂 TOTAL BEVERAGE REV</div><div class="kpi-number text-red" id="analyticsBevRev">0 EGP</div></div>
-    </div>
-    <!-- FIX: Wrap additional KPI cards in separate containers to fix layout break -->
-    <div class="kpi-single-row" style="margin-bottom: 16px;">
-      <div class="kpi-card">
-        <div class="kpi-label">📈 AVG REVENUE / COVER</div>
-        <div class="kpi-number text-blue" id="analyticsAvgCover">0 EGP</div>
-      </div>
-    </div>
-    <div class="kpi-single-row" style="margin-bottom: 20px;">
-      <div class="kpi-card">
-        <div class="kpi-label">👥 AVG COVERS / REPORT</div>
-        <div class="kpi-number text-orange" id="analyticsAvgGuests">0</div>
-      </div>
-    </div>
-
-    <div class="chart-panel">
-      <div class="section-title">📊 Revenue by Restaurant</div>
-      <div class="chart-container">
-        <canvas id="restaurantChart"></canvas>
-      </div>
-    </div>
-
-    <div class="chart-panel">
-      <div class="section-title">📊 Food vs Beverage (All)</div>
-      <div class="chart-container">
-        <canvas id="fbChart"></canvas>
-      </div>
-    </div>
-    
-    <div class="form-panel">
-      <div class="section-title">📤 Export Reports</div>
-      <div class="row-2cols">
-        <button class="btn-save" id="exportPdfBtn">📄 EXPORT PDF</button>
-        <button class="btn-save" id="exportExcelBtn">📊 EXPORT EXCEL</button>
-      </div>
-    </div>
-
-    <div class="analytics-panel">
-      <div class="section-title">📋 All Reports</div>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr><th>Restaurant</th><th>Manager</th><th>Covers</th><th>Food</th><th>Beverage</th><th>Total</th><th>Date & Time</th></tr>
-          </thead>
-          <tbody id="analyticsTableBody">
-            <tr><td colspan="7" class="empty-state">Loading reports...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION: Reset Data -->
-  <div id="reset-section" class="section-content hidden-section">
-    <div class="form-panel" style="text-align: center;">
-      <div class="section-title">⚠️ DANGER ZONE</div>
-      <p style="margin-bottom: 20px; color: #c0392b;">This will delete ALL reports from ALL restaurants. This action cannot be undone!</p>
-      <button class="btn-reset-danger" id="confirmResetBtn">🗑️ DELETE ALL DATA</button>
-    </div>
-  </div>
-</div>
-
-<!-- PDF Export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- AutoTable for PDF tables -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-<!-- Excel Export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
 <script type="module">
   import { initializeApp } from "firebase/app";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp, where } from "firebase/firestore";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp, where, limit } from "firebase/firestore";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
@@ -609,13 +73,11 @@
   setupAutoTotal('beachFood', 'beachBev', 'beachTotal');
   setupAutoTotal('nihonFood', 'nihonBev', 'nihonTotal');
 
-  // NEW: Save report with OVERWRITE logic
+  // Save report with OVERWRITE logic
   async function saveReport(restaurantName, data) {
     try {
-      // Get today's date in YYYY-MM-DD format
       const today = new Date().toISOString().split('T')[0];
       
-      // Check if a report already exists for this restaurant + manager + today
       const q = query(
         collection(db, "dailyReports"),
         where("restaurant", "==", restaurantName),
@@ -626,7 +88,6 @@
       const snapshot = await getDocs(q);
       let isOverwrite = false;
       
-      // If exists, delete the old one
       if (!snapshot.empty) {
         for (const docSnap of snapshot.docs) {
           await deleteDoc(docSnap.ref);
@@ -634,7 +95,6 @@
         }
       }
       
-      // Insert the new report
       await addDoc(collection(db, "dailyReports"), {
         restaurant: restaurantName,
         manager: data.manager,
@@ -658,6 +118,112 @@
     }
   }
 
+  // NEW: Fix last entry function (within 5 minutes)
+  async function fixLastEntry(restaurantName, newData) {
+    try {
+      // Get the last 5 minutes timestamp
+      const fiveMinsAgo = new Date();
+      fiveMinsAgo.setMinutes(fiveMinsAgo.getMinutes() - 5);
+      
+      // Query the most recent entry for this restaurant in last 5 minutes
+      const q = query(
+        collection(db, "dailyReports"),
+        where("restaurant", "==", restaurantName),
+        orderBy("createdAt", "desc"),
+        limit(1)
+      );
+      
+      const snapshot = await getDocs(q);
+      
+      if (snapshot.empty) {
+        showMessage(`❌ No recent entry found for ${restaurantName} to fix`, true);
+        return false;
+      }
+      
+      const lastEntry = snapshot.docs[0];
+      const lastEntryData = lastEntry.data();
+      const lastEntryTime = lastEntryData.createdAt?.toDate();
+      
+      if (!lastEntryTime) {
+        showMessage("❌ Cannot determine entry time", true);
+        return false;
+      }
+      
+      const now = new Date();
+      const diffMinutes = (now - lastEntryTime) / 1000 / 60;
+      
+      if (diffMinutes > 5) {
+        showMessage(`⏰ Cannot fix: Last entry was ${diffMinutes.toFixed(1)} minutes ago (only allowed within 5 minutes)`, true);
+        return false;
+      }
+      
+      // Delete the old entry
+      await deleteDoc(lastEntry.ref);
+      
+      // Insert the corrected entry
+      await addDoc(collection(db, "dailyReports"), {
+        restaurant: restaurantName,
+        manager: newData.manager,
+        covers: newData.covers,
+        foodRevenue: newData.food,
+        beverageRevenue: newData.bev,
+        totalRevenue: newData.food + newData.bev,
+        createdAt: serverTimestamp(),
+        date: new Date().toISOString().split('T')[0]
+      });
+      
+      showMessage(`🔧 FIXED: ${restaurantName} entry from ${diffMinutes.toFixed(1)} min ago | New total: ${newData.food + newData.bev} EGP`, false);
+      return true;
+      
+    } catch (error) {
+      showMessage("❌ Fix failed: " + error.message, true);
+      return false;
+    }
+  }
+
+  // Add Fix buttons dynamically
+  function addFixButtons() {
+    const sections = [
+      { id: 'rest', name: 'The Restaurant', managerId: 'restManager', coversId: 'restCovers', foodId: 'restFood', bevId: 'restBev' },
+      { id: 'room', name: 'Room Service', managerId: 'roomManager', coversId: 'roomCovers', foodId: 'roomFood', bevId: 'roomBev' },
+      { id: 'beach', name: 'The Beach House', managerId: 'beachManager', coversId: 'beachCovers', foodId: 'beachFood', bevId: 'beachBev' },
+      { id: 'nihon', name: 'Nihon', managerId: 'nihonManager', coversId: 'nihonCovers', foodId: 'nihonFood', bevId: 'nihonBev' }
+    ];
+    
+    sections.forEach(section => {
+      const saveBtn = document.querySelector(`[data-save="${section.name}"]`);
+      if (saveBtn && !saveBtn.nextElementSibling?.classList?.contains('btn-fix')) {
+        const fixBtn = document.createElement('button');
+        fixBtn.textContent = '🔧 FIX LAST ENTRY (within 5 min)';
+        fixBtn.className = 'btn-fix';
+        fixBtn.style.cssText = 'background: #e67e22; color: white; border: none; width: 100%; padding: 12px; border-radius: 60px; font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 8px;';
+        fixBtn.addEventListener('click', async () => {
+          const manager = document.getElementById(section.managerId).value.trim();
+          const covers = parseInt(document.getElementById(section.coversId).value);
+          const food = parseFloat(document.getElementById(section.foodId).value);
+          const bev = parseFloat(document.getElementById(section.bevId).value);
+          
+          if (!manager) { showMessage("❌ Enter manager name to fix", true); return; }
+          if (isNaN(covers) || covers <= 0) { showMessage("❌ Enter valid covers", true); return; }
+          if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) { showMessage("❌ BOTH Food AND Beverage must be > 0", true); return; }
+          
+          await fixLastEntry(section.name, { manager, covers, food, bev });
+          
+          // Clear form after fix
+          document.getElementById(section.managerId).value = '';
+          document.getElementById(section.coversId).value = '';
+          document.getElementById(section.foodId).value = '';
+          document.getElementById(section.bevId).value = '';
+          const totalId = section.id + 'Total';
+          if (document.getElementById(totalId)) document.getElementById(totalId).value = '';
+          
+          if (currentSection === 'analytics') loadAnalyticsData();
+        });
+        saveBtn.parentNode.insertBefore(fixBtn, saveBtn.nextSibling);
+      }
+    });
+  }
+
   // Save listeners for each restaurant
   document.querySelector('[data-save="The Restaurant"]').addEventListener('click', async () => {
     const manager = document.getElementById('restManager').value.trim();
@@ -673,6 +239,7 @@
     document.getElementById('restFood').value = '';
     document.getElementById('restBev').value = '';
     document.getElementById('restTotal').value = '';
+    if (currentSection === 'analytics') loadAnalyticsData();
   });
 
   document.querySelector('[data-save="Room Service"]').addEventListener('click', async () => {
@@ -689,6 +256,7 @@
     document.getElementById('roomFood').value = '';
     document.getElementById('roomBev').value = '';
     document.getElementById('roomTotal').value = '';
+    if (currentSection === 'analytics') loadAnalyticsData();
   });
 
   document.querySelector('[data-save="The Beach House"]').addEventListener('click', async () => {
@@ -705,6 +273,7 @@
     document.getElementById('beachFood').value = '';
     document.getElementById('beachBev').value = '';
     document.getElementById('beachTotal').value = '';
+    if (currentSection === 'analytics') loadAnalyticsData();
   });
 
   document.querySelector('[data-save="Nihon"]').addEventListener('click', async () => {
@@ -721,6 +290,7 @@
     document.getElementById('nihonFood').value = '';
     document.getElementById('nihonBev').value = '';
     document.getElementById('nihonTotal').value = '';
+    if (currentSection === 'analytics') loadAnalyticsData();
   });
 
   // Reset all data
@@ -874,7 +444,6 @@
   });
 
   initCharts();
+  addFixButtons(); // Add fix buttons to all forms
   showSection('therestaurant');
 </script>
-</body>
-</html>
