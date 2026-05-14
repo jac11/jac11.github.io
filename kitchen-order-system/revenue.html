@@ -187,22 +187,6 @@
       cursor: pointer;
       margin-top: 10px;
     }
-    .btn-fix {
-      background: #e67e22;
-      color: white;
-      border: none;
-      width: 100%;
-      padding: 12px;
-      border-radius: 60px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: 0.2s;
-    }
-    .btn-fix:active {
-      transform: scale(0.97);
-    }
 
     /* KPIs */
     .kpi-grid {
@@ -297,6 +281,7 @@
       display: none;
     }
 
+    /* FIX: Extra kpi-wrapper for avg cards to avoid broken layout */
     .kpi-single-row {
       margin-bottom: 20px;
     }
@@ -320,7 +305,7 @@
       🍽️ RESTO PRO
       <span class="date-badge" id="liveDateTime"></span>
     </h1>
-    <div style="font-size: 0.75rem; margin-top: 8px;">Food + Beverage + Covers tracking | Auto timestamps | Fix within 5 min</div>
+    <div style="font-size: 0.75rem; margin-top: 8px;">Food + Beverage + Covers tracking | Auto timestamps</div>
   </div>
 
   <div id="alertContainer"></div>
@@ -481,6 +466,7 @@
       <div class="kpi-card"><div class="kpi-label">🍽️ TOTAL FOOD REV</div><div class="kpi-number text-orange" id="analyticsFoodRev">0 EGP</div></div>
       <div class="kpi-card"><div class="kpi-label">🥂 TOTAL BEVERAGE REV</div><div class="kpi-number text-red" id="analyticsBevRev">0 EGP</div></div>
     </div>
+    <!-- FIX: Wrap additional KPI cards in separate containers to fix layout break -->
     <div class="kpi-single-row" style="margin-bottom: 16px;">
       <div class="kpi-card">
         <div class="kpi-label">📈 AVG REVENUE / COVER</div>
@@ -550,7 +536,7 @@
 
 <script type="module">
   import { initializeApp } from "firebase/app";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp, where, limit } from "firebase/firestore";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp } from "firebase/firestore";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
@@ -596,7 +582,7 @@
     });
   });
 
-  // Auto-calculate total for each section
+  // Auto-calculate total for each section (both positive values required)
   function setupAutoTotal(foodId, bevId, totalId) {
     const foodInput = document.getElementById(foodId);
     const bevInput = document.getElementById(bevId);
@@ -623,28 +609,8 @@
   setupAutoTotal('beachFood', 'beachBev', 'beachTotal');
   setupAutoTotal('nihonFood', 'nihonBev', 'nihonTotal');
 
-  // Save report with OVERWRITE logic
   async function saveReport(restaurantName, data) {
     try {
-      const today = new Date().toISOString().split('T')[0];
-      
-      const q = query(
-        collection(db, "dailyReports"),
-        where("restaurant", "==", restaurantName),
-        where("manager", "==", data.manager),
-        where("date", "==", today)
-      );
-      
-      const snapshot = await getDocs(q);
-      let isOverwrite = false;
-      
-      if (!snapshot.empty) {
-        for (const docSnap of snapshot.docs) {
-          await deleteDoc(docSnap.ref);
-          isOverwrite = true;
-        }
-      }
-      
       await addDoc(collection(db, "dailyReports"), {
         restaurant: restaurantName,
         manager: data.manager,
@@ -653,119 +619,14 @@
         beverageRevenue: data.bev,
         totalRevenue: data.food + data.bev,
         createdAt: serverTimestamp(),
-        date: today
+        date: new Date().toISOString().split('T')[0]
       });
-      
-      if (isOverwrite) {
-        showMessage(`🔄 UPDATED: ${restaurantName} (${data.manager}) | ${data.covers} covers | Total: ${data.food + data.bev} EGP`, false);
-      } else {
-        showMessage(`✅ SAVED: ${restaurantName} | ${data.covers} covers | Total: ${data.food + data.bev} EGP`, false);
-      }
+      showMessage(`✅ Saved! ${restaurantName} | ${data.covers} covers | Total: ${data.food + data.bev} EGP`, false);
       return true;
     } catch (error) {
       showMessage("❌ Firebase error: " + error.message, true);
       return false;
     }
-  }
-
-  // Fix last entry function (within 5 minutes)
-  async function fixLastEntry(restaurantName, newData) {
-    try {
-      const q = query(
-        collection(db, "dailyReports"),
-        where("restaurant", "==", restaurantName),
-        orderBy("createdAt", "desc"),
-        limit(1)
-      );
-      
-      const snapshot = await getDocs(q);
-      
-      if (snapshot.empty) {
-        showMessage(`❌ No recent entry found for ${restaurantName} to fix`, true);
-        return false;
-      }
-      
-      const lastEntry = snapshot.docs[0];
-      const lastEntryData = lastEntry.data();
-      const lastEntryTime = lastEntryData.createdAt?.toDate();
-      
-      if (!lastEntryTime) {
-        showMessage("❌ Cannot determine entry time", true);
-        return false;
-      }
-      
-      const now = new Date();
-      const diffMinutes = (now - lastEntryTime) / 1000 / 60;
-      
-      if (diffMinutes > 5) {
-        showMessage(`⏰ Cannot fix: Last entry was ${diffMinutes.toFixed(1)} minutes ago (only allowed within 5 minutes)`, true);
-        return false;
-      }
-      
-      // Delete the old entry
-      await deleteDoc(lastEntry.ref);
-      
-      // Insert the corrected entry
-      await addDoc(collection(db, "dailyReports"), {
-        restaurant: restaurantName,
-        manager: newData.manager,
-        covers: newData.covers,
-        foodRevenue: newData.food,
-        beverageRevenue: newData.bev,
-        totalRevenue: newData.food + newData.bev,
-        createdAt: serverTimestamp(),
-        date: new Date().toISOString().split('T')[0]
-      });
-      
-      showMessage(`🔧 FIXED: ${restaurantName} entry from ${diffMinutes.toFixed(1)} min ago | New total: ${newData.food + newData.bev} EGP`, false);
-      return true;
-      
-    } catch (error) {
-      showMessage("❌ Fix failed: " + error.message, true);
-      return false;
-    }
-  }
-
-  // Add Fix buttons dynamically
-  function addFixButtons() {
-    const sections = [
-      { id: 'rest', name: 'The Restaurant', managerId: 'restManager', coversId: 'restCovers', foodId: 'restFood', bevId: 'restBev' },
-      { id: 'room', name: 'Room Service', managerId: 'roomManager', coversId: 'roomCovers', foodId: 'roomFood', bevId: 'roomBev' },
-      { id: 'beach', name: 'The Beach House', managerId: 'beachManager', coversId: 'beachCovers', foodId: 'beachFood', bevId: 'beachBev' },
-      { id: 'nihon', name: 'Nihon', managerId: 'nihonManager', coversId: 'nihonCovers', foodId: 'nihonFood', bevId: 'nihonBev' }
-    ];
-    
-    sections.forEach(section => {
-      const saveBtn = document.querySelector(`[data-save="${section.name}"]`);
-      if (saveBtn && !saveBtn.nextElementSibling?.classList?.contains('btn-fix')) {
-        const fixBtn = document.createElement('button');
-        fixBtn.textContent = '🔧 FIX LAST ENTRY (within 5 min)';
-        fixBtn.className = 'btn-fix';
-        fixBtn.addEventListener('click', async () => {
-          const manager = document.getElementById(section.managerId).value.trim();
-          const covers = parseInt(document.getElementById(section.coversId).value);
-          const food = parseFloat(document.getElementById(section.foodId).value);
-          const bev = parseFloat(document.getElementById(section.bevId).value);
-          
-          if (!manager) { showMessage("❌ Enter manager name to fix", true); return; }
-          if (isNaN(covers) || covers <= 0) { showMessage("❌ Enter valid covers", true); return; }
-          if (isNaN(food) || food <= 0 || isNaN(bev) || bev <= 0) { showMessage("❌ BOTH Food AND Beverage must be > 0", true); return; }
-          
-          await fixLastEntry(section.name, { manager, covers, food, bev });
-          
-          // Clear form after fix
-          document.getElementById(section.managerId).value = '';
-          document.getElementById(section.coversId).value = '';
-          document.getElementById(section.foodId).value = '';
-          document.getElementById(section.bevId).value = '';
-          const totalId = section.id + 'Total';
-          if (document.getElementById(totalId)) document.getElementById(totalId).value = '';
-          
-          if (currentSection === 'analytics') loadAnalyticsData();
-        });
-        saveBtn.parentNode.insertBefore(fixBtn, saveBtn.nextSibling);
-      }
-    });
   }
 
   // Save listeners for each restaurant
@@ -783,7 +644,6 @@
     document.getElementById('restFood').value = '';
     document.getElementById('restBev').value = '';
     document.getElementById('restTotal').value = '';
-    if (currentSection === 'analytics') loadAnalyticsData();
   });
 
   document.querySelector('[data-save="Room Service"]').addEventListener('click', async () => {
@@ -800,7 +660,6 @@
     document.getElementById('roomFood').value = '';
     document.getElementById('roomBev').value = '';
     document.getElementById('roomTotal').value = '';
-    if (currentSection === 'analytics') loadAnalyticsData();
   });
 
   document.querySelector('[data-save="The Beach House"]').addEventListener('click', async () => {
@@ -817,7 +676,6 @@
     document.getElementById('beachFood').value = '';
     document.getElementById('beachBev').value = '';
     document.getElementById('beachTotal').value = '';
-    if (currentSection === 'analytics') loadAnalyticsData();
   });
 
   document.querySelector('[data-save="Nihon"]').addEventListener('click', async () => {
@@ -834,7 +692,6 @@
     document.getElementById('nihonFood').value = '';
     document.getElementById('nihonBev').value = '';
     document.getElementById('nihonTotal').value = '';
-    if (currentSection === 'analytics') loadAnalyticsData();
   });
 
   // Reset all data
@@ -988,7 +845,6 @@
   });
 
   initCharts();
-  addFixButtons();
   showSection('therestaurant');
 </script>
 </body>
