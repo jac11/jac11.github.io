@@ -536,7 +536,7 @@
 
 <script type="module">
   import { initializeApp } from "firebase/app";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp } from "firebase/firestore";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, query, orderBy, serverTimestamp, where } from "firebase/firestore";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDz8wXx14B16B5sRzJ20qPQb6K4fNetHrE",
@@ -582,7 +582,7 @@
     });
   });
 
-  // Auto-calculate total for each section (both positive values required)
+  // Auto-calculate total for each section
   function setupAutoTotal(foodId, bevId, totalId) {
     const foodInput = document.getElementById(foodId);
     const bevInput = document.getElementById(bevId);
@@ -609,8 +609,32 @@
   setupAutoTotal('beachFood', 'beachBev', 'beachTotal');
   setupAutoTotal('nihonFood', 'nihonBev', 'nihonTotal');
 
+  // NEW: Save report with OVERWRITE logic
   async function saveReport(restaurantName, data) {
     try {
+      // Get today's date in YYYY-MM-DD format
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Check if a report already exists for this restaurant + manager + today
+      const q = query(
+        collection(db, "dailyReports"),
+        where("restaurant", "==", restaurantName),
+        where("manager", "==", data.manager),
+        where("date", "==", today)
+      );
+      
+      const snapshot = await getDocs(q);
+      let isOverwrite = false;
+      
+      // If exists, delete the old one
+      if (!snapshot.empty) {
+        for (const docSnap of snapshot.docs) {
+          await deleteDoc(docSnap.ref);
+          isOverwrite = true;
+        }
+      }
+      
+      // Insert the new report
       await addDoc(collection(db, "dailyReports"), {
         restaurant: restaurantName,
         manager: data.manager,
@@ -619,9 +643,14 @@
         beverageRevenue: data.bev,
         totalRevenue: data.food + data.bev,
         createdAt: serverTimestamp(),
-        date: new Date().toISOString().split('T')[0]
+        date: today
       });
-      showMessage(`✅ Saved! ${restaurantName} | ${data.covers} covers | Total: ${data.food + data.bev} EGP`, false);
+      
+      if (isOverwrite) {
+        showMessage(`🔄 UPDATED: ${restaurantName} (${data.manager}) | ${data.covers} covers | Total: ${data.food + data.bev} EGP`, false);
+      } else {
+        showMessage(`✅ SAVED: ${restaurantName} | ${data.covers} covers | Total: ${data.food + data.bev} EGP`, false);
+      }
       return true;
     } catch (error) {
       showMessage("❌ Firebase error: " + error.message, true);
