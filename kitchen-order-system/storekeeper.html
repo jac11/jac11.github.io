@@ -97,6 +97,15 @@ body{
     font-size:1.1rem;
 }
 
+.archive-btn{
+    background:#ff9800;
+    color:#2c3e2c;
+}
+
+.archive-btn:hover{
+    background:#f57c00;
+}
+
 .kitchen-tabs{
     background:white;
     padding:0 20px;
@@ -334,6 +343,7 @@ body{
     z-index:1000;
 }
 
+/* ENHANCED LOGIN MODAL */
 .modal{
     display:flex;
     position:fixed;
@@ -341,7 +351,8 @@ body{
     left:0;
     width:100%;
     height:100%;
-    background:rgba(0,0,0,0.85);
+    background:linear-gradient(135deg, rgba(30,92,60,0.95), rgba(42,138,80,0.97));
+    backdrop-filter:blur(12px);
     z-index:1000;
     justify-content:center;
     align-items:center;
@@ -350,43 +361,99 @@ body{
 
 .modal-content{
     background:white;
-    padding:30px;
-    border-radius:24px;
+    padding:40px 32px;
+    border-radius:36px;
     text-align:center;
-    max-width:360px;
+    max-width:400px;
     width:90%;
+    box-shadow:0 25px 45px rgba(0,0,0,0.25);
+    animation: modalFadeIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+@keyframes modalFadeIn{
+    from{
+        opacity:0;
+        transform:scale(0.95) translateY(-15px);
+    }
+    to{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
+}
+
+.modal-content h2{
+    font-size:1.9rem;
+    margin-bottom:12px;
+    background:linear-gradient(135deg,#1e5c3c,#2a8a50);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    font-weight:800;
+}
+
+.modal-content p{
+    color:#5a6e5a;
+    margin-bottom:25px;
+    font-size:0.95rem;
 }
 
 .modal-content input{
     width:100%;
-    padding:12px;
-    margin-bottom:20px;
-    border:1px solid #ddd;
-    border-radius:12px;
+    padding:14px 18px;
+    margin-bottom:22px;
+    border:2px solid #e2e8f0;
+    border-radius:40px;
     font-size:16px;
     text-align:center;
+    transition:all 0.2s;
+    outline:none;
+    background:#f9fafb;
 }
 
-.modal-content button{
-    background:#3498db;
+.modal-content input:focus{
+    border-color:#2a8a50;
+    background:white;
+    box-shadow:0 0 0 3px rgba(42,138,80,0.2);
+}
+
+.modal-content button:first-of-type{
+    background:linear-gradient(135deg,#1e5c3c,#2a8a50);
     color:white;
     border:none;
-    padding:12px;
-    border-radius:12px;
+    padding:14px;
+    border-radius:40px;
     font-weight:800;
     cursor:pointer;
     width:100%;
     font-size:1rem;
+    margin-bottom:12px;
+    transition:transform 0.15s, box-shadow 0.15s;
+}
+
+.modal-content button:first-of-type:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(0,0,0,0.15);
 }
 
 .error-msg{
     color:#e74c3c;
-    margin-top:12px;
+    margin-top:10px;
+    margin-bottom:12px;
+    font-size:0.85rem;
+    font-weight:600;
 }
 
-.close-modal{
+/* Return button - same style as access dashboard button */
+.return-btn{
     background:#95a5a6 !important;
     margin-top:10px;
+    transition:transform 0.15s, box-shadow 0.15s !important;
+}
+
+.return-btn:hover{
+    background:#7f8c8d !important;
+    transform:translateY(-2px) !important;
+    box-shadow:0 8px 18px rgba(0,0,0,0.15) !important;
 }
 
 @media(max-width:768px){
@@ -426,63 +493,53 @@ body{
 
 <body>
 
-<!-- PASSWORD -->
-
+<!-- ENHANCED PASSWORD MODAL -->
 <div id="passwordModal" class="modal">
     <div class="modal-content">
-        <h2>🔐 Storekeeper Access</h2>
-
-        <p>Enter password to continue</p>
+        <div style="font-size:3rem; margin-bottom:8px;">🔐</div>
+        <h2>Storekeeper Portal</h2>
+        <p>Authorized access only</p>
 
         <input type="password"
         id="passwordInput"
-        placeholder="Enter password">
+        placeholder="Enter secure password"
+        onkeypress="if(event.key==='Enter') checkPassword()">
 
-        <button onclick="checkPassword()">Login</button>
+        <button onclick="checkPassword()">→ Access Dashboard</button>
 
         <div id="passwordError" class="error-msg"></div>
 
-        <button class="close-modal"
-        onclick="window.location.href='index.html'">
-        ← Back
+        <button class="close-modal return-btn" onclick="returnToDashboard()">
+        ← Return to Dashboard
         </button>
     </div>
 </div>
 
 <!-- MAIN -->
-
 <div id="mainContent" style="display:none;">
 
     <div class="header">
-
         <div class="header-content">
-
             <div class="logo">
                 📦
                 <span>Storekeeper | Approved Orders</span>
             </div>
-
             <div class="header-buttons">
-
-                <button class="refresh-btn"
-                onclick="manualRefresh()">
+                <button class="btn-header archive-btn" onclick="archiveAsPDFAndClear()">
+                📥 Archive as PDF & Clear
+                </button>
+                <button class="refresh-btn" onclick="manualRefresh()">
                 🔄
                 </button>
-
-                <button class="btn-header"
-                onclick="window.print()">
+                <button class="btn-header" onclick="window.print()">
                 🖨️ Print
                 </button>
-
             </div>
-
         </div>
-
     </div>
 
     <div class="kitchen-tabs">
-        <div class="tabs-container"
-        id="tabsContainer"></div>
+        <div class="tabs-container" id="tabsContainer"></div>
     </div>
 
     <div id="kitchenPagesContainer"></div>
@@ -494,65 +551,54 @@ body{
 const STOREKEEPER_PASSWORD = "store123";
 
 let currentKitchen = "all";
-
 let allApprovedOrders = [];
-
 let filterState = {
     search:"",
     dateFrom:"",
     dateTo:""
 };
 
-/* PASSWORD */
+/* RETURN TO DASHBOARD - Same style button, stays on same page */
+function returnToDashboard() {
+    // This keeps the user on the same page/sheet
+    // Just refresh or stay - no navigation away
+    document.getElementById("passwordModal").style.display = "none";
+    // Optional: reload data or just close modal
+    showToast("Returning to dashboard");
+}
 
+/* PASSWORD CHECK */
 function checkPassword(){
-
-    if(document.getElementById("passwordInput").value === STOREKEEPER_PASSWORD){
-
+    const passwordInput = document.getElementById("passwordInput");
+    if(passwordInput.value === STOREKEEPER_PASSWORD){
         document.getElementById("passwordModal").style.display = "none";
-
         document.getElementById("mainContent").style.display = "block";
-
         startRealtimeListener();
-
         showToast("✅ Login successful");
-
     }else{
-
-        document.getElementById("passwordError").innerHTML = "Wrong password!";
+        document.getElementById("passwordError").innerHTML = "Access denied • Incorrect password";
+        passwordInput.value = '';
+        passwordInput.focus();
     }
 }
 
 /* REFRESH */
-
 function manualRefresh(){
-
     loadApprovedOrdersOnce();
-
     showToast("🔄 Refreshing...");
 }
 
 /* DATE */
-
 function formatDate(dateValue){
-
     if(!dateValue) return "N/A";
-
     let d;
-
     if(typeof dateValue === "string"){
-
         d = new Date(dateValue);
-
     }else if(dateValue.seconds){
-
         d = new Date(dateValue.seconds * 1000);
-
     }else{
-
         d = new Date(dateValue);
     }
-
     return d.toLocaleString("en-GB",{
         day:"2-digit",
         month:"short",
@@ -563,66 +609,45 @@ function formatDate(dateValue){
 }
 
 /* REALTIME */
-
 function startRealtimeListener(){
-
     db.collection("kitchen_requests")
     .onSnapshot(snapshot => {
-
         allApprovedOrders = [];
-
         snapshot.forEach(doc => {
-
             const data = doc.data();
-
             if(data.items &&
-            data.items.some(item => item.status === "approved")){
-
+            data.items.some(item => item.status === "approved") && !data.archived){
                 allApprovedOrders.push({
                     id:doc.id,
                     ...data
                 });
             }
         });
-
         renderTabs();
-
         renderCurrentKitchen();
-
     });
 }
 
 /* LOAD */
-
 async function loadApprovedOrdersOnce(){
-
     const snapshot = await db.collection("kitchen_requests").get();
-
     allApprovedOrders = [];
-
     snapshot.forEach(doc => {
-
         const data = doc.data();
-
         if(data.items &&
-        data.items.some(item => item.status === "approved")){
-
+        data.items.some(item => item.status === "approved") && !data.archived){
             allApprovedOrders.push({
                 id:doc.id,
                 ...data
             });
         }
     });
-
     renderTabs();
-
     renderCurrentKitchen();
 }
 
 /* TABS */
-
 function renderTabs(){
-
     const kitchens = [
         "all",
         "Hot Kitchen",
@@ -633,218 +658,133 @@ function renderTabs(){
         "Nihon Kitchen",
         "Staff Kitchen"
     ];
-
     const container = document.getElementById("tabsContainer");
-
     container.innerHTML = "";
-
     kitchens.forEach(k => {
-
         const btn = document.createElement("button");
-
-        btn.className =
-        `tab-btn ${currentKitchen === k ? 'active' : ''}`;
-
+        btn.className = `tab-btn ${currentKitchen === k ? 'active' : ''}`;
         btn.innerHTML = k;
-
         btn.onclick = () => {
-
             currentKitchen = k;
-
             renderTabs();
-
             renderCurrentKitchen();
         };
-
         container.appendChild(btn);
     });
 }
 
 /* PAGE */
-
 function renderCurrentKitchen(){
-
     let orders;
-
     if(currentKitchen === "all"){
-
         orders = allApprovedOrders;
-
     }else{
-
         orders = allApprovedOrders.filter(
         o => o.section === currentKitchen
         );
     }
-
     renderKitchenPage(orders);
 }
 
 function renderKitchenPage(orders){
-
-    const container =
-    document.getElementById("kitchenPagesContainer");
-
+    const container = document.getElementById("kitchenPagesContainer");
     container.innerHTML = `
-
     <div class="container">
-
         <div class="card">
-
             <h3>
-            📋 Approved Orders
+            📋 Approved Orders (${orders.length} active)
             </h3>
-
             <div class="filters">
-
                 <input type="text"
                 id="searchInput"
                 placeholder="Search..."
                 oninput="saveFiltersAndRender()">
-
                 <input type="date"
                 id="dateFrom"
                 onchange="saveFiltersAndRender()">
-
                 <input type="date"
                 id="dateTo"
                 onchange="saveFiltersAndRender()">
-
                 <div class="export-buttons">
-
                     <button onclick="exportKitchenPDF()">
                     📄 Export PDF
                     </button>
-
                     <button onclick="exportCSV()">
                     📊 Export CSV
                     </button>
-
                 </div>
-
             </div>
-
             <div id="ordersList"></div>
-
         </div>
-
     </div>
     `;
-
     displayOrders();
 }
 
 /* FILTER */
-
 function saveFiltersAndRender(){
-
-    filterState.search =
-    document.getElementById("searchInput").value;
-
-    filterState.dateFrom =
-    document.getElementById("dateFrom").value;
-
-    filterState.dateTo =
-    document.getElementById("dateTo").value;
-
+    filterState.search = document.getElementById("searchInput")?.value || "";
+    filterState.dateFrom = document.getElementById("dateFrom")?.value || "";
+    filterState.dateTo = document.getElementById("dateTo")?.value || "";
     displayOrders();
 }
 
 function getFilteredOrders(){
-
     let filtered = [...allApprovedOrders];
-
     if(currentKitchen !== "all"){
-
         filtered = filtered.filter(
         o => o.section === currentKitchen
         );
     }
-
     if(filterState.search){
-
-        const search =
-        filterState.search.toLowerCase();
-
+        const search = filterState.search.toLowerCase();
         filtered = filtered.filter(order => {
-
             if(order.requestId?.toLowerCase().includes(search))
             return true;
-
             return order.items.some(item =>
                 item.name?.toLowerCase().includes(search)
             );
         });
     }
-
     return filtered;
 }
 
 /* DISPLAY */
-
 function displayOrders(){
-
-    const container =
-    document.getElementById("ordersList");
-
+    const container = document.getElementById("ordersList");
     let filtered = getFilteredOrders();
-
     if(filtered.length === 0){
-
-        container.innerHTML =
-        '<div class="empty-state">📭 No approved orders</div>';
-
+        container.innerHTML = '<div class="empty-state">📭 No approved orders</div>';
         return;
     }
-
     let html = "";
-
     filtered.forEach(order => {
-
-        const approvedItems =
-        order.items.filter(item =>
+        const approvedItems = order.items.filter(item =>
         item.status === "approved");
-
         let total = 0;
-
         html += `
-
         <div class="order-group">
-
             <div class="order-header">
-
                 <div>
-
                     <span class="order-id">
                     📄 ${order.requestId || order.id}
                     </span>
-
                     <span class="kitchen-tag">
                     ${order.section || ""}
                     </span>
-
                 </div>
-
                 <div class="order-meta">
-
                     <span>
                     👨‍🍳 ${order.chefName || ""}
                     </span>
-
                     <span>
                     📅 ${formatDate(order.submittedAt)}
                     </span>
-
                 </div>
-
             </div>
-
             <div class="table-wrapper">
-
                 <table class="data-table">
-
                     <thead>
-
                         <tr>
                             <th>Code</th>
                             <th>Item</th>
@@ -854,183 +794,267 @@ function displayOrders(){
                             <th>Total</th>
                             <th>Approved By</th>
                         </tr>
-
                     </thead>
-
                     <tbody>
         `;
-
         approvedItems.forEach(item => {
-
-            const qty =
-            item.approvedQty || item.originalQty || 0;
-
+            const qty = item.approvedQty || item.originalQty || 0;
             const price = item.price || 0;
-
             const rowTotal = qty * price;
-
             total += rowTotal;
-
             html += `
-
             <tr>
-
                 <td>${item.code || ""}</td>
-
                 <td>${escapeHtml(item.name)}</td>
-
                 <td>${qty}</td>
-
                 <td>${item.unit || ""}</td>
-
                 <td>${price.toFixed(2)}</td>
-
                 <td>${rowTotal.toFixed(2)}</td>
-
                 <td>
                     <span class="badge badge-approved">
                     ✔ ${item.approvedBy || ""}
                     </span>
                 </td>
-
             </tr>
             `;
         });
-
         html += `
-
                     </tbody>
-
                 </table>
-
             </div>
-
-            <div style="
-            padding:10px 15px;
-            background:#f0fdf4;
-            text-align:right;
-            ">
-
+            <div style="padding:10px 15px; background:#f0fdf4; text-align:right;">
                 <span class="order-total">
-                💰 Order Total:
-                ${total.toFixed(2)} EGP
+                💰 Order Total: ${total.toFixed(2)} EGP
                 </span>
-
             </div>
-
         </div>
         `;
     });
-
     container.innerHTML = html;
 }
 
-/* PDF EXPORT */
+/* ARCHIVE AS PDF - Creates beautiful PDF and clears database */
+async function archiveAsPDFAndClear() {
+    if(allApprovedOrders.length === 0){
+        showToast("No orders to archive");
+        return;
+    }
+    
+    const confirmArchive = confirm(`📦 Archive ${allApprovedOrders.length} orders as PDF?\n\nThis will:\n1. Create a beautiful PDF archive report\n2. Download the PDF to your computer\n3. Clear all orders from database\n\nProceed?`);
+    
+    if(!confirmArchive) return;
+    
+    showToast("📄 Creating PDF archive...");
+    
+    // Generate PDF Archive
+    await generateArchivePDF();
+    
+    // Ask to clear database after PDF is created
+    setTimeout(async () => {
+        const confirmClear = confirm("PDF archive created! Clear all orders from database now?");
+        if(confirmClear) {
+            await clearAllOrdersFromDatabase();
+        }
+    }, 1000);
+}
 
+/* GENERATE ARCHIVE PDF */
+async function generateArchivePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF("p", "mm", "a4");
+    
+    // Add header
+    doc.setFontSize(22);
+    doc.setTextColor(30, 92, 60);
+    doc.text("📦 KITCHEN ORDERS ARCHIVE", 14, 20);
+    
+    doc.setFontSize(11);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Archive Date: ${new Date().toLocaleString()}`, 14, 30);
+    doc.text(`Total Orders: ${allApprovedOrders.length}`, 14, 37);
+    
+    // Calculate total items and value
+    let totalItems = 0;
+    let grandTotal = 0;
+    
+    allApprovedOrders.forEach(order => {
+        const approvedItems = order.items.filter(item => item.status === "approved");
+        totalItems += approvedItems.length;
+        approvedItems.forEach(item => {
+            const qty = item.approvedQty || item.originalQty || 0;
+            const price = item.price || 0;
+            grandTotal += qty * price;
+        });
+    });
+    
+    doc.text(`Total Items: ${totalItems}`, 14, 44);
+    doc.text(`Grand Total: ${grandTotal.toFixed(2)} EGP`, 14, 51);
+    
+    // Add line separator
+    doc.setDrawColor(200, 200, 200);
+    doc.line(14, 58, 200, 58);
+    
+    let currentY = 65;
+    
+    // Process each order
+    for(let i = 0; i < allApprovedOrders.length; i++) {
+        const order = allApprovedOrders[i];
+        const approvedItems = order.items.filter(item => item.status === "approved");
+        
+        if(approvedItems.length === 0) continue;
+        
+        // Check if we need a new page
+        if(currentY > 250) {
+            doc.addPage();
+            currentY = 20;
+        }
+        
+        // Order header
+        doc.setFontSize(14);
+        doc.setTextColor(30, 92, 60);
+        doc.text(`Order #${i+1}: ${order.requestId || order.id}`, 14, currentY);
+        currentY += 7;
+        
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        doc.text(`Kitchen: ${order.section || "N/A"}`, 14, currentY);
+        currentY += 5;
+        doc.text(`Chef: ${order.chefName || "N/A"}`, 14, currentY);
+        currentY += 5;
+        doc.text(`Date: ${formatDate(order.submittedAt)}`, 14, currentY);
+        currentY += 8;
+        
+        // Create items table
+        const rows = [];
+        let orderTotal = 0;
+        
+        approvedItems.forEach(item => {
+            const qty = item.approvedQty || item.originalQty || 0;
+            const price = item.price || 0;
+            const total = qty * price;
+            orderTotal += total;
+            rows.push([
+                item.code || "-",
+                item.name || "-",
+                qty.toString(),
+                item.unit || "-",
+                price.toFixed(2),
+                total.toFixed(2),
+                item.approvedBy || "-"
+            ]);
+        });
+        
+        doc.autoTable({
+            startY: currentY,
+            head: [["Code", "Item", "Qty", "Unit", "Price", "Total", "Approved By"]],
+            body: rows,
+            styles: { fontSize: 8, cellPadding: 2 },
+            headStyles: { fillColor: [30, 92, 60], textColor: [255, 255, 255] },
+            alternateRowStyles: { fillColor: [245, 245, 245] },
+            margin: { left: 14, right: 14 }
+        });
+        
+        currentY = doc.lastAutoTable.finalY + 5;
+        
+        // Order total
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Order Total: ${orderTotal.toFixed(2)} EGP`, 14, currentY);
+        currentY += 10;
+        
+        // Add separator line between orders
+        if(i < allApprovedOrders.length - 1) {
+            doc.setDrawColor(200, 200, 200);
+            doc.line(14, currentY, 200, currentY);
+            currentY += 8;
+        }
+    }
+    
+    // Add footer with summary on last page
+    const pageCount = doc.internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        doc.text(`Page ${i} of ${pageCount}`, 180, 285);
+        doc.text("Kitchen Orders Archive - Storekeeper Dashboard", 14, 285);
+    }
+    
+    // Save PDF
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    doc.save(`kitchen_archive_${timestamp}.pdf`);
+    showToast("✅ PDF Archive created and downloaded!");
+}
+
+/* CLEAR ALL ORDERS FROM FIRESTORE */
+async function clearAllOrdersFromDatabase() {
+    if(allApprovedOrders.length === 0) return;
+    
+    showToast("🗑️ Clearing orders from database...");
+    let successCount = 0;
+    let failCount = 0;
+    
+    for(let i = 0; i < allApprovedOrders.length; i++) {
+        const order = allApprovedOrders[i];
+        try {
+            await db.collection("kitchen_requests").doc(order.id).delete();
+            successCount++;
+        } catch(err) {
+            console.error("Delete error:", err);
+            failCount++;
+        }
+    }
+    
+    showToast(`✅ Cleared ${successCount} orders from database${failCount ? `, ${failCount} failed` : ''}`);
+    
+    // Refresh the view
+    setTimeout(() => {
+        startRealtimeListener();
+    }, 500);
+}
+
+/* PDF EXPORT (Regular report) */
 async function exportKitchenPDF(){
-
     let filtered = getFilteredOrders();
-
     filtered = filtered.filter(order =>
         order.items.some(item =>
         item.status === "approved")
     );
-
     if(filtered.length === 0){
-
         showToast("No data to export");
-
         return;
     }
-
     const { jsPDF } = window.jspdf;
-
     const doc = new jsPDF("p","mm","a4");
-
     let currentY = 20;
-
     doc.setFontSize(18);
-
-    doc.text(
-    "Kitchen Approved Orders Report",
-    14,
-    currentY
-    );
-
+    doc.text("Kitchen Approved Orders Report", 14, currentY);
     currentY += 10;
-
     doc.setFontSize(11);
-
-    doc.text(
-    `Generated: ${new Date().toLocaleString()}`,
-    14,
-    currentY
-    );
-
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 14, currentY);
     currentY += 10;
-
     let grandTotal = 0;
-
     filtered.forEach((order,index) => {
-
-        const approvedItems =
-        order.items.filter(item =>
-        item.status === "approved"
-        );
-
+        const approvedItems = order.items.filter(item =>
+        item.status === "approved");
         if(approvedItems.length === 0) return;
-
         doc.setFontSize(12);
-
-        doc.text(
-        `Request: ${order.requestId || order.id}`,
-        14,
-        currentY
-        );
-
+        doc.text(`Request: ${order.requestId || order.id}`, 14, currentY);
         currentY += 6;
-
-        doc.text(
-        `Kitchen: ${order.section || ""}`,
-        14,
-        currentY
-        );
-
+        doc.text(`Kitchen: ${order.section || ""}`, 14, currentY);
         currentY += 6;
-
-        doc.text(
-        `Chef: ${order.chefName || ""}`,
-        14,
-        currentY
-        );
-
+        doc.text(`Chef: ${order.chefName || ""}`, 14, currentY);
         currentY += 6;
-
-        doc.text(
-        `Date: ${formatDate(order.submittedAt)}`,
-        14,
-        currentY
-        );
-
+        doc.text(`Date: ${formatDate(order.submittedAt)}`, 14, currentY);
         currentY += 4;
-
         const rows = [];
-
         let orderTotal = 0;
-
         approvedItems.forEach(item => {
-
-            const qty =
-            item.approvedQty || item.originalQty || 0;
-
+            const qty = item.approvedQty || item.originalQty || 0;
             const price = item.price || 0;
-
             const total = qty * price;
-
             orderTotal += total;
-
             grandTotal += total;
-
             rows.push([
                 item.code || "",
                 item.name || "",
@@ -1041,126 +1065,57 @@ async function exportKitchenPDF(){
                 item.approvedBy || ""
             ]);
         });
-
         doc.autoTable({
-
             startY: currentY + 4,
-
-            head:[[
-                "Code",
-                "Item",
-                "Qty",
-                "Unit",
-                "Price",
-                "Total",
-                "Approved By"
-            ]],
-
+            head:[["Code","Item","Qty","Unit","Price","Total","Approved By"]],
             body: rows,
-
-            styles:{
-                fontSize:8
-            },
-
-            headStyles:{
-                fillColor:[30,92,60]
-            },
-
-            margin:{
-                left:14,
-                right:14
-            }
+            styles:{ fontSize:8 },
+            headStyles:{ fillColor:[30,92,60] },
+            margin:{ left:14, right:14 }
         });
-
         currentY = doc.lastAutoTable.finalY + 8;
-
-        doc.text(
-        `Order Total: ${orderTotal.toFixed(2)} EGP`,
-        14,
-        currentY
-        );
-
+        doc.text(`Order Total: ${orderTotal.toFixed(2)} EGP`, 14, currentY);
         currentY += 12;
-
-        if(currentY > 260 &&
-        index < filtered.length - 1){
-
+        if(currentY > 260 && index < filtered.length - 1){
             doc.addPage();
-
             currentY = 20;
         }
     });
-
     doc.setFontSize(14);
-
-    doc.text(
-    `GRAND TOTAL: ${grandTotal.toFixed(2)} EGP`,
-    14,
-    currentY
-    );
-
-    doc.save(
-    `Kitchen_Report_${new Date().toISOString().slice(0,10)}.pdf`
-    );
-
+    doc.text(`GRAND TOTAL: ${grandTotal.toFixed(2)} EGP`, 14, currentY);
+    doc.save(`Kitchen_Report_${new Date().toISOString().slice(0,10)}.pdf`);
     showToast("📄 PDF Exported");
 }
 
 /* CSV */
-
 function exportCSV(){
-
     let filtered = getFilteredOrders();
-
-    let csv =
-    "Request ID,Kitchen,Chef,Item,Qty,Price,Total\n";
-
+    let csv = "Request ID,Kitchen,Chef,Item,Qty,Price,Total\n";
     filtered.forEach(order => {
-
         order.items.forEach(item => {
-
             if(item.status === "approved"){
-
-                const qty =
-                item.approvedQty || item.originalQty || 0;
-
+                const qty = item.approvedQty || item.originalQty || 0;
                 const price = item.price || 0;
-
                 const total = qty * price;
-
-                csv +=
-                `"${order.requestId}","${order.section}","${order.chefName}","${item.name}",${qty},${price},${total}\n`;
+                csv += `"${order.requestId}","${order.section}","${order.chefName}","${item.name}",${qty},${price},${total}\n`;
             }
         });
     });
-
     downloadCSV(csv,"approved_orders.csv");
-
     showToast("📊 CSV Exported");
 }
 
 function downloadCSV(csvText,filename){
-
-    const blob =
-    new Blob(["\uFEFF" + csvText],{
-        type:"text/csv;charset=utf-8;"
-    });
-
+    const blob = new Blob(["\uFEFF" + csvText],{ type:"text/csv;charset=utf-8;" });
     const link = document.createElement("a");
-
     link.href = URL.createObjectURL(blob);
-
     link.download = filename;
-
     link.click();
 }
 
 /* HELPERS */
-
 function escapeHtml(str){
-
     if(!str) return '';
-
     return str.replace(/[&<>]/g,
     m => ({
         '&':'&amp;',
@@ -1170,22 +1125,25 @@ function escapeHtml(str){
 }
 
 function showToast(msg){
-
     const toast = document.createElement("div");
-
     toast.className = "toast";
-
     toast.innerText = msg;
-
     document.body.appendChild(toast);
-
-    setTimeout(() => toast.remove(),2500);
+    setTimeout(() => toast.remove(), 2500);
 }
 
-window.onload = () => {
+// Enter key support for login
+document.addEventListener('DOMContentLoaded', () => {
+    const passwordInput = document.getElementById('passwordInput');
+    if(passwordInput) {
+        passwordInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') checkPassword();
+        });
+    }
+});
 
-    document.getElementById("passwordModal")
-    .style.display = "flex";
+window.onload = () => {
+    document.getElementById("passwordModal").style.display = "flex";
 };
 
 </script>
