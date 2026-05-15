@@ -97,11 +97,6 @@ body{
     font-size:1.1rem;
 }
 
-/* New archive button style */
-.archive-btn{
-    background:#e67e22 !important;
-}
-
 .kitchen-tabs{
     background:white;
     padding:0 20px;
@@ -394,33 +389,6 @@ body{
     margin-top:10px;
 }
 
-/* Warning modal specific styles */
-.warning-buttons{
-    display:flex;
-    gap:12px;
-    margin-top:20px;
-    margin-bottom:10px;
-}
-
-.warning-buttons button{
-    flex:1;
-}
-
-.btn-danger{
-    background:#e74c3c !important;
-}
-
-.btn-secondary{
-    background:#7f8c8d !important;
-}
-
-.warning-text{
-    color:#e67e22;
-    font-weight:bold;
-    margin:15px 0;
-    font-size:14px;
-}
-
 @media(max-width:768px){
 
     .stats-grid{
@@ -455,37 +423,34 @@ body{
 
 </style>
 </head>
+
 <body>
 
-<!-- PASSWORD MODAL -->
+<!-- PASSWORD -->
+
 <div id="passwordModal" class="modal">
     <div class="modal-content">
         <h2>🔐 Storekeeper Access</h2>
+
         <p>Enter password to continue</p>
-        <input type="password" id="passwordInput" placeholder="Enter password">
+
+        <input type="password"
+        id="passwordInput"
+        placeholder="Enter password">
+
         <button onclick="checkPassword()">Login</button>
+
         <div id="passwordError" class="error-msg"></div>
-        <button class="close-modal" onclick="window.location.href='index.html'">
+
+        <button class="close-modal"
+        onclick="window.location.href='index.html'">
         ← Back
         </button>
     </div>
 </div>
 
-<!-- ARCHIVE WARNING MODAL - ADDED NEW -->
-<div id="archiveWarningModal" class="modal" style="display:none;">
-    <div class="modal-content">
-        <h2>⚠️ WARNING: Archive Orders</h2>
-        <p>You are about to archive <strong id="archiveCount">0</strong> approved order(s).</p>
-        <p class="warning-text">⚠️ This action will move all approved orders to the ARCHIVE collection.</p>
-        <p>Archived orders will be stored in <strong>archived_orders</strong> collection in Firestore.</p>
-        <div class="warning-buttons">
-            <button class="btn-danger" onclick="confirmArchive()">🗄️ Yes, Archive All</button>
-            <button class="btn-secondary" onclick="closeArchiveModal()">Cancel</button>
-        </div>
-    </div>
-</div>
-
 <!-- MAIN -->
+
 <div id="mainContent" style="display:none;">
 
     <div class="header">
@@ -502,11 +467,6 @@ body{
                 <button class="refresh-btn"
                 onclick="manualRefresh()">
                 🔄
-                </button>
-
-                <button class="btn-header archive-btn"
-                onclick="showArchiveWarning()">
-                🗄️ Archive Completed
                 </button>
 
                 <button class="btn-header"
@@ -607,7 +567,6 @@ function formatDate(dateValue){
 function startRealtimeListener(){
 
     db.collection("kitchen_requests")
-    .where("archived", "!=", true)
     .onSnapshot(snapshot => {
 
         allApprovedOrders = [];
@@ -630,9 +589,6 @@ function startRealtimeListener(){
 
         renderCurrentKitchen();
 
-    }, error => {
-        console.error("Firestore error:", error);
-        showToast("Error loading data: " + error.message);
     });
 }
 
@@ -640,7 +596,7 @@ function startRealtimeListener(){
 
 async function loadApprovedOrdersOnce(){
 
-    const snapshot = await db.collection("kitchen_requests").where("archived", "!=", true).get();
+    const snapshot = await db.collection("kitchen_requests").get();
 
     allApprovedOrders = [];
 
@@ -968,69 +924,6 @@ function displayOrders(){
 
     container.innerHTML = html;
 }
-
-/* ============ NEW ARCHIVE FUNCTIONALITY ============ */
-
-function showArchiveWarning(){
-    if(allApprovedOrders.length === 0){
-        showToast("⚠️ No approved orders to archive");
-        return;
-    }
-    
-    document.getElementById("archiveCount").innerText = allApprovedOrders.length;
-    document.getElementById("archiveWarningModal").style.display = "flex";
-}
-
-function closeArchiveModal(){
-    document.getElementById("archiveWarningModal").style.display = "none";
-}
-
-async function confirmArchive(){
-    closeArchiveModal();
-    
-    if(allApprovedOrders.length === 0){
-        showToast("No orders to archive");
-        return;
-    }
-    
-    showToast("📦 Archiving " + allApprovedOrders.length + " orders...");
-    
-    let archivedCount = 0;
-    let errorCount = 0;
-    
-    for(const order of allApprovedOrders){
-        try{
-            // Save to archived_orders collection
-            await db.collection("archived_orders").doc(order.id).set({
-                ...order,
-                archivedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                archivedBy: "Storekeeper",
-                originalCollection: "kitchen_requests"
-            });
-            
-            // Mark as archived in original collection
-            await db.collection("kitchen_requests").doc(order.id).update({
-                archived: true,
-                archivedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            
-            archivedCount++;
-        }catch(error){
-            console.error("Archive error for order", order.id, error);
-            errorCount++;
-        }
-    }
-    
-    if(archivedCount > 0){
-        showToast(`✅ Archived ${archivedCount} orders to archived_orders collection`);
-    }
-    
-    if(errorCount > 0){
-        showToast(`⚠️ ${errorCount} orders failed to archive`);
-    }
-}
-
-/* ============ END ARCHIVE FUNCTIONALITY ============ */
 
 /* PDF EXPORT */
 
