@@ -560,13 +560,8 @@ let filterState = {
 
 /* RETURN TO DASHBOARD - Same style button, stays on same page */
 function returnToDashboard() {
-    // This keeps the user on the same page/sheet
-    // Just refresh or stay - no navigation away
-    document.getElementById("passwordModal").style.display = "none";
-    // Optional: reload data or just close modal
-    showToast("Returning to dashboard");
+    window.location.href = "index.html";
 }
-
 /* PASSWORD CHECK */
 function checkPassword(){
     const passwordInput = document.getElementById("passwordInput");
