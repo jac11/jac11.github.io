@@ -444,30 +444,17 @@ let currentKitchen = "all";
 let allApprovedOrders = [];
 let filterState = { search: "", dateFrom: "", dateTo: "" };
 
-// ============ FIXED: Safe filename generator ============
 function getSafeKitchenName(kitchenName) {
-    // If kitchenName is undefined, null, or "all", use "all_kitchens"
     if (!kitchenName || kitchenName === "all") {
         return "all_kitchens";
     }
-    
-    // Convert to string and clean
     let safe = String(kitchenName)
         .toLowerCase()
-        .replace(/[^a-z0-9\s]/g, '')   // Remove special characters like /, \, etc.
-        .replace(/\s+/g, '_')           // Replace spaces with underscores
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, '_')
         .trim();
-    
-    // If result is empty, use fallback
-    if (safe === "") {
-        return "all_kitchens";
-    }
-    
+    if (safe === "") return "all_kitchens";
     return safe;
-}
-
-function getCurrentKitchenDisplayName() {
-    return currentKitchen === "all" ? "All Kitchens" : currentKitchen;
 }
 
 function returnToDashboard() {
@@ -499,6 +486,7 @@ function formatDate(dateValue) {
     if (typeof dateValue === "string") d = new Date(dateValue);
     else if (dateValue.seconds) d = new Date(dateValue.seconds * 1000);
     else d = new Date(dateValue);
+    if (isNaN(d.getTime())) return "Invalid Date";
     return d.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
@@ -508,10 +496,16 @@ function formatDateOnly(dateValue) {
     if (typeof dateValue === "string") d = new Date(dateValue);
     else if (dateValue.seconds) d = new Date(dateValue.seconds * 1000);
     else d = new Date(dateValue);
+    if (isNaN(d.getTime())) return "Invalid Date";
     return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
 
 function startRealtimeListener() {
+    if (!db) {
+        console.error("Firebase not initialized");
+        showToast("⚠️ Firebase not configured");
+        return;
+    }
     db.collection("kitchen_requests").onSnapshot(snapshot => {
         allApprovedOrders = [];
         snapshot.forEach(doc => {
@@ -522,10 +516,14 @@ function startRealtimeListener() {
         });
         renderTabs();
         renderCurrentKitchen();
+    }, error => {
+        console.error("Firestore error:", error);
+        showToast("⚠️ Firebase connection issue");
     });
 }
 
 async function loadApprovedOrdersOnce() {
+    if (!db) return;
     const snapshot = await db.collection("kitchen_requests").get();
     allApprovedOrders = [];
     snapshot.forEach(doc => {
@@ -541,6 +539,7 @@ async function loadApprovedOrdersOnce() {
 function renderTabs() {
     const kitchens = ["all", "Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
     const container = document.getElementById("tabsContainer");
+    if (!container) return;
     container.innerHTML = "";
     kitchens.forEach(k => {
         const btn = document.createElement("button");
@@ -558,6 +557,7 @@ function renderCurrentKitchen() {
 
 function renderKitchenPage(orders) {
     const container = document.getElementById("kitchenPagesContainer");
+    if (!container) return;
     container.innerHTML = `
         <div class="container">
             <div class="card">
@@ -624,6 +624,7 @@ function getFilteredOrders() {
 
 function displayOrders() {
     const container = document.getElementById("ordersList");
+    if (!container) return;
     let filtered = getFilteredOrders();
     if (filtered.length === 0) {
         container.innerHTML = '<div class="empty-state">📭 No approved orders</div>';
@@ -639,14 +640,13 @@ function displayOrders() {
             const price = item.price || 0;
             const rowTotal = qty * price;
             total += rowTotal;
-            html += `<tr><td style="font-family:monospace;">${item.code || ""}</td>}<strong>${escapeHtml(item.name)}</strong></td><td>${qty}</td><td>${item.unit || ""}</td><td>${price.toFixed(2)}</div><td class="text-right">${rowTotal.toFixed(2)}</div><td class="text-center"><span class="badge-approved">✔ ${item.approvedBy || ""}</span></div></tr>`;
+            html += `<tr><td style="font-family:monospace;">${item.code || ""}</td><td><strong>${escapeHtml(item.name)}</strong></td><td>${qty}</td><td>${item.unit || ""}</td><td class="text-right">${price.toFixed(2)}</td><td class="text-right">${rowTotal.toFixed(2)}</td><td class="text-center"><span class="badge-approved">✔ ${item.approvedBy || ""}</span></td></tr>`;
         });
         html += `</tbody></table></div><div style="padding:10px 15px; background:#f0fdf4; text-align:right;"><span class="order-total">💰 Order Total: ${total.toFixed(2)} EGP</span></div></div>`;
     });
     container.innerHTML = html;
 }
 
-// ============ FIXED: PREMIUM PDF EXPORT with proper filename ============
 async function exportKitchenPDF() {
     let filtered = getFilteredOrders();
     filtered = filtered.filter(order => order.items.some(item => item.status === "approved"));
@@ -659,19 +659,11 @@ async function exportKitchenPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     
-    // Get kitchen name safely with fallback
-    let kitchenDisplayName = "All Kitchens";
-    let kitchenSafeName = "all_kitchens";
-    
-    if (currentKitchen && currentKitchen !== "all") {
-        kitchenDisplayName = currentKitchen;
-        kitchenSafeName = getSafeKitchenName(currentKitchen);
-    }
+    let kitchenDisplayName = currentKitchen === "all" ? "All Kitchens" : currentKitchen;
+    let kitchenSafeName = getSafeKitchenName(currentKitchen);
     
     const today = new Date().toISOString().slice(0, 10);
     const filename = `${kitchenSafeName}_report_${today}.pdf`;
-    
-    console.log("Exporting PDF:", filename); // Debug log
     
     const pageWidth = doc.internal.pageSize.getWidth();
     const left = 14;
@@ -787,9 +779,6 @@ async function exportKitchenPDF() {
                 4: { cellWidth: 22, halign: "right" },
                 5: { cellWidth: 24, halign: "right" },
                 6: { cellWidth: 28, halign: "center" }
-            },
-            didDrawPage: function(data) {
-                drawHeader(doc.internal.getCurrentPageInfo().pageNumber);
             }
         });
         
@@ -827,7 +816,6 @@ async function exportKitchenPDF() {
     showToast(`📄 PDF Exported: ${filename}`);
 }
 
-// ============ FIXED: ARCHIVE PDF with proper filename ============
 async function archiveAsPDFAndClear() {
     if (allApprovedOrders.length === 0) {
         showToast("No orders to archive");
@@ -841,14 +829,8 @@ async function archiveAsPDFAndClear() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
     
-    // Get kitchen name safely with fallback
-    let kitchenDisplayName = "All Kitchens";
-    let kitchenSafeName = "all_kitchens";
-    
-    if (currentKitchen && currentKitchen !== "all") {
-        kitchenDisplayName = currentKitchen;
-        kitchenSafeName = getSafeKitchenName(currentKitchen);
-    }
+    let kitchenDisplayName = currentKitchen === "all" ? "All Kitchens" : currentKitchen;
+    let kitchenSafeName = getSafeKitchenName(currentKitchen);
     
     const today = new Date().toISOString().slice(0, 10);
     const filename = `${kitchenSafeName}_archive_${today}.pdf`;
@@ -967,9 +949,6 @@ async function archiveAsPDFAndClear() {
                 4: { cellWidth: 22, halign: "right" },
                 5: { cellWidth: 24, halign: "right" },
                 6: { cellWidth: 28, halign: "center" }
-            },
-            didDrawPage: function(data) {
-                drawArchiveHeader(doc.internal.getCurrentPageInfo().pageNumber);
             }
         });
         
@@ -1009,6 +988,7 @@ async function archiveAsPDFAndClear() {
 }
 
 async function clearAllOrdersFromDatabase() {
+    if (!db) return;
     if (allApprovedOrders.length === 0) return;
     showToast("🗑️ Clearing orders from database...");
     let success = 0, fail = 0;
@@ -1036,10 +1016,7 @@ function exportCSV() {
         });
     });
     
-    let kitchenSafeName = "all_kitchens";
-    if (currentKitchen && currentKitchen !== "all") {
-        kitchenSafeName = getSafeKitchenName(currentKitchen);
-    }
+    let kitchenSafeName = getSafeKitchenName(currentKitchen);
     const today = new Date().toISOString().slice(0, 10);
     downloadCSV(csv, `${kitchenSafeName}_report_${today}.csv`);
     showToast("📊 CSV Exported");
