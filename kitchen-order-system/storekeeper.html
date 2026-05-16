@@ -110,13 +110,9 @@ body {
     font-size: 1.1rem;
 }
 
-.clear-data-btn {
-    background: #e74c3c;
-    color: white;
-}
-
-.clear-data-btn:hover {
-    background: #c0392b;
+.archive-btn {
+    background: #ff9800;
+    color: #2c3e2c;
 }
 
 .kitchen-tabs {
@@ -430,7 +426,7 @@ body {
         <div class="header-content">
             <div class="logo">📦 <span>Storekeeper | Approved Orders</span></div>
             <div class="header-buttons">
-                <button class="btn-header clear-data-btn" onclick="clearStorekeeperData()">🗑️ Clear Data (Storekeeper Only)</button>
+                <button class="btn-header archive-btn" onclick="archiveAsPDFAndClear()">📥 Archive as PDF & Clear</button>
                 <button class="refresh-btn" onclick="manualRefresh()">🔄</button>
                 <button class="btn-header" onclick="window.print()">🖨️ Print</button>
             </div>
@@ -514,10 +510,7 @@ function startRealtimeListener() {
         allApprovedOrders = [];
         snapshot.forEach(doc => {
             const data = doc.data();
-            // Only show orders that:
-            // 1. Have approved items
-            // 2. Are NOT cleared by storekeeper (clearedByStorekeeper !== true)
-            if (data.items && data.items.some(item => item.status === "approved") && data.clearedByStorekeeper !== true) {
+            if (data.items && data.items.some(item => item.status === "approved") && !data.archived) {
                 allApprovedOrders.push({ id: doc.id, ...data });
             }
         });
@@ -535,50 +528,12 @@ async function loadApprovedOrdersOnce() {
     allApprovedOrders = [];
     snapshot.forEach(doc => {
         const data = doc.data();
-        if (data.items && data.items.some(item => item.status === "approved") && data.clearedByStorekeeper !== true) {
+        if (data.items && data.items.some(item => item.status === "approved") && !data.archived) {
             allApprovedOrders.push({ id: doc.id, ...data });
         }
     });
     renderTabs();
     renderCurrentKitchen();
-}
-
-// CLEAR DATA FUNCTION - Only marks as cleared for Storekeeper, doesn't delete
-async function clearStorekeeperData() {
-    if (allApprovedOrders.length === 0) {
-        showToast("No orders to clear");
-        return;
-    }
-    
-    if (!confirm(`🗑️ Clear ${allApprovedOrders.length} orders from Storekeeper view?\n\nThis will ONLY remove them from your Storekeeper dashboard.\nThe data will still be visible to Kitchen, Admin, and other pages.\n\nProceed?`)) return;
-    
-    showToast("🗑️ Clearing orders from Storekeeper view...");
-    let successCount = 0;
-    let failCount = 0;
-    
-    for (let i = 0; i < allApprovedOrders.length; i++) {
-        const order = allApprovedOrders[i];
-        try {
-            // Update the document with clearedByStorekeeper flag = true
-            // This hides it from Storekeeper but keeps data for other pages
-            await db.collection("kitchen_requests").doc(order.id).update({
-                clearedByStorekeeper: true,
-                clearedAt: new Date(),
-                clearedBy: "storekeeper"
-            });
-            successCount++;
-        } catch(err) {
-            console.error("Clear error:", err);
-            failCount++;
-        }
-    }
-    
-    showToast(`✅ Cleared ${successCount} orders from Storekeeper view${failCount ? `, ${failCount} failed` : ''}`);
-    
-    // Refresh the view
-    setTimeout(() => {
-        startRealtimeListener();
-    }, 500);
 }
 
 function renderTabs() {
@@ -685,7 +640,7 @@ function displayOrders() {
             const price = item.price || 0;
             const rowTotal = qty * price;
             total += rowTotal;
-            html += `<tr><td style="font-family:monospace;">${item.code || ""}</td>}<strong>${escapeHtml(item.name)}</strong></div><td class="text-right">${qty}</div><td class="text-center">${item.unit || ""}</div><td class="text-right">${price.toFixed(2)}</div><td class="text-right">${rowTotal.toFixed(2)}</div><td class="text-center"><span class="badge-approved">✔ ${item.approvedBy || ""}</span></div></tr>`;
+            html += `<tr><td style="font-family:monospace;">${item.code || ""}</td><td><strong>${escapeHtml(item.name)}</strong></td><td>${qty}</td><td>${item.unit || ""}</td><td class="text-right">${price.toFixed(2)}</td><td class="text-right">${rowTotal.toFixed(2)}</td><td class="text-center"><span class="badge-approved">✔ ${item.approvedBy || ""}</span></td></tr>`;
         });
         html += `</tbody></table></div><div style="padding:10px 15px; background:#f0fdf4; text-align:right;"><span class="order-total">💰 Order Total: ${total.toFixed(2)} EGP</span></div></div>`;
     });
@@ -859,6 +814,192 @@ async function exportKitchenPDF() {
     
     doc.save(filename);
     showToast(`📄 PDF Exported: ${filename}`);
+}
+
+async function archiveAsPDFAndClear() {
+    if (allApprovedOrders.length === 0) {
+        showToast("No orders to archive");
+        return;
+    }
+    
+    if (!confirm(`📦 Archive ${allApprovedOrders.length} orders as PDF?\n\nThis will:\n1. Create a PDF archive report\n2. Download the PDF\n3. Clear all orders from database\n\nProceed?`)) return;
+    
+    showToast("📄 Creating PDF archive...");
+    
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    
+    let kitchenDisplayName = currentKitchen === "all" ? "All Kitchens" : currentKitchen;
+    let kitchenSafeName = getSafeKitchenName(currentKitchen);
+    
+    const today = new Date().toISOString().slice(0, 10);
+    const filename = `${kitchenSafeName}_archive_${today}.pdf`;
+    
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const left = 14;
+    const right = 14;
+    
+    let grandTotal = 0;
+    let totalItems = 0;
+    
+    allApprovedOrders.forEach(order => {
+        order.items.filter(i => i.status === "approved").forEach(item => {
+            const qty = item.approvedQty || item.originalQty || 0;
+            totalItems += qty;
+            grandTotal += qty * (item.price || 0);
+        });
+    });
+    
+    function drawArchiveHeader(pageNo) {
+        doc.setFillColor(30, 92, 60);
+        doc.rect(0, 0, pageWidth, 24, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.text("KITCHEN ORDERS ARCHIVE", left, 14);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.text(`Kitchen: ${kitchenDisplayName}`, left, 20);
+        doc.text(new Date().toLocaleString(), pageWidth - 65, 20);
+        
+        doc.setDrawColor(220);
+        doc.line(left, 285, pageWidth - right, 285);
+        doc.setFontSize(8);
+        doc.setTextColor(120);
+        doc.text("Storekeeper Dashboard • Kitchen Orders Archive", left, 290);
+        doc.text(`Page ${pageNo}`, pageWidth - 24, 290);
+    }
+    
+    drawArchiveHeader(1);
+    let y = 34;
+    
+    doc.setFillColor(242, 248, 243);
+    doc.roundedRect(left, y, 182, 28, 4, 4, "F");
+    doc.setTextColor(30, 92, 60);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.text("ARCHIVE SUMMARY", left + 5, y + 8);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(`Total Orders: ${allApprovedOrders.length}`, left + 5, y + 18);
+    doc.text(`Total Items: ${totalItems}`, left + 65, y + 18);
+    doc.text(`Grand Total: ${grandTotal.toFixed(2)} EGP`, left + 115, y + 18);
+    y += 40;
+    
+    for (let idx = 0; idx < allApprovedOrders.length; idx++) {
+        const order = allApprovedOrders[idx];
+        const approvedItems = order.items.filter(item => item.status === "approved");
+        if (approvedItems.length === 0) continue;
+        
+        if (y > 230) {
+            doc.addPage();
+            drawArchiveHeader(doc.internal.getNumberOfPages());
+            y = 34;
+        }
+        
+        doc.setFillColor(245, 248, 250);
+        doc.roundedRect(left, y, 182, 14, 3, 3, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(30, 92, 60);
+        doc.text(`${idx + 1}. ${order.requestId || order.id}`, left + 4, y + 9);
+        y += 19;
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(110);
+        doc.text(`Kitchen: ${order.section || "N/A"}`, left, y);
+        doc.text(`Chef: ${order.chefName || "N/A"}`, left + 70, y);
+        doc.text(`Date: ${formatDateOnly(order.submittedAt)}`, left + 130, y);
+        y += 6;
+        
+        let tableData = [];
+        let orderTotal = 0;
+        
+        approvedItems.forEach(item => {
+            const qty = item.approvedQty || item.originalQty || 0;
+            const price = item.price || 0;
+            const total = qty * price;
+            orderTotal += total;
+            tableData.push([
+                item.code || "-",
+                (item.name || "-").length > 35 ? item.name.substring(0, 32) + "..." : item.name || "-",
+                qty,
+                item.unit || "-",
+                price.toFixed(2),
+                total.toFixed(2),
+                item.approvedBy || "-"
+            ]);
+        });
+        
+        doc.autoTable({
+            startY: y,
+            head: [["Code", "Item", "Qty", "Unit", "Price", "Total", "Approved By"]],
+            body: tableData,
+            theme: "grid",
+            margin: { left: left, right: right },
+            styles: { fontSize: 8, cellPadding: 3 },
+            headStyles: { fillColor: [30, 92, 60], textColor: [255, 255, 255], fontStyle: "bold" },
+            alternateRowStyles: { fillColor: [248, 250, 248] },
+            columnStyles: {
+                0: { cellWidth: 18, halign: "center" },
+                1: { cellWidth: 58 },
+                2: { cellWidth: 14, halign: "center" },
+                3: { cellWidth: 16, halign: "center" },
+                4: { cellWidth: 22, halign: "right" },
+                5: { cellWidth: 24, halign: "right" },
+                6: { cellWidth: 28, halign: "center" }
+            }
+        });
+        
+        y = doc.lastAutoTable.finalY + 6;
+        
+        doc.setFillColor(255, 248, 220);
+        doc.roundedRect(pageWidth - 74, y, 60, 10, 2, 2, "F");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(120, 90, 20);
+        doc.text(`Total: ${orderTotal.toFixed(2)} EGP`, pageWidth - 68, y + 6.5);
+        y += 18;
+    }
+    
+    if (y > 240) {
+        doc.addPage();
+        drawArchiveHeader(doc.internal.getNumberOfPages());
+        y = 40;
+    }
+    
+    doc.setDrawColor(220);
+    doc.line(left, y, pageWidth - right, y);
+    y += 12;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.setTextColor(30, 92, 60);
+    doc.text(`ARCHIVE GRAND TOTAL: ${grandTotal.toFixed(2)} EGP`, left, y);
+    
+    doc.save(filename);
+    showToast(`✅ PDF Archive: ${filename}`);
+    
+    setTimeout(async () => {
+        if (confirm("PDF archive created! Clear all orders from database now?")) {
+            await clearAllOrdersFromDatabase();
+        }
+    }, 1000);
+}
+
+async function clearAllOrdersFromDatabase() {
+    if (!db) return;
+    if (allApprovedOrders.length === 0) return;
+    showToast("🗑️ Clearing orders from database...");
+    let success = 0, fail = 0;
+    for (let order of allApprovedOrders) {
+        try {
+            await db.collection("kitchen_requests").doc(order.id).delete();
+            success++;
+        } catch (err) { fail++; }
+    }
+    showToast(`✅ Cleared ${success} orders${fail ? `, ${fail} failed` : ''}`);
+    setTimeout(() => startRealtimeListener(), 500);
 }
 
 function exportCSV() {
