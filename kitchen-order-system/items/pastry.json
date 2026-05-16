@@ -1,4 +1,5 @@
 [
+  {"code": "177001", "name": "Glucose Honey Gallon 20 Kg", "name_ar": "جلوكوز عسل جالون 20 كجم", "unit": "Gallon 20 KG", "maxLimit": 2, "AVE": 916.725},
   {"code": "177018", "name": "Jam Apricot", "name_ar": "مربى مشمش", "unit": "5kg gal", "maxLimit": 2, "AVE": 247.29595},
   {"code": "177033", "name": "Jam Strawberry", "name_ar": "مربى فراولة", "unit": "5kg gal", "maxLimit": 2, "AVE": 251.77745},
   {"code": "143004", "name": "Mix Berries Frozen", "name_ar": "توت مشكل مجمد", "unit": "kg", "maxLimit": 2.5, "AVE": 590},
