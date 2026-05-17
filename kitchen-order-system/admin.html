@@ -6,7 +6,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Admin Dashboard - Approve Orders</title>
+<title>Admin Dashboard - Full Quantity Control</title>
 
 <style>
 * {
@@ -303,12 +303,6 @@ body {
     margin-top: 3px;
 }
 
-.item-max {
-    font-size: 0.6rem;
-    color: #e67e22;
-    margin-top: 2px;
-}
-
 .item-price {
     font-size: 0.7rem;
     color: #e67e22;
@@ -325,12 +319,12 @@ body {
 }
 
 .approval-input {
-    width: 85px;
+    width: 100px;
     padding: 6px 8px;
     border: 1px solid #ddd;
     border-radius: 8px;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
 }
 
@@ -495,21 +489,6 @@ body {
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-.floating-refresh {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #3498db;
-    color: white;
-    border: none;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
-
 .modal {
     display: flex;
     position: fixed;
@@ -603,7 +582,6 @@ body {
     background: #7f8c8d;
 }
 
-/* Confirmation Modal Styles */
 .confirm-modal {
     display: flex;
     position: fixed;
@@ -687,64 +665,30 @@ body {
     color: white;
 }
 
-.btn-cancel-delete:hover {
-    background: #7f8c8d;
+.free-adjust-badge {
+    background: #3498db;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.6rem;
+    margin-left: 8px;
+    vertical-align: middle;
 }
 
 @media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-    .stat-card {
-        padding: 12px;
-    }
-    .stat-number {
-        font-size: 1.5rem;
-    }
-    .kitchen-filters {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding: 10px 14px;
-    }
-    .kitchen-filter-btn {
-        white-space: nowrap;
-        font-size: 11px;
-    }
-    .tabs {
-        overflow-x: auto;
-        flex-wrap: nowrap;
-    }
-    .tab-btn {
-        white-space: nowrap;
-        font-size: 12px;
-        padding: 6px 14px;
-    }
-    .request-info {
-        flex-direction: column;
-        gap: 8px;
-    }
-    .admin-table th, .admin-table td {
-        padding: 8px 6px;
-        font-size: 11px;
-    }
-    .approval-input {
-        width: 65px;
-        padding: 5px;
-        font-size: 11px;
-    }
-    .btn-approve {
-        padding: 4px 10px;
-        font-size: 0.65rem;
-    }
-    .request-actions {
-        flex-direction: column;
-    }
-    .request-total-badge {
-        flex-direction: column;
-        gap: 5px;
-        text-align: center;
-    }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .stat-card { padding: 12px; }
+    .stat-number { font-size: 1.5rem; }
+    .kitchen-filters { overflow-x: auto; flex-wrap: nowrap; }
+    .kitchen-filter-btn { white-space: nowrap; font-size: 11px; }
+    .tabs { overflow-x: auto; flex-wrap: nowrap; }
+    .tab-btn { white-space: nowrap; font-size: 12px; padding: 6px 14px; }
+    .request-info { flex-direction: column; gap: 8px; }
+    .admin-table th, .admin-table td { padding: 8px 6px; font-size: 11px; }
+    .approval-input { width: 70px; padding: 5px; font-size: 11px; }
+    .btn-approve { padding: 4px 10px; font-size: 0.65rem; }
+    .request-actions { flex-direction: column; }
+    .request-total-badge { flex-direction: column; gap: 5px; text-align: center; }
 }
 
 .container {
@@ -777,6 +721,7 @@ body {
             <div class="logo">
                 <span class="logo-icon">👑</span>
                 <span>Admin <span>Dashboard</span></span>
+                <span class="free-adjust-badge">✏️ FULL QUANTITY CONTROL</span>
             </div>
             <div style="display: flex; align-items: center; gap: 15px;">
                 <span id="adminNameDisplay" style="font-weight: 600;"></span>
@@ -817,18 +762,11 @@ let currentKitchen = "all";
 let currentStatus = "pending";
 let allRequests = [];
 let selectedUser = "";
-let unsubscribeListener = null;
 
-function goBackToIndex() {
-    window.location.href = "index.html";
-}
+function goBackToIndex() { window.location.href = "index.html"; }
+function openAnalytics() { window.open("analytics.html", "_blank"); }
+function openRevenue() { window.open("revenue.html", "_blank"); }
 
-function openAnalytics() {
-    window.open("analytics.html", "_blank");
-}
-function openRevenue() {
-    window.open("revenue.html", "_blank");
-}
 function selectUser(user) {
     selectedUser = user;
     document.getElementById("passwordInput").style.display = "block";
@@ -866,7 +804,6 @@ function getRequestStatus(items) {
     let allProcessed = true;
     let approved = 0;
     let rejected = 0;
-    let accepted = false;
     
     items.forEach(item => {
         if(item.status === "approved") approved++;
@@ -874,10 +811,7 @@ function getRequestStatus(items) {
         else allProcessed = false;
     });
     
-    if(items.length > 0 && items[0].completedVia === "accept") {
-        return "accepted";
-    }
-    
+    if(items.length > 0 && items[0].completedVia === "accept") return "accepted";
     if(allProcessed) {
         if(approved === items.length) return "approved";
         if(rejected === items.length) return "rejected";
@@ -886,13 +820,8 @@ function getRequestStatus(items) {
     return "pending";
 }
 
-async function updateRequest(id, items, completedVia = null) {
+async function updateRequest(id, items) {
     try {
-        if(completedVia) {
-            items.forEach(item => {
-                item.completedVia = completedVia;
-            });
-        }
         await db.collection("kitchen_requests").doc(id).update({ items });
         showToast(`✅ Updated by ${currentAdmin}`);
         await loadRequests();
@@ -900,29 +829,30 @@ async function updateRequest(id, items, completedVia = null) {
     } catch(e) { showToast("Update error"); return false; }
 }
 
-async function approveItem(reqId, idx) {
+// NEW: Approve with FULL quantity control (no max limit, can exceed original)
+async function approveItemFlex(reqId, idx) {
     const input = document.getElementById(`qty_${reqId}_${idx}`);
     let qty = parseFloat(input?.value || 0);
-    if(!qty || qty <= 0) { showToast("Enter quantity"); return; }
+    if(isNaN(qty) || qty < 0) { showToast("Enter a valid quantity (0 or more)"); return; }
     const req = allRequests.find(r => r.id === reqId);
     if(req) {
         const item = req.items[idx];
-        if(qty > item.maxLimit) { showToast(`Max ${item.maxLimit}`); return; }
-        if(qty > item.originalQty) { 
-            showToast(`⚠️ Cannot approve more than requested (${item.originalQty} ${item.unit})`);
-            input.value = item.originalQty;
-            return;
-        }
+        // NO MAX LIMIT CHECK - admin can approve any quantity
+        // Also can exceed original requested quantity
         item.status = "approved";
         item.approvedQty = qty;
         item.approvedBy = currentAdmin;
         item.approvedAt = new Date().toLocaleString();
+        // Remove any previous rejection data if exists
+        delete item.rejectionReason;
+        delete item.rejectedBy;
+        delete item.rejectedAt;
         await updateRequest(reqId, req.items);
     }
 }
 
 async function rejectItem(reqId, idx) {
-    const reason = prompt(`Rejection reason (${currentAdmin}):`, "Out of stock");
+    const reason = prompt(`Rejection reason (${currentAdmin}):`, "Out of stock or unavailable");
     if(reason) {
         const req = allRequests.find(r => r.id === reqId);
         if(req) {
@@ -931,25 +861,31 @@ async function rejectItem(reqId, idx) {
             req.items[idx].rejectedBy = currentAdmin;
             req.items[idx].rejectedAt = new Date().toLocaleString();
             req.items[idx].approvedQty = 0;
+            delete req.items[idx].approvedBy;
+            delete req.items[idx].approvedAt;
             await updateRequest(reqId, req.items);
         }
     }
 }
 
-async function approveAll(reqId) {
-    if(!confirm(`Approve all as ${currentAdmin}? This will complete the request.`)) return;
+async function approveAllFlex(reqId) {
+    if(!confirm(`Approve ALL items with current quantities as ${currentAdmin}? (Quantities can be any number, no limits)`)) return;
     const req = allRequests.find(r => r.id === reqId);
     if(req) {
-        req.items.forEach(item => {
-            let qty = item.originalQty;
-            if(qty > item.maxLimit) qty = item.maxLimit;
+        for(let i=0; i<req.items.length; i++) {
+            const input = document.getElementById(`qty_${reqId}_${i}`);
+            let qty = parseFloat(input?.value || 0);
+            if(isNaN(qty)) qty = 0;
+            const item = req.items[i];
             item.status = "approved";
             item.approvedQty = qty;
             item.approvedBy = currentAdmin;
             item.approvedAt = new Date().toLocaleString();
-            delete item.completedVia;
-        });
-        await updateRequest(reqId, req.items, "approve_all");
+            delete item.rejectionReason;
+            delete item.rejectedBy;
+            delete item.rejectedAt;
+        }
+        await updateRequest(reqId, req.items);
     }
 }
 
@@ -964,9 +900,10 @@ async function rejectAll(reqId) {
                 item.rejectedBy = currentAdmin;
                 item.rejectedAt = new Date().toLocaleString();
                 item.approvedQty = 0;
-                delete item.completedVia;
+                delete item.approvedBy;
+                delete item.approvedAt;
             });
-            await updateRequest(reqId, req.items, "reject_all");
+            await updateRequest(reqId, req.items);
         }
     }
 }
@@ -985,23 +922,16 @@ async function acceptRequest(reqId) {
             }
             item.completedVia = "accept";
         });
-        await updateRequest(reqId, req.items, "accept");
+        await updateRequest(reqId, req.items);
     }
 }
 
-// Show confirmation modal that requires typing "DELETE"
 function showResetConfirmModal() {
     const toDelete = allRequests.filter(req => {
         const status = getRequestStatus(req.items);
         return status !== "pending";
     });
-    
-    if(toDelete.length === 0) {
-        showToast("ℹ️ No completed requests to delete");
-        return;
-    }
-    
-    // Create modal
+    if(toDelete.length === 0) { showToast("ℹ️ No completed requests to delete"); return; }
     const modal = document.createElement('div');
     modal.className = 'confirm-modal';
     modal.innerHTML = `
@@ -1018,54 +948,22 @@ function showResetConfirmModal() {
         </div>
     `;
     document.body.appendChild(modal);
-    
     const input = modal.querySelector('#confirmDeleteInput');
     const confirmBtn = modal.querySelector('#confirmDeleteBtn');
-    
     input.focus();
-    
-    input.addEventListener('input', function(e) {
-        if(e.target.value === 'DELETE') {
-            confirmBtn.disabled = false;
-        } else {
-            confirmBtn.disabled = true;
-        }
-    });
-    
+    input.addEventListener('input', (e) => { confirmBtn.disabled = e.target.value !== 'DELETE'; });
     confirmBtn.onclick = async () => {
-        const typedValue = input.value;
-        if(typedValue === 'DELETE') {
+        if(input.value === 'DELETE') {
             modal.remove();
-            await executeResetCompleted(toDelete);
-        } else {
-            showToast("❌ Deletion cancelled - incorrect confirmation text");
-            modal.remove();
-        }
+            let deletedCount = 0;
+            for(const req of toDelete) {
+                try { await db.collection("kitchen_requests").doc(req.id).delete(); deletedCount++; }
+                catch(e) { console.error(e); }
+            }
+            await loadRequests();
+            showToast(`✅ Deleted ${deletedCount} completed requests.`);
+        } else { showToast("Cancelled"); modal.remove(); }
     };
-}
-
-async function executeResetCompleted(toDelete) {
-    let deletedCount = 0;
-    let errorCount = 0;
-    
-    showToast(`⚠️ Deleting ${toDelete.length} completed requests...`);
-    
-    for(const req of toDelete) {
-        try {
-            await db.collection("kitchen_requests").doc(req.id).delete();
-            deletedCount++;
-        } catch(e) {
-            console.error("Delete error:", e);
-            errorCount++;
-        }
-    }
-    
-    await loadRequests();
-    if(errorCount === 0) {
-        showToast(`✅ Reset complete! Deleted ${deletedCount} completed requests.`);
-    } else {
-        showToast(`⚠️ Deleted ${deletedCount} requests, ${errorCount} failed.`);
-    }
 }
 
 function exportExcel() {
@@ -1077,22 +975,10 @@ function exportExcel() {
             const price = item.price || 0;
             const approvedQty = item.status === "approved" ? (item.approvedQty || 0) : 0;
             const totalValue = approvedQty * price;
-            if(item.status === "approved") { 
-                status = "Approved"; 
-                actionBy = item.approvedBy || ""; 
-            }
-            else if(item.status === "rejected") { 
-                status = "Rejected"; 
-                actionBy = item.rejectedBy || ""; 
-            }
-            else if(item.completedVia === "accept") {
-                status = "Accepted";
-                actionBy = item.approvedBy || item.rejectedBy || currentAdmin;
-            }
-            else { 
-                status = "Pending"; 
-                actionBy = "-";
-            }
+            if(item.status === "approved") { status = "Approved"; actionBy = item.approvedBy || ""; }
+            else if(item.status === "rejected") { status = "Rejected"; actionBy = item.rejectedBy || ""; }
+            else if(item.completedVia === "accept") { status = "Accepted"; actionBy = item.approvedBy || item.rejectedBy || currentAdmin; }
+            else { status = "Pending"; actionBy = "-"; }
             csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}","${item.code}",${item.originalQty},"${item.unit}",${price},${approvedQty},"${status}","${actionBy}",${totalValue}\n`;
         });
     });
@@ -1149,21 +1035,13 @@ function renderUI() {
     container.innerHTML = "";
     filtered.forEach(req => {
         const requestStatus = getRequestStatus(req.items);
-        const kitchenClass = {
-            "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry",
-            "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff"
-        }[req.section] || "kitchen-staff";
+        const kitchenClass = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" }[req.section] || "kitchen-staff";
         
-        let requestedTotalValue = 0;
-        let approvedTotalValue = 0;
+        let requestedTotalValue = 0, approvedTotalValue = 0;
         req.items.forEach(item => {
             const price = item.price || 0;
-            const requestedQty = item.originalQty;
-            requestedTotalValue += requestedQty * price;
-            if(item.status === "approved") {
-                const approvedQty = item.approvedQty || 0;
-                approvedTotalValue += approvedQty * price;
-            }
+            requestedTotalValue += item.originalQty * price;
+            if(item.status === "approved") approvedTotalValue += (item.approvedQty || 0) * price;
         });
         
         let hasIndividualAction = false;
@@ -1175,13 +1053,9 @@ function renderUI() {
                     break;
                 }
             }
-        } else {
-            isCompleted = true;
-        }
+        } else { isCompleted = true; }
         
-        let itemsHtml = `<div class="table-wrapper"><table class="admin-table"><thead>
-            <tr><th>Code</th><th>Item</th><th>Requested Qty</th><th>Unit</th><th>Price/Unit (EGP)</th><th>Approved Qty</th><th>Total Value (EGP)</th><th>Action</th><th>Status</th>
-        </thead><tbody>`;
+        let itemsHtml = `<div class="table-wrapper"><table class="admin-table"><thead><tr><th>Code</th><th>Item</th><th>Requested Qty</th><th>Unit</th><th>Price/Unit (EGP)</th><th>Admin Qty (No Limit)</th><th>Total Value (EGP)</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
         
         req.items.forEach((item, idx) => {
             const price = item.price || 0;
@@ -1189,29 +1063,25 @@ function renderUI() {
             const totalValue = approvedQty * price;
             
             if(item.status === "approved") {
-                itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-max">Max: ${item.maxLimit}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td>${approvedQty.toFixed(1)}</td><td><strong style="color:#27ae60;">${totalValue.toFixed(2)}</strong></td><td><span class="btn-approve" style="background:#27ae60;opacity:0.7;cursor:default;">✅ Approved</span></td><td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</div></td></tr>`;
+                itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td><strong>${approvedQty.toFixed(1)}</strong></td><td><strong style="color:#27ae60;">${totalValue.toFixed(2)}</strong></td><td><span class="btn-approve" style="background:#27ae60;opacity:0.7;">✅ Approved</span></td><td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</div></td></tr>`;
             } else if(item.status === "rejected") {
-                itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-max">Max: ${item.maxLimit}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td><strong style="color:#e74c3c;">0</strong></td><td><strong style="color:#e74c3c;">0.00</strong></td><td><span class="btn-reject" style="background:#e74c3c;opacity:0.7;cursor:default;">❌ Rejected</span></td><td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td></tr>`;
+                itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td><strong>0</strong></td><td><strong style="color:#e74c3c;">0.00</strong></td><td><span class="btn-reject" style="background:#e74c3c;opacity:0.7;">❌ Rejected</span></td><td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td></tr>`;
             } else {
-                itemsHtml += `<tr><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div><div class="item-max">Max: ${item.maxLimit}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${item.originalQty}" min="0" max="${item.maxLimit}" step="0.5"></td><td><span id="totalValuePreview_${req.id}_${idx}" style="font-weight:600; color:#1e3c72;">${(item.originalQty * price).toFixed(2)}</span></td><td class="action-buttons"><button class="btn-approve" onclick="approveItem('${req.id}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.id}', ${idx})">❌ Reject</button></td><td><span class="status-pending-cell">Pending</span><div class="admin-info-text">Waiting for approval</div></td></tr>`;
+                const currentVal = (item.originalQty || 0).toFixed(1);
+                itemsHtml += `<tr><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td><span class="item-price">${price.toFixed(2)}</span></td><td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${currentVal}" min="0" step="0.5" style="background:#fef9e6;"></td><td><span id="totalValuePreview_${req.id}_${idx}" style="font-weight:600; color:#1e3c72;">${(item.originalQty * price).toFixed(2)}</span></td><td class="action-buttons"><button class="btn-approve" onclick="approveItemFlex('${req.id}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.id}', ${idx})">❌ Reject</button></td><td><span class="status-pending-cell">Pending</span><div class="admin-info-text">Waiting (Qty: any value)</div></td></tr>`;
                 
                 setTimeout(() => {
                     const input = document.getElementById(`qty_${req.id}_${idx}`);
                     const totalSpan = document.getElementById(`totalValuePreview_${req.id}_${idx}`);
                     if(input && totalSpan) {
-                        input.addEventListener('input', function() {
-                            const newQty = parseFloat(this.value) || 0;
-                            const newTotal = newQty * price;
-                            totalSpan.innerText = newTotal.toFixed(2);
-                            const acceptBtn = document.getElementById(`acceptBtn_${req.id}`);
-                            const approveAllBtn = document.getElementById(`approveAllBtn_${req.id}`);
-                            const rejectAllBtn = document.getElementById(`rejectAllBtn_${req.id}`);
-                            if(acceptBtn) acceptBtn.disabled = false;
-                            if(approveAllBtn) approveAllBtn.disabled = true;
-                            if(rejectAllBtn) rejectAllBtn.disabled = true;
-                        });
+                        const updateTotal = () => {
+                            const newQty = parseFloat(input.value) || 0;
+                            totalSpan.innerText = (newQty * price).toFixed(2);
+                        };
+                        input.addEventListener('input', updateTotal);
+                        updateTotal();
                     }
-                }, 100);
+                }, 50);
             }
         });
         itemsHtml += `</tbody></table></div>`;
@@ -1219,7 +1089,7 @@ function renderUI() {
         let actions = "";
         if(!isCompleted) {
             actions = `<div class="request-actions">
-                <button class="btn-approve-all" id="approveAllBtn_${req.id}" onclick="approveAll('${req.id}')" ${hasIndividualAction ? 'disabled' : ''}>✅ Approve All</button>
+                <button class="btn-approve-all" id="approveAllBtn_${req.id}" onclick="approveAllFlex('${req.id}')" ${hasIndividualAction ? 'disabled' : ''}>✅ Approve All (Flex Qty)</button>
                 <button class="btn-reject-all" id="rejectAllBtn_${req.id}" onclick="rejectAll('${req.id}')" ${hasIndividualAction ? 'disabled' : ''}>❌ Reject All</button>
                 <button class="btn-accept" id="acceptBtn_${req.id}" onclick="acceptRequest('${req.id}')" ${!hasIndividualAction ? 'disabled' : ''}>🟣 Accept (Complete)</button>
             </div>`;
@@ -1255,7 +1125,6 @@ function renderUI() {
 
 function logout() {
     if(confirm("Are you sure you want to logout?")) {
-        if(unsubscribeListener) unsubscribeListener();
         localStorage.removeItem("admin");
         sessionStorage.clear();
         window.location.href = "index.html";
@@ -1263,10 +1132,7 @@ function logout() {
 }
 
 function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ''; }
-function showToast(msg) { 
-    const t = document.createElement("div"); t.className = "toast"; t.innerText = msg; 
-    document.body.appendChild(t); setTimeout(() => t.remove(), 2500); 
-}
+function showToast(msg) { const t = document.createElement("div"); t.className = "toast"; t.innerText = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
 
 const saved = localStorage.getItem("admin");
 if(saved && ADMIN_PASSWORDS[saved]) {
