@@ -1445,25 +1445,36 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit, price, ste
     if (!item) return;
     
     const existing = kitchenData[kitchen].cart.find(i => i.code === code);
-    let newTotal = (existing ? existing.qty : 0) + qty;
-    if (newTotal > (item.maxLimit || maxLimit)) {
-        const remaining = (item.maxLimit || maxLimit) - (existing ? existing.qty : 0);
-        showToast(`⚠️ Max ${item.maxLimit || maxLimit} ${item.unit || unit}. Only ${remaining.toFixed(1)} left`);
+    let currentQty = existing ? existing.qty : 0;
+    let maxAllowed = item.maxLimit || maxLimit;
+    let remaining = maxAllowed - currentQty;
+    
+    // FIX: Adjust qty to not exceed limit
+    let actualQtyToAdd = qty;
+    if (remaining <= 0) {
+        showToast(`⚠️ Maximum ${maxAllowed} ${item.unit || unit} reached!`);
         return;
     }
+    
+    if (qty > remaining) {
+        actualQtyToAdd = remaining;
+        showToast(`⚠️ Only ${remaining.toFixed(1)} remaining. Added ${remaining.toFixed(1)} instead of ${qty.toFixed(1)}`);
+    }
+    
     const itemPrice = item.price || price || 0;
     if (existing) {
-        existing.qty += qty;
-        showToast(`✓ Added ${qty.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`);
+        existing.qty += actualQtyToAdd;
+        showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`);
     } else {
         kitchenData[kitchen].cart.push({
             code: item.code, name: item.name, name_ar: item.name_ar,
             unit: item.unit || unit,
-            qty: qty, maxLimit: item.maxLimit || maxLimit,
+            qty: actualQtyToAdd, maxLimit: item.maxLimit || maxLimit,
             price: itemPrice
         });
-        showToast(`✓ Added ${qty.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`);
+        showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`);
     }
+    
     addedItemsStatus[kitchen][code] = true;
     selectedQuantities[kitchen][code] = 0;
     
