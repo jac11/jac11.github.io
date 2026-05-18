@@ -705,8 +705,9 @@ body {
         <h2>🔐 Admin Login</h2>
         <div class="user-selector">
             <button class="user-btn" onclick="selectUser('Marco')">👨‍💼 Marco<br><span class="user-title">Administrator</span></button>
-            <button class="user-btn" onclick="selectUser('Nady')">👩‍💼 Nady<br><span class="user-title">Administrator</span></button>
+            <button class="user-btn" onclick="selectUser('Nady')">👨‍💼 Nady<br><span class="user-title">Administrator</span></button>
             <button class="user-btn" onclick="selectUser('Ahmed')">👨‍💻 Ahmed<br><span class="user-title">Administrator</span></button>
+            <button class="user-btn" onclick="selectUser('Nader')">👨‍💼 Nader<br><span class="user-title">Administrator</span></button>
         </div>
         <input type="password" id="passwordInput" placeholder="Enter password" style="display:none;">
         <button id="loginBtn" style="display:none;" onclick="checkLogin()">Login</button>
@@ -754,7 +755,8 @@ body {
 </div>
 
 <script>
-const ADMIN_PASSWORDS = { "Marco": "M1r50123", "Nady": "Nn639123", "Ahmed": "j1cadm1n" };
+// Added Nader with password (using same pattern as others - you can change the password as needed)
+const ADMIN_PASSWORDS = { "Marco": "M1r50123", "Nady": "Nn639123", "Ahmed": "j1cadm1n", "Nader": "Nader2025!" };
 const KITCHENS = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
 let currentAdmin = "";
@@ -829,7 +831,7 @@ async function updateRequest(id, items) {
     } catch(e) { showToast("Update error"); return false; }
 }
 
-// NEW: Approve with FULL quantity control (no max limit, can exceed original)
+// Approve with FULL quantity control (no max limit, can exceed original)
 async function approveItemFlex(reqId, idx) {
     const input = document.getElementById(`qty_${reqId}_${idx}`);
     let qty = parseFloat(input?.value || 0);
