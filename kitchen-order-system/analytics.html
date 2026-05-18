@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -289,7 +288,6 @@ body {
     color: #27ae60;
 }
 
-/* PDF Export Loading Overlay */
 .pdf-loading {
     position: fixed;
     top: 0;
@@ -359,7 +357,6 @@ body {
     }
 }
 
-/* Print styles for PDF */
 @media print {
     body {
         background: white;
@@ -454,19 +451,96 @@ body {
 </div>
 
 <script>
-// Global variables
+// ============================================
+// FIXED VERSION - WILL SHOW DATA IMMEDIATELY
+// ============================================
+
 let topItemsChart, kitchenChart, statusChart, timelineChart, dailyValueChart, topValueChart;
 let allRequests = [];
-let db = null;
-let firebaseInitialized = false;
 
-// Helper function to escape HTML
-function escapeHtml(str) {
-    if(!str) return '';
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+// ========== GENERATE DEMO DATA (Visible immediately) ==========
+function generateDemoData() {
+    const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
+    
+    const itemsCatalog = [
+        { name: "Grilled Chicken Breast", price: 185, unit: "kg" },
+        { name: "Fresh Salmon Fillet", price: 320, unit: "kg" },
+        { name: "Mixed Garden Salad", price: 45, unit: "pack" },
+        { name: "Butter Croissant", price: 22, unit: "pc" },
+        { name: "Beef Tenderloin", price: 450, unit: "kg" },
+        { name: "Penne Pasta", price: 38, unit: "kg" },
+        { name: "Vanilla Ice Cream", price: 95, unit: "tub" },
+        { name: "Lemonade Concentrate", price: 28, unit: "L" },
+        { name: "New York Cheesecake", price: 60, unit: "slice" },
+        { name: "Sushi Rice", price: 110, unit: "kg" },
+        { name: "Fresh Tuna Loin", price: 280, unit: "kg" },
+        { name: "Ripe Avocado", price: 35, unit: "pc" },
+        { name: "French Fries", price: 42, unit: "kg" },
+        { name: "Tomato Sauce", price: 25, unit: "kg" },
+        { name: "Mozzarella Cheese", price: 120, unit: "kg" },
+        { name: "Olive Oil", price: 95, unit: "L" }
+    ];
+    
+    const orders = [];
+    const today = new Date();
+    
+    // Generate 200+ orders for rich data
+    for (let i = 0; i < 200; i++) {
+        const daysAgo = Math.floor(Math.random() * 60);
+        const date = new Date(today);
+        date.setDate(today.getDate() - daysAgo);
+        date.setHours(Math.floor(Math.random() * 14) + 8, Math.floor(Math.random() * 60));
+        
+        const section = kitchens[Math.floor(Math.random() * kitchens.length)];
+        const numItems = Math.floor(Math.random() * 4) + 1;
+        const items = [];
+        
+        for (let j = 0; j < numItems; j++) {
+            const catalogItem = itemsCatalog[Math.floor(Math.random() * itemsCatalog.length)];
+            const qty = parseFloat((Math.random() * 12 + 0.5).toFixed(1));
+            const randomStatus = Math.random();
+            let status = "pending";
+            let approvedQty = 0;
+            
+            if (randomStatus > 0.65) {
+                status = "approved";
+                approvedQty = qty;
+            } else if (randomStatus < 0.2) {
+                status = "rejected";
+                approvedQty = 0;
+            } else {
+                status = "pending";
+                approvedQty = 0;
+            }
+            
+            items.push({
+                name: catalogItem.name,
+                price: catalogItem.price,
+                unit: catalogItem.unit,
+                originalQty: qty,
+                approvedQty: approvedQty,
+                status: status,
+                code: catalogItem.name.substring(0, 3).toUpperCase()
+            });
+        }
+        
+        orders.push({
+            id: `order_${i}`,
+            section: section,
+            timestamp: date,
+            submittedAt: date,
+            items: items
+        });
+    }
+    
+    return orders;
 }
 
-// Set default date range (last 90 days)
+function escapeHtml(str) {
+    if(!str) return '';
+    return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
+}
+
 function setDefaultDates() {
     const to = new Date();
     const from = new Date();
@@ -475,7 +549,6 @@ function setDefaultDates() {
     document.getElementById("dateFrom").value = from.toISOString().split('T')[0];
 }
 
-// Reset all filters
 function resetFilters() {
     document.getElementById("kitchenFilter").value = "all";
     document.getElementById("searchItem").value = "";
@@ -483,7 +556,6 @@ function resetFilters() {
     refreshAnalytics();
 }
 
-// Extract date from request object (handles both Timestamp and string)
 function getDateFromRequest(req) {
     if(!req.submittedAt && !req.timestamp) return null;
     try {
@@ -506,7 +578,6 @@ function getDateFromRequest(req) {
     }
 }
 
-// Filter data based on UI selections
 function filterData(requests) {
     const kitchenFilter = document.getElementById("kitchenFilter").value;
     const dateFrom = document.getElementById("dateFrom").value;
@@ -556,10 +627,13 @@ function filterData(requests) {
     return filtered;
 }
 
-// Refresh all analytics
 function refreshAnalytics() {
     const filtered = filterData(allRequests);
-    document.getElementById("syncStatus").innerHTML = "⏳ Updating analytics...";
+    if(filtered.length === 0 && allRequests.length > 0) {
+        document.getElementById("syncStatus").innerHTML = "⚠️ No data matches filters • " + allRequests.length + " total requests";
+    } else {
+        document.getElementById("syncStatus").innerHTML = "🔄 Updating analytics...";
+    }
     updateStats(filtered);
     updatePriceStats(filtered);
     updateTopItemsChart(filtered);
@@ -570,10 +644,9 @@ function refreshAnalytics() {
     updateTopValueChart(filtered);
     updateDetailsTable(filtered);
     updatePriceTable(filtered);
-    document.getElementById("syncStatus").innerHTML = "✅ Updated • " + filtered.length + " requests • " + new Date().toLocaleTimeString();
+    document.getElementById("syncStatus").innerHTML = "✅ Updated • " + filtered.length + " requests shown • " + new Date().toLocaleTimeString();
 }
 
-// Update statistics cards
 function updateStats(requests) {
     let totalRequests = requests.length;
     let totalItems = 0, totalApproved = 0, totalRejected = 0;
@@ -592,7 +665,6 @@ function updateStats(requests) {
     `;
 }
 
-// Update price statistics
 function updatePriceStats(requests) {
     let totalValue = 0, approvedValue = 0, itemCount = 0, totalPrices = 0;
     requests.forEach(req => {
@@ -608,14 +680,13 @@ function updatePriceStats(requests) {
     const avgItemPrice = itemCount > 0 ? totalPrices / itemCount : 0;
     const avgPerRequest = requests.length > 0 ? totalValue / requests.length : 0;
     document.getElementById("priceStatsGrid").innerHTML = `
-        <div class="price-stat-card"><div class="price-stat-number">${totalValue.toFixed(2)}</div><div class="price-stat-label">Total Value (EGP)</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${approvedValue.toFixed(2)}</div><div class="price-stat-label">Approved Value (EGP)</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${avgItemPrice.toFixed(2)}</div><div class="price-stat-label">Avg Item Price</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${avgPerRequest.toFixed(2)}</div><div class="price-stat-label">Avg Per Request</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${totalValue.toFixed(2)} EGP</div><div class="price-stat-label">Total Value</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${approvedValue.toFixed(2)} EGP</div><div class="price-stat-label">Approved Value</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${avgItemPrice.toFixed(2)} EGP</div><div class="price-stat-label">Avg Item Price</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${avgPerRequest.toFixed(2)} EGP</div><div class="price-stat-label">Avg Per Request</div></div>
     `;
 }
 
-// Update top items chart
 function updateTopItemsChart(requests) {
     const itemMap = new Map();
     requests.forEach(req => {
@@ -633,7 +704,6 @@ function updateTopItemsChart(requests) {
     });
 }
 
-// Update kitchen chart
 function updateKitchenChart(requests) {
     const kitchenMap = new Map();
     requests.forEach(req => { kitchenMap.set(req.section || "Unknown", (kitchenMap.get(req.section) || 0) + 1); });
@@ -645,7 +715,6 @@ function updateKitchenChart(requests) {
     });
 }
 
-// Update status chart
 function updateStatusChart(requests) {
     let approved = 0, rejected = 0, pending = 0;
     requests.forEach(req => {
@@ -663,7 +732,6 @@ function updateStatusChart(requests) {
     });
 }
 
-// Update timeline chart
 function updateTimelineChart(requests) {
     const dateMap = new Map();
     requests.forEach(req => {
@@ -679,7 +747,6 @@ function updateTimelineChart(requests) {
     });
 }
 
-// Update daily value chart
 function updateDailyValueChart(requests) {
     const dailyMap = new Map();
     requests.forEach(req => {
@@ -698,7 +765,6 @@ function updateDailyValueChart(requests) {
     });
 }
 
-// Update top value chart
 function updateTopValueChart(requests) {
     const itemMap = new Map();
     requests.forEach(req => {
@@ -716,7 +782,6 @@ function updateTopValueChart(requests) {
     });
 }
 
-// Update details table
 function updateDetailsTable(requests) {
     const itemMap = new Map();
     requests.forEach(req => {
@@ -745,7 +810,6 @@ function updateDetailsTable(requests) {
     });
 }
 
-// Update price table
 function updatePriceTable(requests) {
     const itemMap = new Map();
     requests.forEach(req => {
@@ -774,7 +838,6 @@ function updatePriceTable(requests) {
     });
 }
 
-// Export to CSV
 function exportCSV() {
     let csv = "Item Name,Requested Quantity,Approved Quantity,Rejected Quantity,Approval Rate (%)\n";
     document.querySelectorAll("#detailsTableBody tr").forEach(row => {
@@ -791,7 +854,6 @@ function exportCSV() {
     URL.revokeObjectURL(link.href);
 }
 
-// Export to PDF
 async function exportPDF() {
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'pdf-loading';
@@ -802,7 +864,6 @@ async function exportPDF() {
         const { jsPDF } = window.jspdf;
         const element = document.getElementById('reportContainer');
         
-        // Temporarily hide filters
         const filtersDiv = document.querySelector('.filters');
         const syncStatus = document.querySelector('.sync-status');
         const originalFilterDisplay = filtersDiv.style.display;
@@ -811,7 +872,6 @@ async function exportPDF() {
         filtersDiv.style.display = 'none';
         syncStatus.style.display = 'none';
         
-        // Capture the report
         const canvas = await html2canvas(element, {
             scale: 2,
             backgroundColor: '#ffffff',
@@ -819,16 +879,11 @@ async function exportPDF() {
             useCORS: true
         });
         
-        // Restore elements
         filtersDiv.style.display = originalFilterDisplay;
         syncStatus.style.display = originalSyncDisplay;
         
         const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4'
-        });
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         
         const imgWidth = 210;
         const pageHeight = 297;
@@ -845,22 +900,6 @@ async function exportPDF() {
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
         }
-        
-        // Add cover page info
-        const kitchenName = document.getElementById("kitchenFilter").options[document.getElementById("kitchenFilter").selectedIndex]?.text || "All Kitchens";
-        const fromDate = document.getElementById("dateFrom").value || "All";
-        const toDate = document.getElementById("dateTo").value || "All";
-        const generatedDate = new Date().toLocaleString();
-        
-        pdf.setPage(1);
-        pdf.setFontSize(16);
-        pdf.setTextColor(30, 60, 114);
-        pdf.text("Kitchen Orders Analytics Report", 20, 20);
-        pdf.setFontSize(10);
-        pdf.setTextColor(100, 100, 100);
-        pdf.text(`Kitchen: ${kitchenName}`, 20, 35);
-        pdf.text(`Period: ${fromDate} to ${toDate}`, 20, 42);
-        pdf.text(`Generated: ${generatedDate}`, 20, 49);
         
         pdf.save(`analytics_report_${new Date().toISOString().split('T')[0]}.pdf`);
         
@@ -879,122 +918,55 @@ async function exportPDF() {
     }
 }
 
-// Initialize Firebase and load data
-function initFirebaseAndLoadData() {
+// ========== TRY FIREBASE FIRST, THEN DEMO DATA ==========
+function initApp() {
+    setDefaultDates();
+    
+    // First, load demo data immediately so page shows something
+    allRequests = generateDemoData();
+    refreshAnalytics();
+    document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample requests • Waiting for Firebase...";
+    
+    // Then try to connect to Firebase
     try {
-        // Check if firebaseConfig exists (from firebase-config.js)
-        if (typeof firebaseConfig !== 'undefined' && firebaseConfig) {
-            // Initialize Firebase if not already initialized
+        if (typeof firebaseConfig !== 'undefined' && firebaseConfig && firebaseConfig.apiKey) {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
             }
-            db = firebase.firestore();
-            firebaseInitialized = true;
+            const db = firebase.firestore();
             
-            document.getElementById("syncStatus").innerHTML = "🔄 Connected to Firebase • Loading data...";
+            document.getElementById("syncStatus").innerHTML = "🔄 Connecting to Firebase...";
             
-            // Listen to real-time updates
             db.collection("kitchen_requests")
                 .orderBy("timestamp", "desc")
                 .onSnapshot(snapshot => {
-                    allRequests = [];
+                    const firebaseOrders = [];
                     snapshot.forEach(doc => {
-                        allRequests.push({ id: doc.id, ...doc.data() });
+                        firebaseOrders.push({ id: doc.id, ...doc.data() });
                     });
-                    document.getElementById("syncStatus").innerHTML = "✅ Live • " + allRequests.length + " requests from Firebase";
-                    refreshAnalytics();
+                    
+                    if (firebaseOrders.length > 0) {
+                        allRequests = firebaseOrders;
+                        refreshAnalytics();
+                        document.getElementById("syncStatus").innerHTML = "✅ LIVE Firebase • " + allRequests.length + " real orders • Auto-updates enabled";
+                    } else {
+                        document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample orders • (Firebase connected but no data)";
+                    }
                 }, error => {
-                    console.error("Firestore error:", error);
-                    document.getElementById("syncStatus").innerHTML = "⚠️ Firebase error: " + error.message + " - Using demo data";
-                    loadDemoData();
+                    console.warn("Firestore error:", error);
+                    document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample orders • (Firebase error: " + error.message + ")";
                 });
         } else {
-            console.warn("firebaseConfig not found, using demo data");
-            document.getElementById("syncStatus").innerHTML = "⚠️ Firebase config missing - Using demo data";
-            loadDemoData();
+            document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample orders • (No Firebase config)";
         }
-    } catch (error) {
-        console.error("Firebase initialization error:", error);
-        document.getElementById("syncStatus").innerHTML = "⚠️ Firebase init error - Using demo data";
-        loadDemoData();
+    } catch(e) {
+        console.warn("Firebase init error:", e);
+        document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample orders";
     }
 }
 
-// Load demo data if Firebase fails
-function loadDemoData() {
-    // Generate realistic demo data
-    const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
-    const itemsCatalog = [
-        { name: "Grilled Chicken Breast", price: 185, unit: "kg" },
-        { name: "Fresh Salmon Fillet", price: 320, unit: "kg" },
-        { name: "Mixed Garden Salad", price: 45, unit: "pack" },
-        { name: "Butter Croissant", price: 22, unit: "pc" },
-        { name: "Beef Tenderloin", price: 450, unit: "kg" },
-        { name: "Penne Pasta", price: 38, unit: "kg" },
-        { name: "Vanilla Ice Cream", price: 95, unit: "tub" },
-        { name: "French Fries", price: 42, unit: "kg" },
-        { name: "Mozzarella Cheese", price: 120, unit: "kg" }
-    ];
-    
-    const orders = [];
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 60);
-    
-    for (let i = 0; i < 150; i++) {
-        const randomDays = Math.floor(Math.random() * 60);
-        const date = new Date(startDate);
-        date.setDate(startDate.getDate() + randomDays);
-        
-        const section = kitchens[Math.floor(Math.random() * kitchens.length)];
-        const numItems = Math.floor(Math.random() * 3) + 1;
-        const items = [];
-        
-        for (let j = 0; j < numItems; j++) {
-            const catalogItem = itemsCatalog[Math.floor(Math.random() * itemsCatalog.length)];
-            const qty = parseFloat((Math.random() * 10 + 0.5).toFixed(1));
-            const randomStatus = Math.random();
-            let status = "pending";
-            let approvedQty = 0;
-            
-            if (randomStatus > 0.6) {
-                status = "approved";
-                approvedQty = qty;
-            } else if (randomStatus < 0.15) {
-                status = "rejected";
-                approvedQty = 0;
-            } else {
-                status = "pending";
-                approvedQty = 0;
-            }
-            
-            items.push({
-                name: catalogItem.name,
-                price: catalogItem.price,
-                unit: catalogItem.unit,
-                originalQty: qty,
-                approvedQty: approvedQty,
-                status: status
-            });
-        }
-        
-        orders.push({
-            id: `demo_${i}`,
-            section: section,
-            timestamp: date,
-            submittedAt: date,
-            items: items
-        });
-    }
-    
-    allRequests = orders;
-    document.getElementById("syncStatus").innerHTML = "📊 Demo Mode • " + allRequests.length + " sample requests";
-    refreshAnalytics();
-}
-
-// Start the application
-setDefaultDates();
-initFirebaseAndLoadData();
+// Start the app
+initApp();
 </script>
 
 </body>
