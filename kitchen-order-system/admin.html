@@ -198,6 +198,17 @@ body {
     font-family: monospace;
 }
 
+.duplicate-warning {
+    background: #f39c12;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-left: 10px;
+    display: inline-block;
+}
+
 .request-total-badge {
     display: flex;
     gap: 15px;
@@ -755,8 +766,7 @@ body {
 </div>
 
 <script>
-// Added Nader with password (using same pattern as others - you can change the password as needed)
-const ADMIN_PASSWORDS = { "Marco": "M1r50123", "Nady": "Nn639123", "Ahmed": "j1cadm1n", "Nader": "nader123" };
+const ADMIN_PASSWORDS = { "Marco": "M1r50123", "Nady": "Nn639123", "Ahmed": "j1cadm1n", "Nader": "Nader2025!" };
 const KITCHENS = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
 let currentAdmin = "";
@@ -764,6 +774,7 @@ let currentKitchen = "all";
 let currentStatus = "pending";
 let allRequests = [];
 let selectedUser = "";
+let duplicateMap = new Map(); // Store duplicate signatures
 
 function goBackToIndex() { window.location.href = "index.html"; }
 function openAnalytics() { window.open("analytics.html", "_blank"); }
@@ -796,9 +807,40 @@ async function loadRequests() {
         const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
         allRequests = [];
         snapshot.forEach(doc => allRequests.push({ id: doc.id, ...doc.data() }));
+        findDuplicateRequests(); // Identify duplicates
         renderUI();
         updateStats();
     } catch(e) { showToast("Error loading"); }
+}
+
+// Function to find duplicate orders (same kitchen, same chef, same items with same quantities)
+function findDuplicateRequests() {
+    duplicateMap.clear();
+    const signatureMap = new Map();
+    
+    for (const req of allRequests) {
+        // Create signature: section|chefName|itemCodes:quantities
+        const itemSignature = req.items.map(item => `${item.code}|${item.originalQty}`).join(';');
+        const signature = `${req.section}|${req.chefName}|${itemSignature}`;
+        
+        if (!signatureMap.has(signature)) {
+            signatureMap.set(signature, []);
+        }
+        signatureMap.get(signature).push(req);
+    }
+    
+    // Mark duplicates (more than one request with same signature)
+    for (const [sig, requests] of signatureMap.entries()) {
+        if (requests.length > 1) {
+            for (const req of requests) {
+                duplicateMap.set(req.id, {
+                    isDuplicate: true,
+                    count: requests.length,
+                    otherIds: requests.filter(r => r.id !== req.id).map(r => r.requestId)
+                });
+            }
+        }
+    }
 }
 
 function getRequestStatus(items) {
@@ -831,7 +873,6 @@ async function updateRequest(id, items) {
     } catch(e) { showToast("Update error"); return false; }
 }
 
-// Approve with FULL quantity control (no max limit, can exceed original)
 async function approveItemFlex(reqId, idx) {
     const input = document.getElementById(`qty_${reqId}_${idx}`);
     let qty = parseFloat(input?.value || 0);
@@ -839,13 +880,10 @@ async function approveItemFlex(reqId, idx) {
     const req = allRequests.find(r => r.id === reqId);
     if(req) {
         const item = req.items[idx];
-        // NO MAX LIMIT CHECK - admin can approve any quantity
-        // Also can exceed original requested quantity
         item.status = "approved";
         item.approvedQty = qty;
         item.approvedBy = currentAdmin;
         item.approvedAt = new Date().toLocaleString();
-        // Remove any previous rejection data if exists
         delete item.rejectionReason;
         delete item.rejectedBy;
         delete item.rejectedAt;
@@ -970,8 +1008,9 @@ function showResetConfirmModal() {
 
 function exportExcel() {
     if(!allRequests.length) { showToast("No data"); return; }
-    let csv = "Request ID,Kitchen,Chef,Date,Item,Code,Requested Qty,Unit,Price/Unit (EGP),Approved Qty,Status,Action By,Total Value (EGP)\n";
+    let csv = "Request ID,Kitchen,Chef,Date,Item,Code,Requested Qty,Unit,Price/Unit (EGP),Approved Qty,Status,Action By,Total Value (EGP),Duplicate\n";
     allRequests.forEach(req => {
+        const isDup = duplicateMap.has(req.id) ? "YES" : "NO";
         req.items.forEach(item => {
             let status = item.status, actionBy = "";
             const price = item.price || 0;
@@ -981,7 +1020,7 @@ function exportExcel() {
             else if(item.status === "rejected") { status = "Rejected"; actionBy = item.rejectedBy || ""; }
             else if(item.completedVia === "accept") { status = "Accepted"; actionBy = item.approvedBy || item.rejectedBy || currentAdmin; }
             else { status = "Pending"; actionBy = "-"; }
-            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}","${item.code}",${item.originalQty},"${item.unit}",${price},${approvedQty},"${status}","${actionBy}",${totalValue}\n`;
+            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}","${item.code}",${item.originalQty},"${item.unit}",${price},${approvedQty},"${status}","${actionBy}",${totalValue},"${isDup}"\n`;
         });
     });
     const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8"});
@@ -1038,6 +1077,10 @@ function renderUI() {
     filtered.forEach(req => {
         const requestStatus = getRequestStatus(req.items);
         const kitchenClass = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" }[req.section] || "kitchen-staff";
+        
+        // Check if this request is a duplicate
+        const duplicateInfo = duplicateMap.get(req.id);
+        const duplicateWarning = duplicateInfo ? `<span class="duplicate-warning">⚠️ DUPLICATE (${duplicateInfo.count} identical orders)</span>` : '';
         
         let requestedTotalValue = 0, approvedTotalValue = 0;
         req.items.forEach(item => {
@@ -1107,7 +1150,7 @@ function renderUI() {
         
         container.innerHTML += `<div class="request-card">
             <div class="request-header">
-                <div><span class="request-id">📄 ${req.requestId}</span><span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div>
+                <div><span class="request-id">📄 ${req.requestId}</span>${duplicateWarning}<span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div>
                 <div class="request-total-badge">
                     <span>💰 Requested: ${requestedTotalValue.toFixed(2)} EGP</span>
                     <span>✅ Approved: ${approvedTotalValue.toFixed(2)} EGP</span>
