@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Analytics Dashboard - Kitchen Orders</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+<title>Kitchen Analytics Dashboard</title>
 
 <style>
 * {
@@ -19,16 +20,17 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0f2f5;
+    background: #f4f7fc;
 }
 
 .header {
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    background: linear-gradient(135deg, #0b2b3b, #1a4a5f);
     color: white;
-    padding: 12px 16px;
+    padding: 14px 20px;
     position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .header-content {
@@ -38,502 +40,464 @@ body {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
 }
 
 .header h1 {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.header span {
-    color: #e94560;
+.header h1 span {
+    color: #f9b43a;
+    font-weight: 400;
 }
 
 .btn-back {
     background: rgba(255,255,255,0.2);
-    border: none;
-    padding: 8px 16px;
-    border-radius: 25px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 20px;
+    border-radius: 40px;
     color: white;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background: rgba(255,255,255,0.35);
+    transform: scale(0.97);
 }
 
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 20px 16px;
 }
 
-/* Filters */
 .filters {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
     flex-wrap: wrap;
+    gap: 12px;
     background: white;
-    padding: 16px;
-    border-radius: 16px;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 16px 20px;
+    border-radius: 28px;
+    margin-bottom: 24px;
+    align-items: flex-end;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    border: 1px solid #eef2f6;
 }
 
-.filters label {
-    font-weight: 600;
-    color: #555;
-    font-size: 0.75rem;
-}
-
-.filters select, .filters input {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    font-size: 13px;
-    flex: 1;
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     min-width: 120px;
 }
 
+.filter-group label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #4a627a;
+}
+
+.filters select, .filters input {
+    padding: 10px 14px;
+    border: 1px solid #dce5ec;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    background: #ffffff;
+}
+
+.filters select:focus, .filters input:focus {
+    outline: none;
+    border-color: #2c7da0;
+    box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+}
+
 .filters button {
-    background: #3498db;
+    background: #2c7da0;
     color: white;
     border: none;
-    padding: 8px 20px;
-    border-radius: 25px;
-    cursor: pointer;
+    padding: 8px 22px;
+    border-radius: 40px;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 0.8rem;
+    cursor: pointer;
     transition: 0.2s;
+    margin-top: 4px;
 }
 
 .filters button:hover {
-    opacity: 0.9;
+    background: #1f5e7a;
+    transform: translateY(-1px);
 }
 
-/* Stats Grid */
-.stats-grid {
+.btn-pdf { background: #c44536 !important; }
+.btn-pdf:hover { background: #a53224 !important; }
+.btn-reset { background: #7f8c8d !important; }
+.btn-csv { background: #2b7a4b !important; }
+
+.stats-grid, .price-stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 15px;
+    margin-bottom: 24px;
 }
 
 .stat-card {
     background: white;
-    padding: 14px;
-    border-radius: 16px;
+    padding: 18px 12px;
+    border-radius: 28px;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: 0.2s;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.03);
+    border: 1px solid #eef2f8;
 }
 
 .stat-number {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #e94560;
-}
-
-.stat-label {
-    color: #666;
-    margin-top: 4px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-}
-
-/* Price Stats Cards */
-.price-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1f5e7a;
+    line-height: 1.2;
 }
 
 .price-stat-card {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(125deg, #1f3e48, #0f2c36);
     color: white;
-    padding: 14px;
-    border-radius: 16px;
+    padding: 16px;
+    border-radius: 28px;
     text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    transition: 0.2s;
-}
-
-.price-stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
 .price-stat-number {
-    font-size: 1.6rem;
-    font-weight: bold;
+    font-size: 1.7rem;
+    font-weight: 800;
 }
 
-.price-stat-label {
-    margin-top: 4px;
-    font-size: 0.7rem;
-    opacity: 0.9;
-}
-
-/* Charts Grid */
 .charts-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 20px;
+    margin-bottom: 24px;
 }
 
 .chart-card {
     background: white;
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: 0.2s;
-}
-
-.chart-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    border-radius: 28px;
+    padding: 18px 16px;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.04);
+    border: 1px solid #eef2f8;
 }
 
 .chart-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
     margin-bottom: 15px;
-    color: #1e3c72;
-    border-left: 4px solid #3498db;
-    padding-left: 10px;
-    font-size: 0.95rem;
+    color: #1e3c4a;
+    border-left: 4px solid #f9b43a;
+    padding-left: 12px;
 }
 
 .chart-container {
     position: relative;
-    height: 220px;
+    height: 230px;
 }
 
-/* Table Card */
 .table-card {
     background: white;
-    border-radius: 16px;
-    padding: 16px;
-    margin-top: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: 0.2s;
-}
-
-.table-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    border-radius: 28px;
+    padding: 18px 16px;
+    margin-top: 8px;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.04);
 }
 
 .table-card h3 {
-    margin-bottom: 15px;
-    color: #1e3c72;
-    border-left: 4px solid #3498db;
-    padding-left: 10px;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 4px solid #f9b43a;
+    color: #1f3e48;
 }
 
 .table-wrapper {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    border-radius: 20px;
 }
 
 .details-table {
-    min-width: 500px;
     width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
-}
-
-.details-table th, .details-table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
+    font-size: 0.8rem;
+    min-width: 500px;
 }
 
 .details-table th {
-    background: #f8f9fa;
-    font-weight: 600;
+    background: #f0f5fa;
+    padding: 12px 8px;
+    font-weight: 700;
+    color: #2c5a6e;
 }
 
-.details-table tbody tr:hover {
-    background: #f1f7ff;
-    transition: 0.2s;
+.details-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ecf3f9;
+}
+
+.details-table tr:hover td {
+    background: #f9fbfd;
 }
 
 .sync-status {
-    font-size: 11px;
     text-align: center;
-    margin-top: 16px;
-    padding: 8px;
-    border-radius: 20px;
+    font-size: 0.75rem;
+    padding: 10px 16px;
+    border-radius: 60px;
+    margin-top: 20px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 500;
+}
+
+.sync-status.loading {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.sync-status.success {
     background: #e8f5e9;
-    color: #27ae60;
+    color: #2e7d32;
 }
 
-/* Responsive */
-@media (min-width: 768px) {
-    .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-    }
-
-    .price-stats-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
-    }
-
-    .charts-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-
-    .stat-number {
-        font-size: 2rem;
-    }
-
-    .price-stat-number {
-        font-size: 1.8rem;
-    }
-
-    .chart-container {
-        height: 280px;
-    }
+.sync-status.error {
+    background: #ffebee;
+    color: #c62828;
 }
 
-@media (max-width: 480px) {
-    .filters {
-        flex-direction: column;
-        align-items: stretch;
-    }
+.sync-status.empty {
+    background: #e3f2fd;
+    color: #1565c0;
+}
 
-    .filters select, .filters input, .filters button {
-        width: 100%;
-    }
+.pdf-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(6px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+}
 
-    .stat-number {
-        font-size: 1.5rem;
-    }
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 5px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    margin-bottom: 18px;
+}
 
-    .price-stat-number {
-        font-size: 1.3rem;
-    }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-    .chart-container {
-        height: 200px;
-    }
+@media (min-width: 780px) {
+    .stats-grid, .price-stats-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .charts-grid { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+    .chart-container { height: 260px; }
+    .stat-number { font-size: 2.3rem; }
+}
+
+@media (max-width: 600px) {
+    .filters { flex-direction: column; align-items: stretch; }
+    .filter-group { width: 100%; }
+    .filters button { width: 100%; }
+}
+
+@media print {
+    .filters, .btn-back, .sync-status, .pdf-loading, .header button { display: none !important; }
+    .header { background: #0b2b3b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .stat-card, .price-stat-card, .chart-card, .table-card { break-inside: avoid; }
 }
 </style>
 </head>
-
 <body>
 
 <div class="header">
     <div class="header-content">
-        <h1>📊 Analytics <span>| Kitchen Orders</span></h1>
-        <button class="btn-back" onclick="window.location.href='admin.html'">← Back</button>
+        <h1>🍽️ KITCHEN METRICS <span>| Live Orders</span></h1>
+        <button class="btn-back" onclick="window.location.href='admin.html'">← Back to Admin</button>
     </div>
 </div>
 
-<div class="container">
-
+<div class="container" id="reportContainer">
     <div class="filters">
-        <label>📅 From:</label>
-        <input type="date" id="dateFrom">
-
-        <label>📅 To:</label>
-        <input type="date" id="dateTo">
-
-        <label>🍽️ Kitchen:</label>
-        <select id="kitchenFilter">
-            <option value="all">All Kitchens</option>
-            <option value="Hot Kitchen">🔥 Hot Kitchen</option>
-            <option value="Cold Kitchen">❄️ Cold Kitchen</option>
-            <option value="Pastry">🍰 Pastry</option>
-            <option value="Butchery">🥩 Butchery</option>
-            <option value="Beach House">🏖️ Beach House</option>
-            <option value="Nihon Kitchen">🍜 Nihon Kitchen</option>
-            <option value="Staff Kitchen">👥 Staff Kitchen</option>
-        </select>
-
-        <input type="text" id="searchItem" placeholder="🔍 Search item..." style="flex:2;">
-
-        <button onclick="refreshAnalytics()">🔄 Update</button>
-        <button onclick="exportReport()" style="background:#27ae60;">📥 Export CSV</button>
+        <div class="filter-group"><label>📅 FROM</label><input type="date" id="dateFrom"></div>
+        <div class="filter-group"><label>📅 TO</label><input type="date" id="dateTo"></div>
+        <div class="filter-group"><label>🍽️ KITCHEN</label>
+            <select id="kitchenFilter">
+                <option value="all">All Stations</option>
+                <option value="Hot Kitchen">🔥 Hot Kitchen</option>
+                <option value="Cold Kitchen">❄️ Cold Kitchen</option>
+                <option value="Pastry / Bakery">🍰 Pastry / Bakery</option>
+                <option value="Butchery">🥩 Butchery</option>
+                <option value="Beach House">🏖️ Beach House</option>
+                <option value="Nihon Kitchen">🍜 Nihon Kitchen</option>
+                <option value="Staff Kitchen">👥 Staff Kitchen</option>
+            </select>
+        </div>
+        <div class="filter-group"><label>🔍 SEARCH ITEM</label><input type="text" id="searchItem" placeholder="Item name..."></div>
+        <div class="filter-group"><label>⚡ ACTIONS</label>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button onclick="refreshAnalytics()">⟳ Update</button>
+                <button onclick="exportCSV()" class="btn-csv">📎 CSV</button>
+                <button onclick="exportToPDF()" class="btn-pdf">📄 PDF</button>
+                <button onclick="resetFilters()" class="btn-reset">🗑 Reset</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Order Stats -->
-    <div class="stats-grid" id="statsGrid"></div>
-
-    <!-- Price Stats -->
-    <div class="price-stats-grid" id="priceStatsGrid"></div>
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">📋 Requests</div></div>
+        <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">🍽️ Items</div></div>
+        <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">✅ Approved</div></div>
+        <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">❌ Rejected</div></div>
+    </div>
+    <div class="price-stats-grid" id="priceStatsGrid">
+        <div class="price-stat-card"><div class="price-stat-number">—</div><div class="price-stat-label">💰 Total Value</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">—</div><div class="price-stat-label">✔️ Approved Value</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">—</div><div class="price-stat-label">Avg Item Price</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">—</div><div class="price-stat-label">Avg / Request</div></div>
+    </div>
 
     <div class="charts-grid">
-        <div class="chart-card">
-            <h3>📦 Top Requested Items</h3>
-            <div class="chart-container">
-                <canvas id="topItemsChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <h3>🍽️ Requests by Kitchen</h3>
-            <div class="chart-container">
-                <canvas id="kitchenChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <h3>✅ Approval Status</h3>
-            <div class="chart-container">
-                <canvas id="statusChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <h3>📈 Requests Over Time</h3>
-            <div class="chart-container">
-                <canvas id="timelineChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <h3>💰 Daily Total Value (EGP)</h3>
-            <div class="chart-container">
-                <canvas id="dailyValueChart"></canvas>
-            </div>
-        </div>
-
-        <div class="chart-card">
-            <h3>🏷️ Top Items by Value (EGP)</h3>
-            <div class="chart-container">
-                <canvas id="topValueChart"></canvas>
-            </div>
-        </div>
+        <div class="chart-card"><h3>📊 Top Requested Items</h3><div class="chart-container"><canvas id="topItemsChart"></canvas></div></div>
+        <div class="chart-card"><h3>🍴 Orders by Kitchen</h3><div class="chart-container"><canvas id="kitchenChart"></canvas></div></div>
+        <div class="chart-card"><h3>✅ Approval Breakdown</h3><div class="chart-container"><canvas id="statusChart"></canvas></div></div>
+        <div class="chart-card"><h3>📈 Request Timeline</h3><div class="chart-container"><canvas id="timelineChart"></canvas></div></div>
+        <div class="chart-card"><h3>💰 Daily Revenue Value (EGP)</h3><div class="chart-container"><canvas id="dailyValueChart"></canvas></div></div>
+        <div class="chart-card"><h3>🏆 Top Items by Value</h3><div class="chart-container"><canvas id="topValueChart"></canvas></div></div>
     </div>
 
-    <!-- Item Price Analytics Table -->
     <div class="table-card">
-        <h3>📋 Item Price Analytics</h3>
-        <div class="table-wrapper">
-            <table class="details-table">
-                <thead>
-                    <tr>
-                        <th>Item Name</th>
-                        <th>Price (EGP)</th>
-                        <th>Unit</th>
-                        <th>Total Requested</th>
-                        <th>Total Value (EGP)</th>
-                    </tr>
-                </thead>
-                <tbody id="priceTableBody"></tbody>
-            </table>
-        </div>
+        <h3>💰 Item Price & Value Analytics</h3>
+        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item</th><th>Unit Price</th><th>Unit</th><th>Total Qty</th><th>Total Value (EGP)</th></tr></thead><tbody id="priceTableBody"><tr><td colspan="5" style="text-align:center;">⏳ Loading data...</td></tr></tbody></table></div>
     </div>
 
-    <!-- Detailed Order Report -->
     <div class="table-card">
-        <h3>📋 Detailed Item Report</h3>
-        <div class="table-wrapper">
-            <table class="details-table">
-                <thead>
-                    <tr>
-                        <th>Item Name</th>
-                        <th>Requested</th>
-                        <th>Approved</th>
-                        <th>Rejected</th>
-                        <th>Rate</th>
-                    </tr>
-                </thead>
-                <tbody id="detailsTableBody"></tbody>
-            </table>
-        </div>
+        <h3>📋 Detailed Item Performance</h3>
+        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item Name</th><th>Requested Qty</th><th>Approved</th><th>Rejected</th><th>Approval %</th></tr></thead><tbody id="detailsTableBody"><tr><td colspan="5" style="text-align:center;">⏳ Loading data...</td></tr></tbody></table></div>
     </div>
 
-    <div class="sync-status" id="syncStatus">⏳ Loading analytics...</div>
+    <div class="sync-status loading" id="syncStatus">🔄 Connecting to Firebase...</div>
 </div>
 
 <script>
-let topItemsChart, kitchenChart, statusChart, timelineChart, dailyValueChart, topValueChart;
-let allRequests = [];
+// ============================================
+// YOUR FIREBASE CONFIGURATION
+// ============================================
+const firebaseConfig = {
+    apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
+    authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
+    projectId: "kitchenordersystem-66eb2",
+    storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
+    messagingSenderId: "786074432195",
+    appId: "1:786074432195:web:8381f2cba8f43002232876"
+};
 
-function escapeHtml(str) {
-    if(!str) return '';
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+// ============================================
+// GLOBAL VARIABLES
+// ============================================
+let allRequests = [];
+let charts = { topItems: null, kitchen: null, status: null, timeline: null, dailyValue: null, topValue: null };
+let db = null;
+
+// Helper functions
+function escapeHtml(str) { 
+    return String(str || '').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); 
 }
 
 function setDefaultDates() {
     const to = new Date();
-    const from = new Date();
-    from.setDate(from.getDate() - 30);
-
+    const from = new Date(); 
+    from.setDate(from.getDate() - 45);
     document.getElementById("dateTo").value = to.toISOString().split('T')[0];
     document.getElementById("dateFrom").value = from.toISOString().split('T')[0];
 }
 
+function resetFilters() {
+    document.getElementById("kitchenFilter").value = "all";
+    document.getElementById("searchItem").value = "";
+    setDefaultDates();
+    refreshAnalytics();
+}
+
 function getDateFromRequest(req) {
-    if(!req.submittedAt) return null;
-
-    if(req.submittedAt.toDate) {
-        return req.submittedAt.toDate().toISOString().split("T")[0];
-    }
-
     try {
-        return new Date(req.submittedAt).toISOString().split("T")[0];
-    } catch(e) {
-        return null;
-    }
+        let ts = req.submittedAt || req.timestamp;
+        if (!ts) return null;
+        let dateObj = ts.toDate ? ts.toDate() : new Date(ts);
+        if (isNaN(dateObj.getTime())) return null;
+        return dateObj.toISOString().split('T')[0];
+    } catch(e) { return null; }
 }
 
 function filterData(requests) {
-    const kitchenFilter = document.getElementById("kitchenFilter").value;
-    const dateFrom = document.getElementById("dateFrom").value;
-    const dateTo = document.getElementById("dateTo").value;
-    const search = document.getElementById("searchItem").value.toLowerCase();
+    const kitchen = document.getElementById("kitchenFilter").value;
+    const fromDate = document.getElementById("dateFrom").value;
+    const toDate = document.getElementById("dateTo").value;
+    const search = document.getElementById("searchItem").value.toLowerCase().trim();
 
     let filtered = [...requests];
-
-    if(kitchenFilter !== "all") {
-        filtered = filtered.filter(r => r.section === kitchenFilter);
-    }
-
-    if(dateFrom) {
+    if (kitchen !== "all") filtered = filtered.filter(r => r.section === kitchen);
+    
+    if (fromDate) {
+        const from = new Date(fromDate); from.setHours(0,0,0,0);
         filtered = filtered.filter(r => {
-            const d = getDateFromRequest(r);
-            return d && new Date(d) >= new Date(dateFrom);
+            const dStr = getDateFromRequest(r);
+            if (!dStr) return false;
+            const reqDate = new Date(dStr); reqDate.setHours(0,0,0,0);
+            return reqDate >= from;
         });
     }
-
-    if(dateTo) {
+    if (toDate) {
+        const to = new Date(toDate); to.setHours(23,59,59,999);
         filtered = filtered.filter(r => {
-            const d = getDateFromRequest(r);
-            return d && new Date(d) <= new Date(dateTo);
+            const dStr = getDateFromRequest(r);
+            if (!dStr) return false;
+            const reqDate = new Date(dStr);
+            return reqDate <= to;
         });
     }
-
-    if(search) {
+    if (search) {
         filtered = filtered.map(req => {
-            const newReq = {...req};
+            const newReq = { ...req };
             newReq.items = (req.items || []).filter(i => (i.name || "").toLowerCase().includes(search));
             return newReq;
         }).filter(r => r.items.length > 0);
     }
-
     return filtered;
 }
 
 function refreshAnalytics() {
     const filtered = filterData(allRequests);
-
-    document.getElementById("syncStatus").innerHTML = "⏳ Updating analytics...";
-    document.getElementById("syncStatus").style.background = "#fff3cd";
-    document.getElementById("syncStatus").style.color = "#856404";
-
     updateStats(filtered);
     updatePriceStats(filtered);
     updateTopItemsChart(filtered);
@@ -544,379 +508,321 @@ function refreshAnalytics() {
     updateTopValueChart(filtered);
     updateDetailsTable(filtered);
     updatePriceTable(filtered);
-
-    document.getElementById("syncStatus").innerHTML = "✅ Updated • " + filtered.length + " requests";
-    document.getElementById("syncStatus").style.background = "#e8f5e9";
-    document.getElementById("syncStatus").style.color = "#27ae60";
+    
+    const statusDiv = document.getElementById("syncStatus");
+    if (allRequests.length === 0) {
+        statusDiv.innerHTML = "📭 Firebase connected but 'kitchen_requests' collection is empty. Add some orders!";
+        statusDiv.className = "sync-status empty";
+    } else if (filtered.length === 0 && allRequests.length > 0) {
+        statusDiv.innerHTML = `⚠️ No data matches filters • ${allRequests.length} total requests`;
+        statusDiv.className = "sync-status loading";
+    } else {
+        statusDiv.innerHTML = `✅ Live • ${filtered.length} of ${allRequests.length} requests • ${new Date().toLocaleTimeString()}`;
+        statusDiv.className = "sync-status success";
+    }
 }
 
-function updateStats(requests) {
-    let totalRequests = requests.length;
-    let totalItems = 0;
-    let totalApproved = 0;
-    let totalRejected = 0;
-
-    requests.forEach(req => {
-        (req.items || []).forEach(item => {
-            totalItems += item.originalQty || 0;
-
-            if(item.status === "approved") totalApproved += item.approvedQty || item.originalQty || 0;
-            if(item.status === "rejected") totalRejected += item.originalQty || 0;
+function updateStats(reqs) {
+    let totalReq = reqs.length, totalItems = 0, approvedQty = 0, rejectedQty = 0;
+    reqs.forEach(r => {
+        (r.items || []).forEach(it => {
+            const q = it.originalQty || 0;
+            totalItems += q;
+            if (it.status === "approved") approvedQty += (it.approvedQty || q);
+            if (it.status === "rejected") rejectedQty += q;
         });
     });
-
     document.getElementById("statsGrid").innerHTML = `
-        <div class="stat-card"><div class="stat-number">${totalRequests}</div><div class="stat-label">Requests</div></div>
-        <div class="stat-card"><div class="stat-number">${totalItems}</div><div class="stat-label">Items</div></div>
-        <div class="stat-card"><div class="stat-number">${totalApproved}</div><div class="stat-label">Approved</div></div>
-        <div class="stat-card"><div class="stat-number">${totalRejected}</div><div class="stat-label">Rejected</div></div>
+        <div class="stat-card"><div class="stat-number">${totalReq}</div><div class="stat-label">📋 Requests</div></div>
+        <div class="stat-card"><div class="stat-number">${totalItems.toFixed(1)}</div><div class="stat-label">🍽️ Items Ordered</div></div>
+        <div class="stat-card"><div class="stat-number">${approvedQty.toFixed(1)}</div><div class="stat-label">✅ Approved</div></div>
+        <div class="stat-card"><div class="stat-number">${rejectedQty.toFixed(1)}</div><div class="stat-label">❌ Rejected</div></div>
     `;
 }
 
-function updatePriceStats(requests) {
-    let totalValue = 0;
-    let approvedValue = 0;
-    let itemCount = 0;
-    const prices = [];
-
-    requests.forEach(req => {
-        (req.items || []).forEach(item => {
-            const price = item.price || 0;
-            const qty = item.originalQty || 0;
-
-            let approvedQty = 0;
-            if(item.status === "approved") approvedQty = item.approvedQty || qty;
-
-            totalValue += qty * price;
-            approvedValue += approvedQty * price;
-
-            if(price > 0) {
-                prices.push(price);
-                itemCount++;
-            }
+function updatePriceStats(reqs) {
+    let totalValue = 0, approvedValue = 0, totalPriceSum = 0, priceCount = 0;
+    reqs.forEach(r => {
+        (r.items || []).forEach(it => {
+            const price = it.price || 0;
+            const qty = it.originalQty || 0;
+            totalValue += price * qty;
+            if (it.status === "approved") approvedValue += (it.approvedQty || qty) * price;
+            if (price > 0 && qty > 0) { totalPriceSum += price; priceCount++; }
         });
     });
-
-    const avgItemPrice = itemCount > 0 ? prices.reduce((a,b) => a + b, 0) / itemCount : 0;
-    const avgPerRequest = totalValue / (requests.length || 1);
-
+    const avgItemPrice = priceCount ? totalPriceSum / priceCount : 0;
+    const avgPerRequest = reqs.length ? totalValue / reqs.length : 0;
     document.getElementById("priceStatsGrid").innerHTML = `
-        <div class="price-stat-card"><div class="price-stat-number">${totalValue.toFixed(2)}</div><div class="price-stat-label">Total Value (EGP)</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${approvedValue.toFixed(2)}</div><div class="price-stat-label">Approved Value (EGP)</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${avgItemPrice.toFixed(2)}</div><div class="price-stat-label">Avg Item Price</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${avgPerRequest.toFixed(2)}</div><div class="price-stat-label">Avg Per Request</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${totalValue.toFixed(2)} EGP</div><div class="price-stat-label">💰 Total Value</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${approvedValue.toFixed(2)} EGP</div><div class="price-stat-label">✔️ Approved Value</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${avgItemPrice.toFixed(2)} EGP</div><div class="price-stat-label">Avg Item Price</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${avgPerRequest.toFixed(2)} EGP</div><div class="price-stat-label">Avg / Request</div></div>
     `;
 }
 
-function updateTopItemsChart(requests) {
-    const itemMap = new Map();
-
-    requests.forEach(req => {
-        (req.items || []).forEach(item => {
-            const current = itemMap.get(item.name) || 0;
-            itemMap.set(item.name, current + (item.originalQty || 0));
-        });
-    });
-
-    const sorted = Array.from(itemMap.entries()).sort((a,b) => b[1] - a[1]).slice(0, 6);
-    const labels = sorted.map(i => i[0].length > 15 ? i[0].substring(0, 15) + "..." : i[0]);
-    const data = sorted.map(i => i[1]);
-
-    if(topItemsChart) topItemsChart.destroy();
+function updateTopItemsChart(reqs) {
+    const map = new Map();
+    reqs.forEach(r => (r.items || []).forEach(it => map.set(it.name, (map.get(it.name) || 0) + (it.originalQty || 0))));
+    const sorted = Array.from(map.entries()).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    if (charts.topItems) charts.topItems.destroy();
     const ctx = document.getElementById('topItemsChart').getContext('2d');
-
-    topItemsChart = new Chart(ctx, {
-        type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Quantity', data: data, backgroundColor: '#3498db', borderRadius: 6 }] },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true } }
-        }
-    });
+    charts.topItems = new Chart(ctx, { type: 'bar', data: { labels: sorted.map(i=>i[0].length>22?i[0].slice(0,20)+'..':i[0]), datasets: [{ label: 'Quantity', data: sorted.map(i=>i[1]), backgroundColor: '#2c7da0', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
 }
 
-function updateKitchenChart(requests) {
-    const kitchenMap = new Map();
-
-    requests.forEach(req => {
-        const current = kitchenMap.get(req.section) || 0;
-        kitchenMap.set(req.section, current + 1);
-    });
-
-    const labels = Array.from(kitchenMap.keys());
-    const data = Array.from(kitchenMap.values());
-
-    if(kitchenChart) kitchenChart.destroy();
-    const ctx = document.getElementById('kitchenChart').getContext('2d');
-
-    kitchenChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: { labels: labels, datasets: [{ data: data, borderWidth: 0 }] },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
+function updateKitchenChart(reqs) {
+    const kMap = new Map();
+    reqs.forEach(r => kMap.set(r.section || "Unknown", (kMap.get(r.section)||0)+1));
+    if (charts.kitchen) charts.kitchen.destroy();
+    charts.kitchen = new Chart(document.getElementById('kitchenChart'), { type: 'doughnut', data: { labels: Array.from(kMap.keys()), datasets: [{ data: Array.from(kMap.values()), backgroundColor: ['#3498db','#e67e22','#2ecc71','#e74c3c','#9b59b6','#f1c40f','#1abc9c'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
 }
 
-function updateStatusChart(requests) {
-    let approved = 0, rejected = 0, pending = 0;
-
-    requests.forEach(req => {
-        (req.items || []).forEach(item => {
-            if(item.status === "approved") approved++;
-            else if(item.status === "rejected") rejected++;
-            else pending++;
-        });
-    });
-
-    if(statusChart) statusChart.destroy();
-    const ctx = document.getElementById('statusChart').getContext('2d');
-
-    statusChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: ['✅ Approved', '❌ Rejected', '⏳ Pending'],
-            datasets: [{ data: [approved, rejected, pending], borderWidth: 0 }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { position: 'bottom' } }
-        }
-    });
+function updateStatusChart(reqs) {
+    let approved=0,rejected=0,pending=0;
+    reqs.forEach(r=>(r.items||[]).forEach(it=>{ if(it.status==='approved') approved++; else if(it.status==='rejected') rejected++; else pending++; }));
+    if(charts.status) charts.status.destroy();
+    charts.status = new Chart(document.getElementById('statusChart'), { type: 'pie', data: { labels: ['✅ Approved','❌ Rejected','⏳ Pending'], datasets: [{ data: [approved,rejected,pending], backgroundColor: ['#27ae60','#e74c3c','#f39c12'] }] }, options: { responsive: true, maintainAspectRatio: false } });
 }
 
-function updateTimelineChart(requests) {
+function updateTimelineChart(reqs) {
     const dateMap = new Map();
-
-    requests.forEach(req => {
-        const date = getDateFromRequest(req);
-        if(!date) return;
-
-        const current = dateMap.get(date) || 0;
-        dateMap.set(date, current + 1);
-    });
-
-    const sorted = Array.from(dateMap.entries()).sort((a,b) => new Date(a[0]) - new Date(b[0]));
-    const labels = sorted.map(d => d[0]);
-    const data = sorted.map(d => d[1]);
-
-    if(timelineChart) timelineChart.destroy();
-    const ctx = document.getElementById('timelineChart').getContext('2d');
-
-    timelineChart = new Chart(ctx, {
-        type: 'line',
-        data: { labels: labels, datasets: [{ label: 'Requests', data: data, fill: true, tension: 0.3 }] },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true } }
-        }
-    });
+    reqs.forEach(r => { const d = getDateFromRequest(r); if(d) dateMap.set(d, (dateMap.get(d)||0)+1); });
+    const sorted = Array.from(dateMap.entries()).sort((a,b)=>new Date(a[0])-new Date(b[0]));
+    if(charts.timeline) charts.timeline.destroy();
+    charts.timeline = new Chart(document.getElementById('timelineChart'), { type: 'line', data: { labels: sorted.map(v=>v[0]), datasets: [{ label: '#Requests', data: sorted.map(v=>v[1]), tension: 0.3, fill: true, borderColor: '#2c7da0', backgroundColor: 'rgba(44,125,160,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
 }
 
-function updateDailyValueChart(requests) {
-    const dailyValueMap = new Map();
-
-    requests.forEach(req => {
-        const date = getDateFromRequest(req);
-        if(!date) return;
-
-        let dailyTotal = 0;
-        (req.items || []).forEach(item => {
-            const price = item.price || 0;
-            const qty = item.originalQty || 0;
-            dailyTotal += qty * price;
-        });
-
-        const current = dailyValueMap.get(date) || 0;
-        dailyValueMap.set(date, current + dailyTotal);
+function updateDailyValueChart(reqs) {
+    const dailyVal = new Map();
+    reqs.forEach(r => {
+        const date = getDateFromRequest(r); if(!date) return;
+        let daySum = 0;
+        (r.items||[]).forEach(it => daySum += (it.originalQty||0) * (it.price||0));
+        dailyVal.set(date, (dailyVal.get(date)||0) + daySum);
     });
-
-    const sorted = Array.from(dailyValueMap.entries()).sort((a,b) => new Date(a[0]) - new Date(b[0]));
-    const labels = sorted.map(d => d[0]);
-    const data = sorted.map(d => d[1]);
-
-    if(dailyValueChart) dailyValueChart.destroy();
-    const ctx = document.getElementById('dailyValueChart').getContext('2d');
-
-    dailyValueChart = new Chart(ctx, {
-        type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Daily Value', data: data, borderRadius: 6 }] },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true } }
-        }
-    });
+    const sorted = Array.from(dailyVal.entries()).sort((a,b)=>new Date(a[0])-new Date(b[0]));
+    if(charts.dailyValue) charts.dailyValue.destroy();
+    charts.dailyValue = new Chart(document.getElementById('dailyValueChart'), { type: 'bar', data: { labels: sorted.map(v=>v[0]), datasets: [{ label: 'Value (EGP)', data: sorted.map(v=>v[1]), backgroundColor: '#f39c12', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false } });
 }
 
-function updateTopValueChart(requests) {
-    const itemValueMap = new Map();
-
-    requests.forEach(req => {
-        (req.items || []).forEach(item => {
-            const price = item.price || 0;
-            const qty = item.originalQty || 0;
-            const totalValue = qty * price;
-
-            const current = itemValueMap.get(item.name) || 0;
-            itemValueMap.set(item.name, current + totalValue);
-        });
-    });
-
-    const sorted = Array.from(itemValueMap.entries()).sort((a,b) => b[1] - a[1]).slice(0, 6);
-    const labels = sorted.map(i => i[0].length > 15 ? i[0].substring(0, 15) + "..." : i[0]);
-    const data = sorted.map(i => i[1]);
-
-    if(topValueChart) topValueChart.destroy();
-    const ctx = document.getElementById('topValueChart').getContext('2d');
-
-    topValueChart = new Chart(ctx, {
-        type: 'bar',
-        data: { labels: labels, datasets: [{ label: 'Total Value', data: data, borderRadius: 6 }] },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true } }
-        }
-    });
+function updateTopValueChart(reqs) {
+    const valueMap = new Map();
+    reqs.forEach(r => (r.items||[]).forEach(it => { const val = (it.originalQty||0)*(it.price||0); valueMap.set(it.name, (valueMap.get(it.name)||0)+val); }));
+    const sorted = Array.from(valueMap.entries()).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    if(charts.topValue) charts.topValue.destroy();
+    charts.topValue = new Chart(document.getElementById('topValueChart'), { type: 'bar', data: { labels: sorted.map(i=>i[0].length>20?i[0].slice(0,18)+'..':i[0]), datasets: [{ label: 'Total Value (EGP)', data: sorted.map(i=>i[1]), backgroundColor: '#e67e22', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false } });
 }
 
-function updateDetailsTable(requests) {
-    const itemMap = new Map();
-
-    requests.forEach(req => {
-        (req.items || []).forEach(item => {
-            if(!itemMap.has(item.name)) {
-                itemMap.set(item.name, { requested: 0, approved: 0, rejected: 0 });
-            }
-
-            const stats = itemMap.get(item.name);
-            stats.requested += item.originalQty || 0;
-
-            if(item.status === "approved") stats.approved += item.approvedQty || item.originalQty || 0;
-            if(item.status === "rejected") stats.rejected += item.originalQty || 0;
-        });
-    });
-
-    const sorted = Array.from(itemMap.entries()).sort((a,b) => b[1].requested - a[1].requested);
+function updateDetailsTable(reqs) {
+    const agg = new Map();
+    reqs.forEach(r => (r.items||[]).forEach(it => {
+        const name = it.name || "unknown";
+        if(!agg.has(name)) agg.set(name, { req:0, app:0, rej:0 });
+        const d = agg.get(name);
+        const q = it.originalQty||0;
+        d.req += q;
+        if(it.status === 'approved') d.app += (it.approvedQty||q);
+        if(it.status === 'rejected') d.rej += q;
+    }));
+    const sorted = Array.from(agg.entries()).sort((a,b)=>b[1].req - a[1].req);
     const tbody = document.getElementById("detailsTableBody");
-    tbody.innerHTML = "";
-
-    if(sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data</td></tr>';
+    if (sorted.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 No data available</td></tr>';
         return;
     }
-
+    tbody.innerHTML = '';
     sorted.forEach(([name, stats]) => {
-        const rate = stats.requested > 0 ? ((stats.approved / stats.requested) * 100).toFixed(1) : 0;
-
-        tbody.innerHTML += `
-            <tr>
-                <td><strong>${escapeHtml(name)}</strong></td>
-                <td>${stats.requested}</td>
-                <td style="color:#27ae60;">${stats.approved}</td>
-                <td style="color:#e74c3c;">${stats.rejected}</td>
-                <td style="color:#3498db;">${rate}%</td>
-            </tr>
-        `;
+        const rate = stats.req ? ((stats.app/stats.req)*100).toFixed(1) : 0;
+        tbody.innerHTML += `<tr><td><strong>${escapeHtml(name)}</strong></td><td>${stats.req.toFixed(1)}</td><td style="color:#27ae60;">${stats.app.toFixed(1)}</td><td style="color:#c0392b;">${stats.rej.toFixed(1)}</td><td><span style="background:#eef2fa; padding:4px 12px; border-radius:20px;">${rate}%</span></td></tr>`;
     });
 }
 
-function updatePriceTable(requests) {
-    const itemPriceMap = new Map();
-
-    requests.forEach(req => {
-        (req.items || []).forEach(item => {
-            const price = item.price || 0;
-            const qty = item.originalQty || 0;
-
-            if(!itemPriceMap.has(item.name)) {
-                itemPriceMap.set(item.name, { price: price, unit: item.unit, totalQty: 0, totalValue: 0 });
-            }
-
-            const stats = itemPriceMap.get(item.name);
-            stats.totalQty += qty;
-            stats.totalValue += qty * price;
-
-            if(price > 0) stats.price = price;
-            stats.unit = item.unit;
-        });
-    });
-
-    const sorted = Array.from(itemPriceMap.entries()).sort((a,b) => b[1].totalValue - a[1].totalValue);
+function updatePriceTable(reqs) {
+    const map = new Map();
+    reqs.forEach(r => (r.items||[]).forEach(it => {
+        const name = it.name || "unknown";
+        if(!map.has(name)) map.set(name, { price: it.price||0, unit: it.unit||'-', totalQty:0, totalValue:0 });
+        const data = map.get(name);
+        const qty = it.originalQty||0;
+        data.totalQty += qty;
+        data.totalValue += qty * (it.price||0);
+        if(it.price) data.price = it.price;
+        if(it.unit) data.unit = it.unit;
+    }));
+    const sorted = Array.from(map.entries()).sort((a,b)=>b[1].totalValue - a[1].totalValue);
     const tbody = document.getElementById("priceTableBody");
-    tbody.innerHTML = "";
-
-    if(sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No data</td></tr>';
+    if (sorted.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 No price data available</td></tr>';
         return;
     }
-
-    sorted.forEach(([name, stats]) => {
-        tbody.innerHTML += `
-            <tr>
-                <td><strong>${escapeHtml(name)}</strong></td>
-                <td>${(stats.price || 0).toFixed(2)}</td>
-                <td>${stats.unit || '-'}</td>
-                <td>${stats.totalQty}</td>
-                <td style="color:#e94560; font-weight:600;">${stats.totalValue.toFixed(2)} EGP</td>
-            </tr>
-        `;
+    tbody.innerHTML = '';
+    sorted.forEach(([name, stat]) => {
+        tbody.innerHTML += `<tr><td><strong>${escapeHtml(name)}</strong></td><td>${stat.price.toFixed(2)} EGP</td><td>${stat.unit}</td><td>${stat.totalQty.toFixed(1)}</td><td style="font-weight:700;color:#c44536;">${stat.totalValue.toFixed(2)} EGP</td></tr>`;
     });
 }
 
-function exportReport() {
-    let csv = "Item Name,Requested,Approved,Rejected,Rate\n";
-
+function exportCSV() {
+    let csv = "Item Name,Requested Qty,Approved Qty,Rejected Qty,Approval Rate %\n";
     document.querySelectorAll("#detailsTableBody tr").forEach(row => {
         const cols = row.querySelectorAll("td");
-        if(cols.length === 5) {
-            csv += `"${cols[0].innerText}",${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText}\n`;
+        if(cols.length === 5 && cols[0].innerText !== "📭 No data available") {
+            csv += `"${cols[0].innerText}",${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText.replace("%","")}\n`;
         }
     });
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "analytics_report.csv";
-    link.click();
+    const blob = new Blob(["\uFEFF"+csv], {type:"text/csv;charset=utf-8"});
+    const a = document.createElement("a"); 
+    a.href = URL.createObjectURL(blob); 
+    a.download = `analytics_${new Date().toISOString().split('T')[0]}.csv`; 
+    a.click(); 
+    URL.revokeObjectURL(a.href);
+    showToast("✅ CSV exported successfully!");
 }
 
-function listenRealtimeRequests() {
-    document.getElementById("syncStatus").innerHTML = "🔄 Connecting...";
-    document.getElementById("syncStatus").style.background = "#fff3cd";
-    document.getElementById("syncStatus").style.color = "#856404";
-
-    db.collection("kitchen_requests").onSnapshot(snapshot => {
-        allRequests = [];
-        snapshot.forEach(doc => {
-            allRequests.push({ id: doc.id, ...doc.data() });
+async function exportToPDF() {
+    const loader = document.createElement('div'); 
+    loader.className = 'pdf-loading'; 
+    loader.innerHTML = '<div class="spinner"></div><div>📑 Generating PDF report...</div><div style="font-size:12px; margin-top:10px;">Please wait...</div>'; 
+    document.body.appendChild(loader);
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const container = document.getElementById("reportContainer");
+        const filtersDiv = document.querySelector(".filters");
+        const syncDiv = document.querySelector(".sync-status");
+        
+        // Hide UI elements for clean PDF
+        const originalFilterDisplay = filtersDiv.style.display;
+        const originalSyncDisplay = syncDiv.style.display;
+        filtersDiv.style.display = "none";
+        syncDiv.style.display = "none";
+        container.style.background = "#ffffff";
+        
+        // Small delay for rendering
+        await new Promise(r => setTimeout(r, 500));
+        
+        // Capture the container
+        const canvas = await html2canvas(container, { 
+            scale: 2.5, 
+            backgroundColor: "#ffffff", 
+            logging: false,
+            useCORS: true
         });
-
-        document.getElementById("syncStatus").innerHTML = "✅ Live Connected • " + allRequests.length + " requests";
-        document.getElementById("syncStatus").style.background = "#e8f5e9";
-        document.getElementById("syncStatus").style.color = "#27ae60";
-
-        refreshAnalytics();
-    }, error => {
-        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
-        document.getElementById("syncStatus").style.background = "#fee2e2";
-        document.getElementById("syncStatus").style.color = "#e74c3c";
-    });
+        
+        // Restore UI
+        filtersDiv.style.display = originalFilterDisplay;
+        syncDiv.style.display = originalSyncDisplay;
+        container.style.background = "";
+        
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const margin = 10;
+        const imgWidth = pageWidth - (margin * 2);
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        let position = margin;
+        let heightLeft = imgHeight;
+        
+        // Add image to PDF
+        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+        heightLeft -= (pageHeight - position);
+        
+        // Add more pages if needed
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        // Add header info on first page
+        const kitchenName = document.getElementById("kitchenFilter").options[document.getElementById("kitchenFilter").selectedIndex]?.text || "All Kitchens";
+        const fromDate = document.getElementById("dateFrom").value || "All";
+        const toDate = document.getElementById("dateTo").value || "All";
+        
+        pdf.setPage(1);
+        pdf.setFontSize(16);
+        pdf.setTextColor(11, 43, 59);
+        pdf.text("Kitchen Orders Analytics Report", margin + 10, 20);
+        pdf.setFontSize(9);
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(`Kitchen: ${kitchenName}`, margin + 10, 30);
+        pdf.text(`Period: ${fromDate} to ${toDate}`, margin + 10, 36);
+        pdf.text(`Generated: ${new Date().toLocaleString()}`, margin + 10, 42);
+        
+        // Save PDF
+        const filename = `Kitchen_Analytics_${new Date().toISOString().split('T')[0]}.pdf`;
+        pdf.save(filename);
+        
+        loader.remove();
+        showToast("✅ PDF exported successfully!");
+        
+    } catch(error) {
+        console.error("PDF export error:", error);
+        loader.remove();
+        showToast("❌ PDF export failed: " + error.message);
+    }
 }
 
-setDefaultDates();
-listenRealtimeRequests();
-</script>
+function showToast(message) {
+    const toast = document.createElement('div'); 
+    toast.innerText = message; 
+    toast.style.cssText = "position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2b7a4b;color:white;padding:12px 24px;border-radius:50px;z-index:20000;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.2);";
+    document.body.appendChild(toast); 
+    setTimeout(() => toast.remove(), 3000);
+}
 
+// ========== FIREBASE INITIALIZATION ==========
+function initFirebase() {
+    const statusDiv = document.getElementById("syncStatus");
+    
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            console.log("✅ Firebase initialized successfully");
+        }
+        
+        db = firebase.firestore();
+        
+        statusDiv.innerHTML = "🔄 Connected to Firebase • Loading data from 'kitchen_requests'...";
+        statusDiv.className = "sync-status loading";
+        
+        db.collection("kitchen_requests")
+            .orderBy("timestamp", "desc")
+            .onSnapshot(snapshot => {
+                allRequests = [];
+                snapshot.forEach(doc => {
+                    allRequests.push({ id: doc.id, ...doc.data() });
+                });
+                
+                console.log(`📊 Retrieved ${allRequests.length} documents`);
+                
+                if (allRequests.length === 0) {
+                    statusDiv.innerHTML = "📭 Firestore connected but 'kitchen_requests' collection is empty. Add some orders!";
+                    statusDiv.className = "sync-status empty";
+                    refreshAnalytics();
+                } else {
+                    statusDiv.innerHTML = `✅ Connected! Loaded ${allRequests.length} orders`;
+                    statusDiv.className = "sync-status success";
+                    refreshAnalytics();
+                }
+            }, error => {
+                console.error("❌ Firestore error:", error);
+                statusDiv.innerHTML = `❌ Firestore error: ${error.message}`;
+                statusDiv.className = "sync-status error";
+            });
+            
+    } catch (error) {
+        console.error("❌ Firebase init error:", error);
+        statusDiv.innerHTML = `❌ Firebase initialization error: ${error.message}`;
+        statusDiv.className = "sync-status error";
+    }
+}
+
+// Start the app
+setDefaultDates();
+initFirebase();
+</script>
 </body>
 </html>
