@@ -790,6 +790,17 @@ body.arabic .items-scroll-container {
 .history-toggle-btn:hover {
     background: #6c3483;
 }
+
+/* Duplicate warning badge */
+.duplicate-warning {
+    background: #e74c3c;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.6rem;
+    margin-left: 8px;
+    font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -873,7 +884,9 @@ const translations = {
         fromDate: "From Date",
         toDate: "To Date",
         filter: "Filter",
-        viewHistory: "View History"
+        viewHistory: "View History",
+        duplicateBlocked: "DUPLICATE ORDER BLOCKED",
+        duplicateMessage: "You already submitted an identical order on"
     },
     ar: {
         chef: "شيف",
@@ -926,7 +939,9 @@ const translations = {
         fromDate: "من تاريخ",
         toDate: "إلى تاريخ",
         filter: "فلتر",
-        viewHistory: "عرض السجل"
+        viewHistory: "عرض السجل",
+        duplicateBlocked: "تم حظر الطلب المكرر",
+        duplicateMessage: "لقد أرسلت نفس الطلب مسبقاً في"
     }
 };
 
@@ -1167,7 +1182,74 @@ async function forceReloadItems() {
     }
 }
 
-// ============ ORDER HISTORY FUNCTION - FIXED: Filter by kitchen only ============
+// ============ DUPLICATE ORDER PREVENTION ============
+function getOverallStatusForDuplicate(items) {
+    if (!items || !items.length) return "pending";
+    let allProcessed = true;
+    for (const item of items) {
+        if (item.status !== "approved" && item.status !== "rejected") {
+            allProcessed = false;
+            break;
+        }
+    }
+    if (items.length > 0 && items[0].completedVia === "accept") return "accepted";
+    if (allProcessed) return "approved";
+    return "pending";
+}
+
+async function checkForDuplicateOrder(section, chefName, cartItems) {
+    try {
+        // Get all requests from this kitchen (filter by kitchen only, all chefs in same kitchen)
+        const snapshot = await db.collection("kitchen_requests")
+            .where("section", "==", section)
+            .get();
+        
+        for (const doc of snapshot.docs) {
+            const request = doc.data();
+            const requestStatus = getOverallStatusForDuplicate(request.items);
+            
+            // Only check pending or approved requests (not completed/accepted/rejected)
+            if (requestStatus === "pending" || requestStatus === "approved") {
+                const existingItems = request.items;
+                
+                // Check if same number of items
+                if (existingItems.length === cartItems.length) {
+                    let isDuplicate = true;
+                    
+                    // Sort both arrays by code for consistent comparison
+                    const sortedExisting = [...existingItems].sort((a, b) => (a.code || "").localeCompare(b.code || ""));
+                    const sortedNew = [...cartItems].sort((a, b) => (a.code || "").localeCompare(b.code || ""));
+                    
+                    // Compare each item: code AND quantity must match exactly
+                    for (let i = 0; i < sortedNew.length; i++) {
+                        const newItem = sortedNew[i];
+                        const existingItem = sortedExisting[i];
+                        
+                        if (newItem.code !== existingItem.code || 
+                            Math.abs(newItem.qty - existingItem.originalQty) > 0.01) { // Allow tiny floating point difference
+                            isDuplicate = false;
+                            break;
+                        }
+                    }
+                    
+                    if (isDuplicate) {
+                        return { 
+                            isDuplicate: true, 
+                            existingRequestId: request.requestId,
+                            existingTime: request.submittedAt
+                        };
+                    }
+                }
+            }
+        }
+        return { isDuplicate: false };
+    } catch(e) {
+        console.error("Duplicate check error:", e);
+        return { isDuplicate: false };
+    }
+}
+
+// ============ ORDER HISTORY FUNCTION ============
 function loadOrderHistory(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const container = document.getElementById(`orderHistoryContainer_${kitchenId}`);
@@ -1176,10 +1258,8 @@ function loadOrderHistory(kitchen) {
     const fromDate = document.getElementById(`historyFrom_${kitchenId}`)?.value || "";
     const toDate = document.getElementById(`historyTo_${kitchenId}`)?.value || "";
     
-    // FIXED: Filter by kitchen ONLY - NOT by chef name
-    // All devices in the same kitchen see the same history
     let historyOrders = allRequests.filter(r => {
-        const orderStatus = getOverallStatus(r.items);
+        const orderStatus = getOverallStatusForDuplicate(r.items);
         return r.section === kitchen && orderStatus !== "pending";
     });
     
@@ -1201,7 +1281,7 @@ function loadOrderHistory(kitchen) {
     
     container.innerHTML = "";
     historyOrders.forEach(req => {
-        const status = getOverallStatus(req.items);
+        const status = getOverallStatusForDuplicate(req.items);
         let statusClass = "status-pending", statusText = t('pending');
         if (status === "approved") { statusClass = "status-approved"; statusText = t('approved'); }
         else if (status === "rejected") { statusClass = "status-rejected"; statusText = t('rejected'); }
@@ -1245,7 +1325,7 @@ function loadOrderHistory(kitchen) {
             }
             
             itemsHtml += `<tr>
-                <td>${item.code}</td>
+                <td>${item.code}</div>
                 <td><strong>${escapeHtml(displayName)}</strong></div>
                 <td>${item.originalQty.toFixed(1)}</div>
                 <td>${item.unit}</div>
@@ -1256,7 +1336,7 @@ function loadOrderHistory(kitchen) {
         });
         
         itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;">
-            <td colspan="5" style="text-align:right;">💰 ${t('totalValue')} (Approved):</div>
+            <td colspan="6" style="text-align:right;">💰 ${t('totalValue')} (Approved):</div>
             <td><span class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</span></div>
         </tr>`;
         itemsHtml += `</tbody>}</div>`;
@@ -1449,7 +1529,6 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit, price, ste
     let maxAllowed = item.maxLimit || maxLimit;
     let remaining = maxAllowed - currentQty;
     
-    // FIX: Adjust qty to not exceed limit
     let actualQtyToAdd = qty;
     if (remaining <= 0) {
         showToast(`⚠️ Maximum ${maxAllowed} ${item.unit || unit} reached!`);
@@ -1539,11 +1618,25 @@ function clearCart(kitchen) {
     }
 }
 
+// ============ SUBMIT REQUEST WITH DUPLICATE CHECK ============
 async function submitRequest(kitchen) {
     const chefName = chefNames[kitchen];
     const cart = kitchenData[kitchen].cart;
-    if (!chefName) { showToast("⚠️ Enter chef name"); return; }
+    
+    if (!chefName) { showToast("⚠️ Enter chef name first"); return; }
     if (cart.length === 0) { showToast("No items to submit"); return; }
+    
+    // ============ DUPLICATE CHECK ============
+    const duplicateCheck = await checkForDuplicateOrder(kitchen, chefName, cart);
+    
+    if (duplicateCheck.isDuplicate) {
+        const message = `${t('duplicateBlocked')}!\n\n${t('duplicateMessage')} ${duplicateCheck.existingTime}\nRequest ID: ${duplicateCheck.existingRequestId}\n\nPlease check existing request or modify quantities.`;
+        showToast(`🚫 ${t('duplicateBlocked')}!`);
+        alert(message);
+        return; // STOP submission - prevent duplicate
+    }
+    // ============ END DUPLICATE CHECK ============
+    
     const newRequest = {
         requestId: "REQ-" + Date.now().toString().slice(-6),
         chefName: chefName,
@@ -1558,6 +1651,7 @@ async function submitRequest(kitchen) {
         submittedAt: new Date().toLocaleString(),
         timestamp: Date.now()
     };
+    
     await saveRequestToFirebase(newRequest);
     kitchenData[kitchen].cart = [];
     renderCart(kitchen);
@@ -1580,14 +1674,12 @@ function getOverallStatus(items) {
     return "pending";
 }
 
-// ============ LOAD MY REQUESTS - FIXED: Filter by kitchen only ============
+// ============ LOAD MY REQUESTS ============
 function loadMyRequests(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const container = document.getElementById(`myRequestsDesktop_${kitchenId}`);
     if (!container) return;
     
-    // FIXED: Filter by kitchen ONLY - NOT by chef name
-    // All devices in the same kitchen see all orders from this kitchen
     const kitchenRequests = allRequests.filter(r => r.section === kitchen);
     
     if (!kitchenRequests.length) {
@@ -1741,7 +1833,6 @@ async function selectKitchen(kitchen) {
     renderCart(kitchen);
     loadMyRequests(kitchen);
     restoreHistoryState(kitchen);
-    // Save last selected kitchen
     localStorage.setItem("lastSelectedKitchen", kitchen);
 }
 
