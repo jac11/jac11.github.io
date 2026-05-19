@@ -258,13 +258,14 @@ body {
 
 .sync-status {
     text-align: center;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     padding: 10px 16px;
     border-radius: 60px;
     margin-top: 20px;
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
+    font-weight: 500;
 }
 
 .sync-status.loading {
@@ -395,28 +396,40 @@ body {
 
     <div class="table-card">
         <h3>💰 Item Price & Value Analytics</h3>
-        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item</th><th>Unit Price</th><th>Unit</th><th>Total Qty</th><th>Total Value (EGP)</th></tr></thead><tbody id="priceTableBody"><tr><td colspan="5" style="text-align:center;">Waiting for data...</td></tr></tbody></table></div>
+        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item</th><th>Unit Price</th><th>Unit</th><th>Total Qty</th><th>Total Value (EGP)</th></tr></thead><tbody id="priceTableBody"><tr><td colspan="5" style="text-align:center;">⏳ Loading data...</td></tr></tbody></table></div>
     </div>
 
     <div class="table-card">
         <h3>📋 Detailed Item Performance</h3>
-        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item Name</th><th>Requested Qty</th><th>Approved</th><th>Rejected</th><th>Approval %</th></tr></thead><tbody id="detailsTableBody"><tr><td colspan="5" style="text-align:center;">Waiting for data...</td></tr></tbody></table></div>
+        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item Name</th><th>Requested Qty</th><th>Approved</th><th>Rejected</th><th>Approval %</th></tr></thead><tbody id="detailsTableBody"><tr><td colspan="5" style="text-align:center;">⏳ Loading data...</td></tr></tbody></tr></div>
     </div>
 
-    <div class="sync-status loading" id="syncStatus">🔄 Connecting to Firestore...</div>
+    <div class="sync-status loading" id="syncStatus">🔄 Connecting to Firebase...</div>
 </div>
 
 <script>
 // ============================================
-// PURE FIREBASE - NO DEMO DATA
-// Only reads from firebase-config.js in same directory
+// EMBEDDED FIREBASE CONFIGURATION
+// Your actual Firebase config is here
 // ============================================
 
+const firebaseConfig = {
+    apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
+    authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
+    projectId: "kitchenordersystem-66eb2",
+    storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
+    messagingSenderId: "786074432195",
+    appId: "1:786074432195:web:8381f2cba8f43002232876"
+};
+
+// ============================================
+// GLOBAL VARIABLES
+// ============================================
 let allRequests = [];
 let charts = { topItems: null, kitchen: null, status: null, timeline: null, dailyValue: null, topValue: null };
 let db = null;
-let firebaseReady = false;
 
+// Helper functions
 function escapeHtml(str) { 
     return String(str || '').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); 
 }
@@ -484,8 +497,6 @@ function filterData(requests) {
 }
 
 function refreshAnalytics() {
-    if (!firebaseReady) return;
-    
     const filtered = filterData(allRequests);
     updateStats(filtered);
     updatePriceStats(filtered);
@@ -500,7 +511,7 @@ function refreshAnalytics() {
     
     const statusDiv = document.getElementById("syncStatus");
     if (allRequests.length === 0) {
-        statusDiv.innerHTML = "📭 Firestore connected but 'kitchen_requests' collection is empty";
+        statusDiv.innerHTML = "📭 Firebase connected but 'kitchen_requests' collection is empty. Add some orders!";
         statusDiv.className = "sync-status empty";
     } else if (filtered.length === 0 && allRequests.length > 0) {
         statusDiv.innerHTML = `⚠️ No data matches filters • ${allRequests.length} total requests in database`;
@@ -699,33 +710,24 @@ async function exportPDF() {
     } catch(e) { loader.remove(); alert("PDF export failed: "+e.message); }
 }
 
-// ========== FIREBASE INIT - NO DEMO DATA ==========
+// ========== FIREBASE INITIALIZATION ==========
 function initFirebase() {
     const statusDiv = document.getElementById("syncStatus");
     
-    // Check if firebase-config.js loaded properly
-    if (typeof firebaseConfig === 'undefined') {
-        statusDiv.innerHTML = "❌ ERROR: firebase-config.js not found in same directory!";
-        statusDiv.className = "sync-status error";
-        console.error("firebase-config.js not loaded - make sure the file exists in the same directory");
-        return;
-    }
-    
-    if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-        statusDiv.innerHTML = "❌ ERROR: Invalid firebase-config.js - missing apiKey or projectId";
-        statusDiv.className = "sync-status error";
-        console.error("Invalid firebase config:", firebaseConfig);
-        return;
-    }
-    
     try {
+        // Initialize Firebase
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
+            console.log("✅ Firebase initialized successfully");
         }
+        
         db = firebase.firestore();
         
         statusDiv.innerHTML = "🔄 Connected to Firebase • Loading data from 'kitchen_requests'...";
         statusDiv.className = "sync-status loading";
+        
+        // Try to get collection names first (for debugging)
+        console.log("Attempting to read from 'kitchen_requests' collection...");
         
         // Listen to real-time updates
         db.collection("kitchen_requests")
@@ -736,35 +738,53 @@ function initFirebase() {
                     allRequests.push({ id: doc.id, ...doc.data() });
                 });
                 
-                firebaseReady = true;
+                console.log(`📊 Retrieved ${allRequests.length} documents from kitchen_requests`);
                 
                 if (allRequests.length === 0) {
-                    statusDiv.innerHTML = "📭 Firestore connected but 'kitchen_requests' collection is empty. Add some orders!";
+                    statusDiv.innerHTML = "📭 Firestore connected but 'kitchen_requests' collection is empty. Please add some orders!";
                     statusDiv.className = "sync-status empty";
+                    // Show empty state in tables
+                    updateStats([]);
+                    updatePriceStats([]);
+                    updateTopItemsChart([]);
+                    updateKitchenChart([]);
+                    updateStatusChart([]);
+                    updateTimelineChart([]);
+                    updateDailyValueChart([]);
+                    updateTopValueChart([]);
+                    updateDetailsTable([]);
+                    updatePriceTable([]);
                 } else {
-                    statusDiv.innerHTML = `✅ Live • ${allRequests.length} requests from Firebase`;
+                    statusDiv.innerHTML = `✅ Connected! Loaded ${allRequests.length} orders from Firebase`;
                     statusDiv.className = "sync-status success";
+                    refreshAnalytics();
                 }
                 
-                refreshAnalytics();
-                
             }, error => {
-                console.error("Firestore error:", error);
-                statusDiv.innerHTML = `❌ Firestore error: ${error.message}`;
+                console.error("❌ Firestore error:", error);
+                statusDiv.innerHTML = `❌ Firestore error: ${error.message}. Check collection permissions.`;
                 statusDiv.className = "sync-status error";
-                firebaseReady = true;
             });
             
     } catch (error) {
-        console.error("Firebase init error:", error);
+        console.error("❌ Firebase init error:", error);
         statusDiv.innerHTML = `❌ Firebase initialization error: ${error.message}`;
         statusDiv.className = "sync-status error";
     }
 }
 
+// Also try to list all collections for debugging
+function debugFirestore() {
+    if (!db) return;
+    
+    // Try to get collection names (requires specific permissions)
+    console.log("🔍 Debug: Checking Firestore collections...");
+}
+
 // Start the app
 setDefaultDates();
 initFirebase();
+setTimeout(debugFirestore, 2000);
 </script>
 
 </body>
