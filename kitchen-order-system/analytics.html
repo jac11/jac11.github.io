@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -284,8 +285,21 @@ body {
     margin-top: 16px;
     padding: 8px;
     border-radius: 20px;
+}
+
+.sync-status.loading {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.sync-status.success {
     background: #e8f5e9;
     color: #27ae60;
+}
+
+.sync-status.error {
+    background: #fee2e2;
+    color: #e74c3c;
 }
 
 .pdf-loading {
@@ -431,7 +445,9 @@ body {
         <h3>📋 Item Price Analytics</h3>
         <div class="table-wrapper">
             <table class="details-table">
-                <thead><tr><th>Item Name</th><th>Price (EGP)</th><th>Unit</th><th>Total Requested</th><th>Total Value (EGP)</th></thead>
+                <thead>
+                    <tr><th>Item Name</th><th>Price (EGP)</th><th>Unit</th><th>Total Requested</th><th>Total Value (EGP)</th></tr>
+                </thead>
                 <tbody id="priceTableBody"></tbody>
             </table>
         </div>
@@ -441,101 +457,24 @@ body {
         <h3>📋 Detailed Item Report</h3>
         <div class="table-wrapper">
             <table class="details-table">
-                <thead><tr><th>Item Name</th><th>Requested</th><th>Approved</th><th>Rejected</th><th>Approval Rate</th></thead>
+                <thead>
+                    <tr><th>Item Name</th><th>Requested</th><th>Approved</th><th>Rejected</th><th>Approval Rate</th></tr>
+                </thead>
                 <tbody id="detailsTableBody"></tbody>
             </table>
         </div>
     </div>
 
-    <div class="sync-status" id="syncStatus">⏳ Loading analytics...</div>
+    <div class="sync-status" id="syncStatus">⏳ Connecting to Firebase...</div>
 </div>
 
 <script>
-// ============================================
-// FIXED VERSION - WILL SHOW DATA IMMEDIATELY
-// ============================================
-
+// Global variables
 let topItemsChart, kitchenChart, statusChart, timelineChart, dailyValueChart, topValueChart;
 let allRequests = [];
+let db = null;
 
-// ========== GENERATE DEMO DATA (Visible immediately) ==========
-function generateDemoData() {
-    const kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
-    
-    const itemsCatalog = [
-        { name: "Grilled Chicken Breast", price: 185, unit: "kg" },
-        { name: "Fresh Salmon Fillet", price: 320, unit: "kg" },
-        { name: "Mixed Garden Salad", price: 45, unit: "pack" },
-        { name: "Butter Croissant", price: 22, unit: "pc" },
-        { name: "Beef Tenderloin", price: 450, unit: "kg" },
-        { name: "Penne Pasta", price: 38, unit: "kg" },
-        { name: "Vanilla Ice Cream", price: 95, unit: "tub" },
-        { name: "Lemonade Concentrate", price: 28, unit: "L" },
-        { name: "New York Cheesecake", price: 60, unit: "slice" },
-        { name: "Sushi Rice", price: 110, unit: "kg" },
-        { name: "Fresh Tuna Loin", price: 280, unit: "kg" },
-        { name: "Ripe Avocado", price: 35, unit: "pc" },
-        { name: "French Fries", price: 42, unit: "kg" },
-        { name: "Tomato Sauce", price: 25, unit: "kg" },
-        { name: "Mozzarella Cheese", price: 120, unit: "kg" },
-        { name: "Olive Oil", price: 95, unit: "L" }
-    ];
-    
-    const orders = [];
-    const today = new Date();
-    
-    // Generate 200+ orders for rich data
-    for (let i = 0; i < 200; i++) {
-        const daysAgo = Math.floor(Math.random() * 60);
-        const date = new Date(today);
-        date.setDate(today.getDate() - daysAgo);
-        date.setHours(Math.floor(Math.random() * 14) + 8, Math.floor(Math.random() * 60));
-        
-        const section = kitchens[Math.floor(Math.random() * kitchens.length)];
-        const numItems = Math.floor(Math.random() * 4) + 1;
-        const items = [];
-        
-        for (let j = 0; j < numItems; j++) {
-            const catalogItem = itemsCatalog[Math.floor(Math.random() * itemsCatalog.length)];
-            const qty = parseFloat((Math.random() * 12 + 0.5).toFixed(1));
-            const randomStatus = Math.random();
-            let status = "pending";
-            let approvedQty = 0;
-            
-            if (randomStatus > 0.65) {
-                status = "approved";
-                approvedQty = qty;
-            } else if (randomStatus < 0.2) {
-                status = "rejected";
-                approvedQty = 0;
-            } else {
-                status = "pending";
-                approvedQty = 0;
-            }
-            
-            items.push({
-                name: catalogItem.name,
-                price: catalogItem.price,
-                unit: catalogItem.unit,
-                originalQty: qty,
-                approvedQty: approvedQty,
-                status: status,
-                code: catalogItem.name.substring(0, 3).toUpperCase()
-            });
-        }
-        
-        orders.push({
-            id: `order_${i}`,
-            section: section,
-            timestamp: date,
-            submittedAt: date,
-            items: items
-        });
-    }
-    
-    return orders;
-}
-
+// Helper function
 function escapeHtml(str) {
     if(!str) return '';
     return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
@@ -544,7 +483,7 @@ function escapeHtml(str) {
 function setDefaultDates() {
     const to = new Date();
     const from = new Date();
-    from.setDate(from.getDate() - 90);
+    from.setDate(from.getDate() - 30);
     document.getElementById("dateTo").value = to.toISOString().split('T')[0];
     document.getElementById("dateFrom").value = from.toISOString().split('T')[0];
 }
@@ -629,11 +568,16 @@ function filterData(requests) {
 
 function refreshAnalytics() {
     const filtered = filterData(allRequests);
+    const statusDiv = document.getElementById("syncStatus");
+    
     if(filtered.length === 0 && allRequests.length > 0) {
-        document.getElementById("syncStatus").innerHTML = "⚠️ No data matches filters • " + allRequests.length + " total requests";
+        statusDiv.innerHTML = "⚠️ No data matches filters • " + allRequests.length + " total requests";
+        statusDiv.className = "sync-status loading";
     } else {
-        document.getElementById("syncStatus").innerHTML = "🔄 Updating analytics...";
+        statusDiv.innerHTML = "🔄 Updating analytics...";
+        statusDiv.className = "sync-status loading";
     }
+    
     updateStats(filtered);
     updatePriceStats(filtered);
     updateTopItemsChart(filtered);
@@ -644,7 +588,14 @@ function refreshAnalytics() {
     updateTopValueChart(filtered);
     updateDetailsTable(filtered);
     updatePriceTable(filtered);
-    document.getElementById("syncStatus").innerHTML = "✅ Updated • " + filtered.length + " requests shown • " + new Date().toLocaleTimeString();
+    
+    if(filtered.length > 0) {
+        statusDiv.innerHTML = "✅ Updated • " + filtered.length + " requests • " + new Date().toLocaleTimeString();
+        statusDiv.className = "sync-status success";
+    } else if(allRequests.length === 0) {
+        statusDiv.innerHTML = "📭 No data found in Firestore • Add some orders to see analytics";
+        statusDiv.className = "sync-status error";
+    }
 }
 
 function updateStats(requests) {
@@ -797,7 +748,10 @@ function updateDetailsTable(requests) {
     const sorted = Array.from(itemMap.entries()).sort((a,b) => b[1].requested - a[1].requested);
     const tbody = document.getElementById("detailsTableBody");
     tbody.innerHTML = "";
-    if(sorted.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 No data available</td></tr>'; return; }
+    if(sorted.length === 0) { 
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 No data available</td></tr>'; 
+        return; 
+    }
     sorted.forEach(([name, stats]) => {
         const rate = stats.requested > 0 ? ((stats.approved / stats.requested) * 100).toFixed(1) : 0;
         tbody.innerHTML += `<tr>
@@ -826,7 +780,10 @@ function updatePriceTable(requests) {
     const sorted = Array.from(itemMap.entries()).sort((a,b) => b[1].totalValue - a[1].totalValue);
     const tbody = document.getElementById("priceTableBody");
     tbody.innerHTML = "";
-    if(sorted.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 No data available</td></tr>'; return; }
+    if(sorted.length === 0) { 
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 No data available</td></tr>'; 
+        return; 
+    }
     sorted.forEach(([name, stats]) => {
         tbody.innerHTML += `<tr>
             <td><strong>${escapeHtml(name)}</strong></td>
@@ -857,7 +814,7 @@ function exportCSV() {
 async function exportPDF() {
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'pdf-loading';
-    loadingDiv.innerHTML = '<div class="spinner"></div><div>Generating PDF report...</div><div style="font-size:12px; margin-top:10px;">Please wait</div>';
+    loadingDiv.innerHTML = '<div class="spinner"></div><div>Generating PDF report...</div>';
     document.body.appendChild(loadingDiv);
 
     try {
@@ -886,23 +843,21 @@ async function exportPDF() {
         const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         
         const imgWidth = 210;
-        const pageHeight = 297;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         let heightLeft = imgHeight;
         let position = 0;
         
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        heightLeft -= 297;
         
         while (heightLeft > 0) {
             position = heightLeft - imgHeight;
             pdf.addPage();
             pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            heightLeft -= 297;
         }
         
         pdf.save(`analytics_report_${new Date().toISOString().split('T')[0]}.pdf`);
-        
         document.body.removeChild(loadingDiv);
         
         const toast = document.createElement('div');
@@ -910,7 +865,6 @@ async function exportPDF() {
         toast.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#27ae60; color:white; padding:10px 20px; border-radius:30px; z-index:10000; font-size:12px;';
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
-        
     } catch (error) {
         console.error('PDF export error:', error);
         document.body.removeChild(loadingDiv);
@@ -918,55 +872,59 @@ async function exportPDF() {
     }
 }
 
-// ========== TRY FIREBASE FIRST, THEN DEMO DATA ==========
-function initApp() {
-    setDefaultDates();
+// Initialize Firebase and load data
+function initFirebase() {
+    const statusDiv = document.getElementById("syncStatus");
     
-    // First, load demo data immediately so page shows something
-    allRequests = generateDemoData();
-    refreshAnalytics();
-    document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample requests • Waiting for Firebase...";
-    
-    // Then try to connect to Firebase
     try {
-        if (typeof firebaseConfig !== 'undefined' && firebaseConfig && firebaseConfig.apiKey) {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            const db = firebase.firestore();
-            
-            document.getElementById("syncStatus").innerHTML = "🔄 Connecting to Firebase...";
-            
-            db.collection("kitchen_requests")
-                .orderBy("timestamp", "desc")
-                .onSnapshot(snapshot => {
-                    const firebaseOrders = [];
-                    snapshot.forEach(doc => {
-                        firebaseOrders.push({ id: doc.id, ...doc.data() });
-                    });
-                    
-                    if (firebaseOrders.length > 0) {
-                        allRequests = firebaseOrders;
-                        refreshAnalytics();
-                        document.getElementById("syncStatus").innerHTML = "✅ LIVE Firebase • " + allRequests.length + " real orders • Auto-updates enabled";
-                    } else {
-                        document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample orders • (Firebase connected but no data)";
-                    }
-                }, error => {
-                    console.warn("Firestore error:", error);
-                    document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample orders • (Firebase error: " + error.message + ")";
-                });
-        } else {
-            document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample orders • (No Firebase config)";
+        if (typeof firebaseConfig === 'undefined') {
+            statusDiv.innerHTML = "❌ firebase-config.js not found! Please create the file.";
+            statusDiv.className = "sync-status error";
+            return;
         }
-    } catch(e) {
-        console.warn("Firebase init error:", e);
-        document.getElementById("syncStatus").innerHTML = "📊 DEMO MODE • " + allRequests.length + " sample orders";
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        db = firebase.firestore();
+        statusDiv.innerHTML = "🔄 Connected to Firebase • Loading data...";
+        statusDiv.className = "sync-status loading";
+        
+        // Listen to real-time updates from Firestore
+        db.collection("kitchen_requests")
+            .orderBy("timestamp", "desc")
+            .onSnapshot(snapshot => {
+                allRequests = [];
+                snapshot.forEach(doc => {
+                    allRequests.push({ id: doc.id, ...doc.data() });
+                });
+                
+                if (allRequests.length === 0) {
+                    statusDiv.innerHTML = "📭 Firestore connected but no data found in 'kitchen_requests' collection";
+                    statusDiv.className = "sync-status error";
+                } else {
+                    statusDiv.innerHTML = "✅ Live • " + allRequests.length + " requests from Firebase";
+                    statusDiv.className = "sync-status success";
+                }
+                
+                refreshAnalytics();
+            }, error => {
+                console.error("Firestore error:", error);
+                statusDiv.innerHTML = "❌ Firestore error: " + error.message;
+                statusDiv.className = "sync-status error";
+            });
+            
+    } catch (error) {
+        console.error("Firebase init error:", error);
+        statusDiv.innerHTML = "❌ Firebase initialization error: " + error.message;
+        statusDiv.className = "sync-status error";
     }
 }
 
 // Start the app
-initApp();
+setDefaultDates();
+initFirebase();
 </script>
 
 </body>
