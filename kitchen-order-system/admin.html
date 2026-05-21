@@ -907,25 +907,25 @@ async function rejectItem(reqId, idx) {
         }
     }
 }
-    
-async function acceptRequest(reqId) {
-    if(!confirm(`Accept this request? All pending items will be AUTO-APPROVED with their original quantities. Manually rejected items will stay rejected.`)) return;
+
+async function approveAllFlex(reqId) {
+    if(!confirm(`Approve ALL items with current quantities as ${currentAdmin}? (Quantities can be any number, no limits)`)) return;
     const req = allRequests.find(r => r.id === reqId);
     if(req) {
-        req.items.forEach(item => {
-            // Only change PENDING items - leave APPROVED and REJECTED as they are
-            if(item.status !== "approved" && item.status !== "rejected") {
-                // AUTO-APPROVE pending items with original quantity
-                item.status = "approved";
-                item.approvedQty = item.originalQty;  // Full original quantity
-                item.approvedBy = currentAdmin;
-                item.approvedAt = new Date().toLocaleString();
-                // No rejection reason
-            }
-            item.completedVia = "accept";
-        });
+        for(let i=0; i<req.items.length; i++) {
+            const input = document.getElementById(`qty_${reqId}_${i}`);
+            let qty = parseFloat(input?.value || 0);
+            if(isNaN(qty)) qty = 0;
+            const item = req.items[i];
+            item.status = "approved";
+            item.approvedQty = qty;
+            item.approvedBy = currentAdmin;
+            item.approvedAt = new Date().toLocaleString();
+            delete item.rejectionReason;
+            delete item.rejectedBy;
+            delete item.rejectedAt;
+        }
         await updateRequest(reqId, req.items);
-        showToast(`✅ Request completed: ${req.items.filter(i => i.status === "approved").length} approved, ${req.items.filter(i => i.status === "rejected").length} rejected`);
     }
 }
 
