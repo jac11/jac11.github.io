@@ -15,7 +15,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -30,7 +29,6 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .header-content {
@@ -46,32 +44,20 @@ body {
 .header h1 {
     font-size: 1.3rem;
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 
 .header h1 span {
     color: #f9b43a;
-    font-weight: 400;
 }
 
 .btn-back {
     background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,0.3);
     padding: 8px 20px;
     border-radius: 40px;
     color: white;
     cursor: pointer;
     font-size: 13px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.btn-back:hover {
-    background: rgba(255,255,255,0.35);
-    transform: scale(0.97);
 }
 
 .container {
@@ -89,7 +75,6 @@ body {
     border-radius: 28px;
     margin-bottom: 24px;
     align-items: flex-end;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.03);
     border: 1px solid #eef2f6;
 }
 
@@ -103,8 +88,6 @@ body {
 .filter-group label {
     font-size: 0.7rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: #4a627a;
 }
 
@@ -113,13 +96,6 @@ body {
     border: 1px solid #dce5ec;
     border-radius: 20px;
     font-size: 0.85rem;
-    background: #ffffff;
-}
-
-.filters select:focus, .filters input:focus {
-    outline: none;
-    border-color: #2c7da0;
-    box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
 }
 
 .filters button {
@@ -129,19 +105,11 @@ body {
     padding: 8px 22px;
     border-radius: 40px;
     font-weight: 600;
-    font-size: 0.8rem;
     cursor: pointer;
-    transition: 0.2s;
     margin-top: 4px;
 }
 
-.filters button:hover {
-    background: #1f5e7a;
-    transform: translateY(-1px);
-}
-
 .btn-pdf { background: #c44536 !important; }
-.btn-pdf:hover { background: #a53224 !important; }
 .btn-reset { background: #7f8c8d !important; }
 .btn-csv { background: #2b7a4b !important; }
 
@@ -157,7 +125,6 @@ body {
     padding: 18px 12px;
     border-radius: 28px;
     text-align: center;
-    box-shadow: 0 5px 12px rgba(0,0,0,0.03);
     border: 1px solid #eef2f8;
 }
 
@@ -165,7 +132,6 @@ body {
     font-size: 2rem;
     font-weight: 800;
     color: #1f5e7a;
-    line-height: 1.2;
 }
 
 .price-stat-card {
@@ -174,7 +140,6 @@ body {
     padding: 16px;
     border-radius: 28px;
     text-align: center;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
 .price-stat-number {
@@ -193,7 +158,6 @@ body {
     background: white;
     border-radius: 28px;
     padding: 18px 16px;
-    box-shadow: 0 5px 14px rgba(0,0,0,0.04);
     border: 1px solid #eef2f8;
 }
 
@@ -255,7 +219,7 @@ body {
     background: white;
     border-radius: 28px;
     padding: 18px;
-    margin-top: 20px;
+    margin-bottom: 20px;
     border: 1px solid #eef2f8;
 }
 
@@ -264,7 +228,6 @@ body {
     border-radius: 28px;
     padding: 18px 16px;
     margin-top: 8px;
-    box-shadow: 0 5px 14px rgba(0,0,0,0.04);
 }
 
 .table-card h3 {
@@ -278,7 +241,6 @@ body {
 
 .table-wrapper {
     overflow-x: auto;
-    border-radius: 20px;
 }
 
 .details-table {
@@ -300,10 +262,6 @@ body {
     border-bottom: 1px solid #ecf3f9;
 }
 
-.details-table tr:hover td {
-    background: #f9fbfd;
-}
-
 .sync-status {
     text-align: center;
     font-size: 0.75rem;
@@ -313,28 +271,11 @@ body {
     width: fit-content;
     margin-left: auto;
     margin-right: auto;
-    font-weight: 500;
 }
 
-.sync-status.loading {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.sync-status.success {
-    background: #e8f5e9;
-    color: #2e7d32;
-}
-
-.sync-status.error {
-    background: #ffebee;
-    color: #c62828;
-}
-
-.sync-status.empty {
-    background: #e3f2fd;
-    color: #1565c0;
-}
+.sync-status.loading { background: #fff3cd; color: #856404; }
+.sync-status.success { background: #e8f5e9; color: #2e7d32; }
+.sync-status.error { background: #ffebee; color: #c62828; }
 
 .pdf-loading {
     position: fixed;
@@ -343,15 +284,12 @@ body {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.9);
-    backdrop-filter: blur(8px);
     z-index: 10000;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     color: white;
-    font-size: 18px;
-    font-weight: 500;
 }
 
 .spinner {
@@ -366,7 +304,7 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.toast-message {
+.toast {
     position: fixed;
     bottom: 30px;
     left: 50%;
@@ -377,14 +315,10 @@ body {
     border-radius: 50px;
     z-index: 20000;
     font-weight: 600;
-    font-size: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     animation: slideUp 0.3s ease;
 }
 
-.toast-message.error {
-    background: #c62828;
-}
+.toast.error { background: #c62828; }
 
 @keyframes slideUp {
     from { transform: translateX(-50%) translateY(100px); opacity: 0; }
@@ -392,23 +326,15 @@ body {
 }
 
 @media (min-width: 780px) {
-    .stats-grid, .price-stats-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
-    .charts-grid { grid-template-columns: repeat(2, 1fr); gap: 22px; }
-    .chart-container { height: 280px; }
-    .stat-number { font-size: 2.3rem; }
+    .stats-grid, .price-stats-grid { grid-template-columns: repeat(4, 1fr); }
+    .charts-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 600px) {
-    .filters { flex-direction: column; align-items: stretch; }
+    .filters { flex-direction: column; }
     .filter-group { width: 100%; }
     .filters button { width: 100%; }
     .comparison-container { grid-template-columns: 1fr; }
-}
-
-@media print {
-    .filters, .btn-back, .sync-status, .pdf-loading, .header button { display: none !important; }
-    .header { background: #0b2b3b; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .stat-card, .price-stat-card, .chart-card, .table-card { break-inside: avoid; }
 }
 </style>
 </head>
@@ -416,8 +342,8 @@ body {
 
 <div class="header">
     <div class="header-content">
-        <h1>🍽️ KITCHEN METRICS <span>| Live Orders</span></h1>
-        <button class="btn-back" onclick="window.location.href='admin.html'">← Back to Admin</button>
+        <h1>🍽️ KITCHEN METRICS <span>| Analytics Dashboard</span></h1>
+        <button class="btn-back" onclick="window.location.href='admin.html'">← Back</button>
     </div>
 </div>
 
@@ -437,7 +363,7 @@ body {
                 <option value="Staff Kitchen">👥 Staff Kitchen</option>
             </select>
         </div>
-        <div class="filter-group"><label>🔍 SEARCH ITEM</label><input type="text" id="searchItem" placeholder="Item name..."></div>
+        <div class="filter-group"><label>🔍 SEARCH</label><input type="text" id="searchItem" placeholder="Item name..."></div>
         <div class="filter-group"><label>⚡ ACTIONS</label>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button onclick="refreshAnalytics()">⟳ Update</button>
@@ -448,65 +374,42 @@ body {
         </div>
     </div>
 
-    <div class="stats-grid" id="statsGrid">
-        <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">📋 Requests</div></div>
-        <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">🍽️ Items</div></div>
-        <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">✅ Approved</div></div>
-        <div class="stat-card"><div class="stat-number">—</div><div class="stat-label">❌ Rejected</div></div>
-    </div>
-    <div class="price-stats-grid" id="priceStatsGrid">
-        <div class="price-stat-card"><div class="price-stat-number">—</div><div class="price-stat-label">💰 Total Value</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">—</div><div class="price-stat-label">✔️ Approved Value</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">—</div><div class="price-stat-label">Avg Item Price</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">—</div><div class="price-stat-label">Avg / Request</div></div>
-    </div>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="price-stats-grid" id="priceStatsGrid"></div>
 
-    <!-- Most Requested Items Comparison -->
     <div class="comparison-container">
-        <div class="comparison-card">
-            <h3>🏆 Most Requested Items (This Period)</h3>
-            <div id="topItemsList"></div>
-        </div>
-        <div class="comparison-card">
-            <h3>💰 Highest Value Items (Total EGP)</h3>
-            <div id="topValueList"></div>
-        </div>
+        <div class="comparison-card"><h3>🏆 Most Requested Items</h3><div id="topItemsList"></div></div>
+        <div class="comparison-card"><h3>💰 Highest Value Items</h3><div id="topValueList"></div></div>
     </div>
 
     <div class="charts-grid">
-        <div class="chart-card"><h3>📊 Top Requested Items</h3><div class="chart-container"><canvas id="topItemsChart"></canvas></div></div>
-        <div class="chart-card"><h3>🍴 Orders by Kitchen</h3><div class="chart-container"><canvas id="kitchenChart"></canvas></div></div>
-        <div class="chart-card"><h3>✅ Approval Breakdown</h3><div class="chart-container"><canvas id="statusChart"></canvas></div></div>
-        <div class="chart-card"><h3>📈 Request Timeline</h3><div class="chart-container"><canvas id="timelineChart"></canvas></div></div>
-        <div class="chart-card"><h3>💰 Daily Revenue Value (EGP)</h3><div class="chart-container"><canvas id="dailyValueChart"></canvas></div></div>
-        <div class="chart-card"><h3>🏆 Top Items by Value</h3><div class="chart-container"><canvas id="topValueChart"></canvas></div></div>
+        <div class="chart-card"><h3>📊 1. Top Requested Items (Quantity)</h3><div class="chart-container"><canvas id="topItemsChart"></canvas></div><div class="chart-note">Shows which items are ordered most frequently</div></div>
+        <div class="chart-card"><h3>🍴 2. Orders by Kitchen</h3><div class="chart-container"><canvas id="kitchenChart"></canvas></div><div class="chart-note">Distribution of orders across kitchen stations</div></div>
+        <div class="chart-card"><h3>✅ 3. Approval Status</h3><div class="chart-container"><canvas id="statusChart"></canvas></div><div class="chart-note">Green=Approved, Red=Rejected, Yellow=Pending</div></div>
+        <div class="chart-card"><h3>📈 4. Request Timeline</h3><div class="chart-container"><canvas id="timelineChart"></canvas></div><div class="chart-note">Number of requests over time</div></div>
+        <div class="chart-card"><h3>💰 5. Daily Revenue Value</h3><div class="chart-container"><canvas id="dailyValueChart"></canvas></div><div class="chart-note">Total order value per day in EGP</div></div>
+        <div class="chart-card"><h3>🏆 6. Top Items by Value</h3><div class="chart-container"><canvas id="topValueChart"></canvas></div><div class="chart-note">Items with highest total spend (Qty × Price)</div></div>
     </div>
 
-    <!-- Day by Day Value Comparison -->
     <div class="daily-compare">
-        <h3>📅 Day by Day Value Comparison (EGP)</h3>
-        <div class="chart-container" style="height: 300px;">
-            <canvas id="dayByDayChart"></canvas>
-        </div>
+        <h3>📅 7. Day by Day Value Comparison (EGP)</h3>
+        <div class="chart-container" style="height: 300px;"><canvas id="dayByDayChart"></canvas></div>
+        <div class="chart-note">Daily revenue trend - shows exact values at each point</div>
     </div>
 
-    <div class="table-card">
-        <h3>💰 Item Price & Value Analytics</h3>
-        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item</th><th>Unit Price</th><th>Unit</th><th>Total Qty</th><th>Total Value (EGP)</th></tr></thead><tbody id="priceTableBody"><tr><td colspan="5" style="text-align:center;">⏳ Loading data......</td></tr></tbody></table></div>
+    <div class="table-card"><h3>💰 Item Price & Value Analytics</h3>
+        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item</th><th>Unit Price</th><th>Unit</th><th>Total Qty</th><th>Total Value (EGP)</th></tr></thead><tbody id="priceTableBody"></tbody></table></div>
     </div>
 
-    <div class="table-card">
-        <h3>📋 Detailed Item Performance</h3>
-        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item Name</th><th>Requested Qty</th><th>Approved</th><th>Rejected</th><th>Approval %</th></tr></thead><tbody id="detailsTableBody"><tr><td colspan="5" style="text-align:center;">⏳ Loading data......</td></tr></tbody></table></div>
+    <div class="table-card"><h3>📋 Detailed Item Performance</h3>
+        <div class="table-wrapper"><table class="details-table"><thead><tr><th>Item Name</th><th>Requested</th><th>Approved</th><th>Rejected</th><th>Approval %</th></tr></thead><tbody id="detailsTableBody"></tbody></table></div>
     </div>
 
-    <div class="sync-status loading" id="syncStatus">🔄 Connecting to Firebase...</div>
+    <div class="sync-status loading" id="syncStatus">🔄 Connecting...</div>
 </div>
 
 <script>
-// ============================================
-// YOUR FIREBASE CONFIGURATION
-// ============================================
+// Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
     authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
@@ -516,28 +419,20 @@ const firebaseConfig = {
     appId: "1:786074432195:web:8381f2cba8f43002232876"
 };
 
-// ============================================
-// GLOBAL VARIABLES
-// ============================================
 let allRequests = [];
-let charts = { topItems: null, kitchen: null, status: null, timeline: null, dailyValue: null, topValue: null, dayByDay: null };
-let db = null;
+let charts = {};
 
-function escapeHtml(str) { 
-    return String(str || '').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); 
-}
-
-function showToast(message, isError = false) {
-    const toast = document.createElement('div'); 
-    toast.innerText = message; 
-    toast.className = 'toast-message' + (isError ? ' error' : '');
-    document.body.appendChild(toast); 
+function showToast(msg, isError = false) {
+    let toast = document.createElement('div');
+    toast.className = 'toast' + (isError ? ' error' : '');
+    toast.innerText = msg;
+    document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 4000);
 }
 
 function setDefaultDates() {
-    const to = new Date();
-    const from = new Date(); 
+    let to = new Date();
+    let from = new Date();
     from.setDate(from.getDate() - 45);
     document.getElementById("dateTo").value = to.toISOString().split('T')[0];
     document.getElementById("dateFrom").value = from.toISOString().split('T')[0];
@@ -554,51 +449,49 @@ function getDateFromRequest(req) {
     try {
         let ts = req.submittedAt || req.timestamp;
         if (!ts) return null;
-        let dateObj = ts.toDate ? ts.toDate() : new Date(ts);
-        if (isNaN(dateObj.getTime())) return null;
-        return dateObj.toISOString().split('T')[0];
+        let d = ts.toDate ? ts.toDate() : new Date(ts);
+        return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0];
     } catch(e) { return null; }
 }
 
 function filterData(requests) {
-    const kitchen = document.getElementById("kitchenFilter").value;
-    const fromDate = document.getElementById("dateFrom").value;
-    const toDate = document.getElementById("dateTo").value;
-    const search = document.getElementById("searchItem").value.toLowerCase().trim();
+    let kitchen = document.getElementById("kitchenFilter").value;
+    let fromDate = document.getElementById("dateFrom").value;
+    let toDate = document.getElementById("dateTo").value;
+    let search = document.getElementById("searchItem").value.toLowerCase();
 
     let filtered = [...requests];
     if (kitchen !== "all") filtered = filtered.filter(r => r.section === kitchen);
     
     if (fromDate) {
-        const from = new Date(fromDate); from.setHours(0,0,0,0);
+        let from = new Date(fromDate);
+        from.setHours(0,0,0,0);
         filtered = filtered.filter(r => {
-            const dStr = getDateFromRequest(r);
-            if (!dStr) return false;
-            const reqDate = new Date(dStr); reqDate.setHours(0,0,0,0);
-            return reqDate >= from;
+            let d = getDateFromRequest(r);
+            if (!d) return false;
+            let rd = new Date(d);
+            rd.setHours(0,0,0,0);
+            return rd >= from;
         });
     }
     if (toDate) {
-        const to = new Date(toDate); to.setHours(23,59,59,999);
+        let to = new Date(toDate);
+        to.setHours(23,59,59,999);
         filtered = filtered.filter(r => {
-            const dStr = getDateFromRequest(r);
-            if (!dStr) return false;
-            const reqDate = new Date(dStr);
-            return reqDate <= to;
+            let d = getDateFromRequest(r);
+            if (!d) return false;
+            return new Date(d) <= to;
         });
     }
     if (search) {
-        filtered = filtered.map(req => {
-            const newReq = { ...req };
-            newReq.items = (req.items || []).filter(i => (i.name || "").toLowerCase().includes(search));
-            return newReq;
-        }).filter(r => r.items.length > 0);
+        filtered = filtered.map(r => ({...r, items: (r.items || []).filter(i => (i.name || "").toLowerCase().includes(search))}))
+            .filter(r => r.items.length > 0);
     }
     return filtered;
 }
 
 function refreshAnalytics() {
-    const filtered = filterData(allRequests);
+    let filtered = filterData(allRequests);
     updateStats(filtered);
     updatePriceStats(filtered);
     updateTopItemsChart(filtered);
@@ -610,364 +503,226 @@ function refreshAnalytics() {
     updateDayByDayChart(filtered);
     updateDetailsTable(filtered);
     updatePriceTable(filtered);
-    updateTopItemsList(filtered);
-    updateTopValueList(filtered);
+    updateTopLists(filtered);
     
-    const statusDiv = document.getElementById("syncStatus");
+    let statusDiv = document.getElementById("syncStatus");
     if (allRequests.length === 0) {
-        statusDiv.innerHTML = "📭 Firestore connected but 'kitchen_requests' collection is empty. Add some orders!";
+        statusDiv.innerHTML = "📭 No data in 'kitchen_requests' collection";
         statusDiv.className = "sync-status empty";
-    } else if (filtered.length === 0 && allRequests.length > 0) {
-        statusDiv.innerHTML = `⚠️ No data matches filters • ${allRequests.length} total requests`;
-        statusDiv.className = "sync-status loading";
     } else {
-        statusDiv.innerHTML = `✅ Live • ${filtered.length} of ${allRequests.length} requests • ${new Date().toLocaleTimeString()}`;
+        statusDiv.innerHTML = `✅ ${filtered.length} of ${allRequests.length} requests • ${new Date().toLocaleTimeString()}`;
         statusDiv.className = "sync-status success";
     }
 }
 
-function updateTopItemsList(reqs) {
-    const map = new Map();
+function updateTopLists(reqs) {
+    let qtyMap = new Map(), valMap = new Map();
     reqs.forEach(r => (r.items || []).forEach(it => {
-        map.set(it.name, (map.get(it.name) || 0) + (it.originalQty || 0));
+        qtyMap.set(it.name, (qtyMap.get(it.name) || 0) + (it.originalQty || 0));
+        valMap.set(it.name, (valMap.get(it.name) || 0) + ((it.originalQty||0) * (it.price||0)));
     }));
-    const sorted = Array.from(map.entries()).sort((a,b) => b[1] - a[1]).slice(0, 10);
-    const container = document.getElementById("topItemsList");
-    if (sorted.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:#999;">No data</div>';
-        return;
-    }
-    container.innerHTML = sorted.map(([name, qty]) => `
-        <div class="comparison-item">
-            <span class="name">${escapeHtml(name)}</span>
-            <span class="value">${qty.toFixed(1)} units</span>
-        </div>
-    `).join('');
-}
-
-function updateTopValueList(reqs) {
-    const map = new Map();
-    reqs.forEach(r => (r.items || []).forEach(it => {
-        const val = (it.originalQty || 0) * (it.price || 0);
-        map.set(it.name, (map.get(it.name) || 0) + val);
-    }));
-    const sorted = Array.from(map.entries()).sort((a,b) => b[1] - a[1]).slice(0, 10);
-    const container = document.getElementById("topValueList");
-    if (sorted.length === 0) {
-        container.innerHTML = '<div style="text-align:center; color:#999;">No data</div>';
-        return;
-    }
-    container.innerHTML = sorted.map(([name, val]) => `
-        <div class="comparison-item">
-            <span class="name">${escapeHtml(name)}</span>
-            <span class="value">${val.toFixed(2)} EGP</span>
-        </div>
-    `).join('');
-}
-
-function updateDayByDayChart(reqs) {
-    const dailyMap = new Map();
-    reqs.forEach(r => {
-        const date = getDateFromRequest(r);
-        if (!date) return;
-        let total = 0;
-        (r.items || []).forEach(it => total += (it.originalQty || 0) * (it.price || 0));
-        dailyMap.set(date, (dailyMap.get(date) || 0) + total);
-    });
+    let topQty = Array.from(qtyMap.entries()).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    let topVal = Array.from(valMap.entries()).sort((a,b)=>b[1]-a[1]).slice(0,10);
     
-    const sorted = Array.from(dailyMap.entries()).sort((a,b) => new Date(a[0]) - new Date(b[0]));
-    const labels = sorted.map(d => d[0]);
-    const values = sorted.map(d => d[1]);
-    
-    if (charts.dayByDay) charts.dayByDay.destroy();
-    const ctx = document.getElementById('dayByDayChart').getContext('2d');
-    charts.dayByDay = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Daily Revenue (EGP)',
-                data: values,
-                borderColor: '#e94560',
-                backgroundColor: 'rgba(233,69,96,0.1)',
-                fill: true,
-                tension: 0.3,
-                pointBackgroundColor: '#e94560',
-                pointBorderColor: 'white',
-                pointRadius: 5,
-                pointHoverRadius: 7
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: (context) => `${context.raw.toFixed(2)} EGP`
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Value (EGP)' }
-                },
-                x: {
-                    title: { display: true, text: 'Date' }
-                }
-            }
-        }
-    });
+    document.getElementById("topItemsList").innerHTML = topQty.length ? topQty.map(([n,q]) => `<div class="comparison-item"><span class="name">${escapeHtml(n)}</span><span class="value">${q.toFixed(1)} units</span></div>`).join('') : '<div style="text-align:center;color:#999;">No data</div>';
+    document.getElementById("topValueList").innerHTML = topVal.length ? topVal.map(([n,v]) => `<div class="comparison-item"><span class="name">${escapeHtml(n)}</span><span class="value">${v.toFixed(2)} EGP</span></div>`).join('') : '<div style="text-align:center;color:#999;">No data</div>';
 }
 
 function updateStats(reqs) {
-    let totalReq = reqs.length, totalItems = 0, approvedQty = 0, rejectedQty = 0;
-    reqs.forEach(r => {
-        (r.items || []).forEach(it => {
-            const q = it.originalQty || 0;
-            totalItems += q;
-            if (it.status === "approved") approvedQty += (it.approvedQty || q);
-            if (it.status === "rejected") rejectedQty += q;
-        });
-    });
-    document.getElementById("statsGrid").innerHTML = `
-        <div class="stat-card"><div class="stat-number">${totalReq}</div><div class="stat-label">📋 Requests</div></div>
-        <div class="stat-card"><div class="stat-number">${totalItems.toFixed(1)}</div><div class="stat-label">🍽️ Items Ordered</div></div>
-        <div class="stat-card"><div class="stat-number">${approvedQty.toFixed(1)}</div><div class="stat-label">✅ Approved</div></div>
-        <div class="stat-card"><div class="stat-number">${rejectedQty.toFixed(1)}</div><div class="stat-label">❌ Rejected</div></div>
-    `;
+    let totalReq = reqs.length, items = 0, approved = 0, rejected = 0;
+    reqs.forEach(r => (r.items || []).forEach(it => {
+        items += it.originalQty || 0;
+        if (it.status === "approved") approved += it.approvedQty || it.originalQty || 0;
+        if (it.status === "rejected") rejected += it.originalQty || 0;
+    }));
+    document.getElementById("statsGrid").innerHTML = `<div class="stat-card"><div class="stat-number">${totalReq}</div><div class="stat-label">Requests</div></div>
+        <div class="stat-card"><div class="stat-number">${items.toFixed(1)}</div><div class="stat-label">Items</div></div>
+        <div class="stat-card"><div class="stat-number">${approved.toFixed(1)}</div><div class="stat-label">Approved</div></div>
+        <div class="stat-card"><div class="stat-number">${rejected.toFixed(1)}</div><div class="stat-label">Rejected</div></div>`;
 }
 
 function updatePriceStats(reqs) {
-    let totalValue = 0, approvedValue = 0, totalPriceSum = 0, priceCount = 0;
-    reqs.forEach(r => {
-        (r.items || []).forEach(it => {
-            const price = it.price || 0;
-            const qty = it.originalQty || 0;
-            totalValue += price * qty;
-            if (it.status === "approved") approvedValue += (it.approvedQty || qty) * price;
-            if (price > 0 && qty > 0) { totalPriceSum += price; priceCount++; }
-        });
-    });
-    const avgItemPrice = priceCount ? totalPriceSum / priceCount : 0;
-    const avgPerRequest = reqs.length ? totalValue / reqs.length : 0;
+    let totalVal = 0, appVal = 0, priceSum = 0, priceCnt = 0;
+    reqs.forEach(r => (r.items || []).forEach(it => {
+        let p = it.price || 0, q = it.originalQty || 0;
+        totalVal += p * q;
+        if (it.status === "approved") appVal += (it.approvedQty || q) * p;
+        if (p > 0 && q > 0) { priceSum += p; priceCnt++; }
+    }));
     document.getElementById("priceStatsGrid").innerHTML = `
-        <div class="price-stat-card"><div class="price-stat-number">${totalValue.toFixed(2)} EGP</div><div class="price-stat-label">💰 Total Value</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${approvedValue.toFixed(2)} EGP</div><div class="price-stat-label">✔️ Approved Value</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${avgItemPrice.toFixed(2)} EGP</div><div class="price-stat-label">Avg Item Price</div></div>
-        <div class="price-stat-card"><div class="price-stat-number">${avgPerRequest.toFixed(2)} EGP</div><div class="price-stat-label">Avg / Request</div></div>
-    `;
+        <div class="price-stat-card"><div class="price-stat-number">${totalVal.toFixed(2)} EGP</div><div class="price-stat-label">Total Value</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${appVal.toFixed(2)} EGP</div><div class="price-stat-label">Approved Value</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${priceCnt ? (priceSum/priceCnt).toFixed(2) : 0} EGP</div><div class="price-stat-label">Avg Item Price</div></div>
+        <div class="price-stat-card"><div class="price-stat-number">${reqs.length ? (totalVal/reqs.length).toFixed(2) : 0} EGP</div><div class="price-stat-label">Avg/Request</div></div>`;
 }
 
 function updateTopItemsChart(reqs) {
-    const map = new Map();
-    reqs.forEach(r => (r.items || []).forEach(it => map.set(it.name, (map.get(it.name) || 0) + (it.originalQty || 0))));
-    const sorted = Array.from(map.entries()).sort((a,b)=>b[1]-a[1]).slice(0,6);
-    if (charts.topItems) charts.topItems.destroy();
-    const ctx = document.getElementById('topItemsChart').getContext('2d');
-    charts.topItems = new Chart(ctx, { type: 'bar', data: { labels: sorted.map(i=>i[0].length>22?i[0].slice(0,20)+'..':i[0]), datasets: [{ label: 'Quantity', data: sorted.map(i=>i[1]), backgroundColor: '#2c7da0', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+    let map = new Map();
+    reqs.forEach(r => (r.items || []).forEach(it => map.set(it.name, (map.get(it.name)||0) + (it.originalQty||0))));
+    let sorted = Array.from(map.entries()).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    if(charts.topItems) charts.topItems.destroy();
+    charts.topItems = new Chart(document.getElementById('topItemsChart'), { type: 'bar', data: { labels: sorted.map(i=>i[0].length>20?i[0].slice(0,18)+'..':i[0]), datasets: [{ label: 'Quantity', data: sorted.map(i=>i[1]), backgroundColor: '#2c7da0' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
 }
 
 function updateKitchenChart(reqs) {
-    const kMap = new Map();
-    reqs.forEach(r => kMap.set(r.section || "Unknown", (kMap.get(r.section)||0)+1));
-    if (charts.kitchen) charts.kitchen.destroy();
-    charts.kitchen = new Chart(document.getElementById('kitchenChart'), { type: 'doughnut', data: { labels: Array.from(kMap.keys()), datasets: [{ data: Array.from(kMap.values()), backgroundColor: ['#3498db','#e67e22','#2ecc71','#e74c3c','#9b59b6','#f1c40f','#1abc9c'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+    let map = new Map();
+    reqs.forEach(r => map.set(r.section || "Unknown", (map.get(r.section)||0)+1));
+    if(charts.kitchen) charts.kitchen.destroy();
+    charts.kitchen = new Chart(document.getElementById('kitchenChart'), { type: 'doughnut', data: { labels: Array.from(map.keys()), datasets: [{ data: Array.from(map.values()), backgroundColor: ['#3498db','#e67e22','#2ecc71','#e74c3c','#9b59b6','#f1c40f','#1abc9c'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
 }
 
 function updateStatusChart(reqs) {
-    let approved=0,rejected=0,pending=0;
-    reqs.forEach(r=>(r.items||[]).forEach(it=>{ if(it.status==='approved') approved++; else if(it.status==='rejected') rejected++; else pending++; }));
+    let a=0,r=0,p=0;
+    reqs.forEach(rq => (rq.items||[]).forEach(it => { if(it.status==='approved') a++; else if(it.status==='rejected') r++; else p++; }));
     if(charts.status) charts.status.destroy();
-    charts.status = new Chart(document.getElementById('statusChart'), { type: 'pie', data: { labels: ['✅ Approved','❌ Rejected','⏳ Pending'], datasets: [{ data: [approved,rejected,pending], backgroundColor: ['#27ae60','#e74c3c','#f39c12'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+    charts.status = new Chart(document.getElementById('statusChart'), { type: 'pie', data: { labels: ['✅ Approved','❌ Rejected','⏳ Pending'], datasets: [{ data: [a,r,p], backgroundColor: ['#27ae60','#e74c3c','#f39c12'] }] }, options: { responsive: true, maintainAspectRatio: false } });
 }
 
 function updateTimelineChart(reqs) {
-    const dateMap = new Map();
-    reqs.forEach(r => { const d = getDateFromRequest(r); if(d) dateMap.set(d, (dateMap.get(d)||0)+1); });
-    const sorted = Array.from(dateMap.entries()).sort((a,b)=>new Date(a[0])-new Date(b[0]));
+    let map = new Map();
+    reqs.forEach(r => { let d = getDateFromRequest(r); if(d) map.set(d, (map.get(d)||0)+1); });
+    let sorted = Array.from(map.entries()).sort((a,b)=>new Date(a[0])-new Date(b[0]));
     if(charts.timeline) charts.timeline.destroy();
-    charts.timeline = new Chart(document.getElementById('timelineChart'), { type: 'line', data: { labels: sorted.map(v=>v[0]), datasets: [{ label: '#Requests', data: sorted.map(v=>v[1]), tension: 0.3, fill: true, borderColor: '#2c7da0', backgroundColor: 'rgba(44,125,160,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+    charts.timeline = new Chart(document.getElementById('timelineChart'), { type: 'line', data: { labels: sorted.map(v=>v[0]), datasets: [{ label: 'Requests', data: sorted.map(v=>v[1]), tension: 0.3, fill: true, borderColor: '#2c7da0', backgroundColor: 'rgba(44,125,160,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
 }
 
 function updateDailyValueChart(reqs) {
-    const dailyVal = new Map();
+    let map = new Map();
     reqs.forEach(r => {
-        const date = getDateFromRequest(r); if(!date) return;
-        let daySum = 0;
-        (r.items||[]).forEach(it => daySum += (it.originalQty||0) * (it.price||0));
-        dailyVal.set(date, (dailyVal.get(date)||0) + daySum);
+        let d = getDateFromRequest(r);
+        if(!d) return;
+        let sum = 0;
+        (r.items||[]).forEach(it => sum += (it.originalQty||0)*(it.price||0));
+        map.set(d, (map.get(d)||0)+sum);
     });
-    const sorted = Array.from(dailyVal.entries()).sort((a,b)=>new Date(a[0])-new Date(b[0]));
+    let sorted = Array.from(map.entries()).sort((a,b)=>new Date(a[0])-new Date(b[0]));
     if(charts.dailyValue) charts.dailyValue.destroy();
-    charts.dailyValue = new Chart(document.getElementById('dailyValueChart'), { type: 'bar', data: { labels: sorted.map(v=>v[0]), datasets: [{ label: 'Value (EGP)', data: sorted.map(v=>v[1]), backgroundColor: '#f39c12', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false } });
+    charts.dailyValue = new Chart(document.getElementById('dailyValueChart'), { type: 'bar', data: { labels: sorted.map(v=>v[0]), datasets: [{ label: 'Value (EGP)', data: sorted.map(v=>v[1]), backgroundColor: '#f39c12' }] }, options: { responsive: true, maintainAspectRatio: false } });
 }
 
 function updateTopValueChart(reqs) {
-    const valueMap = new Map();
-    reqs.forEach(r => (r.items||[]).forEach(it => { const val = (it.originalQty||0)*(it.price||0); valueMap.set(it.name, (valueMap.get(it.name)||0)+val); }));
-    const sorted = Array.from(valueMap.entries()).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    let map = new Map();
+    reqs.forEach(r => (r.items||[]).forEach(it => map.set(it.name, (map.get(it.name)||0) + ((it.originalQty||0)*(it.price||0)))));
+    let sorted = Array.from(map.entries()).sort((a,b)=>b[1]-a[1]).slice(0,6);
     if(charts.topValue) charts.topValue.destroy();
-    charts.topValue = new Chart(document.getElementById('topValueChart'), { type: 'bar', data: { labels: sorted.map(i=>i[0].length>20?i[0].slice(0,18)+'..':i[0]), datasets: [{ label: 'Total Value (EGP)', data: sorted.map(i=>i[1]), backgroundColor: '#e67e22', borderRadius: 8 }] }, options: { responsive: true, maintainAspectRatio: false } });
+    charts.topValue = new Chart(document.getElementById('topValueChart'), { type: 'bar', data: { labels: sorted.map(i=>i[0].length>20?i[0].slice(0,18)+'..':i[0]), datasets: [{ label: 'Total Value (EGP)', data: sorted.map(i=>i[1]), backgroundColor: '#e67e22' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+}
+
+function updateDayByDayChart(reqs) {
+    let map = new Map();
+    reqs.forEach(r => {
+        let d = getDateFromRequest(r);
+        if(!d) return;
+        let sum = 0;
+        (r.items||[]).forEach(it => sum += (it.originalQty||0)*(it.price||0));
+        map.set(d, (map.get(d)||0)+sum);
+    });
+    let sorted = Array.from(map.entries()).sort((a,b)=>new Date(a[0])-new Date(b[0]));
+    if(charts.dayByDay) charts.dayByDay.destroy();
+    charts.dayByDay = new Chart(document.getElementById('dayByDayChart'), { type: 'line', data: { labels: sorted.map(v=>v[0]), datasets: [{ label: 'Daily Revenue (EGP)', data: sorted.map(v=>v[1]), borderColor: '#e94560', backgroundColor: 'rgba(233,69,96,0.1)', fill: true, tension: 0.3, pointBackgroundColor: '#e94560', pointRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.raw.toFixed(2)} EGP` } } } } });
 }
 
 function updateDetailsTable(reqs) {
-    const agg = new Map();
+    let map = new Map();
     reqs.forEach(r => (r.items||[]).forEach(it => {
-        const name = it.name || "unknown";
-        if(!agg.has(name)) agg.set(name, { req:0, app:0, rej:0 });
-        const d = agg.get(name);
-        const q = it.originalQty||0;
+        let n = it.name || "unknown";
+        if(!map.has(n)) map.set(n, { req:0, app:0, rej:0 });
+        let d = map.get(n);
+        let q = it.originalQty||0;
         d.req += q;
-        if(it.status === 'approved') d.app += (it.approvedQty||q);
+        if(it.status === 'approved') d.app += it.approvedQty || q;
         if(it.status === 'rejected') d.rej += q;
     }));
-    const sorted = Array.from(agg.entries()).sort((a,b)=>b[1].req - a[1].req);
-    const tbody = document.getElementById("detailsTableBody");
-    if (sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 No data available</td></tr>';
-        return;
-    }
-    tbody.innerHTML = '';
-    sorted.forEach(([name, stats]) => {
-        const rate = stats.req ? ((stats.app/stats.req)*100).toFixed(1) : 0;
-        tbody.innerHTML += `<tr><td><strong>${escapeHtml(name)}</strong></td><td>${stats.req.toFixed(1)}</td><td style="color:#27ae60;">${stats.app.toFixed(1)}</td><td style="color:#c0392b;">${stats.rej.toFixed(1)}</td><td><span style="background:#eef2fa; padding:4px 12px; border-radius:20px;">${rate}%</span></td></tr>`;
-    });
+    let sorted = Array.from(map.entries()).sort((a,b)=>b[1].req - a[1].req);
+    let tbody = document.getElementById("detailsTableBody");
+    if(!sorted.length) { tbody.innerHTML = '<tr><td colspan="5">No data</td></tr>'; return; }
+    tbody.innerHTML = sorted.map(([n,s]) => `<tr><td><strong>${escapeHtml(n)}</strong></td><td>${s.req.toFixed(1)}</td><td style="color:#27ae60;">${s.app.toFixed(1)}</td><td style="color:#c0392b;">${s.rej.toFixed(1)}</td><td>${s.req ? ((s.app/s.req)*100).toFixed(1) : 0}%</td></tr>`).join('');
 }
 
 function updatePriceTable(reqs) {
-    const map = new Map();
+    let map = new Map();
     reqs.forEach(r => (r.items||[]).forEach(it => {
-        const name = it.name || "unknown";
-        if(!map.has(name)) map.set(name, { price: it.price||0, unit: it.unit||'-', totalQty:0, totalValue:0 });
-        const data = map.get(name);
-        const qty = it.originalQty||0;
-        data.totalQty += qty;
-        data.totalValue += qty * (it.price||0);
-        if(it.price) data.price = it.price;
-        if(it.unit) data.unit = it.unit;
+        let n = it.name || "unknown";
+        if(!map.has(n)) map.set(n, { price: it.price||0, unit: it.unit||'-', qty:0, val:0 });
+        let d = map.get(n);
+        let q = it.originalQty||0;
+        d.qty += q;
+        d.val += q * (it.price||0);
+        if(it.price) d.price = it.price;
     }));
-    const sorted = Array.from(map.entries()).sort((a,b)=>b[1].totalValue - a[1].totalValue);
-    const tbody = document.getElementById("priceTableBody");
-    if (sorted.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">📭 No price data available</td></tr>';
-        return;
-    }
-    tbody.innerHTML = '';
-    sorted.forEach(([name, stat]) => {
-        tbody.innerHTML += `<tr><td><strong>${escapeHtml(name)}</strong></td><td>${stat.price.toFixed(2)} EGP</td><td>${stat.unit}</td><td>${stat.totalQty.toFixed(1)}</td><td style="font-weight:700;color:#c44536;">${stat.totalValue.toFixed(2)} EGP</td></tr>`;
-    });
+    let sorted = Array.from(map.entries()).sort((a,b)=>b[1].val - a[1].val);
+    let tbody = document.getElementById("priceTableBody");
+    if(!sorted.length) { tbody.innerHTML = '<tr><td colspan="5">No data</td></tr>'; return; }
+    tbody.innerHTML = sorted.map(([n,s]) => `<tr><td><strong>${escapeHtml(n)}</strong></td><td>${s.price.toFixed(2)} EGP</td><td>${s.unit}</td><td>${s.qty.toFixed(1)}</td><td style="font-weight:700;color:#c44536;">${s.val.toFixed(2)} EGP</td></tr>`).join('');
 }
 
+function escapeHtml(str) { return String(str||'').replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+
 function exportCSV() {
-    let csv = "Item Name,Requested Qty,Approved Qty,Rejected Qty,Approval Rate %\n";
+    let csv = "Item Name,Requested,Approved,Rejected,Approval %\n";
     document.querySelectorAll("#detailsTableBody tr").forEach(row => {
-        const cols = row.querySelectorAll("td");
-        if(cols.length === 5 && cols[0].innerText !== "📭 No data available") {
-            csv += `"${cols[0].innerText}",${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText.replace("%","")}\n`;
-        }
+        let cols = row.querySelectorAll("td");
+        if(cols.length === 5) csv += `"${cols[0].innerText}",${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText}\n`;
     });
-    const blob = new Blob(["\uFEFF"+csv], {type:"text/csv;charset=utf-8"});
-    const a = document.createElement("a"); 
-    a.href = URL.createObjectURL(blob); 
-    a.download = `analytics_${new Date().toISOString().split('T')[0]}.csv`; 
-    a.click(); 
+    let blob = new Blob(["\uFEFF"+csv], {type:"text/csv"});
+    let a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `analytics_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
     URL.revokeObjectURL(a.href);
-    showToast("✅ CSV exported successfully!");
+    showToast("✅ CSV exported!");
 }
 
 async function exportToPDF() {
-    const loader = document.createElement('div'); 
-    loader.className = 'pdf-loading'; 
-    loader.innerHTML = '<div class="spinner"></div><div>📑 Generating PDF Report...</div><div style="font-size:13px; margin-top:12px;">Please wait, this may take a moment</div>'; 
+    let loader = document.createElement('div');
+    loader.className = 'pdf-loading';
+    loader.innerHTML = '<div class="spinner"></div><div>📑 Generating PDF Report...</div><div style="font-size:13px;margin-top:12px;">Please wait...</div>';
     document.body.appendChild(loader);
     
     try {
-        const { jsPDF } = window.jspdf;
-        const element = document.getElementById("reportContainer");
+        let element = document.getElementById("reportContainer");
+        let canvas = await html2canvas(element, { scale: 1.8, backgroundColor: "#ffffff", logging: false });
+        let imgData = canvas.toDataURL('image/png');
+        let { jsPDF } = window.jspdf;
+        let pdf = new jsPDF('p', 'mm', 'a4');
+        let pageWidth = pdf.internal.pageSize.getWidth();
+        let pageHeight = pdf.internal.pageSize.getHeight();
+        let imgWidth = pageWidth - 20;
+        let imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let position = 10;
         
-        const canvas = await html2canvas(element, { 
-            scale: 2.2, 
-            backgroundColor: "#ffffff", 
-            logging: false,
-            useCORS: true
-        });
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        let heightLeft = imgHeight - (pageHeight - 20);
+        let pageNum = 1;
         
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pageWidth = 210;
-        const margin = 10;
-        const imgWidth = pageWidth - (margin * 2);
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        
-        pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
-        
-        // Add header info
-        const kitchenName = document.getElementById("kitchenFilter").options[document.getElementById("kitchenFilter").selectedIndex]?.text || "All Kitchens";
-        const fromDate = document.getElementById("dateFrom").value || "All";
-        const toDate = document.getElementById("dateTo").value || "All";
-        
-        pdf.setPage(1);
-        pdf.setFontSize(14);
-        pdf.setTextColor(11, 43, 59);
-        pdf.text("Kitchen Orders Analytics Report", margin + 5, 15);
-        pdf.setFontSize(8);
-        pdf.setTextColor(100, 100, 100);
-        pdf.text(`Kitchen: ${kitchenName} | Period: ${fromDate} to ${toDate} | Generated: ${new Date().toLocaleString()}`, margin + 5, 22);
+        while (heightLeft > 0) {
+            position = heightLeft - imgHeight - 10;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+            heightLeft -= (pageHeight - 20);
+            pageNum++;
+        }
         
         pdf.save(`Kitchen_Analytics_${new Date().toISOString().split('T')[0]}.pdf`);
-        
         loader.remove();
         showToast("✅ PDF exported successfully!");
-        
-    } catch(error) {
-        console.error("PDF export error:", error);
+    } catch(e) {
+        console.error(e);
         loader.remove();
-        showToast("❌ PDF export failed: " + error.message, true);
+        showToast("❌ PDF failed: " + e.message, true);
     }
 }
 
 function initFirebase() {
-    const statusDiv = document.getElementById("syncStatus");
-    
     try {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-            console.log("✅ Firebase initialized");
-        }
-        
-        db = firebase.firestore();
-        statusDiv.innerHTML = "🔄 Loading data from 'kitchen_requests'...";
-        statusDiv.className = "sync-status loading";
-        
-        db.collection("kitchen_requests")
-            .orderBy("timestamp", "desc")
-            .onSnapshot(snapshot => {
-                allRequests = [];
-                snapshot.forEach(doc => {
-                    allRequests.push({ id: doc.id, ...doc.data() });
-                });
-                console.log(`📊 Loaded ${allRequests.length} orders`);
-                
-                if (allRequests.length === 0) {
-                    statusDiv.innerHTML = "📭 Collection 'kitchen_requests' is empty. Add some orders!";
-                    statusDiv.className = "sync-status empty";
-                } else {
-                    statusDiv.innerHTML = `✅ Loaded ${allRequests.length} orders`;
-                    statusDiv.className = "sync-status success";
-                }
-                refreshAnalytics();
-            }, error => {
-                statusDiv.innerHTML = `❌ Error: ${error.message}`;
-                statusDiv.className = "sync-status error";
-                showToast("Firestore error: " + error.message, true);
-            });
-            
-    } catch (error) {
-        statusDiv.innerHTML = `❌ Init error: ${error.message}`;
-        statusDiv.className = "sync-status error";
-    }
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        let db = firebase.firestore();
+        db.collection("kitchen_requests").orderBy("timestamp", "desc").onSnapshot(snap => {
+            allRequests = [];
+            snap.forEach(doc => allRequests.push({ id: doc.id, ...doc.data() }));
+            refreshAnalytics();
+        }, err => { document.getElementById("syncStatus").innerHTML = "❌ Error: " + err.message; });
+    } catch(e) { document.getElementById("syncStatus").innerHTML = "❌ Init error: " + e.message; }
 }
 
 setDefaultDates();
