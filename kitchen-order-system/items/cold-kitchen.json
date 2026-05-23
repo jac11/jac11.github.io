@@ -1,5 +1,8 @@
 [
   {"code": "131002", "name": "Crab Steaks", "unit": "kg", "name_ar": "كابوريا فينجر ","maxLimit": 3, "AVE": 120},
+  {"code": "153003", "name": "Cheese Camembert Pkt 200 Gram Farm Cheese", "name_ar": "جبنة كاممبرت 200 جرام", "unit": "200g pkt", "maxLimit": 6, "AVE": 62.750},
+  {"code": "167006", "name": "Mustard Dijon", "name_ar": "موسترد ديجون", "unit": "370g jar", "maxLimit": 2, "AVE": 127.53333},
+  {"code": "167008", "name": "Mustard Heinz", "name_ar": "موسترد هاينز", "unit": "235g jar", "maxLimit": 6, "AVE": 32.569},
   {"code": "113008", "name": "Beef Cold Cut With Meat Cut", "name_ar": "سجق بارد لحم", "unit": "kg", "maxLimit": 6, "AVE": 211.2},
   {"code": "113018", "name": "Beef Salami Air Dried Whole", "name_ar": "سلامي لحم مجفف هواء كامل", "unit": "kg", "maxLimit": 5, "AVE": 352},
   {"code": "113079", "name": "Beef Smoked Pressed Choice", "name_ar": "لحم مدخن مضغوط شويس", "unit": "kg", "maxLimit": 5, "AVE": 332.64},
