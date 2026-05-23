@@ -735,7 +735,6 @@ body.arabic .items-scroll-container {
     margin-left: 8px;
 }
 
-/* History Section Styles */
 .history-section {
     margin-top: 20px;
     border-top: 1px solid #eef2f6;
@@ -790,17 +789,6 @@ body.arabic .items-scroll-container {
 .history-toggle-btn:hover {
     background: #6c3483;
 }
-
-/* Duplicate warning badge */
-.duplicate-warning {
-    background: #e74c3c;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.6rem;
-    margin-left: 8px;
-    font-weight: bold;
-}
 </style>
 </head>
 <body>
@@ -834,112 +822,46 @@ body.arabic .items-scroll-container {
 // ============ LANGUAGE TRANSLATIONS ============
 const translations = {
     en: {
-        chef: "Chef",
-        chefInfo: "Chef Information",
-        chefName: "Chef Name",
-        enterChefName: "Enter chef name",
-        required: "Required",
-        items: "Items",
-        searchByFirstChar: "Search by first character",
-        searchPlaceholder: "Type a letter (e.g., 'T')",
-        currentRequest: "Current Request",
-        totalQty: "Total Qty",
-        totalItems: "Items",
-        totalValue: "Total Value",
-        submit: "Submit",
-        export: "Export",
-        clear: "Clear",
-        myRequests: "Kitchen Orders",
-        orderHistory: "Completed Orders History",
+        chef: "Chef", chefInfo: "Chef Information", chefName: "Chef Name",
+        enterChefName: "Enter chef name", required: "Required", items: "Items",
+        searchByFirstChar: "Search by first character", searchPlaceholder: "Type a letter (e.g., 'T')",
+        currentRequest: "Current Request", totalQty: "Total Qty", totalItems: "Items",
+        totalValue: "Total Value", submit: "Submit", export: "Export", clear: "Clear",
+        myRequests: "Kitchen Orders", orderHistory: "Completed Orders History",
         showsAdminPrice: "Shows all orders from this kitchen - approved items only count toward total",
-        code: "Code",
-        item: "Item",
-        qty: "Qty",
-        unit: "Unit",
-        price: "Price (EGP)",
-        total: "Total (EGP)",
-        approvedQty: "Approved Qty",
-        status: "Status",
-        remove: "Remove",
-        add: "Add",
-        max: "Max",
-        approved: "Approved",
-        rejected: "Rejected",
-        pending: "Pending",
-        partial: "Partial",
-        by: "by",
-        admin: "Admin",
-        egp: "EGP",
-        allItems: "All Items",
-        noItems: "No items",
-        noRequests: "No orders yet",
+        code: "Code", item: "Item", qty: "Qty", unit: "Unit", price: "Price (EGP)",
+        total: "Total (EGP)", approvedQty: "Approved Qty", status: "Status",
+        remove: "Remove", add: "Add", max: "Max", approved: "Approved",
+        rejected: "Rejected", pending: "Pending", partial: "Partial",
+        by: "by", admin: "Admin", egp: "EGP", allItems: "All Items",
+        noItems: "No items", noRequests: "No orders yet",
         noHistory: "No completed orders yet (orders approved/rejected by admin will appear here)",
-        enterChefNameToSee: "Enter chef name to see items",
-        totalValueLabel: "Total Value",
-        submitted: "SUBMITTED",
-        chefLabel: "CHEF",
-        waitingForAdmin: "Waiting for admin",
-        approvedBy: "Approved by",
-        reason: "Reason:",
-        fromDate: "From Date",
-        toDate: "To Date",
-        filter: "Filter",
-        viewHistory: "View History",
+        enterChefNameToSee: "Enter chef name to see items", totalValueLabel: "Total Value",
+        submitted: "SUBMITTED", chefLabel: "CHEF", waitingForAdmin: "Waiting for admin",
+        approvedBy: "Approved by", reason: "Reason:", fromDate: "From Date",
+        toDate: "To Date", filter: "Filter", viewHistory: "View History",
         duplicateBlocked: "DUPLICATE ORDER BLOCKED",
         duplicateMessage: "You already submitted an identical order on"
     },
     ar: {
-        chef: "شيف",
-        chefInfo: "معلومات الشيف",
-        chefName: "اسم الشيف",
-        enterChefName: "أدخل اسم الشيف",
-        required: "مطلوب",
-        items: "الأصناف",
-        searchByFirstChar: "البحث بالحرف الأول",
-        searchPlaceholder: "اكتب حرف (مثال: أ)",
-        currentRequest: "الطلب الحالي",
-        totalQty: "الكمية الإجمالية",
-        totalItems: "عدد الأصناف",
-        totalValue: "القيمة الإجمالية",
-        submit: "إرسال",
-        export: "تصدير",
-        clear: "مسح",
-        myRequests: "طلبات المطبخ",
-        orderHistory: "سجل الطلبات المكتملة",
+        chef: "شيف", chefInfo: "معلومات الشيف", chefName: "اسم الشيف",
+        enterChefName: "أدخل اسم الشيف", required: "مطلوب", items: "الأصناف",
+        searchByFirstChar: "البحث بالحرف الأول", searchPlaceholder: "اكتب حرف (مثال: أ)",
+        currentRequest: "الطلب الحالي", totalQty: "الكمية الإجمالية", totalItems: "عدد الأصناف",
+        totalValue: "القيمة الإجمالية", submit: "إرسال", export: "تصدير", clear: "مسح",
+        myRequests: "طلبات المطبخ", orderHistory: "سجل الطلبات المكتملة",
         showsAdminPrice: "يعرض جميع طلبات هذا المطبخ - الأصناف المعتمدة فقط تحسب في الإجمالي",
-        code: "الكود",
-        item: "الصنف",
-        qty: "الكمية",
-        unit: "الوحدة",
-        price: "السعر (جنيه)",
-        total: "الإجمالي (جنيه)",
-        approvedQty: "الكمية المعتمدة",
-        status: "الحالة",
-        remove: "حذف",
-        add: "إضافة",
-        max: "الحد الأقصى",
-        approved: "تمت الموافقة",
-        rejected: "مرفوض",
-        pending: "قيد الانتظار",
-        partial: "موافقة جزئية",
-        by: "بواسطة",
-        admin: "المدير",
-        egp: "جنيه",
-        allItems: "جميع الأصناف",
-        noItems: "لا توجد أصناف",
-        noRequests: "لا توجد طلبات بعد",
+        code: "الكود", item: "الصنف", qty: "الكمية", unit: "الوحدة", price: "السعر (جنيه)",
+        total: "الإجمالي (جنيه)", approvedQty: "الكمية المعتمدة", status: "الحالة",
+        remove: "حذف", add: "إضافة", max: "الحد الأقصى", approved: "تمت الموافقة",
+        rejected: "مرفوض", pending: "قيد الانتظار", partial: "موافقة جزئية",
+        by: "بواسطة", admin: "المدير", egp: "جنيه", allItems: "جميع الأصناف",
+        noItems: "لا توجد أصناف", noRequests: "لا توجد طلبات بعد",
         noHistory: "لا توجد طلبات مكتملة بعد (الطلبات التي تمت الموافقة أو الرفض من المدير ستظهر هنا)",
-        enterChefNameToSee: "أدخل اسم الشيف لعرض الأصناف",
-        totalValueLabel: "القيمة الإجمالية",
-        submitted: "تاريخ الإرسال",
-        chefLabel: "الشيف",
-        waitingForAdmin: "بانتظار المدير",
-        approvedBy: "تمت الموافقة بواسطة",
-        reason: "السبب:",
-        fromDate: "من تاريخ",
-        toDate: "إلى تاريخ",
-        filter: "فلتر",
-        viewHistory: "عرض السجل",
+        enterChefNameToSee: "أدخل اسم الشيف لعرض الأصناف", totalValueLabel: "القيمة الإجمالية",
+        submitted: "تاريخ الإرسال", chefLabel: "الشيف", waitingForAdmin: "بانتظار المدير",
+        approvedBy: "تمت الموافقة بواسطة", reason: "السبب:", fromDate: "من تاريخ",
+        toDate: "إلى تاريخ", filter: "فلتر", viewHistory: "عرض السجل",
         duplicateBlocked: "تم حظر الطلب المكرر",
         duplicateMessage: "لقد أرسلت نفس الطلب مسبقاً في"
     }
@@ -970,35 +892,22 @@ function toggleLanguage() {
 }
 
 function getItemName(item) {
-    if(currentLang === 'ar' && item.name_ar) {
-        return item.name_ar;
-    }
+    if(currentLang === 'ar' && item.name_ar) return item.name_ar;
     return item.name;
 }
 
-function t(key) {
-    return translations[currentLang][key] || translations['en'][key] || key;
-}
+function t(key) { return translations[currentLang][key] || translations['en'][key] || key; }
 
 // ============ KITCHEN CONFIGURATION ============
 const kitchenPasswords = {
-    "Hot Kitchen": "hot123",
-    "Cold Kitchen": "cold123",
-    "Pastry / Bakery": "pastry123",
-    "Butchery": "butchery123",
-    "Beach House": "beach123",
-    "Nihon Kitchen": "nihon123",
-    "Staff Kitchen": "123456"
+    "Hot Kitchen": "hot123", "Cold Kitchen": "cold123", "Pastry / Bakery": "pastry123",
+    "Butchery": "butchery123", "Beach House": "beach123", "Nihon Kitchen": "nihon123", "Staff Kitchen": "123456"
 };
 
 const kitchenToFileMap = {
-    "Hot Kitchen": "hot-kitchen.json",
-    "Cold Kitchen": "cold-kitchen.json",
-    "Pastry / Bakery": "pastry.json",
-    "Butchery": "butchery.json",
-    "Beach House": "beach-house.json",
-    "Nihon Kitchen": "nihon-kitchen.json",
-    "Staff Kitchen": "staff-kitchen.json"
+    "Hot Kitchen": "hot-kitchen.json", "Cold Kitchen": "cold-kitchen.json",
+    "Pastry / Bakery": "pastry.json", "Butchery": "butchery.json",
+    "Beach House": "beach-house.json", "Nihon Kitchen": "nihon-kitchen.json", "Staff Kitchen": "staff-kitchen.json"
 };
 
 let unlockedKitchens = {};
@@ -1012,18 +921,13 @@ let kitchens = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "B
 let selectedQuantities = {};
 let addedItemsStatus = {};
 let currentItemsList = [];
-
-// ============ AUTO REFRESH ============
 let autoRefreshInterval = null;
 
 function startAutoRefresh() {
     if(autoRefreshInterval) clearInterval(autoRefreshInterval);
     autoRefreshInterval = setInterval(function() {
         loadRequestsFromFirebase();
-        if(currentKitchen) {
-            loadMyRequests(currentKitchen);
-            renderCart(currentKitchen);
-        }
+        if(currentKitchen) { loadMyRequests(currentKitchen); renderCart(currentKitchen); }
     }, 60000);
 }
 
@@ -1039,57 +943,37 @@ async function loadItemsForKitchen(kitchen, forceRefresh = false) {
         const data = await response.json();
         let itemsArray = Array.isArray(data) ? data : (data.items || []);
         itemsArray = itemsArray.map(item => ({ 
-            ...item, 
-            section: item.section || kitchen,
-            price: item.AVE || item.price || 0,
-            name_ar: item.name_ar || item.name
+            ...item, section: item.section || kitchen, price: item.AVE || item.price || 0,
+            name_ar: item.name_ar || item.name, step: item.step || (item.unit === "kg" ? 0.5 : 1)
         }));
         kitchenItemsCache[kitchen] = itemsArray;
         return itemsArray;
-    } catch (error) {
-        return [];
-    }
+    } catch (error) { return []; }
 }
 
 function getItemsForKitchen(kitchen) { return kitchenItemsCache[kitchen] || []; }
 
 function loadChefNames() {
     const saved = localStorage.getItem("chefNames");
-    if(saved) {
-        const parsed = JSON.parse(saved);
-        kitchens.forEach(kitchen => { chefNames[kitchen] = parsed[kitchen] || ""; });
-    }
+    if(saved) { const parsed = JSON.parse(saved); kitchens.forEach(kitchen => { chefNames[kitchen] = parsed[kitchen] || ""; }); }
 }
-
 function saveChefNames() { localStorage.setItem("chefNames", JSON.stringify(chefNames)); }
 
 function loadSavedCart() {
     const saved = localStorage.getItem("kitchenCart");
     if(saved) {
         const parsed = JSON.parse(saved);
-        kitchens.forEach(kitchen => {
-            kitchenData[kitchen] = { cart: parsed[kitchen] || [], chefName: chefNames[kitchen] };
-        });
+        kitchens.forEach(kitchen => { kitchenData[kitchen] = { cart: parsed[kitchen] || [], chefName: chefNames[kitchen] }; });
     } else {
-        kitchens.forEach(kitchen => {
-            kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] };
-        });
+        kitchens.forEach(kitchen => { kitchenData[kitchen] = { cart: [], chefName: chefNames[kitchen] }; });
     }
 }
-
-function saveCart() {
-    const cartToSave = {};
-    kitchens.forEach(kitchen => { cartToSave[kitchen] = kitchenData[kitchen].cart; });
-    localStorage.setItem("kitchenCart", JSON.stringify(cartToSave));
-}
+function saveCart() { const cartToSave = {}; kitchens.forEach(kitchen => { cartToSave[kitchen] = kitchenData[kitchen].cart; }); localStorage.setItem("kitchenCart", JSON.stringify(cartToSave)); }
 
 loadChefNames();
 loadSavedCart();
 
-function loadUnlockedKitchens() {
-    const saved = localStorage.getItem("unlockedKitchens");
-    if(saved) unlockedKitchens = JSON.parse(saved);
-}
+function loadUnlockedKitchens() { const saved = localStorage.getItem("unlockedKitchens"); if(saved) unlockedKitchens = JSON.parse(saved); }
 function saveUnlockedKitchens() { localStorage.setItem("unlockedKitchens", JSON.stringify(unlockedKitchens)); }
 loadUnlockedKitchens();
 
@@ -1099,28 +983,19 @@ function showKitchenPasswordModal(kitchen) {
     const modalDiv = document.createElement("div");
     modalDiv.className = "modal";
     modalDiv.id = "kitchenPasswordModal";
-    modalDiv.innerHTML = `
-        <div class="modal-content">
-            <h2>🔐 ${currentLang === 'ar' ? 'الوصول إلى المطبخ' : 'Kitchen Access'}</h2>
-            <p>${currentLang === 'ar' ? 'أدخل كلمة المرور لـ' : 'Enter password for'} <strong>${kitchen}</strong></p>
-            <input type="password" id="kitchenPasswordInput" placeholder="${currentLang === 'ar' ? 'أدخل كلمة المرور' : 'Enter password'}" autocomplete="off">
-            <button id="verifyPassBtn">${currentLang === 'ar' ? 'فتح المطبخ' : 'Unlock Kitchen'}</button>
-            <div id="kitchenPasswordError" class="error-msg"></div>
-            <button class="close-modal" id="closeModalBtn">${currentLang === 'ar' ? 'إلغاء' : 'Cancel'}</button>
-        </div>
-    `;
+    modalDiv.innerHTML = `<div class="modal-content"><h2>🔐 ${currentLang === 'ar' ? 'الوصول إلى المطبخ' : 'Kitchen Access'}</h2>
+        <p>${currentLang === 'ar' ? 'أدخل كلمة المرور لـ' : 'Enter password for'} <strong>${kitchen}</strong></p>
+        <input type="password" id="kitchenPasswordInput" placeholder="${currentLang === 'ar' ? 'أدخل كلمة المرور' : 'Enter password'}" autocomplete="off">
+        <button id="verifyPassBtn">${currentLang === 'ar' ? 'فتح المطبخ' : 'Unlock Kitchen'}</button>
+        <div id="kitchenPasswordError" class="error-msg"></div>
+        <button class="close-modal" id="closeModalBtn">${currentLang === 'ar' ? 'إلغاء' : 'Cancel'}</button></div>`;
     document.body.appendChild(modalDiv);
     document.getElementById("verifyPassBtn").onclick = () => verifyKitchenPassword();
     document.getElementById("closeModalBtn").onclick = () => closePasswordModal();
     document.getElementById("kitchenPasswordInput").focus();
 }
 
-function closePasswordModal() {
-    const modal = document.getElementById("kitchenPasswordModal");
-    if(modal) modal.remove();
-    pendingKitchen = null;
-}
-
+function closePasswordModal() { const modal = document.getElementById("kitchenPasswordModal"); if(modal) modal.remove(); pendingKitchen = null; }
 function verifyKitchenPassword() {
     const inputPassword = document.getElementById("kitchenPasswordInput").value;
     const kitchen = pendingKitchen;
@@ -1129,9 +1004,7 @@ function verifyKitchenPassword() {
         saveUnlockedKitchens();
         closePasswordModal();
         selectKitchen(kitchen);
-    } else {
-        document.getElementById("kitchenPasswordError").innerHTML = currentLang === 'ar' ? '❌ كلمة مرور خاطئة!' : "❌ Wrong password!";
-    }
+    } else { document.getElementById("kitchenPasswordError").innerHTML = currentLang === 'ar' ? '❌ كلمة مرور خاطئة!' : "❌ Wrong password!"; }
 }
 
 async function loadRequestsFromFirebase() {
@@ -1139,14 +1012,9 @@ async function loadRequestsFromFirebase() {
         const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
         allRequests = [];
         snapshot.forEach(doc => { allRequests.push({ firebaseId: doc.id, ...doc.data() }); });
-        if (currentKitchen) {
-            loadMyRequests(currentKitchen);
-            loadOrderHistory(currentKitchen);
-        }
+        if (currentKitchen) { loadMyRequests(currentKitchen); loadOrderHistory(currentKitchen); }
         document.getElementById("syncStatus").innerHTML = `✅ Connected • ${allRequests.length} orders <span id="autoRefreshIndicator" class="auto-refresh-indicator">(Auto-refresh: 60s)</span>`;
-    } catch (error) {
-        document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode";
-    }
+    } catch (error) { document.getElementById("syncStatus").innerHTML = "⚠️ Offline mode"; }
 }
 
 async function saveRequestToFirebase(request) {
@@ -1154,10 +1022,7 @@ async function saveRequestToFirebase(request) {
         await db.collection("kitchen_requests").add(request);
         showToast("✅ Request saved!");
         await loadRequestsFromFirebase();
-        if (currentKitchen) {
-            loadMyRequests(currentKitchen);
-            loadOrderHistory(currentKitchen);
-        }
+        if (currentKitchen) { loadMyRequests(currentKitchen); loadOrderHistory(currentKitchen); }
     } catch (error) { showToast("❌ Error saving"); }
 }
 
@@ -1176,77 +1041,14 @@ async function manualRefresh() {
 async function forceReloadItems() {
     showToast("🔄 Reloading items...");
     for (const kitchen of kitchens) kitchenItemsCache[kitchen] = null;
-    if (currentKitchen) {
-        await renderItemsList(currentKitchen);
-        showToast(`✅ Reloaded items for ${currentKitchen}`);
-    }
+    if (currentKitchen) { await renderItemsList(currentKitchen); showToast(`✅ Reloaded items for ${currentKitchen}`); }
 }
 
-// ============ DUPLICATE ORDER PREVENTION ============
-function getOverallStatusForDuplicate(items) {
-    if (!items || !items.length) return "pending";
-    let allProcessed = true;
-    for (const item of items) {
-        if (item.status !== "approved" && item.status !== "rejected") {
-            allProcessed = false;
-            break;
-        }
-    }
-    if (items.length > 0 && items[0].completedVia === "accept") return "accepted";
-    if (allProcessed) return "approved";
-    return "pending";
-}
-
-async function checkForDuplicateOrder(section, chefName, cartItems) {
-    try {
-        // Get all requests from this kitchen (filter by kitchen only, all chefs in same kitchen)
-        const snapshot = await db.collection("kitchen_requests")
-            .where("section", "==", section)
-            .get();
-        
-        for (const doc of snapshot.docs) {
-            const request = doc.data();
-            const requestStatus = getOverallStatusForDuplicate(request.items);
-            
-            // Only check pending or approved requests (not completed/accepted/rejected)
-            if (requestStatus === "pending" || requestStatus === "approved") {
-                const existingItems = request.items;
-                
-                // Check if same number of items
-                if (existingItems.length === cartItems.length) {
-                    let isDuplicate = true;
-                    
-                    // Sort both arrays by code for consistent comparison
-                    const sortedExisting = [...existingItems].sort((a, b) => (a.code || "").localeCompare(b.code || ""));
-                    const sortedNew = [...cartItems].sort((a, b) => (a.code || "").localeCompare(b.code || ""));
-                    
-                    // Compare each item: code AND quantity must match exactly
-                    for (let i = 0; i < sortedNew.length; i++) {
-                        const newItem = sortedNew[i];
-                        const existingItem = sortedExisting[i];
-                        
-                        if (newItem.code !== existingItem.code || 
-                            Math.abs(newItem.qty - existingItem.originalQty) > 0.01) { // Allow tiny floating point difference
-                            isDuplicate = false;
-                            break;
-                        }
-                    }
-                    
-                    if (isDuplicate) {
-                        return { 
-                            isDuplicate: true, 
-                            existingRequestId: request.requestId,
-                            existingTime: request.submittedAt
-                        };
-                    }
-                }
-            }
-        }
-        return { isDuplicate: false };
-    } catch(e) {
-        console.error("Duplicate check error:", e);
-        return { isDuplicate: false };
-    }
+// ============ HELPER: Get step value from item ============
+function getItemStep(item) {
+    if (item.step !== undefined) return item.step;
+    if (item.unit === "kg" || item.unit === "KG" || item.unit === "Kg") return 0.5;
+    return 1;
 }
 
 // ============ ORDER HISTORY FUNCTION ============
@@ -1254,110 +1056,37 @@ function loadOrderHistory(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const container = document.getElementById(`orderHistoryContainer_${kitchenId}`);
     if (!container) return;
-    
     const fromDate = document.getElementById(`historyFrom_${kitchenId}`)?.value || "";
     const toDate = document.getElementById(`historyTo_${kitchenId}`)?.value || "";
-    
-    let historyOrders = allRequests.filter(r => {
-        const orderStatus = getOverallStatusForDuplicate(r.items);
-        return r.section === kitchen && orderStatus !== "pending";
-    });
-    
-    if (fromDate) {
-        historyOrders = historyOrders.filter(r => r.timestamp >= new Date(fromDate).getTime());
-    }
-    if (toDate) {
-        const end = new Date(toDate);
-        end.setHours(23, 59, 59, 999);
-        historyOrders = historyOrders.filter(r => r.timestamp <= end.getTime());
-    }
-    
+    let historyOrders = allRequests.filter(r => { const orderStatus = getOverallStatus(r.items); return r.section === kitchen && orderStatus !== "pending"; });
+    if (fromDate) { historyOrders = historyOrders.filter(r => r.timestamp >= new Date(fromDate).getTime()); }
+    if (toDate) { const end = new Date(toDate); end.setHours(23, 59, 59, 999); historyOrders = historyOrders.filter(r => r.timestamp <= end.getTime()); }
     historyOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-    
-    if (historyOrders.length === 0) {
-        container.innerHTML = '<div class="empty-state">📭 ' + t('noHistory') + '</div>';
-        return;
-    }
-    
+    if (historyOrders.length === 0) { container.innerHTML = '<div class="empty-state">📭 ' + t('noHistory') + '</div>'; return; }
     container.innerHTML = "";
     historyOrders.forEach(req => {
-        const status = getOverallStatusForDuplicate(req.items);
+        const status = getOverallStatus(req.items);
         let statusClass = "status-pending", statusText = t('pending');
         if (status === "approved") { statusClass = "status-approved"; statusText = t('approved'); }
         else if (status === "rejected") { statusClass = "status-rejected"; statusText = t('rejected'); }
         else if (status === "partial") { statusClass = "status-partial"; statusText = t('partial'); }
-        
         const firstAdmin = req.items.find(i => i.approvedBy || i.rejectedBy);
         const adminName = firstAdmin ? (firstAdmin.approvedBy || firstAdmin.rejectedBy) : t('waitingForAdmin');
-        
-        let requestTotalValue = 0;
-        let approvedTotalValue = 0;
-        req.items.forEach(item => {
-            requestTotalValue += (item.originalQty) * (item.price || 0);
-            if (item.status === "approved") {
-                approvedTotalValue += (item.approvedQty || item.originalQty) * (item.price || 0);
-            }
-        });
-        
-        let itemsHtml = `<div class="table-wrapper"><table class="cart-table">
-            <thead>
-                <tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('approvedQty')}</th><th>${t('status')}</th></tr>
-            </thead>
-            <tbody>`;
-        
+        let requestTotalValue = 0, approvedTotalValue = 0;
+        req.items.forEach(item => { requestTotalValue += (item.originalQty) * (item.price || 0); if (item.status === "approved") { approvedTotalValue += (item.approvedQty || item.originalQty) * (item.price || 0); } });
+        let itemsHtml = `<div class="table-wrapper"><table class="cart-table"><thead><tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('approvedQty')}</th><th>${t('status')}</th></tr></thead><tbody>`;
         req.items.forEach(item => {
             const displayName = currentLang === 'ar' && item.name_ar ? item.name_ar : item.name;
             const approvedQty = item.status === "approved" ? (item.approvedQty || item.originalQty) : 0;
-            
             let statusDisplay = "", statusColor = "";
-            if (item.status === "approved") {
-                statusDisplay = `✅ ${t('approved')}`;
-                statusColor = "#27ae60";
-            } else if (item.status === "rejected") {
-                statusDisplay = `❌ ${t('rejected')}`;
-                statusColor = "#e74c3c";
-                if(item.rejectionReason) {
-                    statusDisplay += `<div class="rejection-reason">${t('reason')} ${escapeHtml(item.rejectionReason)}</div>`;
-                }
-            } else {
-                statusDisplay = `⏳ ${t('pending')}`;
-                statusColor = "#f39c12";
-            }
-            
-            itemsHtml += `<tr>
-                <td>${item.code}</div>
-                <td><strong>${escapeHtml(displayName)}</strong></div>
-                <td>${item.originalQty.toFixed(1)}</div>
-                <td>${item.unit}</div>
-                <td>${(item.price || 0).toFixed(2)}</div>
-                <td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</div>
-                <td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span></div>
-            </tr>`;
+            if (item.status === "approved") { statusDisplay = `✅ ${t('approved')}`; statusColor = "#27ae60"; }
+            else if (item.status === "rejected") { statusDisplay = `❌ ${t('rejected')}`; statusColor = "#e74c3c"; if(item.rejectionReason) { statusDisplay += `<div class="rejection-reason">${t('reason')} ${escapeHtml(item.rejectionReason)}</div>`; } }
+            else { statusDisplay = `⏳ ${t('pending')}`; statusColor = "#f39c12"; }
+            itemsHtml += `<tr><td>${item.code}</td><td><strong>${escapeHtml(displayName)}</strong></td><td>${item.originalQty.toFixed(1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td><td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span></td></tr>`;
         });
-        
-        itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;">
-            <td colspan="6" style="text-align:right;">💰 ${t('totalValue')} (Approved):</div>
-            <td><span class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</span></div>
-        </tr>`;
-        itemsHtml += `</tbody>}</div>`;
-        
-        container.innerHTML += `
-            <div class="request-card">
-                <div class="request-card-header">
-                    <span class="request-id">📜 ${req.requestId}</span>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <span style="background:linear-gradient(135deg, #1e3c72, #2a5298); color:white; padding:6px 14px; border-radius:20px; font-size:0.75rem;">💰 ${requestTotalValue.toFixed(2)} ${t('egp')}</span>
-                        <span class="approved-by-text">${t('approvedBy')}: <span>${escapeHtml(adminName)}</span></span>
-                        <span class="status-badge ${statusClass}">${statusText}</span>
-                    </div>
-                </div>
-                <div class="request-info-row">
-                    <div class="info-item"><div class="info-label">👨‍🍳 ${t('chefLabel')}</div><div class="info-value">${escapeHtml(req.chefName)}</div></div>
-                    <div class="info-item"><div class="info-label">📅 ${t('submitted')}</div><div class="info-value">${req.submittedAt}</div></div>
-                </div>
-                ${itemsHtml}
-            </div>
-        `;
+        itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;"><td colspan="6" style="text-align:right;">💰 ${t('totalValue')} (Approved):</td><td><span class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</span></td></tr>`;
+        itemsHtml += `</tbody></table></div>`;
+        container.innerHTML += `<div class="request-card"><div class="request-card-header"><span class="request-id">📜 ${req.requestId}</span><div style="display:flex; gap:10px; flex-wrap:wrap;"><span style="background:linear-gradient(135deg, #1e3c72, #2a5298); color:white; padding:6px 14px; border-radius:20px; font-size:0.75rem;">💰 ${requestTotalValue.toFixed(2)} ${t('egp')}</span><span class="approved-by-text">${t('approvedBy')}: <span>${escapeHtml(adminName)}</span></span><span class="status-badge ${statusClass}">${statusText}</span></div></div><div class="request-info-row"><div class="info-item"><div class="info-label">👨‍🍳 ${t('chefLabel')}</div><div class="info-value">${escapeHtml(req.chefName)}</div></div><div class="info-item"><div class="info-label">📅 ${t('submitted')}</div><div class="info-value">${req.submittedAt}</div></div></div>${itemsHtml}</div>`;
     });
 }
 
@@ -1369,10 +1098,7 @@ function toggleHistory(kitchen) {
         section.style.display = "block";
         localStorage.setItem("historyOpen_" + kitchen, "true");
         loadOrderHistory(kitchen);
-    } else {
-        section.style.display = "none";
-        localStorage.setItem("historyOpen_" + kitchen, "false");
-    }
+    } else { section.style.display = "none"; localStorage.setItem("historyOpen_" + kitchen, "false"); }
 }
 
 function restoreHistoryState(kitchen) {
@@ -1384,7 +1110,7 @@ function restoreHistoryState(kitchen) {
     else section.style.display = "none";
 }
 
-// ============ ITEM LIST FUNCTIONS WITH DYNAMIC STEP ============
+// ============ ITEM LIST FUNCTIONS WITH DYNAMIC STEP FROM JSON ============
 function filterItemsByFirstChar(kitchen, searchChar) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const displayDiv = document.getElementById(`itemsDisplay_${kitchenId}`);
@@ -1398,15 +1124,11 @@ function filterItemsByFirstChar(kitchen, searchChar) {
             return itemName.startsWith(lowerChar) || itemCode.startsWith(lowerChar);
         });
     }
-    if (!filteredItems.length) {
-        displayDiv.innerHTML = `<div class="empty-state">🔍 ${currentLang === 'ar' ? 'لا توجد أصناف تبدأ بـ' : 'No items starting with'} "${searchChar}"</div>`;
-        return;
-    }
+    if (!filteredItems.length) { displayDiv.innerHTML = `<div class="empty-state">🔍 ${currentLang === 'ar' ? 'لا توجد أصناف تبدأ بـ' : 'No items starting with'} "${searchChar}"</div>`; return; }
     if (!selectedQuantities[kitchen]) selectedQuantities[kitchen] = {};
     if (!addedItemsStatus[kitchen]) addedItemsStatus[kitchen] = {};
     const sortedItems = [...filteredItems].sort((a,b) => (getItemName(a) || "").localeCompare(getItemName(b) || ""));
     let html = `<div class="items-scroll-container"><div class="items-grid">`;
-    
     sortedItems.forEach(item => {
         const currentQty = selectedQuantities[kitchen][item.code] || 0;
         const isSelected = addedItemsStatus[kitchen][item.code] || false;
@@ -1414,36 +1136,19 @@ function filterItemsByFirstChar(kitchen, searchChar) {
         const safeCode = (item.code || "").replace(/[^a-zA-Z0-9]/g, '_');
         const itemPrice = item.price || 0;
         const displayName = getItemName(item);
-        
-        const isKg = item.unit === "kg" || item.unit === "KG" || item.unit === "Kg";
-        const stepValue = isKg ? 0.5 : 1;
-        const stepText = isKg ? "0.5" : "1";
-        const displayQty = isKg ? currentQty.toFixed(1) : Math.floor(currentQty);
-        
-        html += `
-            <div class="item-card ${selectedClass}" id="itemCard_${kitchenId}_${safeCode}">
-                <div class="item-main-row">
-                    <div class="item-info">
-                        <div class="item-name">${escapeHtml(displayName)}</div>
-                        <div class="item-code">${item.code || "N/A"}</div>
-                        <div class="item-price">💰 ${itemPrice.toFixed(2)} ${t('egp')} / ${item.unit}</div>
-                    </div>
-                    <div class="item-meta">
-                        <span class="item-unit">${item.unit || "pcs"}</span>
-                        <div class="item-max">${t('max')} ${item.maxLimit || 99}</div>
-                        <div class="item-step">Step: ${stepText}</div>
-                    </div>
-                    <div class="item-actions">
-                        <div class="qty-picker">
-                            <button class="qty-btn" data-step="-${stepValue}" data-code="${item.code}" data-max="${item.maxLimit || 99}">−</button>
-                            <span class="qty-value" id="qtySpan_${kitchenId}_${safeCode}">${displayQty}</span>
-                            <button class="qty-btn" data-step="${stepValue}" data-code="${item.code}" data-max="${item.maxLimit || 99}">+</button>
-                        </div>
-                        <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(displayName)}" data-unit="${item.unit || "pcs"}" data-max="${item.maxLimit || 99}" data-price="${itemPrice}" data-step="${stepValue}">${t('add')}</button>
-                    </div>
-                </div>
-            </div>
-        `;
+        const stepValue = getItemStep(item);
+        const stepText = stepValue === 0.5 ? "0.5" : "1";
+        const displayQty = stepValue === 0.5 ? currentQty.toFixed(1) : Math.floor(currentQty);
+        html += `<div class="item-card ${selectedClass}" id="itemCard_${kitchenId}_${safeCode}">
+            <div class="item-main-row"><div class="item-info"><div class="item-name">${escapeHtml(displayName)}</div>
+            <div class="item-code">${item.code || "N/A"}</div><div class="item-price">💰 ${itemPrice.toFixed(2)} ${t('egp')} / ${item.unit}</div></div>
+            <div class="item-meta"><span class="item-unit">${item.unit || "pcs"}</span>
+            <div class="item-max">${t('max')} ${item.maxLimit || 99}</div><div class="item-step">Step: ${stepText}</div></div>
+            <div class="item-actions"><div class="qty-picker">
+            <button class="qty-btn" data-step="-${stepValue}" data-code="${item.code}" data-max="${item.maxLimit || 99}">−</button>
+            <span class="qty-value" id="qtySpan_${kitchenId}_${safeCode}">${displayQty}</span>
+            <button class="qty-btn" data-step="${stepValue}" data-code="${item.code}" data-max="${item.maxLimit || 99}">+</button></div>
+            <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(displayName)}" data-unit="${item.unit || "pcs"}" data-max="${item.maxLimit || 99}" data-price="${itemPrice}" data-step="${stepValue}">${t('add')}</button></div></div></div>`;
     });
     html += `</div><div class="scroll-info">📜 ${sortedItems.length} ${t('allItems')}</div></div>`;
     displayDiv.innerHTML = html;
@@ -1474,20 +1179,11 @@ async function renderItemsList(kitchen) {
     const container = document.getElementById(`itemsListContainer_${kitchenId}`);
     if (!container) return;
     const chefName = chefNames[kitchen];
-    if (!chefName) {
-        container.innerHTML = `<div class="empty-state">⚠️ ${t('enterChefNameToSee')}</div>`;
-        return;
-    }
+    if (!chefName) { container.innerHTML = `<div class="empty-state">⚠️ ${t('enterChefNameToSee')}</div>`; return; }
     let items = await loadItemsForKitchen(kitchen, false);
-    if (!items.length) {
-        container.innerHTML = `<div class="empty-state">📭 ${t('noItems')} ${kitchen}</div>`;
-        return;
-    }
+    if (!items.length) { container.innerHTML = `<div class="empty-state">📭 ${t('noItems')} ${kitchen}</div>`; return; }
     currentItemsList = items;
-    container.innerHTML = `
-        <div class="input-group"><label>🔍 ${t('searchByFirstChar')}</label><input type="text" id="searchInput_${kitchenId}" placeholder="${t('searchPlaceholder')}" maxlength="1" autocomplete="off"></div>
-        <div id="itemsDisplay_${kitchenId}"></div>
-    `;
+    container.innerHTML = `<div class="input-group"><label>🔍 ${t('searchByFirstChar')}</label><input type="text" id="searchInput_${kitchenId}" placeholder="${t('searchPlaceholder')}" maxlength="1" autocomplete="off"></div><div id="itemsDisplay_${kitchenId}"></div>`;
     filterItemsByFirstChar(kitchen, "");
     document.getElementById(`searchInput_${kitchenId}`).addEventListener('input', (e) => filterItemsByFirstChar(kitchen, e.target.value));
 }
@@ -1499,64 +1195,36 @@ function changeQuantity(kitchen, code, delta, maxLimit) {
     if (newQty < 0) newQty = 0;
     if (newQty > maxLimit) newQty = maxLimit;
     selectedQuantities[kitchen][code] = newQty;
-    
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const safeCode = (code || "").replace(/[^a-zA-Z0-9]/g, '_');
     const span = document.getElementById(`qtySpan_${kitchenId}_${safeCode}`);
     if (span) {
         const absDelta = Math.abs(delta);
-        if (absDelta === 0.5 || absDelta === -0.5) {
-            span.innerText = newQty.toFixed(1);
-        } else {
-            span.innerText = Math.floor(newQty);
-        }
+        if (absDelta === 0.5 || absDelta === -0.5) { span.innerText = newQty.toFixed(1); }
+        else { span.innerText = Math.floor(newQty); }
     }
 }
 
 function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit, price, step) {
     const chefName = chefNames[kitchen];
     if (!chefName) { showToast("⚠️ Enter chef name first"); return; }
-    
     let qty = selectedQuantities[kitchen]?.[code] || 0;
     if (qty <= 0) { showToast(`⚠️ Set quantity > 0 for ${itemName}`); return; }
-    
     const items = getItemsForKitchen(kitchen);
     const item = items.find(i => i.code === code);
     if (!item) return;
-    
     const existing = kitchenData[kitchen].cart.find(i => i.code === code);
     let currentQty = existing ? existing.qty : 0;
     let maxAllowed = item.maxLimit || maxLimit;
     let remaining = maxAllowed - currentQty;
-    
     let actualQtyToAdd = qty;
-    if (remaining <= 0) {
-        showToast(`⚠️ Maximum ${maxAllowed} ${item.unit || unit} reached!`);
-        return;
-    }
-    
-    if (qty > remaining) {
-        actualQtyToAdd = remaining;
-        showToast(`⚠️ Only ${remaining.toFixed(1)} remaining. Added ${remaining.toFixed(1)} instead of ${qty.toFixed(1)}`);
-    }
-    
+    if (remaining <= 0) { showToast(`⚠️ Maximum ${maxAllowed} ${item.unit || unit} reached!`); return; }
+    if (qty > remaining) { actualQtyToAdd = remaining; showToast(`⚠️ Only ${remaining.toFixed(1)} remaining. Added ${remaining.toFixed(1)} instead of ${qty.toFixed(1)}`); }
     const itemPrice = item.price || price || 0;
-    if (existing) {
-        existing.qty += actualQtyToAdd;
-        showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`);
-    } else {
-        kitchenData[kitchen].cart.push({
-            code: item.code, name: item.name, name_ar: item.name_ar,
-            unit: item.unit || unit,
-            qty: actualQtyToAdd, maxLimit: item.maxLimit || maxLimit,
-            price: itemPrice
-        });
-        showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`);
-    }
-    
+    if (existing) { existing.qty += actualQtyToAdd; showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`); }
+    else { kitchenData[kitchen].cart.push({ code: item.code, name: item.name, name_ar: item.name_ar, unit: item.unit || unit, qty: actualQtyToAdd, maxLimit: item.maxLimit || maxLimit, price: itemPrice }); showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`); }
     addedItemsStatus[kitchen][code] = true;
     selectedQuantities[kitchen][code] = 0;
-    
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const safeCode = (code || "").replace(/[^a-zA-Z0-9]/g, '_');
     const span = document.getElementById(`qtySpan_${kitchenId}_${safeCode}`);
@@ -1576,92 +1244,49 @@ function renderCart(kitchen) {
     document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty.toFixed(1);
     document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
     document.getElementById(`totalValue_${kitchenId}`).innerText = totalValue.toFixed(2);
-    
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
     if (desktopBody) {
-        if (cart.length === 0) {
-            desktopBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">${t('noItems')}</div>`;
-        } else {
+        if (cart.length === 0) { desktopBody.innerHTML = `<tr><td colspan="7" style="text-align:center;">${t('noItems')}</td></tr>`; }
+        else {
             desktopBody.innerHTML = "";
             cart.forEach((item, idx) => {
                 const itemTotal = (item.qty * (item.price || 0)).toFixed(2);
                 const displayName = currentLang === 'ar' && item.name_ar ? item.name_ar : item.name;
-                desktopBody.innerHTML += `
-                    <tr>
-                        <td>${item.code}</div>
-                        <td><strong>${escapeHtml(displayName)}</strong></div>
-                        <td>${item.qty.toFixed(1)}</div>
-                        <td>${item.unit}</div>
-                        <td>${(item.price || 0).toFixed(2)}</div>
-                        <td>${itemTotal}</div>
-                        <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">${t('remove')}</button></div>
-                    </tr>
-                `;
+                desktopBody.innerHTML += `<tr><td>${item.code}</td><td><strong>${escapeHtml(displayName)}</strong></td><td>${item.qty.toFixed(1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${itemTotal}</td><td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">${t('remove')}</button></td></tr>`;
             });
         }
     }
 }
 
-function removeItem(kitchen, index) {
-    kitchenData[kitchen].cart.splice(index, 1);
-    renderCart(kitchen);
-    saveCart();
-    showToast("Item removed");
-}
-
-function clearCart(kitchen) {
-    if (confirm("Clear all items?")) {
-        kitchenData[kitchen].cart = [];
-        renderCart(kitchen);
-        saveCart();
-        showToast("Cart cleared");
-    }
-}
+function removeItem(kitchen, index) { kitchenData[kitchen].cart.splice(index, 1); renderCart(kitchen); saveCart(); showToast("Item removed"); }
+function clearCart(kitchen) { if (confirm("Clear all items?")) { kitchenData[kitchen].cart = []; renderCart(kitchen); saveCart(); showToast("Cart cleared"); } }
 
 // ============ SUBMIT REQUEST WITH DUPLICATE CHECK ============
 async function submitRequest(kitchen) {
     const chefName = chefNames[kitchen];
     const cart = kitchenData[kitchen].cart;
-    
     if (!chefName) { showToast("⚠️ Enter chef name first"); return; }
     if (cart.length === 0) { showToast("No items to submit"); return; }
-    
-    // ============ DUPLICATE CHECK ============
     const duplicateCheck = await checkForDuplicateOrder(kitchen, chefName, cart);
-    
     if (duplicateCheck.isDuplicate) {
         const message = `${t('duplicateBlocked')}!\n\n${t('duplicateMessage')} ${duplicateCheck.existingTime}\nRequest ID: ${duplicateCheck.existingRequestId}\n\nPlease check existing request or modify quantities.`;
         showToast(`🚫 ${t('duplicateBlocked')}!`);
         alert(message);
-        return; // STOP submission - prevent duplicate
+        return;
     }
-    // ============ END DUPLICATE CHECK ============
-    
     const newRequest = {
         requestId: "REQ-" + Date.now().toString().slice(-6),
-        chefName: chefName,
-        section: kitchen,
-        items: cart.map(i => ({
-            code: i.code, name: i.name, name_ar: i.name_ar,
-            unit: i.unit,
-            originalQty: i.qty, maxLimit: i.maxLimit,
-            price: i.price || 0,
-            status: "pending", approvedQty: 0, rejectionReason: null
-        })),
-        submittedAt: new Date().toLocaleString(),
-        timestamp: Date.now()
+        chefName: chefName, section: kitchen,
+        items: cart.map(i => ({ code: i.code, name: i.name, name_ar: i.name_ar, unit: i.unit, originalQty: i.qty, maxLimit: i.maxLimit, price: i.price || 0, status: "pending", approvedQty: 0, rejectionReason: null })),
+        submittedAt: new Date().toLocaleString(), timestamp: Date.now()
     };
-    
     await saveRequestToFirebase(newRequest);
     kitchenData[kitchen].cart = [];
     renderCart(kitchen);
     saveCart();
     showToast(`✅ Request ${newRequest.requestId} submitted!`);
     await loadRequestsFromFirebase();
-    if (currentKitchen) {
-        loadMyRequests(currentKitchen);
-        loadOrderHistory(currentKitchen);
-    }
+    if (currentKitchen) { loadMyRequests(currentKitchen); loadOrderHistory(currentKitchen); }
 }
 
 function getOverallStatus(items) {
@@ -1674,19 +1299,37 @@ function getOverallStatus(items) {
     return "pending";
 }
 
-// ============ LOAD MY REQUESTS ============
+async function checkForDuplicateOrder(section, chefName, cartItems) {
+    try {
+        const snapshot = await db.collection("kitchen_requests").where("section", "==", section).get();
+        for (const doc of snapshot.docs) {
+            const request = doc.data();
+            const requestStatus = getOverallStatus(request.items);
+            if (requestStatus === "pending" || requestStatus === "approved") {
+                const existingItems = request.items;
+                if (existingItems.length === cartItems.length) {
+                    let isDuplicate = true;
+                    const sortedExisting = [...existingItems].sort((a, b) => (a.code || "").localeCompare(b.code || ""));
+                    const sortedNew = [...cartItems].sort((a, b) => (a.code || "").localeCompare(b.code || ""));
+                    for (let i = 0; i < sortedNew.length; i++) {
+                        if (sortedNew[i].code !== sortedExisting[i].code || Math.abs(sortedNew[i].qty - sortedExisting[i].originalQty) > 0.01) {
+                            isDuplicate = false; break;
+                        }
+                    }
+                    if (isDuplicate) { return { isDuplicate: true, existingRequestId: request.requestId, existingTime: request.submittedAt }; }
+                }
+            }
+        }
+        return { isDuplicate: false };
+    } catch(e) { console.error("Duplicate check error:", e); return { isDuplicate: false }; }
+}
+
 function loadMyRequests(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const container = document.getElementById(`myRequestsDesktop_${kitchenId}`);
     if (!container) return;
-    
     const kitchenRequests = allRequests.filter(r => r.section === kitchen);
-    
-    if (!kitchenRequests.length) {
-        container.innerHTML = `<div class="empty-state">📭 ${t('noRequests')}</div>`;
-        return;
-    }
-    
+    if (!kitchenRequests.length) { container.innerHTML = `<div class="empty-state">📭 ${t('noRequests')}</div>`; return; }
     container.innerHTML = "";
     [...kitchenRequests].reverse().forEach(req => {
         const status = getOverallStatus(req.items);
@@ -1694,85 +1337,28 @@ function loadMyRequests(kitchen) {
         if (status === "approved") { statusClass = "status-approved"; statusText = t('approved'); }
         else if (status === "rejected") { statusClass = "status-rejected"; statusText = t('rejected'); }
         else if (status === "partial") { statusClass = "status-partial"; statusText = t('partial'); }
-        
         const firstAdmin = req.items.find(i => i.approvedBy || i.rejectedBy);
         const adminName = firstAdmin ? (firstAdmin.approvedBy || firstAdmin.rejectedBy) : t('pending');
-        
         let requestTotalValue = 0;
-        req.items.forEach(item => {
-            const price = item.price || 0;
-            const qty = item.originalQty;
-            requestTotalValue += qty * price;
-        });
-        
-        let itemsHtml = `<div class="table-wrapper"><table class="cart-table">
-            <thead>
-                <tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('total')}</th><th>${t('approvedQty')}</th><th>${t('status')}</th></tr>
-            </thead>
-            <tbody>`;
-        
+        req.items.forEach(item => { requestTotalValue += (item.originalQty) * (item.price || 0); });
+        let itemsHtml = `<div class="table-wrapper"><table class="cart-table"><thead><tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('total')}</th><th>${t('approvedQty')}</th><th>${t('status')}</th></tr></thead><tbody>`;
         let approvedTotalValue = 0;
         req.items.forEach(item => {
             const qty = item.originalQty;
             const price = item.price || 0;
             const approvedQty = item.status === "approved" ? (item.approvedQty || qty) : 0;
             const total = (item.status === "approved" ? approvedQty : 0) * price;
-            if(item.status === "approved") {
-                approvedTotalValue += total;
-            }
+            if(item.status === "approved") { approvedTotalValue += total; }
             const displayName = currentLang === 'ar' && item.name_ar ? item.name_ar : item.name;
-            
-            let statusDisplay = "";
-            let statusColor = "";
-            let rejectionHtml = "";
-            if(item.status === "approved") {
-                statusDisplay = `✅ ${t('approved')}`;
-                statusColor = "#27ae60";
-            } else if(item.status === "rejected") {
-                statusDisplay = `❌ ${t('rejected')}`;
-                statusColor = "#e74c3c";
-                if(item.rejectionReason) {
-                    rejectionHtml = `<div class="rejection-reason">${t('reason')} ${escapeHtml(item.rejectionReason)}</div>`;
-                }
-            } else {
-                statusDisplay = `⏳ ${t('pending')}`;
-                statusColor = "#f39c12";
-            }
-            
-            itemsHtml += `<tr>
-                <td>${item.code}</div>
-                <td><div><strong>${escapeHtml(displayName)}</strong></div></div>
-                <td>${qty.toFixed(1)}</div>
-                <td>${item.unit}</div>
-                <td>${price.toFixed(2)}</div>
-                <td>${total.toFixed(2)}</div>
-                <td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</div>
-                <td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span>${rejectionHtml}</div>
-            </tr>`;
+            let statusDisplay = "", statusColor = "", rejectionHtml = "";
+            if(item.status === "approved") { statusDisplay = `✅ ${t('approved')}`; statusColor = "#27ae60"; }
+            else if(item.status === "rejected") { statusDisplay = `❌ ${t('rejected')}`; statusColor = "#e74c3c"; if(item.rejectionReason) { rejectionHtml = `<div class="rejection-reason">${t('reason')} ${escapeHtml(item.rejectionReason)}</div>`; } }
+            else { statusDisplay = `⏳ ${t('pending')}`; statusColor = "#f39c12"; }
+            itemsHtml += `<tr><td>${item.code}</td><td><div><strong>${escapeHtml(displayName)}</strong></div></td><td>${qty.toFixed(1)}</td><td>${item.unit}</td><td>${price.toFixed(2)}</td><td>${total.toFixed(2)}</td><td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td><td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span>${rejectionHtml}</td></tr>`;
         });
-        itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;">
-            <td colspan="7" style="text-align:right;">💰 ${t('totalValue')} (Approved only):</div>
-            <td><span class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</span></div>
-        </tr>`;
-        itemsHtml += `</tbody>}</div>`;
-        
-        container.innerHTML += `
-            <div class="request-card">
-                <div class="request-card-header">
-                    <span class="request-id">📄 ${req.requestId}</span>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <span style="background:linear-gradient(135deg, #1e3c72, #2a5298); color:white; padding:6px 14px; border-radius:20px; font-size:0.75rem;">💰 ${t('totalValue')}: ${requestTotalValue.toFixed(2)} ${t('egp')}</span>
-                        <span class="approved-by-text">${t('approvedBy')}: <span>${escapeHtml(adminName)}</span></span>
-                        <span class="status-badge ${statusClass}">${statusText}</span>
-                    </div>
-                </div>
-                <div class="request-info-row">
-                    <div class="info-item"><div class="info-label">👨‍🍳 ${t('chefLabel')}</div><div class="info-value">${escapeHtml(req.chefName)}</div></div>
-                    <div class="info-item"><div class="info-label">📅 ${t('submitted')}</div><div class="info-value">${req.submittedAt}</div></div>
-                </div>
-                ${itemsHtml}
-            </div>
-        `;
+        itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;"><td colspan="7" style="text-align:right;">💰 ${t('totalValue')} (Approved only):</td><td><span class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</span></td></tr>`;
+        itemsHtml += `</tbody></table></div>`;
+        container.innerHTML += `<div class="request-card"><div class="request-card-header"><span class="request-id">📄 ${req.requestId}</span><div style="display:flex; gap:10px; flex-wrap:wrap;"><span style="background:linear-gradient(135deg, #1e3c72, #2a5298); color:white; padding:6px 14px; border-radius:20px; font-size:0.75rem;">💰 ${t('totalValue')}: ${requestTotalValue.toFixed(2)} ${t('egp')}</span><span class="approved-by-text">${t('approvedBy')}: <span>${escapeHtml(adminName)}</span></span><span class="status-badge ${statusClass}">${statusText}</span></div></div><div class="request-info-row"><div class="info-item"><div class="info-label">👨‍🍳 ${t('chefLabel')}</div><div class="info-value">${escapeHtml(req.chefName)}</div></div><div class="info-item"><div class="info-label">📅 ${t('submitted')}</div><div class="info-value">${req.submittedAt}</div></div></div>${itemsHtml}</div>`;
     });
 }
 
@@ -1780,10 +1366,7 @@ function exportToExcel(kitchen) {
     const cart = kitchenData[kitchen].cart;
     if (!cart.length) { showToast("No items"); return; }
     let csv = "Code,Item,Quantity,Unit,Price,Total Value\n";
-    cart.forEach(i => {
-        const total = i.qty * (i.price || 0);
-        csv += `${i.code},${i.name},${i.qty.toFixed(1)},${i.unit},${(i.price || 0).toFixed(2)},${total.toFixed(2)}\n`;
-    });
+    cart.forEach(i => { const total = i.qty * (i.price || 0); csv += `${i.code},${i.name},${i.qty.toFixed(1)},${i.unit},${(i.price || 0).toFixed(2)},${total.toFixed(2)}\n`; });
     const blob = new Blob([csv], { type: "text/csv" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -1793,13 +1376,7 @@ function exportToExcel(kitchen) {
 }
 
 function openAdmin() { window.open("admin.html", "_blank"); }
-function showToast(msg) {
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.innerText = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
-}
+function showToast(msg) { const toast = document.createElement("div"); toast.className = "toast"; toast.innerText = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2500); }
 function escapeHtml(str) { return str ? str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])) : ''; }
 
 function logout() {
@@ -1819,10 +1396,7 @@ function logout() {
 
 async function selectKitchen(kitchen) {
     currentKitchen = kitchen;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.innerText.includes(kitchen)) btn.classList.add('active');
-    });
+    document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('active'); if (btn.innerText.includes(kitchen)) btn.classList.add('active'); });
     document.querySelectorAll('.kitchen-page').forEach(p => p.classList.remove('active-page'));
     const pageId = `page_${kitchen.replace(/\s/g, '_').replace(/\//g, '_')}`;
     const target = document.getElementById(pageId);
@@ -1843,61 +1417,19 @@ function onChefNameChange(kitchen) {
     saveChefNames();
     renderItemsList(kitchen);
     loadMyRequests(kitchen);
-    if(document.getElementById(`historySection_${id}`)?.style.display === "block") {
-        loadOrderHistory(kitchen);
-    }
+    if(document.getElementById(`historySection_${id}`)?.style.display === "block") { loadOrderHistory(kitchen); }
 }
 
 function createKitchenPage(kitchen) {
     const id = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    return `
-        <div class="kitchen-page" id="page_${id}">
-            <div class="card">
-                <h3>👨‍🍳 ${t('chefInfo')} - ${kitchen}</h3>
-                <div class="input-group">
-                    <label>${t('chefName')} <span class="required">*</span></label>
-                    <input type="text" id="chefName_${id}" placeholder="${t('enterChefName')}" onchange="onChefNameChange('${kitchen}')">
-                </div>
-            </div>
-            <div class="card">
-                <h3>📦 ${kitchen} ${t('items')} <span style="font-size:11px;">(${t('searchByFirstChar')})</span></h3>
-                <div id="itemsListContainer_${id}"></div>
-            </div>
-            <div class="card">
-                <h3>🛒 ${t('currentRequest')} <button class="history-toggle-btn" onclick="toggleHistory('${kitchen}')">📜 ${t('viewHistory')}</button></h3>
-                <div class="cart-stats"><span>📦 ${t('totalQty')}: <strong id="totalItems_${id}">0</strong></span><span>📋 ${t('totalItems')}: <strong id="lineCount_${id}">0</strong></span><span>💰 ${t('totalValue')}: <strong id="totalValue_${id}">0.00</strong> ${t('egp')}</span></div>
-                <div class="desktop-table-view">
-                    <div class="table-wrapper">
-                        <table class="cart-table">
-                            <thead><tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('total')}</th><th></th></tr></thead>
-                            <tbody id="cartTableDesktop_${id}"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="mobile-cards-view" id="cartMobile_${id}"></div>
-                <div class="button-group">
-                    <button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 ${t('submit')}</button>
-                    <button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 ${t('export')}</button>
-                    <button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ ${t('clear')}</button>
-                </div>
-            </div>
-            <div class="card">
-                <h3>📜 ${t('myRequests')} <span style="font-size:11px;">(${t('showsAdminPrice')})</span></h3>
-                <div id="myRequestsDesktop_${id}"></div>
-            </div>
-            <div class="card">
-                <h3>📜 ${t('orderHistory')}</h3>
-                <div id="historySection_${id}" class="history-section" style="display:none;">
-                    <div class="history-toolbar">
-                        <input type="date" id="historyFrom_${id}" placeholder="${t('fromDate')}">
-                        <input type="date" id="historyTo_${id}" placeholder="${t('toDate')}">
-                        <button class="history-filter-btn" onclick="loadOrderHistory('${kitchen}')">🔍 ${t('filter')}</button>
-                    </div>
-                    <div id="orderHistoryContainer_${id}"></div>
-                </div>
-            </div>
-        </div>
-    `;
+    return `<div class="kitchen-page" id="page_${id}"><div class="card"><h3>👨‍🍳 ${t('chefInfo')} - ${kitchen}</h3><div class="input-group"><label>${t('chefName')} <span class="required">*</span></label><input type="text" id="chefName_${id}" placeholder="${t('enterChefName')}" onchange="onChefNameChange('${kitchen}')"></div></div>
+    <div class="card"><h3>📦 ${kitchen} ${t('items')} <span style="font-size:11px;">(${t('searchByFirstChar')})</span></h3><div id="itemsListContainer_${id}"></div></div>
+    <div class="card"><h3>🛒 ${t('currentRequest')} <button class="history-toggle-btn" onclick="toggleHistory('${kitchen}')">📜 ${t('viewHistory')}</button></h3>
+    <div class="cart-stats"><span>📦 ${t('totalQty')}: <strong id="totalItems_${id}">0</strong></span><span>📋 ${t('totalItems')}: <strong id="lineCount_${id}">0</strong></span><span>💰 ${t('totalValue')}: <strong id="totalValue_${id}">0.00</strong> ${t('egp')}</span></div>
+    <div class="desktop-table-view"><div class="table-wrapper"><table class="cart-table"><thead><tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('total')}</th><th></th></tr></thead><tbody id="cartTableDesktop_${id}"></tbody></table></div></div>
+    <div class="button-group"><button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 ${t('submit')}</button><button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 ${t('export')}</button><button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ ${t('clear')}</button></div></div>
+    <div class="card"><h3>📜 ${t('myRequests')} <span style="font-size:11px;">(${t('showsAdminPrice')})</span></h3><div id="myRequestsDesktop_${id}"></div></div>
+    <div class="card"><h3>📜 ${t('orderHistory')}</h3><div id="historySection_${id}" class="history-section" style="display:none;"><div class="history-toolbar"><input type="date" id="historyFrom_${id}" placeholder="${t('fromDate')}"><input type="date" id="historyTo_${id}" placeholder="${t('toDate')}"><button class="history-filter-btn" onclick="loadOrderHistory('${kitchen}')">🔍 ${t('filter')}</button></div><div id="orderHistoryContainer_${id}"></div></div></div></div>`;
 }
 
 function generatePages() {
@@ -1905,27 +1437,16 @@ function generatePages() {
     const pages = document.getElementById("kitchenPagesContainer");
     tabs.innerHTML = "";
     pages.innerHTML = "";
-    kitchens.forEach(k => {
-        tabs.innerHTML += `<button class="tab-btn" onclick="showKitchenPasswordModal('${k}')">${k}</button>`;
-        pages.innerHTML += createKitchenPage(k);
-    });
+    kitchens.forEach(k => { tabs.innerHTML += `<button class="tab-btn" onclick="showKitchenPasswordModal('${k}')">${k}</button>`; pages.innerHTML += createKitchenPage(k); });
 }
 
-function loadLastSelectedKitchen() {
-    const lastKitchen = localStorage.getItem("lastSelectedKitchen");
-    if (lastKitchen && unlockedKitchens[lastKitchen]) {
-        selectKitchen(lastKitchen);
-    }
-}
+function loadLastSelectedKitchen() { const lastKitchen = localStorage.getItem("lastSelectedKitchen"); if (lastKitchen && unlockedKitchens[lastKitchen]) { selectKitchen(lastKitchen); } }
 
 generatePages();
 startAutoRefresh();
 loadRequestsFromFirebase();
 loadLastSelectedKitchen();
-
-db.collection("kitchen_requests").onSnapshot(() => {
-    loadRequestsFromFirebase();
-});
+db.collection("kitchen_requests").onSnapshot(() => { loadRequestsFromFirebase(); });
 </script>
 </body>
 </html>
