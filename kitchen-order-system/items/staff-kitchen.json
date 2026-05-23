@@ -9,7 +9,7 @@
   {"code": "152003", "name": "Milk Full Cream Juhayna", "name_ar": "لبن كامل الدسم جهينة", "unit": "L", "maxLimit": 10, "AVE": 40.5749},
   {"code": "152039", "name": "Milk Powder Nestle", "name_ar": "لبن بودرة نستله", "unit": "1.75kg pkt", "maxLimit": 2, "AVE": 754.29113},
   {"code": "153038", "name": "Cheese White Gallon", "name_ar": "جبنة بيضاء جالون", "unit": "10kg gal", "maxLimit": 1, "AVE": 700.0522},
-  {"code": "160100", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "AVE": 0},
+  {"code": "160100", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "AVE": 160},
   {"code": "160079", "name": "Tomato Paste Wadi Food", "name_ar": "صلصة طماطم وادي فود", "unit": "3kg tin", "maxLimit": 3, "AVE": 142.05624},
   {"code": "177068", "name": "Honey Black El Rashedy", "name_ar": "عسل أسود الرشيدي", "unit": "650g jar", "maxLimit": 5, "AVE": 42.45296},
   {"code": "151005", "name": "Butter Fern", "name_ar": "زبدة فيرن", "unit": "kg", "maxLimit": 8, "AVE": 147.69841},
