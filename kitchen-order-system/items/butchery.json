@@ -5,7 +5,7 @@
   {"code": "110029", "name": "Beef Shoulder Indian", "name_ar": "كتف لحم هندي", "unit": "kg", "maxLimit": 40, "AVE": 249.7167},
   {"code": "131008", "name": "Fish Fillet Seabass", "name_ar": "فيليه سمك القاروص", "unit": "kg", "maxLimit": 40, "AVE": 433.437},
   {"code": "110051", "name": "Beef Tenderloin Australian", "name_ar": "تندرلوين لحم أسترالي", "unit": "kg", "maxLimit": 8, "AVE": 2400},
-  {"code": "160100", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 10, "AVE": 0},
+  {"code": "160100", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "AVE": 0},
   {"code": "113111", "name": "Beef Bacon Smoked Sliced Taste Pure", "name_ar": "بيكون لحم مدخن شرائح تيست بيور", "unit": "500g pkt", "maxLimit": 5, "AVE": 270.9},
   {"code": "112007", "name": "Lamb Rack Standard", "name_ar": "راك خروف", "unit": "kg", "maxLimit": 6, "AVE": 1154.75491},
   {"code": "112009", "name": "Lamb Shank Australian", "name_ar": "ساق خروف أسترالي", "unit": "kg", "maxLimit": 8, "AVE": 573.64334},
