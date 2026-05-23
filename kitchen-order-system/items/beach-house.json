@@ -90,7 +90,7 @@
   {"code": "163005", "name": "Oil Corn", "name_ar": "زيت ذرة", "unit": "L", "maxLimit": 6, "step": 1, "AVE": 79.81302},
   {"code": "163006", "name": "Oil Fried Mix", "name_ar": "زيت قلي", "unit": "L", "maxLimit": 16, "step": 1, "AVE": 65.49429},
   {"code": "163008", "name": "Oil Olive", "name_ar": "زيت زيتون", "unit": "L", "maxLimit": 2, "step": 1, "AVE": 583.28242},
-  {"code": "163013", "name": "Oil Truffle", "name_ar": "زيت كمأة", "unit": "250ml bottle", "maxLimit": 1, "step": 1, "AVE": 552.62468},
+  {"code": "163013", "name": "Oil Truffle", "name_ar": "زيت ترافيل", "unit": "250ml bottle", "maxLimit": 1, "step": 1, "AVE": 552.62468},
   {"code": "163152", "name": "Mix Pickles Wadi Food", "name_ar": "مخلل مشكل وادي فود", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 43.75888},
   {"code": "163016", "name": "Pickles Black Olive Local", "name_ar": "زيتون أسود مخلل محلي", "unit": "8kg gal", "maxLimit": 1, "step": 1, "AVE": 1263.9},
   {"code": "163020", "name": "Pickles Black Olives Minced", "name_ar": "زيتون أسود مفروم", "unit": "300g jar", "maxLimit": 4, "step": 1, "AVE": 25.14},
