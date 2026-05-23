@@ -38,7 +38,7 @@
   {"code": "163124", "name": "Sauce Soya Kikoman", "name_ar": "صوص صويا كيكومان", "unit": "18.9L gal", "maxLimit": 1, "AVE": 4933.33338},
   {"code": "163219", "name": "Sauce Sweet Chilli", "name_ar": "صوص شلي حلو", "unit": "710ml bottle", "maxLimit": 2, "AVE": 69.9989},
   {"code": "163005", "name": "Oil Corn", "name_ar": "زيت ذرة", "unit": "L", "maxLimit": 6, "AVE": 79.81302},
-  {"code": "163006", "name": "Oil Fried Mix", "name_ar": "زيت قلي", "unit": "L", "maxLimit": 16, "AVE": 65.49429},
+  {"code": "163006", "name": "Oil Fried Mix", "name_ar": "زيت قلي", "unit": "L", "maxLimit": 18, "AVE": 65.49429},
   {"code": "163227", "name": "Oil Sesame", "name_ar": "زيت سمسم", "unit": "500ml bottle", "maxLimit": 2, "AVE": 275},
   {"code": "163013", "name": "Oil Truffle", "name_ar": "زيت كمأة", "unit": "250ml bottle", "maxLimit": 1, "AVE": 552.62468},
   {"code": "163024", "name": "Pickles Ginger", "name_ar": "زنجبيل مخلل", "unit": "1.5kg pkt", "maxLimit": 2, "AVE": 60.25514},
