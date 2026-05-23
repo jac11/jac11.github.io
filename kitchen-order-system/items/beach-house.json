@@ -1,4 +1,4 @@
-[
+p[
   {"code": "176003", "name": "Almond Powder Abu Auf", "name_ar": "بودرة لوز أبو عوف", "unit": "500g pkt", "maxLimit": 6, "step": 1, "price": 197.37},
   {"code": "175020", "name": "Taco Shell Corn", "name_ar": "تاكو شل ذرة", "unit": "pkt", "maxLimit": 6, "step": 1, "AVE": 57.750},
   {"code": "176001", "name": "Almond Slice Abu Auf", "name_ar": "شرائح لوز أبو عوف", "unit": "500g pkt", "maxLimit": 6, "step": 1, "price": 350.57},
@@ -129,7 +129,7 @@
   {"code": "177036", "name": "Jam Apricot Portion", "name_ar": "مربى مشمش قطعة", "unit": "144pc box", "maxLimit": 2, "step": 1, "AVE": 1808.2512},
   {"code": "176005", "name": "Almond Whole", "name_ar": "لوز كامل", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 461.1593},
   {"code": "176007", "name": "Cashew Abu Auf", "name_ar": "كاجو أبو عوف", "unit": "500g pkt", "maxLimit": 2, "step": 1, "AVE": 329.99965},
-  {"code": "176025", "name": "Walnuts", "name_ar": "جوز", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 517.65577},
+  {"code": "176025", "name": "Walnuts", "name_ar": "عين جمل", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 517.65577},
   {"code": "110073", "name": "Burger Vegan Classic Yumazing Box 5 KG", "name_ar": "برجر نباتي كلاسيك يوميزينج", "unit": "Box 5 Kg", "maxLimit": 1, "step": 1, "AVE": 2263},
   {"code": "153001", "name": "Cheese Brie Pkt 200 Grm Farm Cheese", "name_ar": "جبنة بري 200 جرام", "unit": "200g pkt", "maxLimit": 6, "step": 1, "AVE": 62.75},
   {"code": "153014", "name": "Cheese Gouda Plain Farm Cheese", "name_ar": "جبنة جودة", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 349},
