@@ -8,7 +8,7 @@
   {"code": "120055", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "step": 0.5, "AVE": 160},
   {"code": "113111", "name": "Beef Bacon Smoked Sliced Taste Pure", "name_ar": "بيكون لحم مدخن شرائح تيست بيور", "unit": "500g pkt", "maxLimit": 5, "step": 1, "AVE": 270.9},
   {"code": "112007", "name": "Lamb Rack Standard", "name_ar": "راك خروف", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 1154.75491},
-  {"code": "112009", "name": "Lamb Shank Australian", "name_ar": "ساق خروف أسترالي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 573.64334},
+  {"code": "112009", "name": "Lamb Shank Australian", "name_ar": "شنك خروف أسترالي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 573.64334},
   {"code": "120047", "name": "Chicken Breast Size 4-5", "name_ar": "صدر دجاج مقاس 4-5", "unit": "kg", "maxLimit": 15, "step": 0.5, "AVE": 221.75556},
   {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "name_ar": "دجاج كامل 1100 جرام برازيلي", "unit": "kg", "maxLimit": 40, "step": 0.5, "AVE": 157.79083},
   {"code": "120011", "name": "Duck Whole Al Abed", "name_ar": "بط كامل العابد", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 116.12726},
