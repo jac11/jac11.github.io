@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Developer Console - Order Editor + Kitchen Menu Loader</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', 'Segoe UI', monospace;
+    background: #0a0e27;
+    color: #e0e0e0;
+}
+
+.header {
+    background: linear-gradient(135deg, #0f0c29, #1a1a4e, #24243e);
+    padding: 20px 24px;
+    border-bottom: 3px solid #00d4ff;
+}
+
+.header h1 {
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background: #00d4ff;
+    color: #0a0e27;
+    padding: 4px 12px;
+    border-radius: 40px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* Login Modal */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-box {
+    background: #0f172a;
+    border: 2px solid #00d4ff;
+    border-radius: 24px;
+    padding: 40px;
+    width: 350px;
+    text-align: center;
+}
+
+.login-box h2 {
+    color: #00d4ff;
+    margin-bottom: 20px;
+}
+
+.login-box input {
+    width: 100%;
+    background: #1a1a2e;
+    border: 1px solid #2a3a5a;
+    padding: 14px;
+    border-radius: 12px;
+    color: white;
+    font-family: monospace;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-box button {
+    background: #00d4ff;
+    color: #0a0e27;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.login-box button:hover { opacity: 0.9; transform: scale(1.02); }
+.error-msg { color: #dc2626; margin-top: 10px; font-size: 0.8rem; }
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    background: #0f172a;
+    padding: 12px 20px;
+    border-radius: 20px;
+}
+
+.tab-btn {
+    background: #1e293b;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 40px;
+    color: #94a3b8;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: #00d4ff;
+    color: #0a0e27;
+}
+
+/* Panels */
+.panel {
+    background: #0f172a;
+    border-radius: 24px;
+    border: 1px solid #2a3a5a;
+    overflow: hidden;
+    display: none;
+}
+
+.panel.active-panel {
+    display: block;
+}
+
+.panel-header {
+    background: #1a1a2e;
+    padding: 16px 24px;
+    border-bottom: 1px solid #2a3a5a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.panel-header h2 {
+    font-size: 1rem;
+    color: #00d4ff;
+}
+
+/* Forms */
+.form-group {
+    padding: 20px 24px;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.form-input {
+    flex: 1;
+    min-width: 180px;
+    background: #1a1a2e;
+    border: 1px solid #2a3a5a;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: white;
+    font-family: monospace;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #00d4ff;
+}
+
+textarea {
+    width: 100%;
+    background: #0a0e27;
+    border: 2px solid #2a3a5a;
+    color: #00ffcc;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    padding: 16px;
+    border-radius: 16px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 0.75rem;
+    transition: all 0.2s;
+}
+
+.btn-primary { background: #0066ff; color: white; }
+.btn-success { background: #10b981; color: white; }
+.btn-danger { background: #dc2626; color: white; }
+.btn-warning { background: #f59e0b; color: #1a1a2e; }
+.btn-secondary { background: #334155; color: white; }
+.btn-restore { background: #8b5cf6; color: white; }
+.btn-add-item { background: #00d4ff; color: #0a0e27; }
+.btn-refresh { background: #00d4ff; color: #0a0e27; }
+.btn-disabled { background: #4a5568; color: #a0aec0; cursor: not-allowed; opacity: 0.6; }
+
+.btn:hover { transform: scale(1.02); opacity: 0.9; }
+.btn-disabled:hover { transform: none; opacity: 0.6; }
+
+/* Document List - Clean Table Style */
+.doc-list {
+    margin-top: 20px;
+}
+
+.doc-list-header {
+    background: #1a1a2e;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.doc-list-title {
+    font-weight: bold;
+    color: #00d4ff;
+    font-size: 0.9rem;
+}
+
+.doc-list-header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.doc-items-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.doc-item {
+    background: #111827;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    border-left: 4px solid #00d4ff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.doc-item:hover {
+    background: #1f2937;
+    transform: translateX(2px);
+}
+
+.doc-item-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    flex: 2;
+}
+
+.doc-id-badge {
+    background: #0a0e27;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 0.7rem;
+    color: #00d4ff;
+    font-weight: bold;
+}
+
+.doc-request-id {
+    background: #1e293b;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #f59e0b;
+}
+
+.doc-chef {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: #e0e0e0;
+}
+
+.doc-kitchen {
+    background: #1e293b;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+.status-badge {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    min-width: 85px;
+    text-align: center;
+}
+.status-pending { background: #f59e0b; color: #1a1a2e; }
+.status-approved { background: #10b981; color: white; }
+.status-rejected { background: #dc2626; color: white; }
+.status-accepted { background: #8b5cf6; color: white; }
+
+.doc-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-icon {
+    padding: 5px 12px;
+    font-size: 0.7rem;
+}
+
+/* Menu Items Selector */
+.menu-selector {
+    background: #0a0e27;
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 20px;
+    border: 1px solid #2a3a5a;
+}
+
+.menu-title {
+    color: #00d4ff;
+    margin-bottom: 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.kitchen-menu-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.kitchen-menu-btn {
+    background: #1e293b;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 30px;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+}
+
+.kitchen-menu-btn.active {
+    background: #00d4ff;
+    color: #0a0e27;
+}
+
+.kitchen-menu-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #1e293b;
+}
+
+.kitchen-menu-btn:not(.disabled):hover { background: #334155; }
+
+.menu-items-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.menu-item-card {
+    background: #111827;
+    padding: 10px 14px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    border-left: 3px solid #f59e0b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.menu-item-card:hover {
+    background: #1f2937;
+    transform: translateX(4px);
+}
+
+.menu-item-code { color: #f59e0b; font-weight: bold; font-family: monospace; }
+.menu-item-name { flex: 2; font-size: 0.8rem; }
+.menu-item-unit { color: #9ca3af; font-size: 0.7rem; }
+.menu-item-price { color: #10b981; font-weight: bold; }
+
+.add-qty-control {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.qty-input-small {
+    width: 70px;
+    background: #1a1a2e;
+    border: 1px solid #2a3a5a;
+    padding: 4px 8px;
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    border-left: 4px solid #10b981;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    z-index: 2000;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+hr {
+    border-color: #2a3a5a;
+    margin: 15px 0;
+}
+
+.note {
+    font-size: 0.65rem;
+    color: #9ca3af;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.warning-box {
+    background: #dc262620;
+    border-left: 3px solid #dc2626;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    color: #fca5a5;
+}
+
+/* JSON Generator Items List */
+.items-list {
+    background: #0a0e27;
+    border-radius: 12px;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+.item-row {
+    background: #111827;
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 8px;
+    border-left: 3px solid #00d4ff;
+    font-size: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.item-code { color: #00d4ff; font-weight: bold; }
+.delete-item { background: #dc2626; border: none; padding: 3px 10px; border-radius: 20px; color: white; cursor: pointer; font-size: 0.65rem; }
+
+.counter {
+    background: #00d4ff20;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    color: #00d4ff;
+}
+
+.row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.field {
+    flex: 1;
+    min-width: 140px;
+}
+
+.field label {
+    display: block;
+    font-size: 0.7rem;
+    color: #9ca3af;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.field input {
+    width: 100%;
+    background: #1a1a2e;
+    border: 1px solid #2a3a5a;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #00ffcc;
+    font-family: monospace;
+    font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+
+<div id="loginOverlay" class="login-overlay">
+    <div class="login-box">
+        <h2>🔐 Developer Access</h2>
+        <input type="password" id="devPasswordInput" placeholder="Enter Developer Password" autofocus>
+        <button onclick="checkDevLogin()">Unlock Console</button>
+        <div id="loginErrorMsg" class="error-msg"></div>
+    </div>
+</div>
+
+<div id="mainContent" style="display:none;">
+    <div class="header">
+        <h1>
+            🛠️ DEVELOPER CONSOLE
+            <span class="badge">Edit Orders</span>
+            <span class="badge">Load Kitchen JSON</span>
+            <span class="badge">Add Items from Menu</span>
+        </h1>
+        <div style="margin-top: 8px; font-size: 0.7rem;">⚠️ For Approved/Rejected/Accepted orders: You MUST click "Restore to Pending" first before any edits</div>
+    </div>
+
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('orders')">📋 Edit Firestore Orders</button>
+            <button class="tab-btn" onclick="switchTab('generator')">📦 JSON Generator (Menu Items)</button>
+        </div>
+
+        <!-- PANEL 1: FIRESTORE ORDERS EDITOR -->
+        <div id="ordersPanel" class="panel active-panel">
+            <div class="panel-header">
+                <h2>📄 Edit Firestore Documents (kitchen_requests)</h2>
+                <div>
+                    <button class="btn btn-primary" onclick="fetchOrderDocument()">🔍 Fetch by ID</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-row">
+                    <input type="text" id="orderDocId" class="form-input" placeholder="Enter Firestore Document ID...">
+                </div>
+                <div id="orderViewer" style="display:none;">
+                    <div id="orderStatusWarning" class="warning-box" style="display:none;">
+                        ⚠️ This order is <strong id="warningStatusText">COMPLETED</strong>. You MUST click <strong>"Restore to Pending"</strong> before making any edits or adding items.
+                    </div>
+                    <textarea id="orderJsonEditor" rows="10" placeholder="Document JSON will appear here..."></textarea>
+                    <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+                        <button class="btn btn-success" id="saveOrderBtn" onclick="saveOrderDocument()">💾 SAVE to Firestore</button>
+                        <button class="btn btn-danger" id="deleteOrderBtn" onclick="deleteOrderDocument()">🗑️ DELETE Document</button>
+                        <button class="btn btn-restore" id="restoreOrderBtn" onclick="restoreSingleToPending()">🔄 Restore to Pending</button>
+                    </div>
+                    
+                    <!-- MENU SELECTOR - Only order's kitchen is enabled -->
+                    <div class="menu-selector">
+                        <div class="menu-title">
+                            📦 ADD ITEM FROM KITCHEN MENU (JSON Files)
+                            <span style="font-size: 0.7rem;">📁 items/ folder</span>
+                        </div>
+                        <div class="kitchen-menu-buttons" id="kitchenMenuButtons"></div>
+                        <div id="selectedKitchenName" style="margin-bottom: 10px; font-size: 0.75rem; color: #00d4ff;"></div>
+                        <div id="menuItemsList" class="menu-items-list">
+                            <div style="padding: 20px; text-align: center; color: #9ca3af;">Click a kitchen button above to load menu items</div>
+                        </div>
+                        <div class="note" style="margin-top: 10px;">💡 Only the order's kitchen is enabled. Click the enabled kitchen button to load items, then click on any item to add it to the order.</div>
+                    </div>
+                </div>
+                
+                <!-- Orders List with Header and Refresh Button -->
+                <div class="doc-list">
+                    <div class="doc-list-header">
+                        <span class="doc-list-title">📋 RECENT ORDERS (click to edit)</span>
+                        <div class="doc-list-header-actions">
+                            <button class="btn btn-refresh btn-icon" onclick="refreshOrdersList()">⟳ Refresh</button>
+                        </div>
+                    </div>
+                    <div id="ordersList" class="doc-items-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL 2: JSON GENERATOR (Menu Items) -->
+        <div id="generatorPanel" class="panel">
+            <div class="panel-header">
+                <h2>📦 Generate Menu JSON (One Line + Trailing Commas)</h2>
+                <div>
+                    <button class="btn btn-primary" onclick="copyJSON()">📋 Copy JSON</button>
+                    <button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="field">
+                        <label>📌 CODE *</label>
+                        <input type="text" id="code" placeholder="e.g., 161005">
+                    </div>
+                    <div class="field">
+                        <label>🏷️ NAME (EN) *</label>
+                        <input type="text" id="name" placeholder="e.g., Black Pepper Corn">
+                    </div>
+                    <div class="field">
+                        <label>🌙 NAME (AR)</label>
+                        <input type="text" id="nameAr" placeholder="e.g., حب الفلفل الأسود">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>📦 UNIT *</label>
+                        <input type="text" id="unit" placeholder="e.g., kg, pcs, 750g pkt">
+                    </div>
+                    <div class="field">
+                        <label>🔢 MAX LIMIT *</label>
+                        <input type="number" id="maxLimit" value="2" step="0.5">
+                    </div>
+                    <div class="field">
+                        <label>⚡ STEP *</label>
+                        <input type="number" id="step" value="1" step="0.5">
+                    </div>
+                    <div class="field">
+                        <label>💰 PRICE (AVE) *</label>
+                        <input type="number" id="price" value="45.50" step="0.01">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                    <button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button>
+                    <button class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button>
+                    <button class="btn btn-warning" onclick="addSample()">📋 Add Sample</button>
+                    <button class="btn btn-danger" onclick="clearAllItems()">Clear All Items</button>
+                </div>
+
+                <hr>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <strong>📋 ITEMS LIST</strong>
+                    <span class="counter" id="itemCount">0 items</span>
+                </div>
+                <div id="itemsList" class="items-list">
+                    <div style="padding: 20px; text-align: center; color: #9ca3af;">No items added yet</div>
+                </div>
+
+                <hr>
+
+                <div style="margin-top: 15px;">
+                    <strong>📄 JSON OUTPUT</strong>
+                    <textarea id="jsonOutput" rows="10" readonly placeholder="JSON will appear here..." style="margin-top: 10px;"></textarea>
+                </div>
+                <div class="note">
+                    ⚡ Format: Each item on one line with trailing comma (except last). Ready to copy-paste into /items/ folder.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==================== PASSWORD ====================
+const DEV_PASSWORD = "Dev@2025Secure!";
+
+function checkDevLogin() {
+    const pass = document.getElementById("devPasswordInput").value;
+    if (pass === DEV_PASSWORD) {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+    } else {
+        document.getElementById("loginErrorMsg").innerHTML = "❌ Wrong password!";
+    }
+}
+
+document.getElementById("devPasswordInput")?.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") checkDevLogin();
+});
+
+// ==================== KITCHEN JSON FILES MAPPING ====================
+const KITCHEN_JSON_FILES = {
+    "Hot Kitchen": "hot-kitchen.json",
+    "Cold Kitchen": "cold-kitchen.json",
+    "Pastry / Bakery": "pastry.json",
+    "Butchery": "butchery.json",
+    "Beach House": "beach-house.json",
+    "Nihon Kitchen": "nihon-kitchen.json",
+    "Staff Kitchen": "staff-kitchen.json"
+};
+
+const JSON_BASE_PATH = "items/";
+
+let currentMenuItems = [];
+let currentSelectedKitchen = "";
+let orderKitchen = "";
+let currentOrderStatus = "pending";
+let currentOrderDocId = null;
+let currentOrderData = null;
+
+// ==================== FIRESTORE ORDERS ====================
+function getRequestStatus(items) {
+    if(!items || items.length === 0) return "pending";
+    let allProcessed = true;
+    let approved = 0, rejected = 0;
+    items.forEach(item => {
+        if(item.status === "approved") approved++;
+        else if(item.status === "rejected") rejected++;
+        else allProcessed = false;
+    });
+    if(items.length > 0 && items[0].completedVia === "accept") return "accepted";
+    if(allProcessed) {
+        if(approved === items.length) return "approved";
+        if(rejected === items.length) return "rejected";
+        return "accepted";
+    }
+    return "pending";
+}
+
+function updateEditButtonsBasedOnStatus() {
+    const isPending = (currentOrderStatus === "pending");
+    const saveBtn = document.getElementById("saveOrderBtn");
+    const deleteBtn = document.getElementById("deleteOrderBtn");
+    const restoreBtn = document.getElementById("restoreOrderBtn");
+    
+    if (!isPending) {
+        if (saveBtn) saveBtn.classList.add("btn-disabled");
+        if (deleteBtn) deleteBtn.classList.add("btn-disabled");
+        if (restoreBtn) restoreBtn.style.display = "inline-block";
+        // Disable kitchen menu buttons visually
+        document.querySelectorAll(".kitchen-menu-btn").forEach(btn => {
+            if (!btn.classList.contains("disabled")) {
+                btn.style.pointerEvents = "none";
+                btn.style.opacity = "0.5";
+            }
+        });
+        const warningBox = document.getElementById("orderStatusWarning");
+        if (warningBox) {
+            warningBox.style.display = "block";
+            document.getElementById("warningStatusText").innerText = currentOrderStatus.toUpperCase();
+        }
+    } else {
+        if (saveBtn) saveBtn.classList.remove("btn-disabled");
+        if (deleteBtn) deleteBtn.classList.remove("btn-disabled");
+        if (restoreBtn) restoreBtn.style.display = "none";
+        document.querySelectorAll(".kitchen-menu-btn").forEach(btn => {
+            if (!btn.classList.contains("disabled")) {
+                btn.style.pointerEvents = "auto";
+                btn.style.opacity = "1";
+            }
+        });
+        const warningBox = document.getElementById("orderStatusWarning");
+        if (warningBox) warningBox.style.display = "none";
+    }
+}
+
+async function refreshOrdersList() {
+    showToast("⟳ Refreshing orders list...");
+    await listAllOrders();
+}
+
+async function listAllOrders() {
+    try {
+        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").limit(50).get();
+        const container = document.getElementById("ordersList");
+        container.innerHTML = "";
+        
+        if (snapshot.empty) { 
+            container.innerHTML = '<div style="padding: 30px; text-align: center; color: #9ca3af;">📭 No orders found</div>'; 
+            return; 
+        }
+        
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const status = getRequestStatus(data.items);
+            let statusClass = "status-pending";
+            let statusText = "Pending";
+            if (status === "approved") { statusClass = "status-approved"; statusText = "Approved"; }
+            else if (status === "rejected") { statusClass = "status-rejected"; statusText = "Rejected"; }
+            else if (status === "accepted") { statusClass = "status-accepted"; statusText = "Accepted"; }
+            
+            // Clean and clear order display
+            container.innerHTML += `
+                <div class="doc-item" onclick="loadOrderById('${doc.id}')">
+                    <div class="doc-item-info">
+                        <span class="doc-id-badge">🆔 ${doc.id.substring(0, 12)}...</span>
+                        <span class="doc-request-id">📌 ${data.requestId || 'N/A'}</span>
+                        <span class="doc-chef">👨‍🍳 ${data.chefName || '?'}</span>
+                        <span class="doc-kitchen">🍽️ ${data.section || '?'}</span>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <div class="doc-actions">
+                            <button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')" title="Delete Order">🗑️</button>
+                            <button class="btn btn-restore btn-icon" onclick="event.stopPropagation();restoreOrderToPending('${doc.id}')" title="Restore to Pending">🔄</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    } catch(e) { 
+        showToast("Error loading orders: " + e.message, true); 
+        document.getElementById("ordersList").innerHTML = '<div style="padding: 30px; text-align: center; color: #dc2626;">❌ Error loading orders</div>';
+    }
+}
+
+async function loadOrderById(docId) {
+    document.getElementById("orderDocId").value = docId;
+    await fetchOrderDocument();
+}
+
+async function fetchOrderDocument() {
+    const docId = document.getElementById("orderDocId").value.trim();
+    if (!docId) { showToast("Enter Document ID", true); return; }
+    try {
+        const doc = await db.collection("kitchen_requests").doc(docId).get();
+        if (!doc.exists) { showToast("Document not found", true); return; }
+        currentOrderDocId = docId;
+        currentOrderData = { id: doc.id, ...doc.data() };
+        currentOrderStatus = getRequestStatus(currentOrderData.items);
+        
+        document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2);
+        document.getElementById("orderViewer").style.display = "block";
+        
+        orderKitchen = currentOrderData.section || "Hot Kitchen";
+        showToast(`✅ Loaded: ${docId} | Status: ${currentOrderStatus.toUpperCase()} | Kitchen: ${orderKitchen}`);
+        
+        updateEditButtonsBasedOnStatus();
+        renderKitchenMenuButtons();
+        
+        document.getElementById("menuItemsList").innerHTML = '<div style="padding: 20px; text-align: center; color: #9ca3af;">Click the enabled kitchen button above to load menu items</div>';
+        
+    } catch(e) { showToast("Error: " + e.message, true); }
+}
+
+async function saveOrderDocument() {
+    if (!currentOrderDocId) { showToast("No document loaded", true); return; }
+    if (currentOrderStatus !== "pending") {
+        showToast("❌ Cannot save: Order is not in PENDING status. Click 'Restore to Pending' first.", true);
+        return;
+    }
+    try {
+        const newData = JSON.parse(document.getElementById("orderJsonEditor").value);
+        const { id, ...updateData } = newData;
+        await db.collection("kitchen_requests").doc(currentOrderDocId).update(updateData);
+        currentOrderData = updateData;
+        showToast(`✅ Saved ${currentOrderDocId}`);
+        refreshOrdersList();
+    } catch(e) { showToast("Save failed: " + e.message, true); }
+}
+
+async function deleteOrderDocument() {
+    if (!currentOrderDocId) return;
+    if (currentOrderStatus !== "pending") {
+        showToast("❌ Cannot delete: Order is not in PENDING status. Click 'Restore to Pending' first.", true);
+        return;
+    }
+    if (confirm(`Delete ${currentOrderDocId} permanently?`)) {
+        await db.collection("kitchen_requests").doc(currentOrderDocId).delete();
+        showToast(`Deleted ${currentOrderDocId}`);
+        currentOrderDocId = null;
+        currentOrderData = null;
+        orderKitchen = "";
+        document.getElementById("orderViewer").style.display = "none";
+        document.getElementById("orderDocId").value = "";
+        refreshOrdersList();
+        renderKitchenMenuButtons();
+    }
+}
+
+async function deleteOrderById(docId) {
+    if (confirm(`Delete order ${docId}?`)) {
+        await db.collection("kitchen_requests").doc(docId).delete();
+        showToast(`Deleted ${docId}`);
+        refreshOrdersList();
+        if (currentOrderDocId === docId) {
+            currentOrderDocId = null;
+            currentOrderData = null;
+            orderKitchen = "";
+            document.getElementById("orderViewer").style.display = "none";
+            renderKitchenMenuButtons();
+        }
+    }
+}
+
+// ============ KITCHEN MENU BUTTONS ============
+function renderKitchenMenuButtons() {
+    const container = document.getElementById("kitchenMenuButtons");
+    container.innerHTML = "";
+    
+    Object.keys(KITCHEN_JSON_FILES).forEach(kitchen => {
+        const btn = document.createElement("button");
+        const isOrderKitchen = (kitchen === orderKitchen);
+        
+        btn.className = `kitchen-menu-btn ${currentSelectedKitchen === kitchen ? 'active' : ''}`;
+        btn.innerText = kitchen;
+        
+        if (!isOrderKitchen) {
+            btn.classList.add("disabled");
+            btn.title = `Only ${orderKitchen || 'the order\'s kitchen'} is enabled`;
+        }
+        
+        btn.onclick = () => {
+            if (!isOrderKitchen) {
+                showToast(`Only the order's kitchen (${orderKitchen}) is enabled. Load an order with a different kitchen first.`, true);
+                return;
+            }
+            if (currentOrderStatus !== "pending") {
+                showToast(`❌ Cannot load items: Order is ${currentOrderStatus.toUpperCase()}. Click 'Restore to Pending' first.`, true);
+                return;
+            }
+            currentSelectedKitchen = kitchen;
+            renderKitchenMenuButtons();
+            loadKitchenMenuJSON(kitchen);
+        };
+        container.appendChild(btn);
+    });
+    
+    if (!orderKitchen) {
+        const infoDiv = document.createElement("div");
+        infoDiv.style.fontSize = "0.7rem";
+        infoDiv.style.color = "#9ca3af";
+        infoDiv.style.marginTop = "10px";
+        infoDiv.style.textAlign = "center";
+        infoDiv.innerText = "⚠️ Load an order first to enable its kitchen";
+        container.appendChild(infoDiv);
+    }
+}
+
+async function loadKitchenMenuJSON(kitchen) {
+    const fileName = KITCHEN_JSON_FILES[kitchen];
+    if (!fileName) {
+        showToast(`No JSON file mapping for ${kitchen}`, true);
+        return;
+    }
+    
+    const jsonPath = `${JSON_BASE_PATH}${fileName}`;
+    document.getElementById("selectedKitchenName").innerHTML = `📁 Loading: ${jsonPath}`;
+    
+    try {
+        const response = await fetch(jsonPath);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status} - File not found`);
+        }
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+            currentMenuItems = data;
+        } else if (data.items && Array.isArray(data.items)) {
+            currentMenuItems = data.items;
+        } else {
+            currentMenuItems = [];
+        }
+        
+        renderMenuItemsList();
+        document.getElementById("selectedKitchenName").innerHTML = `✅ Loaded ${currentMenuItems.length} items from ${jsonPath}`;
+        showToast(`✅ Loaded ${currentMenuItems.length} items from ${kitchen}`);
+    } catch(e) {
+        console.error(e);
+        document.getElementById("selectedKitchenName").innerHTML = `❌ Error: ${jsonPath} not found. Create this file in the "items" folder.`;
+        showToast(`❌ ${fileName} not found. Create items/${fileName} file.`, true);
+        currentMenuItems = [];
+        renderMenuItemsList();
+    }
+}
+
+function renderMenuItemsList() {
+    const container = document.getElementById("menuItemsList");
+    if (!currentMenuItems || currentMenuItems.length === 0) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #9ca3af;">No items found. Create the JSON file in the "items" folder.</div>';
+        return;
+    }
+    
+    container.innerHTML = "";
+    currentMenuItems.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "menu-item-card";
+        div.innerHTML = `
+            <span class="menu-item-code">📌 ${escapeHtml(item.code || 'N/A')}</span>
+            <span class="menu-item-name"><strong>${escapeHtml(item.name || 'No name')}</strong><br><span style="font-size:0.65rem;">${escapeHtml(item.name_ar || '')}</span></span>
+            <span class="menu-item-unit">📦 ${escapeHtml(item.unit || '-')}</span>
+            <span class="menu-item-price">💰 ${item.AVE || item.price || 0}</span>
+            <div class="add-qty-control">
+                <input type="number" id="qty_${index}" class="qty-input-small" value="1" min="0.5" step="0.5" style="width:60px;">
+                <button class="btn btn-add-item" style="padding: 4px 12px;" onclick="addMenuItemToOrder(${index})">➕ Add</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function addMenuItemToOrder(index) {
+    if (!currentOrderDocId || !currentOrderData) {
+        showToast("No order loaded. Please fetch an order first.", true);
+        return;
+    }
+    if (currentOrderStatus !== "pending") {
+        showToast(`❌ Cannot add items: Order is ${currentOrderStatus.toUpperCase()}. Click 'Restore to Pending' first.`, true);
+        return;
+    }
+    
+    const menuItem = currentMenuItems[index];
+    if (!menuItem) return;
+    
+    const qtyInput = document.getElementById(`qty_${index}`);
+    const quantity = parseFloat(qtyInput?.value || 1);
+    if (isNaN(quantity) || quantity <= 0) {
+        showToast("Invalid quantity", true);
+        return;
+    }
+    
+    const price = menuItem.AVE || menuItem.price || 0;
+    
+    const newItem = {
+        code: menuItem.code || "",
+        name: menuItem.name || "",
+        name_ar: menuItem.name_ar || "",
+        unit: menuItem.unit || "",
+        originalQty: quantity,
+        price: price,
+        status: "pending"
+    };
+    
+    if (!currentOrderData.items) {
+        currentOrderData.items = [];
+    }
+    currentOrderData.items.push(newItem);
+    currentOrderStatus = getRequestStatus(currentOrderData.items);
+    
+    document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2);
+    
+    showToast(`✅ Added "${menuItem.name}" (x${quantity}) to order. Click SAVE to persist.`);
+}
+
+// ============ RESTORE TO PENDING FUNCTION ============
+async function restoreOrderToPending(docId) {
+    if (!confirm(`Restore order to PENDING status?\n\nThis will reset all approved/rejected items back to pending. You can then edit, add, or remove items.\n\nContinue?`)) return;
+    
+    try {
+        const doc = await db.collection("kitchen_requests").doc(docId).get();
+        if (!doc.exists) { showToast("Document not found", true); return; }
+        
+        const data = doc.data();
+        if (data.items && Array.isArray(data.items)) {
+            let changed = false;
+            data.items.forEach(item => {
+                if (item.status === "approved" || item.status === "rejected") {
+                    item.status = "pending";
+                    delete item.approvedQty;
+                    delete item.approvedBy;
+                    delete item.approvedAt;
+                    delete item.rejectionReason;
+                    delete item.rejectedBy;
+                    delete item.rejectedAt;
+                    changed = true;
+                }
+                if (item.completedVia) delete item.completedVia;
+            });
+            if (data.completedVia) delete data.completedVia;
+            
+            if (changed) {
+                await db.collection("kitchen_requests").doc(docId).update({ items: data.items });
+                showToast(`✅ Restored ${docId} to PENDING status. You can now edit, add, or remove items.`);
+                if (currentOrderDocId === docId) {
+                    await fetchOrderDocument();
+                }
+                refreshOrdersList();
+            } else {
+                showToast(`Order is already in PENDING status`);
+                if (currentOrderDocId === docId) {
+                    currentOrderStatus = "pending";
+                    updateEditButtonsBasedOnStatus();
+                }
+            }
+        }
+    } catch(e) { showToast("Restore failed: " + e.message, true); }
+}
+
+async function restoreSingleToPending() {
+    if (currentOrderDocId) {
+        await restoreOrderToPending(currentOrderDocId);
+    } else {
+        showToast("No document loaded", true);
+    }
+}
+
+// ==================== JSON GENERATOR ====================
+let menuItems = [];
+
+const codeInput = document.getElementById('code');
+const nameInput = document.getElementById('name');
+const nameArInput = document.getElementById('nameAr');
+const unitInput = document.getElementById('unit');
+const maxLimitInput = document.getElementById('maxLimit');
+const stepInput = document.getElementById('step');
+const priceInput = document.getElementById('price');
+const itemsListDiv = document.getElementById('itemsList');
+const jsonOutput = document.getElementById('jsonOutput');
+const itemCountSpan = document.getElementById('itemCount');
+
+function updateGeneratorUI() {
+    itemCountSpan.innerText = `${menuItems.length} item${menuItems.length !== 1 ? 's' : ''}`;
+    
+    if (menuItems.length === 0) {
+        itemsListDiv.innerHTML = '<div style="padding: 20px; text-align: center; color: #9ca3af;">No items added yet</div>';
+        jsonOutput.value = '[]';
+        return;
+    }
+    
+    itemsListDiv.innerHTML = '';
+    menuItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'item-row';
+        div.innerHTML = `
+            <span class="item-code">📌 ${escapeHtml(item.code)}</span>
+            <span><strong>${escapeHtml(item.name)}</strong> <span style="color:#9ca3af;">${escapeHtml(item.nameAr || '')}</span></span>
+            <span>📦 ${escapeHtml(item.unit)}</span>
+            <span>🔢 ${item.maxLimit}</span>
+            <span>⚡ ${item.step}</span>
+            <span>💰 ${item.price}</span>
+            <button class="delete-item" onclick="removeItem(${index})">✖</button>
+        `;
+        itemsListDiv.appendChild(div);
+    });
+    
+    generateJSON();
+}
+
+function generateJSON() {
+    if (menuItems.length === 0) {
+        jsonOutput.value = '[]';
+        return;
+    }
+    
+    let lines = [];
+    for (let i = 0; i < menuItems.length; i++) {
+        const item = menuItems[i];
+        let line = `{"code": "${escapeJSON(item.code)}", "name": "${escapeJSON(item.name)}", "name_ar": "${escapeJSON(item.nameAr || '')}", "unit": "${escapeJSON(item.unit)}", "maxLimit": ${item.maxLimit}, "step": ${item.step}, "price": ${item.price}}`;
+        if (i < menuItems.length - 1) {
+            line += ',';
+        }
+        lines.push(line);
+    }
+    jsonOutput.value = '[\n' + lines.join('\n') + '\n]';
+}
+
+function addItem() {
+    const code = codeInput.value.trim();
+    const name = nameInput.value.trim();
+    const unit = unitInput.value.trim();
+    
+    if (!code) { showToast('❌ Code is required'); return; }
+    if (!name) { showToast('❌ Name is required'); return; }
+    if (!unit) { showToast('❌ Unit is required'); return; }
+    
+    const maxLimit = parseFloat(maxLimitInput.value);
+    const step = parseFloat(stepInput.value);
+    const price = parseFloat(priceInput.value);
+    
+    if (isNaN(maxLimit)) { showToast('❌ Max Limit must be a number'); return; }
+    if (isNaN(step)) { showToast('❌ Step must be a number'); return; }
+    if (isNaN(price)) { showToast('❌ Price must be a number'); return; }
+    
+    const newItem = {
+        code: code,
+        name: name,
+        nameAr: nameArInput.value.trim(),
+        unit: unit,
+        maxLimit: maxLimit,
+        step: step,
+        price: price
+    };
+    
+    menuItems.push(newItem);
+    updateGeneratorUI();
+    
+    codeInput.value = '';
+    nameInput.value = '';
+    nameArInput.value = '';
+    unitInput.value = '';
+    maxLimitInput.value = '2';
+    stepInput.value = '1';
+    priceInput.value = '45.50';
+    codeInput.focus();
+    
+    showToast(`✅ Added "${name}"`);
+}
+
+function removeItem(index) {
+    const removed = menuItems[index];
+    menuItems.splice(index, 1);
+    updateGeneratorUI();
+    showToast(`🗑️ Removed "${removed.name}"`);
+}
+
+function clearAllItems() {
+    if (menuItems.length === 0) return;
+    if (confirm(`Delete all ${menuItems.length} items?`)) {
+        menuItems = [];
+        updateGeneratorUI();
+        showToast('All items cleared');
+    }
+}
+
+function clearForm() {
+    codeInput.value = '';
+    nameInput.value = '';
+    nameArInput.value = '';
+    unitInput.value = '';
+    maxLimitInput.value = '2';
+    stepInput.value = '1';
+    priceInput.value = '45.50';
+    codeInput.focus();
+    showToast('Form cleared');
+}
+
+function addSample() {
+    const sample = {
+        code: "161005",
+        name: "Black Pepper Corn",
+        nameAr: "حب الفلفل الأسود",
+        unit: "kg",
+        maxLimit: 2,
+        step: 0.5,
+        price: 45.50
+    };
+    menuItems.push(sample);
+    updateGeneratorUI();
+    showToast('✅ Sample item added');
+}
+
+async function copyJSON() {
+    if (menuItems.length === 0) {
+        showToast('No items to copy');
+        return;
+    }
+    const json = jsonOutput.value;
+    await navigator.clipboard.writeText(json);
+    showToast('📋 JSON copied to clipboard');
+}
+
+function downloadJSON() {
+    if (menuItems.length === 0) {
+        showToast('No items to download');
+        return;
+    }
+    const json = jsonOutput.value;
+    const blob = new Blob([json], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `menu_items_${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📎 JSON file downloaded');
+}
+
+// ==================== UTILITIES ====================
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active-panel'));
+    if (tab === 'orders') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('ordersPanel').classList.add('active-panel');
+        refreshOrdersList();
+    } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('generatorPanel').classList.add('active-panel');
+    }
+}
+
+function escapeJSON(str) {
+    if (!str) return '';
+    return str.replace(/\\/g, '\\\\')
+              .replace(/"/g, '\\"')
+              .replace(/\n/g, '\\n')
+              .replace(/\r/g, '\\r');
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+}
+
+function showToast(msg, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = msg;
+    if (isError) toast.style.borderLeftColor = '#dc2626';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+}
+
+function handleEnter(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        addItem();
+    }
+}
+
+codeInput?.addEventListener('keypress', handleEnter);
+nameInput?.addEventListener('keypress', handleEnter);
+unitInput?.addEventListener('keypress', handleEnter);
+
+// Initial load
+refreshOrdersList();
+</script>
+</body>
+</html>
