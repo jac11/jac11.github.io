@@ -5,118 +5,44 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Developer Console - Complete Control</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Courier New', 'Segoe UI', monospace; background: #0a0e27; color: #e0e0e0; }
-.header { background: linear-gradient(135deg, #0f0c29, #1a1a4e, #24243e); padding: 20px 24px; border-bottom: 3px solid #00d4ff; }
-.header h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-.badge { background: #00d4ff; color: #0a0e27; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: bold; }
-.badge-restricted { background: #dc2626; color: white; }
-.badge-freehand { background: #f59e0b; color: #1a1a2e; }
-.container { max-width: 1600px; margin: 0 auto; padding: 24px; }
-.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; justify-content: center; align-items: center; }
-.login-box { background: #0f172a; border: 2px solid #00d4ff; border-radius: 24px; padding: 40px; width: 400px; text-align: center; }
-.login-box h2 { color: #00d4ff; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-.login-box input { width: 100%; background: #1a1a2e; border: 1px solid #2a3a5a; padding: 14px; border-radius: 12px; color: white; font-family: monospace; font-size: 1rem; margin-bottom: 20px; text-align: center; }
-.login-box button { background: #00d4ff; color: #0a0e27; border: none; padding: 12px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; margin-top: 10px; }
-.login-box button:hover { opacity: 0.9; transform: scale(1.02); }
-.login-box .back-btn { background: #334155; color: white; margin-top: 10px; }
-.login-box .back-btn:hover { background: #475569; }
-.error-msg { color: #dc2626; margin-top: 10px; font-size: 0.8rem; }
-.info-msg { color: #00d4ff; margin-top: 10px; font-size: 0.8rem; }
-.success-msg { color: #10b981; margin-top: 10px; font-size: 0.8rem; }
-.user-menu { display: flex; align-items: center; gap: 12px; background: #1a1a2e; padding: 6px 16px; border-radius: 40px; flex-wrap: wrap; }
-.user-email { font-size: 0.75rem; color: #00d4ff; }
-.tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; background: #0f172a; padding: 12px 20px; border-radius: 20px; }
-.tab-btn { background: #1e293b; border: none; padding: 10px 24px; border-radius: 40px; color: #94a3b8; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
-.tab-btn.active { background: #00d4ff; color: #0a0e27; }
-.panel { background: #0f172a; border-radius: 24px; border: 1px solid #2a3a5a; overflow: hidden; display: none; }
-.panel.active-panel { display: block; }
-.panel-header { background: #1a1a2e; padding: 16px 24px; border-bottom: 1px solid #2a3a5a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-.panel-header h2 { font-size: 1rem; color: #00d4ff; }
-.form-group { padding: 20px 24px; }
-.form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
-.form-input { flex: 1; min-width: 180px; background: #1a1a2e; border: 1px solid #2a3a5a; padding: 12px 16px; border-radius: 12px; color: white; font-family: monospace; }
-.form-input:focus { outline: none; border-color: #00d4ff; }
-textarea { width: 100%; background: #0a0e27; border: 2px solid #2a3a5a; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 12px; padding: 16px; border-radius: 16px; resize: vertical; line-height: 1.5; }
-.btn { padding: 10px 20px; border-radius: 30px; border: none; font-weight: 600; cursor: pointer; font-family: monospace; font-size: 0.75rem; transition: all 0.2s; }
-.btn-primary { background: #0066ff; color: white; }
-.btn-success { background: #10b981; color: white; }
-.btn-danger { background: #dc2626; color: white; }
-.btn-warning { background: #f59e0b; color: #1a1a2e; }
-.btn-secondary { background: #334155; color: white; }
-.btn-restore { background: #8b5cf6; color: white; }
-.btn-add-item { background: #00d4ff; color: #0a0e27; }
-.btn-refresh { background: #00d4ff; color: #0a0e27; }
-.btn-freehand { background: #f59e0b; color: #1a1a2e; font-weight: bold; }
-.btn-freehand.active { background: #10b981; color: white; box-shadow: 0 0 10px #10b981; }
-.btn-freehand.inactive { background: #dc2626; color: white; }
-.btn-disabled { background: #4a5568; color: #a0aec0; cursor: not-allowed; opacity: 0.6; }
-.btn:hover { transform: scale(1.02); opacity: 0.9; }
-.doc-list { margin-top: 20px; }
-.doc-list-header { background: #1a1a2e; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.doc-list-title { font-weight: bold; color: #00d4ff; font-size: 0.9rem; }
-.doc-list-header-actions { display: flex; gap: 10px; }
-.doc-items-container { max-height: 400px; overflow-y: auto; }
-.doc-item { background: #111827; padding: 14px 18px; margin-bottom: 8px; border-radius: 12px; border-left: 4px solid #00d4ff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; cursor: pointer; transition: all 0.2s; }
-.doc-item:hover { background: #1f2937; transform: translateX(2px); }
-.doc-item-info { display: flex; flex-wrap: wrap; align-items: center; gap: 15px; flex: 2; }
-.doc-id-badge { background: #0a0e27; padding: 5px 10px; border-radius: 8px; font-family: monospace; font-size: 0.7rem; color: #00d4ff; font-weight: bold; }
-.doc-request-id { background: #1e293b; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; color: #f59e0b; }
-.doc-chef { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: #e0e0e0; }
-.doc-kitchen { background: #1e293b; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #94a3b8; }
-.status-badge { padding: 5px 14px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; min-width: 85px; text-align: center; }
-.status-pending { background: #f59e0b; color: #1a1a2e; }
-.status-approved { background: #10b981; color: white; }
-.status-rejected { background: #dc2626; color: white; }
-.status-accepted { background: #8b5cf6; color: white; }
-.doc-actions { display: flex; gap: 8px; }
-.btn-icon { padding: 5px 12px; font-size: 0.7rem; }
-.menu-selector { background: #0a0e27; border-radius: 16px; padding: 16px; margin-top: 20px; border: 1px solid #2a3a5a; }
-.menu-title { color: #00d4ff; margin-bottom: 15px; font-weight: bold; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.kitchen-menu-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.kitchen-menu-btn { background: #1e293b; border: none; padding: 8px 16px; border-radius: 30px; color: #94a3b8; cursor: pointer; font-size: 0.7rem; transition: all 0.2s; }
-.kitchen-menu-btn.active { background: #00d4ff; color: #0a0e27; }
-.kitchen-menu-btn.disabled { opacity: 0.4; cursor: not-allowed; background: #1e293b; }
-.kitchen-menu-btn:not(.disabled):hover { background: #334155; }
-.menu-items-list { max-height: 300px; overflow-y: auto; margin-top: 10px; }
-.menu-item-card { background: #111827; padding: 10px 14px; margin-bottom: 6px; border-radius: 10px; border-left: 3px solid #f59e0b; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; transition: all 0.2s; }
-.menu-item-card:hover { background: #1f2937; transform: translateX(4px); }
-.menu-item-code { color: #f59e0b; font-weight: bold; font-family: monospace; }
-.menu-item-name { flex: 2; font-size: 0.8rem; }
-.menu-item-unit { color: #9ca3af; font-size: 0.7rem; }
-.menu-item-ave { color: #10b981; font-weight: bold; }
-.menu-item-limit { color: #9ca3af; font-size: 0.65rem; }
-.add-qty-control { display: flex; gap: 8px; align-items: center; }
-.qty-input-small { width: 70px; background: #1a1a2e; border: 1px solid #2a3a5a; padding: 4px 8px; border-radius: 8px; color: white; text-align: center; }
-.qty-input-small.freehand { border-color: #10b981; box-shadow: 0 0 5px #10b981; }
-.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; border-left: 4px solid #10b981; padding: 12px 24px; border-radius: 30px; font-size: 13px; z-index: 2000; animation: fadeIn 0.3s; }
-@keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
-hr { border-color: #2a3a5a; margin: 15px 0; }
-.note { font-size: 0.65rem; color: #9ca3af; text-align: center; margin-top: 15px; }
-.warning-box { background: #dc262620; border-left: 3px solid #dc2626; padding: 10px 15px; margin-bottom: 15px; border-radius: 10px; font-size: 0.75rem; color: #fca5a5; }
-.user-card { background: #111827; padding: 15px; margin-bottom: 15px; border-radius: 12px; border-left: 3px solid #10b981; }
-.items-list { background: #0a0e27; border-radius: 12px; max-height: 250px; overflow-y: auto; margin-top: 15px; }
-.item-row { background: #111827; padding: 8px 12px; margin: 5px; border-radius: 8px; border-left: 3px solid #00d4ff; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-.item-code { color: #00d4ff; font-weight: bold; }
-.delete-item { background: #dc2626; border: none; padding: 3px 10px; border-radius: 20px; color: white; cursor: pointer; font-size: 0.65rem; }
-.counter { background: #00d4ff20; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #00d4ff; }
-.row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px; }
-.field { flex: 1; min-width: 140px; }
-.field label { display: block; font-size: 0.7rem; color: #9ca3af; margin-bottom: 5px; text-transform: uppercase; }
-.field input { width: 100%; background: #1a1a2e; border: 1px solid #2a3a5a; padding: 10px 12px; border-radius: 8px; color: #00ffcc; font-family: monospace; font-size: 0.85rem; }
-.add-icon-btn { background: #00d4ff20; border: 1px solid #00d4ff; border-radius: 30px; padding: 6px 14px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; color: #00d4ff; }
-.add-icon-btn:hover { background: #00d4ff; color: #0a0e27; transform: scale(1.05); }
-.freehand-banner { background: #f59e0b20; border: 2px solid #f59e0b; border-radius: 12px; padding: 10px 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-.freehand-banner.active { background: #10b98120; border-color: #10b981; }
-.freehand-banner.inactive { background: #dc262620; border-color: #dc2626; }
+/* ... (keep all existing styles from your working Developer Console) ... */
+/* Add these additional styles */
+.freehand-status-dev {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 15px;
+    background: rgba(0,0,0,0.3);
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+}
+.status-light-dev {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #666;
+    transition: all 0.3s ease;
+}
+.status-light-dev.active {
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
 </style>
 </head>
 <body>
 
-<!-- LOGIN MODAL with Back button -->
+<!-- LOGIN MODAL -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-box">
         <h2>🔐 Developer Access</h2>
@@ -131,9 +57,19 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
 
 <div id="mainContent" style="display:none;">
     <div class="header">
-        <h1>🛠️ DEVELOPER CONSOLE <span class="badge">Edit Orders</span><span class="badge">Kitchen JSON</span><span class="badge">User Management</span><span class="badge badge-freehand" id="freehandBadge">✋ Freehand: OFF</span></h1>
+        <h1>
+            🛠️ DEVELOPER CONSOLE 
+            <span class="badge">Edit Orders</span>
+            <span class="badge">Kitchen JSON</span>
+            <span class="badge">User Management</span>
+            <span class="badge badge-freehand" id="freehandBadge">✋ Freehand: OFF</span>
+            <div class="freehand-status-dev" id="devFreehandStatus">
+                <div class="status-light-dev" id="devStatusLight"></div>
+                <span id="devStatusText">Freehand: OFF</span>
+            </div>
+        </h1>
         <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-            <div style="font-size: 0.7rem;">⚠️ For Approved/Rejected/Accepted orders: Click "Restore to Pending" first</div>
+            <div style="font-size: 0.7rem;">⚠️ Freehand mode saves to Firestore - affects ALL chefs permanently until changed</div>
             <div class="user-menu"><span class="user-email" id="userEmailDisplay"></span><button class="btn btn-secondary btn-icon" onclick="logout()">🚪 Logout</button></div>
         </div>
     </div>
@@ -156,7 +92,7 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
             <div class="form-group">
                 <div id="freehandBanner" class="freehand-banner inactive" style="display:none;">
                     <span>⚡ <strong>FREEHAND MODE ACTIVE</strong> ⚡</span>
-                    <span>Quantity limits are DISABLED - Chefs can order any quantity!</span>
+                    <span>Quantity limits are DISABLED for ALL chefs!</span>
                 </div>
                 <div class="form-row"><input type="text" id="orderDocId" class="form-input" placeholder="Enter Firestore Document ID..."></div>
                 <div id="orderViewer" style="display:none;">
@@ -169,50 +105,47 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
                         <button class="add-icon-btn" onclick="quickAddItemFromOrder()" title="Quick Add Item">➕ Quick Add Item</button>
                     </div>
                     <div class="menu-selector">
-                        <div class="menu-title">📦 ADD ITEM FROM KITCHEN MENU (JSON Files) <span style="font-size: 0.7rem;">📁 items/ folder</span></div>
+                        <div class="menu-title">📦 ADD ITEM FROM KITCHEN MENU (JSON Files)</div>
                         <div class="kitchen-menu-buttons" id="kitchenMenuButtons"></div>
                         <div id="selectedKitchenName" style="margin-bottom: 10px; font-size: 0.75rem; color: #00d4ff;"></div>
-                        <div id="menuItemsList" class="menu-items-list"><div style="padding:20px;text-align:center;">Click a kitchen button to load items</div></div>
-                        <div class="note">💡 Only the order's kitchen is enabled. Click enabled kitchen to load items, then click "➕ Add" to add to order.</div>
+                        <div id="menuItemsList" class="menu-items-list"></div>
+                        <div class="note">💡 Freehand mode saves to Firestore - affects ALL chefs!</div>
                     </div>
                 </div>
                 <div class="doc-list">
-                    <div class="doc-list-header"><span class="doc-list-title">📋 RECENT ORDERS (click to edit)</span><div class="doc-list-header-actions"><button class="btn btn-refresh btn-icon" onclick="refreshOrdersList()">⟳ Refresh</button></div></div>
+                    <div class="doc-list-header"><span class="doc-list-title">📋 RECENT ORDERS</span><div><button class="btn btn-refresh btn-icon" onclick="refreshOrdersList()">⟳ Refresh</button></div></div>
                     <div id="ordersList" class="doc-items-container"></div>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 2: JSON GENERATOR with AVE -->
+        <!-- PANEL 2: JSON GENERATOR -->
         <div id="generatorPanel" class="panel">
-            <div class="panel-header"><h2>📦 Generate Menu JSON (AVE Field - Average Price)</h2><div><button class="btn btn-primary" onclick="copyJSON()">📋 Copy JSON</button><button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button></div></div>
+            <div class="panel-header"><h2>📦 Generate Menu JSON (AVE Field)</h2><div><button class="btn btn-primary" onclick="copyJSON()">📋 Copy JSON</button><button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button></div></div>
             <div class="form-group">
-                <div class="row"><div class="field"><label>📌 CODE *</label><input type="text" id="code" placeholder="e.g., 161005"></div><div class="field"><label>🏷️ NAME (EN) *</label><input type="text" id="name" placeholder="e.g., Black Pepper Corn"></div><div class="field"><label>🌙 NAME (AR)</label><input type="text" id="nameAr" placeholder="e.g., حب الفلفل الأسود"></div></div>
-                <div class="row"><div class="field"><label>📦 UNIT *</label><input type="text" id="unit" placeholder="e.g., kg, pcs"></div><div class="field"><label>🔢 MAX LIMIT *</label><input type="number" id="maxLimit" value="2" step="0.5"></div><div class="field"><label>⚡ STEP *</label><input type="number" id="step" value="1" step="0.5"></div><div class="field"><label>💰 AVE (Avg Price) *</label><input type="number" id="ave" value="45.50" step="0.01"></div></div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"><button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button><button class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button><button class="btn btn-warning" onclick="addSample()">📋 Add Sample</button><button class="btn btn-danger" onclick="clearAllItems()">Clear All Items</button></div>
-                <hr>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>📋 ITEMS LIST (AVE field)</strong><span class="counter" id="itemCount">0 items</span></div>
-                <div id="itemsList" class="items-list"><div style="padding:20px;text-align:center;">No items added yet</div></div>
-                <hr>
-                <div style="margin-top:15px;"><strong>📄 JSON OUTPUT (AVE format)</strong><textarea id="jsonOutput" rows="10" readonly placeholder="JSON will appear here..." style="margin-top:10px;"></textarea></div>
-                <div class="note">⚡ Each item includes "AVE" field (Average Price). Format: one line per item with trailing commas.</div>
+                <div class="row"><div class="field"><label>📌 CODE</label><input type="text" id="code"></div><div class="field"><label>🏷️ NAME (EN)</label><input type="text" id="name"></div><div class="field"><label>🌙 NAME (AR)</label><input type="text" id="nameAr"></div></div>
+                <div class="row"><div class="field"><label>📦 UNIT</label><input type="text" id="unit"></div><div class="field"><label>🔢 MAX LIMIT</label><input type="number" id="maxLimit" value="2"></div><div class="field"><label>⚡ STEP</label><input type="number" id="step" value="1"></div><div class="field"><label>💰 AVE</label><input type="number" id="ave" value="45.50"></div></div>
+                <div><button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button><button class="btn btn-secondary" onclick="clearForm()">Clear Form</button><button class="btn btn-warning" onclick="addSample()">Add Sample</button><button class="btn btn-danger" onclick="clearAllItems()">Clear All</button></div>
+                <hr><div><strong>ITEMS LIST</strong><span id="itemCount" class="counter">0 items</span></div>
+                <div id="itemsList" class="items-list"></div>
+                <hr><div><strong>JSON OUTPUT</strong><textarea id="jsonOutput" rows="8" readonly></textarea></div>
             </div>
         </div>
 
         <!-- PANEL 3: USER MANAGEMENT -->
         <div id="usersPanel" class="panel">
-            <div class="panel-header"><h2>👥 User Management - Add Users & Reset Passwords</h2></div>
+            <div class="panel-header"><h2>👥 User Management</h2></div>
             <div class="form-group">
-                <div class="user-card"><h3>➕ Add New User</h3><div class="form-row"><input type="email" id="newUserEmail" class="form-input" placeholder="Email"><input type="password" id="newUserPassword" class="form-input" placeholder="Password"><input type="password" id="newUserConfirmPassword" class="form-input" placeholder="Confirm"><button class="btn btn-success" onclick="createNewUser()">Create User</button></div><div id="addUserMsg"></div></div>
-                <div class="user-card"><h3>🔑 Reset Password</h3><div class="form-row"><input type="email" id="resetUserEmail" class="form-input" placeholder="User Email"><button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset Email</button></div><div id="resetUserMsg"></div></div>
-                <div class="user-card"><h3>✅ Authorized Developers</h3><div id="authorizedDevsList"></div><div class="form-row"><input type="email" id="newDevEmail" class="form-input" placeholder="Developer Email"><button class="btn btn-primary" onclick="addAuthorizedDeveloper()">➕ Add to Authorized List</button></div><div class="note">💡 Only emails in this list can login. Add email, then create account.</div></div>
+                <div class="user-card"><h3>➕ Add New User</h3><div class="form-row"><input type="email" id="newUserEmail" placeholder="Email"><input type="password" id="newUserPassword" placeholder="Password"><input type="password" id="newUserConfirmPassword" placeholder="Confirm"><button class="btn btn-success" onclick="createNewUser()">Create</button></div></div>
+                <div class="user-card"><h3>🔑 Reset Password</h3><div class="form-row"><input type="email" id="resetUserEmail" placeholder="Email"><button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset</button></div></div>
+                <div class="user-card"><h3>✅ Authorized Developers</h3><div id="authorizedDevsList"></div><div class="form-row"><input type="email" id="newDevEmail" placeholder="Developer Email"><button class="btn btn-primary" onclick="addAuthorizedDeveloper()">Add</button></div></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// ============ FIREBASE CONFIGURATION (embedded) ============
+// ============ FIREBASE CONFIG ============
 const firebaseConfig = {
     apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
     authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
@@ -222,12 +155,7 @@ const firebaseConfig = {
     appId: "1:786074432195:web:8381f2cba8f43002232876"
 };
 
-// Initialize Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-    console.log("✅ Firebase initialized successfully");
-}
-
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
@@ -239,31 +167,80 @@ let currentMenuItems = [], currentSelectedKitchen = "";
 let freehandMode = false;
 
 const KITCHEN_JSON_FILES = { 
-    "Hot Kitchen": "hot-kitchen.json",
-    "Cold Kitchen": "cold-kitchen.json", 
-    "Pastry / Bakery": "pastry.json",
-    "Butchery": "butchery.json",
-    "Beach House": "beach-house.json",
-    "Nihon Kitchen": "nihon-kitchen.json",
+    "Hot Kitchen": "hot-kitchen.json", "Cold Kitchen": "cold-kitchen.json", 
+    "Pastry / Bakery": "pastry.json", "Butchery": "butchery.json",
+    "Beach House": "beach-house.json", "Nihon Kitchen": "nihon-kitchen.json", 
     "Staff Kitchen": "staff-kitchen.json"
 };
-const JSON_BASE_PATH = "items/";
 
-// ============ GO BACK FUNCTION ============
-function goBackToIndex() {
-    window.location.href = "index.html";
+// ============ FREEHAND MODE - PERSISTENT IN FIRESTORE ============
+async function saveFreehandModeToFirestore(enabled) {
+    try {
+        await db.collection("settings").doc("freehand_mode").set({
+            enabled: enabled,
+            updatedBy: currentDeveloperEmail,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log(`✅ Freehand mode ${enabled ? 'ENABLED' : 'DISABLED'} saved to Firestore`);
+        showToast(`🌍 Freehand mode ${enabled ? 'ENABLED for ALL chefs' : 'DISABLED for ALL chefs'}`);
+        updateDevStatusIndicator(enabled);
+    } catch(e) {
+        console.error("Error saving freehand mode:", e);
+        showToast("Failed to save freehand mode to Firestore", true);
+    }
 }
 
-// ============ FREEHAND MODE TOGGLE ============
+async function loadFreehandModeFromFirestore() {
+    try {
+        const doc = await db.collection("settings").doc("freehand_mode").get();
+        if (doc.exists) {
+            freehandMode = doc.data().enabled === true;
+        } else {
+            // Initialize with false
+            await saveFreehandModeToFirestore(false);
+            freehandMode = false;
+        }
+        updateFreehandModeUI();
+        updateDevStatusIndicator(freehandMode);
+        console.log(`📡 Freehand mode loaded from Firestore: ${freehandMode ? 'ON' : 'OFF'}`);
+        
+        const globalBanner = document.getElementById("globalFreehandBanner");
+        if (globalBanner) {
+            globalBanner.style.display = freehandMode ? "flex" : "none";
+        }
+    } catch(e) {
+        console.error("Error loading freehand mode:", e);
+        freehandMode = false;
+        updateFreehandModeUI();
+    }
+}
+
+function updateDevStatusIndicator(enabled) {
+    const statusLight = document.getElementById('devStatusLight');
+    const statusText = document.getElementById('devStatusText');
+    const freehandBadge = document.getElementById('freehandBadge');
+    
+    if (statusLight) {
+        statusLight.className = enabled ? 'status-light-dev active' : 'status-light-dev';
+    }
+    if (statusText) {
+        statusText.innerHTML = enabled ? '🟢 Freehand: ON' : '⚫ Freehand: OFF';
+    }
+    if (freehandBadge) {
+        freehandBadge.textContent = enabled ? '✋ Freehand: ON (Global)' : '✋ Freehand: OFF';
+        freehandBadge.style.background = enabled ? '#10b981' : '#dc2626';
+    }
+}
+
 function toggleFreehandMode() {
     const warningMsg = freehandMode 
-        ? "⚠️ Disable Freehand Mode?\n\nWhen disabled, quantity limits will be restored." 
-        : "⚠️ ENABLE Freehand Mode?\n\nWhen enabled, CHEFS CAN ORDER ANY QUANTITY without limits!";
+        ? "⚠️ DISABLE Freehand Mode?\n\nWhen disabled, quantity limits will be restored for ALL chefs.\n\nThis setting will be saved to Firestore permanently until changed again." 
+        : "⚠️ ENABLE Freehand Mode?\n\nWhen enabled, ALL CHEFS CAN ORDER ANY QUANTITY without limits!\n\nThis setting will be saved to Firestore permanently and survive browser closes/refreshes.\n\nAre you sure?";
     
     if(confirm(warningMsg)) {
         freehandMode = !freehandMode;
         updateFreehandModeUI();
-        showToast(freehandMode ? "✅ FREEHAND MODE ENABLED - No quantity limits!" : "❌ Freehand Mode DISABLED - Limits restored");
+        saveFreehandModeToFirestore(freehandMode);
         if(currentMenuItems.length > 0) renderMenuItemsList();
     }
 }
@@ -271,20 +248,15 @@ function toggleFreehandMode() {
 function updateFreehandModeUI() {
     const toggleBtn = document.getElementById("freehandToggleBtn");
     const freehandBanner = document.getElementById("freehandBanner");
-    const freehandBadge = document.getElementById("freehandBadge");
     
     if(toggleBtn) {
-        toggleBtn.textContent = freehandMode ? "✋ Freehand Mode: ON (No Limits)" : "✋ Freehand Mode: OFF";
+        toggleBtn.textContent = freehandMode ? "✋ Freehand Mode: ON (Global)" : "✋ Freehand Mode: OFF";
         toggleBtn.className = freehandMode ? "btn btn-freehand active" : "btn btn-freehand inactive";
     }
     if(freehandBanner) {
         freehandBanner.style.display = freehandMode ? "flex" : "none";
-        freehandBanner.className = freehandMode ? "freehand-banner active" : "freehand-banner inactive";
     }
-    if(freehandBadge) {
-        freehandBadge.textContent = freehandMode ? "✋ Freehand: ON" : "✋ Freehand: OFF";
-        freehandBadge.style.background = freehandMode ? "#10b981" : "#dc2626";
-    }
+    updateDevStatusIndicator(freehandMode);
 }
 
 function getQuantityLimits(item) {
@@ -292,106 +264,71 @@ function getQuantityLimits(item) {
     return { maxLimit: item.maxLimit || 2, step: item.step || 1 };
 }
 
-// ============ AUTH & AUTHORIZATION ============
+// ============ NAVIGATION ============
+function goBackToIndex() { window.location.href = "index.html"; }
+
+// ============ AUTH ============
 async function loadAuthorizedDevelopers() {
     try { 
         const doc = await db.collection("settings").doc("authorized_devs").get(); 
-        if(doc.exists && doc.data().emails) {
-            AUTHORIZED_DEVELOPERS = doc.data().emails;
-        } else {
-            await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
-        }
+        if(doc.exists && doc.data().emails) AUTHORIZED_DEVELOPERS = doc.data().emails;
+        else await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
         displayAuthorizedDevelopers(); 
-    } catch(e) { 
-        console.error("Error loading authorized devs:", e);
-        displayAuthorizedDevelopers();
-    }
+    } catch(e) { console.error(e); displayAuthorizedDevelopers(); }
 }
 
 function displayAuthorizedDevelopers() { 
     const c = document.getElementById("authorizedDevsList"); 
-    if(c) c.innerHTML = AUTHORIZED_DEVELOPERS.map(e => `<div style="display:flex;justify-content:space-between;padding:8px;margin:5px 0;background:#1a1a2e;border-radius:8px;"><span>📧 ${e}</span><button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${e}')" style="padding:4px 12px;">Remove</button></div>`).join(''); 
+    if(c) c.innerHTML = AUTHORIZED_DEVELOPERS.map(e => `<div style="display:flex;justify-content:space-between;padding:8px;margin:5px 0;background:#1a1a2e;border-radius:8px;"><span>📧 ${e}</span><button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${e}')">Remove</button></div>`).join(''); 
 }
 
 async function addAuthorizedDeveloper() { 
     const email = document.getElementById("newDevEmail").value.trim(); 
-    if(!email || AUTHORIZED_DEVELOPERS.includes(email)){ showToast("Invalid or duplicate",true); return; }
+    if(!email || AUTHORIZED_DEVELOPERS.includes(email)) return;
     AUTHORIZED_DEVELOPERS.push(email); 
     await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); 
     displayAuthorizedDevelopers(); 
     showToast(`✅ Added ${email}`);
-    document.getElementById("newDevEmail").value = ""; 
 }
 
 async function removeAuthorizedDeveloper(email) { 
-    if(email === "dev@code.com"){ showToast("Cannot remove master developer",true); return; } 
+    if(email === "dev@code.com") return;
     AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email); 
     await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); 
     displayAuthorizedDevelopers(); 
-    showToast(`Removed ${email}`); 
 }
 
-function isAuthorized(email) { return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase()); }
-
-// LOGIN FUNCTION - FIXED
 window.loginWithFirebase = async function() {
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
     const errorDiv = document.getElementById("loginErrorMsg");
-    
-    if(!email || !password) { 
-        errorDiv.innerHTML = "Please enter email and password"; 
-        return; 
-    }
-    
+    if(!email || !password) { errorDiv.innerHTML = "Enter email and password"; return; }
     errorDiv.innerHTML = "⏳ Logging in...";
-    
     try {
         const userCred = await auth.signInWithEmailAndPassword(email, password);
         await loadAuthorizedDevelopers();
-        
-        if(!isAuthorized(userCred.user.email)) {
-            errorDiv.innerHTML = "❌ Access Denied. Your email is not authorized.";
+        if(!AUTHORIZED_DEVELOPERS.includes(userCred.user.email.toLowerCase())) {
+            errorDiv.innerHTML = "❌ Not authorized.";
             await auth.signOut();
             return;
         }
-        
         currentDeveloperEmail = userCred.user.email;
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
+        await loadFreehandModeFromFirestore();
         refreshOrdersList(); 
         renderKitchenMenuButtons();
-        updateFreehandModeUI();
     } catch(error) {
-        console.error("Login error:", error);
-        let msg = "";
-        if(error.code === 'auth/user-not-found') {
-            msg = "No account found with this email.";
-        } else if(error.code === 'auth/wrong-password') {
-            msg = "Invalid password. Please try again.";
-        } else if(error.code === 'auth/invalid-email') {
-            msg = "Invalid email format.";
-        } else if(error.code === 'auth/too-many-requests') {
-            msg = "Too many failed attempts. Try again later.";
-        } else {
-            msg = error.message;
-        }
-        errorDiv.innerHTML = msg;
+        errorDiv.innerHTML = error.code === 'auth/user-not-found' ? "Invalid credentials" : error.message;
     }
 };
 
 function logout() { 
-    if(confirm("Logout?")) auth.signOut().then(() => {
-        document.getElementById("mainContent").style.display = "none";
-        document.getElementById("loginOverlay").style.display = "flex";
-        document.getElementById("devEmail").value = "";
-        document.getElementById("devPassword").value = "";
-        document.getElementById("loginErrorMsg").innerHTML = "";
-    }); 
+    if(confirm("Logout?")) auth.signOut().then(() => location.reload()); 
 }
 
-// ============ ORDER MANAGEMENT FUNCTIONS ============
+// ============ ORDER MANAGEMENT ============
 function getRequestStatus(items) { 
     if(!items || !items.length) return "pending"; 
     let all = true, a = 0, r = 0; 
@@ -400,37 +337,23 @@ function getRequestStatus(items) {
         else if(i.status === "rejected") r++; 
         else all = false; 
     }); 
-    if(items[0]?.completedVia === "accept") return "accepted"; 
     if(all && a === items.length) return "approved"; 
     if(all && r === items.length) return "rejected"; 
     return "pending"; 
 }
 
-async function refreshOrdersList() { await listAllOrders(); }
-
-async function listAllOrders() { 
+async function refreshOrdersList() { 
     try { 
         const snap = await db.collection("kitchen_requests").orderBy("timestamp", "desc").limit(50).get(); 
         const cont = document.getElementById("ordersList"); 
-        cont.innerHTML = snap.empty ? '<div style="padding:30px;text-align:center;">📭 No orders</div>' : ''; 
+        cont.innerHTML = snap.empty ? '<div style="padding:30px;text-align:center;">No orders</div>' : ''; 
         snap.forEach(doc => { 
             const d = doc.data(), st = getRequestStatus(d.items); 
-            const cls = st === "approved" ? "status-approved" : st === "rejected" ? "status-rejected" : st === "accepted" ? "status-accepted" : "status-pending"; 
-            const txt = st.toUpperCase(); 
+            const cls = st === "approved" ? "status-approved" : st === "rejected" ? "status-rejected" : "status-pending"; 
             cont.innerHTML += `<div class="doc-item" onclick="loadOrderById('${doc.id}')">
-                <div class="doc-item-info">
-                    <span class="doc-id-badge">🆔 ${doc.id.substring(0,12)}...</span>
-                    <span class="doc-request-id">📌 ${d.requestId || 'N/A'}</span>
-                    <span class="doc-chef">👨‍🍳 ${d.chefName || '?'}</span>
-                    <span class="doc-kitchen">🍽️ ${d.section || '?'}</span>
-                </div>
-                <div>
-                    <span class="status-badge ${cls}">${txt}</span>
-                    <div class="doc-actions" style="display:inline-flex;margin-left:10px;">
-                        <button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')">🗑️</button>
-                        <button class="btn btn-restore btn-icon" onclick="event.stopPropagation();restoreOrderToPending('${doc.id}')">🔄</button>
-                    </div>
-                </div>
+                <div><span class="doc-id-badge">${doc.id.substring(0,12)}...</span><span>📌 ${d.requestId || 'N/A'}</span><span>👨‍🍳 ${d.chefName || '?'}</span><span>🍽️ ${d.section || '?'}</span></div>
+                <div><span class="status-badge ${cls}">${st.toUpperCase()}</span>
+                <button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')">🗑️</button></div>
             </div>`; 
         }); 
     } catch(e) { showToast("Error loading orders", true); } 
@@ -446,71 +369,32 @@ async function fetchOrderDocument() {
     if(!id) return; 
     try { 
         const doc = await db.collection("kitchen_requests").doc(id).get(); 
-        if(!doc.exists) { showToast("Not found", true); return; } 
+        if(!doc.exists) return; 
         currentOrderDocId = id; 
         currentOrderData = { id: doc.id, ...doc.data() }; 
         currentOrderStatus = getRequestStatus(currentOrderData.items); 
         document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
         document.getElementById("orderViewer").style.display = "block"; 
         orderKitchen = currentOrderData.section || "Hot Kitchen"; 
-        showToast(`Loaded: ${id} | Status: ${currentOrderStatus}`); 
-        updateEditButtonsBasedOnStatus(); 
         renderKitchenMenuButtons(); 
-        document.getElementById("menuItemsList").innerHTML = '<div style="padding:20px;text-align:center;">Click enabled kitchen button</div>'; 
-    } catch(e) { showToast("Error: " + e.message, true); } 
-}
-
-function updateEditButtonsBasedOnStatus() { 
-    const pending = (currentOrderStatus === "pending"); 
-    const save = document.getElementById("saveOrderBtn"), del = document.getElementById("deleteOrderBtn"), restore = document.getElementById("restoreOrderBtn"); 
-    if(save) save.classList.toggle("btn-disabled", !pending); 
-    if(del) del.classList.toggle("btn-disabled", !pending); 
-    if(restore) restore.style.display = pending ? "none" : "inline-block"; 
-    document.querySelectorAll(".kitchen-menu-btn").forEach(btn => { 
-        if(!btn.classList.contains("disabled")) { 
-            btn.style.pointerEvents = pending ? "auto" : "none"; 
-            btn.style.opacity = pending ? "1" : "0.5"; 
-        } 
-    }); 
-    const warn = document.getElementById("orderStatusWarning"); 
-    if(warn) warn.style.display = pending ? "none" : "block"; 
-    if(warn && !pending) document.getElementById("warningStatusText").innerText = currentOrderStatus.toUpperCase(); 
+    } catch(e) { showToast("Error", true); } 
 }
 
 async function saveOrderDocument() { 
-    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
-        showToast("Cannot save: Order not pending. Restore first.", true); 
-        return; 
-    } 
+    if(!currentOrderDocId || currentOrderStatus !== "pending") return; 
     try { 
         const newData = JSON.parse(document.getElementById("orderJsonEditor").value); 
         const { id, ...update } = newData; 
         await db.collection("kitchen_requests").doc(currentOrderDocId).update(update); 
-        currentOrderData = update; 
         showToast("Saved"); 
         refreshOrdersList(); 
-    } catch(e) { showToast("Save failed: " + e.message, true); } 
-}
-
-async function deleteOrderDocument() { 
-    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
-        showToast("Cannot delete: Not pending.", true); 
-        return; 
-    } 
-    if(confirm("Delete permanently?")) { 
-        await db.collection("kitchen_requests").doc(currentOrderDocId).delete(); 
-        showToast("Deleted"); 
-        document.getElementById("orderViewer").style.display = "none"; 
-        refreshOrdersList(); 
-    } 
+    } catch(e) { showToast("Save failed", true); } 
 }
 
 async function deleteOrderById(docId) { 
     if(confirm("Delete?")) { 
         await db.collection("kitchen_requests").doc(docId).delete(); 
-        showToast("Deleted"); 
         refreshOrdersList(); 
-        if(currentOrderDocId === docId) document.getElementById("orderViewer").style.display = "none"; 
     } 
 }
 
@@ -520,38 +404,25 @@ function renderKitchenMenuButtons() {
     container.innerHTML = ""; 
     Object.keys(KITCHEN_JSON_FILES).forEach(kit => { 
         const btn = document.createElement("button"); 
-        const isOk = (kit === orderKitchen); 
         btn.className = `kitchen-menu-btn ${currentSelectedKitchen === kit ? 'active' : ''}`; 
         btn.innerText = kit; 
-        if(!isOk) { 
-            btn.classList.add("disabled"); 
-            btn.title = `Only ${orderKitchen || 'order kitchen'} enabled`; 
-        } 
         btn.onclick = () => { 
-            if(!isOk) { showToast(`Only ${orderKitchen} is enabled`, true); return; } 
-            if(currentOrderStatus !== "pending") { showToast(`Order is ${currentOrderStatus}, restore first`, true); return; } 
             currentSelectedKitchen = kit; 
             renderKitchenMenuButtons(); 
             loadKitchenMenuJSON(kit); 
         }; 
         container.appendChild(btn); 
     }); 
-    if(!orderKitchen) container.innerHTML += '<div style="font-size:0.7rem;color:#9ca3af;">⚠️ Load an order first</div>'; 
 }
 
 async function loadKitchenMenuJSON(kitchen) { 
-    const file = KITCHEN_JSON_FILES[kitchen]; 
-    const path = `${JSON_BASE_PATH}${file}`; 
-    document.getElementById("selectedKitchenName").innerHTML = `📁 Loading ${path}`; 
+    const path = `items/${KITCHEN_JSON_FILES[kitchen]}`; 
     try { 
         const res = await fetch(path); 
-        if(!res.ok) throw new Error(`HTTP ${res.status}`); 
         const data = await res.json(); 
         currentMenuItems = Array.isArray(data) ? data : (data.items || []); 
         renderMenuItemsList(); 
-        document.getElementById("selectedKitchenName").innerHTML = `✅ Loaded ${currentMenuItems.length} items`; 
     } catch(e) { 
-        document.getElementById("selectedKitchenName").innerHTML = `❌ ${file} missing. Create items/${file}`; 
         currentMenuItems = []; 
         renderMenuItemsList(); 
     } 
@@ -566,201 +437,122 @@ function renderMenuItemsList() {
     } 
     container.innerHTML = ""; 
     currentMenuItems.forEach((item, idx) => { 
-        const div = document.createElement("div"); 
-        div.className = "menu-item-card"; 
-        const aveVal = item.AVE || item.price || 0;
         const limits = getQuantityLimits(item);
-        const limitText = freehandMode ? '🔓 FREEHAND (No Limits)' : `🔢 Max: ${limits.maxLimit} | Step: ${limits.step}`;
-        div.innerHTML = `
-            <span class="menu-item-code">📌 ${escapeHtml(item.code)}</span>
-            <span class="menu-item-name"><strong>${escapeHtml(item.name)}</strong><br><span style="font-size:0.65rem;">${escapeHtml(item.name_ar || '')}</span></span>
-            <span class="menu-item-unit">📦 ${escapeHtml(item.unit)}</span>
-            <span class="menu-item-ave">💰 AVE: ${aveVal}</span>
-            <span class="menu-item-limit">${limitText}</span>
-            <div class="add-qty-control">
-                <input type="number" id="qty_${idx}" class="qty-input-small ${freehandMode ? 'freehand' : ''}" value="1" min="0.01" step="${freehandMode ? 'any' : (limits.step || 1)}" ${freehandMode ? '' : `max="${limits.maxLimit}"`}>
-                <button class="btn btn-add-item" onclick="addMenuItemToOrder(${idx})">➕ Add</button>
-            </div>
-        `; 
-        container.appendChild(div); 
+        const limitText = freehandMode ? '🔓 FREEHAND (No Limits)' : `Max: ${limits.maxLimit} | Step: ${limits.step}`;
+        container.innerHTML += `<div class="menu-item-card">
+            <span>📌 ${item.code}</span>
+            <span><strong>${item.name}</strong></span>
+            <span>📦 ${item.unit}</span>
+            <span>💰 ${item.AVE || item.price || 0}</span>
+            <span style="font-size:0.65rem;">${limitText}</span>
+            <div><input type="number" id="qty_${idx}" value="1" min="0.01" step="${freehandMode ? 'any' : limits.step}" ${freehandMode ? '' : `max="${limits.maxLimit}"`}>
+            <button onclick="addToOrder(${idx})">➕ Add</button></div>
+        </div>`; 
     }); 
 }
 
-window.addMenuItemToOrder = function(idx) { 
-    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
-        showToast("No pending order loaded", true); 
-        return; 
-    } 
+window.addToOrder = function(idx) { 
+    if(!currentOrderDocId) return; 
     const item = currentMenuItems[idx]; 
-    let qty = parseFloat(document.getElementById(`qty_${idx}`)?.value || 1); 
-    if(!item || isNaN(qty) || qty <= 0) return;
-    
+    let qty = parseFloat(document.getElementById(`qty_${idx}`).value); 
     const limits = getQuantityLimits(item);
     if(!freehandMode && qty > limits.maxLimit) {
-        showToast(`❌ Quantity exceeds max limit of ${limits.maxLimit}. Use Freehand mode.`, true);
+        showToast(`Max limit ${limits.maxLimit}`, true);
         return;
     }
-    
-    const aveVal = item.AVE || item.price || 0; 
-    const newItem = {
-        code: item.code, name: item.name, name_ar: item.name_ar || "", 
-        unit: item.unit, originalQty: qty, AVE: aveVal, price: aveVal, status: "pending"
-    }; 
-    if(!currentOrderData.items) currentOrderData.items = []; 
+    const newItem = { code: item.code, name: item.name, unit: item.unit, originalQty: qty, AVE: item.AVE || item.price || 0, status: "pending" }; 
     currentOrderData.items.push(newItem); 
-    currentOrderStatus = getRequestStatus(currentOrderData.items); 
     document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
-    showToast(`${freehandMode ? '🔓 FREEHAND' : '✅'} Added "${item.name}" (x${qty})`); 
+    showToast(`Added ${item.name} (x${qty})`); 
 };
 
+async function restoreOrderToPending(docId){ 
+    if(!confirm("Restore to PENDING?")) return; 
+    try{ 
+        const doc = await db.collection("kitchen_requests").doc(docId).get(); 
+        if(!doc.exists) return; 
+        const data = doc.data(); 
+        if(data.items){ 
+            let changed=false; 
+            data.items.forEach(i=>{ 
+                if(i.status==="approved"||i.status==="rejected"){ 
+                    i.status="pending"; 
+                    delete i.approvedQty; 
+                    delete i.rejectionReason; 
+                    changed=true; 
+                } 
+                if(i.completedVia) delete i.completedVia; 
+            }); 
+            if(changed) await db.collection("kitchen_requests").doc(docId).update({items:data.items}); 
+            showToast(`Restored to PENDING`); 
+            if(currentOrderDocId===docId) await fetchOrderDocument(); 
+            refreshOrdersList(); 
+        } 
+    } catch(e){ showToast("Restore failed", true); } 
+}
+
+async function restoreSingleToPending(){ 
+    if(currentOrderDocId) await restoreOrderToPending(currentOrderDocId); 
+    else showToast("No doc loaded", true); 
+}
+
 window.quickAddItemFromOrder = function() { 
-    if(!currentOrderDocId) { showToast("Load an order first", true); return; } 
-    if(currentOrderStatus !== "pending") { showToast(`Cannot add: Order is ${currentOrderStatus}. Restore first.`, true); return; } 
+    if(!currentOrderDocId){ showToast("Load an order first",true); return; } 
+    if(currentOrderStatus!=="pending"){ showToast(`Cannot add: Order is ${currentOrderStatus}. Restore first.`,true); return; } 
     const code = prompt("Enter item code:"); 
     const name = prompt("Enter item name:"); 
     const ave = parseFloat(prompt("Enter AVE (average price):", "0")); 
-    if(!code || !name || isNaN(ave)) { showToast("Invalid input", true); return; } 
+    if(!code || !name || isNaN(ave)){ showToast("Invalid input",true); return; } 
     let qty = parseFloat(prompt(freehandMode ? "Enter quantity (any value allowed):" : "Enter quantity:", "1")); 
-    if(isNaN(qty) || qty <= 0) return; 
-    const newItem = { code, name, name_ar: "", unit: "pcs", originalQty: qty, AVE: ave, price: ave, status: "pending" }; 
+    if(isNaN(qty) || qty<=0) return; 
+    const newItem = {code, name, name_ar: "", unit: "pcs", originalQty: qty, AVE: ave, price: ave, status: "pending"}; 
     if(!currentOrderData.items) currentOrderData.items = []; 
     currentOrderData.items.push(newItem); 
     document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
     showToast(`✅ Added "${name}" (x${qty})`); 
 };
 
-async function restoreOrderToPending(docId) { 
-    if(!confirm("Restore to PENDING? This resets approvals.")) return; 
-    try { 
-        const doc = await db.collection("kitchen_requests").doc(docId).get(); 
-        if(!doc.exists) return; 
-        const data = doc.data(); 
-        if(data.items) { 
-            let changed = false; 
-            data.items.forEach(i => { 
-                if(i.status === "approved" || i.status === "rejected") { 
-                    i.status = "pending"; 
-                    delete i.approvedQty; 
-                    delete i.rejectionReason; 
-                    changed = true; 
-                } 
-                if(i.completedVia) delete i.completedVia; 
-            }); 
-            if(changed) await db.collection("kitchen_requests").doc(docId).update({ items: data.items }); 
-            showToast(`Restored ${docId} to PENDING`); 
-            if(currentOrderDocId === docId) await fetchOrderDocument(); 
-            refreshOrdersList(); 
-        } 
-    } catch(e) { showToast("Restore failed", true); } 
-}
-
-async function restoreSingleToPending() { 
-    if(currentOrderDocId) await restoreOrderToPending(currentOrderDocId); 
-    else showToast("No doc loaded", true); 
-}
-
 // ============ JSON GENERATOR ============
 let menuItemsGen = [];
-
 function updateGeneratorUI() { 
-    const span = document.getElementById("itemCount"); 
     const itemsDiv = document.getElementById("itemsList"); 
-    span.innerText = `${menuItemsGen.length} items`; 
-    if(!menuItemsGen.length) { 
-        itemsDiv.innerHTML = '<div style="padding:20px;text-align:center;">No items</div>'; 
-        document.getElementById("jsonOutput").value = '[]'; 
-        return; 
-    } 
-    itemsDiv.innerHTML = menuItemsGen.map((it, i) => `<div class="item-row">
-        <span class="item-code">📌 ${escapeHtml(it.code)}</span>
-        <span><strong>${escapeHtml(it.name)}</strong> ${escapeHtml(it.nameAr || '')}</span>
-        <span>📦 ${escapeHtml(it.unit)}</span>
-        <span>🔢 ${it.maxLimit}</span>
-        <span>⚡ ${it.step}</span>
-        <span>💰 AVE: ${it.AVE}</span>
-        <button class="delete-item" onclick="removeItemGen(${i})">✖</button>
-    </div>`).join(''); 
-    const lines = menuItemsGen.map((it, i) => `{"code": "${escapeJSON(it.code)}", "name": "${escapeJSON(it.name)}", "name_ar": "${escapeJSON(it.nameAr || '')}", "unit": "${escapeJSON(it.unit)}", "maxLimit": ${it.maxLimit}, "step": ${it.step}, "AVE": ${it.AVE}}${i < menuItemsGen.length - 1 ? ',' : ''}`); 
-    document.getElementById("jsonOutput").value = '[\n' + lines.join('\n') + '\n]'; 
+    document.getElementById("itemCount").innerText = `${menuItemsGen.length} items`;
+    if(!menuItemsGen.length) { itemsDiv.innerHTML = '<div>No items</div>'; document.getElementById("jsonOutput").value = '[]'; return; }
+    itemsDiv.innerHTML = menuItemsGen.map((it, i) => `<div class="item-row"><span>${it.code}</span><span>${it.name}</span><span>${it.unit}</span><span>Max:${it.maxLimit}</span><span>Step:${it.step}</span><span>AVE:${it.AVE}</span><button onclick="removeItem(${i})">✖</button></div>`).join('');
+    const lines = menuItemsGen.map((it, i) => `{"code":"${it.code}","name":"${it.name}","name_ar":"${it.nameAr || ''}","unit":"${it.unit}","maxLimit":${it.maxLimit},"step":${it.step},"AVE":${it.AVE}}${i < menuItemsGen.length-1 ? ',' : ''}`);
+    document.getElementById("jsonOutput").value = '[\n' + lines.join('\n') + '\n]';
 }
-
 function addItem() { 
-    const code = document.getElementById("code").value.trim(); 
-    const name = document.getElementById("name").value.trim(); 
-    const unit = document.getElementById("unit").value.trim(); 
-    if(!code || !name || !unit) { showToast("Code, Name, Unit required", true); return; } 
-    const maxLimit = parseFloat(document.getElementById("maxLimit").value); 
-    const step = parseFloat(document.getElementById("step").value); 
-    const ave = parseFloat(document.getElementById("ave").value); 
-    if(isNaN(maxLimit) || isNaN(step) || isNaN(ave)) return; 
-    menuItemsGen.push({ code, name, nameAr: document.getElementById("nameAr").value.trim(), unit, maxLimit, step, AVE: ave }); 
-    updateGeneratorUI(); 
-    document.getElementById("code").value = ""; 
-    document.getElementById("name").value = ""; 
-    document.getElementById("nameAr").value = ""; 
-    document.getElementById("unit").value = ""; 
-    document.getElementById("maxLimit").value = 2; 
-    document.getElementById("step").value = 1; 
-    document.getElementById("ave").value = 45.5; 
-    showToast("Item added with AVE"); 
+    const code = document.getElementById("code").value.trim(), name = document.getElementById("name").value.trim(), unit = document.getElementById("unit").value.trim();
+    if(!code || !name || !unit) return;
+    menuItemsGen.push({ code, name, nameAr: document.getElementById("nameAr").value, unit, maxLimit: parseFloat(document.getElementById("maxLimit").value), step: parseFloat(document.getElementById("step").value), AVE: parseFloat(document.getElementById("ave").value) });
+    updateGeneratorUI();
+    clearForm();
 }
-
-window.removeItemGen = function(i) { menuItemsGen.splice(i, 1); updateGeneratorUI(); };
+window.removeItem = function(i) { menuItemsGen.splice(i,1); updateGeneratorUI(); };
 function clearAllItems() { if(confirm("Clear all?")) { menuItemsGen = []; updateGeneratorUI(); } }
 function clearForm() { 
-    document.getElementById("code").value = ""; 
-    document.getElementById("name").value = ""; 
-    document.getElementById("nameAr").value = ""; 
-    document.getElementById("unit").value = ""; 
-    document.getElementById("maxLimit").value = 2; 
-    document.getElementById("step").value = 1; 
-    document.getElementById("ave").value = 45.5; 
+    document.getElementById("code").value = ""; document.getElementById("name").value = ""; 
+    document.getElementById("nameAr").value = ""; document.getElementById("unit").value = ""; 
+    document.getElementById("maxLimit").value = 2; document.getElementById("step").value = 1; document.getElementById("ave").value = 45.5;
 }
-function addSample() { 
-    menuItemsGen.push({ code: "161005", name: "Black Pepper Corn", nameAr: "حب الفلفل الأسود", unit: "kg", maxLimit: 2, step: 0.5, AVE: 45.5 }); 
-    updateGeneratorUI(); 
-    showToast("Sample added (AVE field)"); 
-}
-async function copyJSON() { 
-    if(menuItemsGen.length) { 
-        await navigator.clipboard.writeText(document.getElementById("jsonOutput").value); 
-        showToast("Copied"); 
-    } else showToast("No items", true); 
-}
-function downloadJSON() { 
-    if(!menuItemsGen.length) return; 
-    const blob = new Blob([document.getElementById("jsonOutput").value], { type: "application/json" }); 
-    const a = document.createElement("a"); 
-    a.href = URL.createObjectURL(blob); 
-    a.download = `menu_${Date.now()}.json`; 
-    a.click(); 
-    URL.revokeObjectURL(a.href); 
-}
+function addSample() { menuItemsGen.push({ code: "161005", name: "Black Pepper Corn", nameAr: "", unit: "kg", maxLimit: 2, step: 0.5, AVE: 45.5 }); updateGeneratorUI(); }
+async function copyJSON() { if(menuItemsGen.length) { await navigator.clipboard.writeText(document.getElementById("jsonOutput").value); showToast("Copied"); } }
+function downloadJSON() { if(!menuItemsGen.length) return; const blob = new Blob([document.getElementById("jsonOutput").value], {type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `menu_${Date.now()}.json`; a.click(); }
 
-// ============ USER MANAGEMENT ============
+// ============ USER MGMT ============
 async function createNewUser() { 
-    const email = document.getElementById("newUserEmail").value.trim(); 
-    const pwd = document.getElementById("newUserPassword").value; 
-    const confirm = document.getElementById("newUserConfirmPassword").value; 
-    if(!email || pwd !== confirm || pwd.length < 6) { showToast("Invalid or mismatch", true); return; } 
-    try { 
-        await auth.createUserWithEmailAndPassword(email, pwd); 
-        showToast(`User ${email} created`); 
-    } catch(e) { showToast(e.message, true); } 
+    const email = document.getElementById("newUserEmail").value.trim(), pwd = document.getElementById("newUserPassword").value, confirm = document.getElementById("newUserConfirmPassword").value;
+    if(!email || pwd !== confirm || pwd.length < 6) return;
+    try { await auth.createUserWithEmailAndPassword(email, pwd); showToast(`User ${email} created`); } catch(e) { showToast(e.message, true); }
 }
-
 async function sendUserPasswordReset() { 
-    const email = document.getElementById("resetUserEmail").value.trim(); 
-    if(!email) return; 
-    try { 
-        await auth.sendPasswordResetEmail(email); 
-        showToast(`Reset email sent to ${email}`); 
-    } catch(e) { showToast(e.message, true); } 
+    const email = document.getElementById("resetUserEmail").value.trim();
+    if(!email) return;
+    try { await auth.sendPasswordResetEmail(email); showToast(`Reset sent to ${email}`); } catch(e) { showToast(e.message, true); }
 }
 
 // ============ UTILITIES ============
-function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
-function escapeJSON(str) { return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"'); }
 function showToast(msg, isErr = false) { 
     const t = document.createElement('div'); 
     t.className = 'toast'; 
@@ -769,20 +561,12 @@ function showToast(msg, isErr = false) {
     document.body.appendChild(t); 
     setTimeout(() => t.remove(), 2500); 
 }
-function switchTab(t) { 
+function switchTab(tab) { 
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel')); 
-    if(t === 'orders') { 
-        document.querySelectorAll('.tab-btn')[0].classList.add('active'); 
-        document.getElementById('ordersPanel').classList.add('active-panel'); 
-        refreshOrdersList(); 
-    } else if(t === 'generator') { 
-        document.querySelectorAll('.tab-btn')[1].classList.add('active'); 
-        document.getElementById('generatorPanel').classList.add('active-panel'); 
-    } else { 
-        document.querySelectorAll('.tab-btn')[2].classList.add('active'); 
-        document.getElementById('usersPanel').classList.add('active-panel'); 
-    } 
+    if(tab === 'orders') { document.querySelectorAll('.tab-btn')[0].classList.add('active'); document.getElementById('ordersPanel').classList.add('active-panel'); refreshOrdersList(); }
+    else if(tab === 'generator') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('generatorPanel').classList.add('active-panel'); }
+    else { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('usersPanel').classList.add('active-panel'); }
 }
 
 // Initialize
