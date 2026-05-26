@@ -5,7 +5,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Developer Console - Complete Control</title>
 <style>
@@ -124,7 +123,7 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
         <div class="info-msg" style="margin-bottom: 15px;">⚠️ Authorized developers only</div>
         <input type="email" id="devEmail" placeholder="Email Address" autocomplete="email">
         <input type="password" id="devPassword" placeholder="Password" autocomplete="current-password">
-        <button onclick="loginWithFirebase()">🔓 Login to Console</button>
+        <button id="loginBtn" onclick="loginWithFirebase()">🔓 Login to Console</button>
         <button class="back-btn" onclick="goBackToIndex()">◀ Go Back to Home</button>
         <div id="loginErrorMsg" class="error-msg"></div>
     </div>
@@ -213,53 +212,59 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
 </div>
 
 <script>
-// Wait for Firebase to be ready
-let firebaseInitialized = false;
-let auth, db;
+// ============ FIREBASE CONFIGURATION (embedded) ============
+const firebaseConfig = {
+    apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
+    authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
+    projectId: "kitchenordersystem-66eb2",
+    storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
+    messagingSenderId: "786074432195",
+    appId: "1:786074432195:web:8381f2cba8f43002232876"
+};
 
-// Function to initialize Firebase after config loads
-function initFirebase() {
-    if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-        auth = firebase.auth();
-        db = firebase.firestore();
-        firebaseInitialized = true;
-        console.log("✅ Firebase initialized successfully");
-        // Load authorized developers after Firebase is ready
-        loadAuthorizedDevelopers();
-    } else {
-        console.log("⏳ Waiting for Firebase...");
-        setTimeout(initFirebase, 500);
-    }
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log("✅ Firebase initialized successfully");
 }
 
-// Go back to index.html
-function goBackToIndex() {
-    window.location.href = "index.html";
-}
+const auth = firebase.auth();
+const db = firebase.firestore();
 
+// ============ GLOBAL VARIABLES ============
 let currentDeveloperEmail = "";
 let AUTHORIZED_DEVELOPERS = ["dev@code.com", "jac11devel@gmail.com"];
 let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
 let currentMenuItems = [], currentSelectedKitchen = "";
 let freehandMode = false;
 
-const KITCHEN_JSON_FILES = { "Hot Kitchen":"hot-kitchen.json","Cold Kitchen":"cold-kitchen.json","Pastry / Bakery":"pastry.json","Butchery":"butchery.json","Beach House":"beach-house.json","Nihon Kitchen":"nihon-kitchen.json","Staff Kitchen":"staff-kitchen.json"};
+const KITCHEN_JSON_FILES = { 
+    "Hot Kitchen": "hot-kitchen.json",
+    "Cold Kitchen": "cold-kitchen.json", 
+    "Pastry / Bakery": "pastry.json",
+    "Butchery": "butchery.json",
+    "Beach House": "beach-house.json",
+    "Nihon Kitchen": "nihon-kitchen.json",
+    "Staff Kitchen": "staff-kitchen.json"
+};
 const JSON_BASE_PATH = "items/";
+
+// ============ GO BACK FUNCTION ============
+function goBackToIndex() {
+    window.location.href = "index.html";
+}
 
 // ============ FREEHAND MODE TOGGLE ============
 function toggleFreehandMode() {
     const warningMsg = freehandMode 
-        ? "⚠️ Disable Freehand Mode?\n\nWhen disabled, quantity limits (maxLimit & step) will be restored.\n\nAre you sure?" 
-        : "⚠️ ENABLE Freehand Mode?\n\nWhen enabled, CHEFS CAN ORDER ANY QUANTITY without limits!\n\nThis removes maxLimit and step restrictions.\n\nAre you sure?";
+        ? "⚠️ Disable Freehand Mode?\n\nWhen disabled, quantity limits will be restored." 
+        : "⚠️ ENABLE Freehand Mode?\n\nWhen enabled, CHEFS CAN ORDER ANY QUANTITY without limits!";
     
     if(confirm(warningMsg)) {
         freehandMode = !freehandMode;
         updateFreehandModeUI();
         showToast(freehandMode ? "✅ FREEHAND MODE ENABLED - No quantity limits!" : "❌ Freehand Mode DISABLED - Limits restored");
-        
-        if(currentMenuItems.length > 0) {
-            renderMenuItemsList();
-        }
+        if(currentMenuItems.length > 0) renderMenuItemsList();
     }
 }
 
@@ -272,32 +277,23 @@ function updateFreehandModeUI() {
         toggleBtn.textContent = freehandMode ? "✋ Freehand Mode: ON (No Limits)" : "✋ Freehand Mode: OFF";
         toggleBtn.className = freehandMode ? "btn btn-freehand active" : "btn btn-freehand inactive";
     }
-    
     if(freehandBanner) {
         freehandBanner.style.display = freehandMode ? "flex" : "none";
         freehandBanner.className = freehandMode ? "freehand-banner active" : "freehand-banner inactive";
     }
-    
     if(freehandBadge) {
-        freehandBadge.textContent = freehandMode ? "✋ Freehand: ON (No Limits)" : "✋ Freehand: OFF";
+        freehandBadge.textContent = freehandMode ? "✋ Freehand: ON" : "✋ Freehand: OFF";
         freehandBadge.style.background = freehandMode ? "#10b981" : "#dc2626";
-        freehandBadge.style.color = "white";
     }
 }
 
 function getQuantityLimits(item) {
-    if(freehandMode) {
-        return { maxLimit: 999999, step: 0.01 };
-    }
-    return {
-        maxLimit: item.maxLimit || 2,
-        step: item.step || 1
-    };
+    if(freehandMode) return { maxLimit: 999999, step: 0.01 };
+    return { maxLimit: item.maxLimit || 2, step: item.step || 1 };
 }
 
 // ============ AUTH & AUTHORIZATION ============
 async function loadAuthorizedDevelopers() {
-    if (!db) return;
     try { 
         const doc = await db.collection("settings").doc("authorized_devs").get(); 
         if(doc.exists && doc.data().emails) {
@@ -337,12 +333,8 @@ async function removeAuthorizedDeveloper(email) {
 
 function isAuthorized(email) { return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase()); }
 
+// LOGIN FUNCTION - FIXED
 window.loginWithFirebase = async function() {
-    if (!auth) {
-        document.getElementById("loginErrorMsg").innerHTML = "⏳ Firebase is loading. Please wait and try again.";
-        return;
-    }
-    
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
     const errorDiv = document.getElementById("loginErrorMsg");
@@ -351,6 +343,7 @@ window.loginWithFirebase = async function() {
         errorDiv.innerHTML = "Please enter email and password"; 
         return; 
     }
+    
     errorDiv.innerHTML = "⏳ Logging in...";
     
     try {
@@ -358,7 +351,7 @@ window.loginWithFirebase = async function() {
         await loadAuthorizedDevelopers();
         
         if(!isAuthorized(userCred.user.email)) {
-            errorDiv.innerHTML = "❌ Access Denied. Your email is not authorized. Contact an admin to add you to the authorized developers list.";
+            errorDiv.innerHTML = "❌ Access Denied. Your email is not authorized.";
             await auth.signOut();
             return;
         }
@@ -371,15 +364,16 @@ window.loginWithFirebase = async function() {
         renderKitchenMenuButtons();
         updateFreehandModeUI();
     } catch(error) {
+        console.error("Login error:", error);
         let msg = "";
         if(error.code === 'auth/user-not-found') {
-            msg = "No account found with this email. Please check your credentials.";
+            msg = "No account found with this email.";
         } else if(error.code === 'auth/wrong-password') {
             msg = "Invalid password. Please try again.";
         } else if(error.code === 'auth/invalid-email') {
             msg = "Invalid email format.";
         } else if(error.code === 'auth/too-many-requests') {
-            msg = "Too many failed attempts. Please try again later.";
+            msg = "Too many failed attempts. Try again later.";
         } else {
             msg = error.message;
         }
@@ -388,25 +382,186 @@ window.loginWithFirebase = async function() {
 };
 
 function logout() { 
-    if(confirm("Logout?")) auth.signOut().then(()=>location.reload()); 
+    if(confirm("Logout?")) auth.signOut().then(() => {
+        document.getElementById("mainContent").style.display = "none";
+        document.getElementById("loginOverlay").style.display = "flex";
+        document.getElementById("devEmail").value = "";
+        document.getElementById("devPassword").value = "";
+        document.getElementById("loginErrorMsg").innerHTML = "";
+    }); 
 }
 
-function getRequestStatus(items) { if(!items||!items.length) return "pending"; let all=true,a=0,r=0; items.forEach(i=>{ if(i.status==="approved") a++; else if(i.status==="rejected") r++; else all=false; }); if(items[0]?.completedVia==="accept") return "accepted"; if(all&&a===items.length) return "approved"; if(all&&r===items.length) return "rejected"; return "pending"; }
+// ============ ORDER MANAGEMENT FUNCTIONS ============
+function getRequestStatus(items) { 
+    if(!items || !items.length) return "pending"; 
+    let all = true, a = 0, r = 0; 
+    items.forEach(i => { 
+        if(i.status === "approved") a++; 
+        else if(i.status === "rejected") r++; 
+        else all = false; 
+    }); 
+    if(items[0]?.completedVia === "accept") return "accepted"; 
+    if(all && a === items.length) return "approved"; 
+    if(all && r === items.length) return "rejected"; 
+    return "pending"; 
+}
+
 async function refreshOrdersList() { await listAllOrders(); }
-async function listAllOrders() { if(!db) return; try { const snap=await db.collection("kitchen_requests").orderBy("timestamp","desc").limit(50).get(); const cont=document.getElementById("ordersList"); cont.innerHTML=snap.empty?'<div style="padding:30px;text-align:center;">📭 No orders</div>':''; snap.forEach(doc=>{ const d=doc.data(), st=getRequestStatus(d.items), cls=st==="approved"?"status-approved":st==="rejected"?"status-rejected":st==="accepted"?"status-accepted":"status-pending", txt=st.toUpperCase(); cont.innerHTML+=`<div class="doc-item" onclick="loadOrderById('${doc.id}')"><div class="doc-item-info"><span class="doc-id-badge">🆔 ${doc.id.substring(0,12)}...</span><span class="doc-request-id">📌 ${d.requestId||'N/A'}</span><span class="doc-chef">👨‍🍳 ${d.chefName||'?'}</span><span class="doc-kitchen">🍽️ ${d.section||'?'}</span></div><div><span class="status-badge ${cls}">${txt}</span><div class="doc-actions" style="display:inline-flex;margin-left:10px;"><button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')">🗑️</button><button class="btn btn-restore btn-icon" onclick="event.stopPropagation();restoreOrderToPending('${doc.id}')">🔄</button></div></div></div>`; }); } catch(e){ showToast("Error loading orders",true); } }
-async function loadOrderById(docId) { document.getElementById("orderDocId").value=docId; await fetchOrderDocument(); }
-async function fetchOrderDocument() { if(!db) return; const id=document.getElementById("orderDocId").value.trim(); if(!id) return; try { const doc=await db.collection("kitchen_requests").doc(id).get(); if(!doc.exists){ showToast("Not found",true); return; } currentOrderDocId=id; currentOrderData={id:doc.id,...doc.data()}; currentOrderStatus=getRequestStatus(currentOrderData.items); document.getElementById("orderJsonEditor").value=JSON.stringify(currentOrderData,null,2); document.getElementById("orderViewer").style.display="block"; orderKitchen=currentOrderData.section||"Hot Kitchen"; showToast(`Loaded: ${id} | Status: ${currentOrderStatus}`); updateEditButtonsBasedOnStatus(); renderKitchenMenuButtons(); document.getElementById("menuItemsList").innerHTML='<div style="padding:20px;text-align:center;">Click enabled kitchen button</div>'; } catch(e){ showToast("Error:"+e.message,true); } }
-function updateEditButtonsBasedOnStatus() { const pending=(currentOrderStatus==="pending"); const save=document.getElementById("saveOrderBtn"), del=document.getElementById("deleteOrderBtn"), restore=document.getElementById("restoreOrderBtn"); if(save) save.classList.toggle("btn-disabled",!pending); if(del) del.classList.toggle("btn-disabled",!pending); if(restore) restore.style.display=pending?"none":"inline-block"; document.querySelectorAll(".kitchen-menu-btn").forEach(btn=>{ if(!btn.classList.contains("disabled")) { btn.style.pointerEvents=pending?"auto":"none"; btn.style.opacity=pending?"1":"0.5"; } }); const warn=document.getElementById("orderStatusWarning"); if(warn) warn.style.display=pending?"none":"block"; if(warn&&!pending) document.getElementById("warningStatusText").innerText=currentOrderStatus.toUpperCase(); }
-async function saveOrderDocument() { if(!db || !currentOrderDocId||currentOrderStatus!=="pending"){ showToast("Cannot save: Order not pending. Restore first.",true); return; } try{ const newData=JSON.parse(document.getElementById("orderJsonEditor").value); const {id,...update}=newData; await db.collection("kitchen_requests").doc(currentOrderDocId).update(update); currentOrderData=update; showToast("Saved"); refreshOrdersList(); }catch(e){ showToast("Save failed:"+e.message,true); } }
-async function deleteOrderDocument() { if(!db || !currentOrderDocId||currentOrderStatus!=="pending"){ showToast("Cannot delete: Not pending.",true); return; } if(confirm("Delete permanently?")){ await db.collection("kitchen_requests").doc(currentOrderDocId).delete(); showToast("Deleted"); document.getElementById("orderViewer").style.display="none"; refreshOrdersList(); } }
-async function deleteOrderById(docId){ if(!db) return; if(confirm("Delete?")){ await db.collection("kitchen_requests").doc(docId).delete(); showToast("Deleted"); refreshOrdersList(); if(currentOrderDocId===docId) document.getElementById("orderViewer").style.display="none"; } }
-function renderKitchenMenuButtons(){ const container=document.getElementById("kitchenMenuButtons"); if(!container) return; container.innerHTML=""; Object.keys(KITCHEN_JSON_FILES).forEach(kit=>{ const btn=document.createElement("button"); const isOk=(kit===orderKitchen); btn.className=`kitchen-menu-btn ${currentSelectedKitchen===kit?'active':''}`; btn.innerText=kit; if(!isOk){ btn.classList.add("disabled"); btn.title=`Only ${orderKitchen||'order kitchen'} enabled`; } btn.onclick=()=>{ if(!isOk){ showToast(`Only ${orderKitchen} is enabled`,true); return; } if(currentOrderStatus!=="pending"){ showToast(`Order is ${currentOrderStatus}, restore first`,true); return; } currentSelectedKitchen=kit; renderKitchenMenuButtons(); loadKitchenMenuJSON(kit); }; container.appendChild(btn); }); if(!orderKitchen) container.innerHTML+='<div style="font-size:0.7rem;color:#9ca3af;">⚠️ Load an order first</div>'; }
-async function loadKitchenMenuJSON(kitchen){ const file=KITCHEN_JSON_FILES[kitchen]; const path=`${JSON_BASE_PATH}${file}`; document.getElementById("selectedKitchenName").innerHTML=`📁 Loading ${path}`; try{ const res=await fetch(path); if(!res.ok) throw new Error(`HTTP ${res.status}`); const data=await res.json(); currentMenuItems=Array.isArray(data)?data:(data.items||[]); renderMenuItemsList(); document.getElementById("selectedKitchenName").innerHTML=`✅ Loaded ${currentMenuItems.length} items ${freehandMode ? '(Freehand Mode: No Limits)' : ''}`; }catch(e){ document.getElementById("selectedKitchenName").innerHTML=`❌ ${file} missing. Create items/${file}`; currentMenuItems=[]; renderMenuItemsList(); } }
-function renderMenuItemsList(){ 
+
+async function listAllOrders() { 
+    try { 
+        const snap = await db.collection("kitchen_requests").orderBy("timestamp", "desc").limit(50).get(); 
+        const cont = document.getElementById("ordersList"); 
+        cont.innerHTML = snap.empty ? '<div style="padding:30px;text-align:center;">📭 No orders</div>' : ''; 
+        snap.forEach(doc => { 
+            const d = doc.data(), st = getRequestStatus(d.items); 
+            const cls = st === "approved" ? "status-approved" : st === "rejected" ? "status-rejected" : st === "accepted" ? "status-accepted" : "status-pending"; 
+            const txt = st.toUpperCase(); 
+            cont.innerHTML += `<div class="doc-item" onclick="loadOrderById('${doc.id}')">
+                <div class="doc-item-info">
+                    <span class="doc-id-badge">🆔 ${doc.id.substring(0,12)}...</span>
+                    <span class="doc-request-id">📌 ${d.requestId || 'N/A'}</span>
+                    <span class="doc-chef">👨‍🍳 ${d.chefName || '?'}</span>
+                    <span class="doc-kitchen">🍽️ ${d.section || '?'}</span>
+                </div>
+                <div>
+                    <span class="status-badge ${cls}">${txt}</span>
+                    <div class="doc-actions" style="display:inline-flex;margin-left:10px;">
+                        <button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')">🗑️</button>
+                        <button class="btn btn-restore btn-icon" onclick="event.stopPropagation();restoreOrderToPending('${doc.id}')">🔄</button>
+                    </div>
+                </div>
+            </div>`; 
+        }); 
+    } catch(e) { showToast("Error loading orders", true); } 
+}
+
+async function loadOrderById(docId) { 
+    document.getElementById("orderDocId").value = docId; 
+    await fetchOrderDocument(); 
+}
+
+async function fetchOrderDocument() { 
+    const id = document.getElementById("orderDocId").value.trim(); 
+    if(!id) return; 
+    try { 
+        const doc = await db.collection("kitchen_requests").doc(id).get(); 
+        if(!doc.exists) { showToast("Not found", true); return; } 
+        currentOrderDocId = id; 
+        currentOrderData = { id: doc.id, ...doc.data() }; 
+        currentOrderStatus = getRequestStatus(currentOrderData.items); 
+        document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
+        document.getElementById("orderViewer").style.display = "block"; 
+        orderKitchen = currentOrderData.section || "Hot Kitchen"; 
+        showToast(`Loaded: ${id} | Status: ${currentOrderStatus}`); 
+        updateEditButtonsBasedOnStatus(); 
+        renderKitchenMenuButtons(); 
+        document.getElementById("menuItemsList").innerHTML = '<div style="padding:20px;text-align:center;">Click enabled kitchen button</div>'; 
+    } catch(e) { showToast("Error: " + e.message, true); } 
+}
+
+function updateEditButtonsBasedOnStatus() { 
+    const pending = (currentOrderStatus === "pending"); 
+    const save = document.getElementById("saveOrderBtn"), del = document.getElementById("deleteOrderBtn"), restore = document.getElementById("restoreOrderBtn"); 
+    if(save) save.classList.toggle("btn-disabled", !pending); 
+    if(del) del.classList.toggle("btn-disabled", !pending); 
+    if(restore) restore.style.display = pending ? "none" : "inline-block"; 
+    document.querySelectorAll(".kitchen-menu-btn").forEach(btn => { 
+        if(!btn.classList.contains("disabled")) { 
+            btn.style.pointerEvents = pending ? "auto" : "none"; 
+            btn.style.opacity = pending ? "1" : "0.5"; 
+        } 
+    }); 
+    const warn = document.getElementById("orderStatusWarning"); 
+    if(warn) warn.style.display = pending ? "none" : "block"; 
+    if(warn && !pending) document.getElementById("warningStatusText").innerText = currentOrderStatus.toUpperCase(); 
+}
+
+async function saveOrderDocument() { 
+    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
+        showToast("Cannot save: Order not pending. Restore first.", true); 
+        return; 
+    } 
+    try { 
+        const newData = JSON.parse(document.getElementById("orderJsonEditor").value); 
+        const { id, ...update } = newData; 
+        await db.collection("kitchen_requests").doc(currentOrderDocId).update(update); 
+        currentOrderData = update; 
+        showToast("Saved"); 
+        refreshOrdersList(); 
+    } catch(e) { showToast("Save failed: " + e.message, true); } 
+}
+
+async function deleteOrderDocument() { 
+    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
+        showToast("Cannot delete: Not pending.", true); 
+        return; 
+    } 
+    if(confirm("Delete permanently?")) { 
+        await db.collection("kitchen_requests").doc(currentOrderDocId).delete(); 
+        showToast("Deleted"); 
+        document.getElementById("orderViewer").style.display = "none"; 
+        refreshOrdersList(); 
+    } 
+}
+
+async function deleteOrderById(docId) { 
+    if(confirm("Delete?")) { 
+        await db.collection("kitchen_requests").doc(docId).delete(); 
+        showToast("Deleted"); 
+        refreshOrdersList(); 
+        if(currentOrderDocId === docId) document.getElementById("orderViewer").style.display = "none"; 
+    } 
+}
+
+function renderKitchenMenuButtons() { 
+    const container = document.getElementById("kitchenMenuButtons"); 
+    if(!container) return; 
+    container.innerHTML = ""; 
+    Object.keys(KITCHEN_JSON_FILES).forEach(kit => { 
+        const btn = document.createElement("button"); 
+        const isOk = (kit === orderKitchen); 
+        btn.className = `kitchen-menu-btn ${currentSelectedKitchen === kit ? 'active' : ''}`; 
+        btn.innerText = kit; 
+        if(!isOk) { 
+            btn.classList.add("disabled"); 
+            btn.title = `Only ${orderKitchen || 'order kitchen'} enabled`; 
+        } 
+        btn.onclick = () => { 
+            if(!isOk) { showToast(`Only ${orderKitchen} is enabled`, true); return; } 
+            if(currentOrderStatus !== "pending") { showToast(`Order is ${currentOrderStatus}, restore first`, true); return; } 
+            currentSelectedKitchen = kit; 
+            renderKitchenMenuButtons(); 
+            loadKitchenMenuJSON(kit); 
+        }; 
+        container.appendChild(btn); 
+    }); 
+    if(!orderKitchen) container.innerHTML += '<div style="font-size:0.7rem;color:#9ca3af;">⚠️ Load an order first</div>'; 
+}
+
+async function loadKitchenMenuJSON(kitchen) { 
+    const file = KITCHEN_JSON_FILES[kitchen]; 
+    const path = `${JSON_BASE_PATH}${file}`; 
+    document.getElementById("selectedKitchenName").innerHTML = `📁 Loading ${path}`; 
+    try { 
+        const res = await fetch(path); 
+        if(!res.ok) throw new Error(`HTTP ${res.status}`); 
+        const data = await res.json(); 
+        currentMenuItems = Array.isArray(data) ? data : (data.items || []); 
+        renderMenuItemsList(); 
+        document.getElementById("selectedKitchenName").innerHTML = `✅ Loaded ${currentMenuItems.length} items`; 
+    } catch(e) { 
+        document.getElementById("selectedKitchenName").innerHTML = `❌ ${file} missing. Create items/${file}`; 
+        currentMenuItems = []; 
+        renderMenuItemsList(); 
+    } 
+}
+
+function renderMenuItemsList() { 
     const container = document.getElementById("menuItemsList"); 
     if(!container) return; 
-    if(!currentMenuItems.length){ 
-        container.innerHTML='<div style="padding:20px;text-align:center;">No items</div>'; 
+    if(!currentMenuItems.length) { 
+        container.innerHTML = '<div style="padding:20px;text-align:center;">No items</div>'; 
         return; 
     } 
     container.innerHTML = ""; 
@@ -418,7 +573,7 @@ function renderMenuItemsList(){
         const limitText = freehandMode ? '🔓 FREEHAND (No Limits)' : `🔢 Max: ${limits.maxLimit} | Step: ${limits.step}`;
         div.innerHTML = `
             <span class="menu-item-code">📌 ${escapeHtml(item.code)}</span>
-            <span class="menu-item-name"><strong>${escapeHtml(item.name)}</strong><br><span style="font-size:0.65rem;">${escapeHtml(item.name_ar||'')}</span></span>
+            <span class="menu-item-name"><strong>${escapeHtml(item.name)}</strong><br><span style="font-size:0.65rem;">${escapeHtml(item.name_ar || '')}</span></span>
             <span class="menu-item-unit">📦 ${escapeHtml(item.unit)}</span>
             <span class="menu-item-ave">💰 AVE: ${aveVal}</span>
             <span class="menu-item-limit">${limitText}</span>
@@ -430,9 +585,10 @@ function renderMenuItemsList(){
         container.appendChild(div); 
     }); 
 }
-window.addMenuItemToOrder=function(idx){ 
-    if(!currentOrderDocId||currentOrderStatus!=="pending"){ 
-        showToast("No pending order loaded",true); 
+
+window.addMenuItemToOrder = function(idx) { 
+    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
+        showToast("No pending order loaded", true); 
         return; 
     } 
     const item = currentMenuItems[idx]; 
@@ -441,64 +597,196 @@ window.addMenuItemToOrder=function(idx){
     
     const limits = getQuantityLimits(item);
     if(!freehandMode && qty > limits.maxLimit) {
-        showToast(`❌ Quantity exceeds max limit of ${limits.maxLimit}. Use Freehand mode for unlimited quantity.`, true);
+        showToast(`❌ Quantity exceeds max limit of ${limits.maxLimit}. Use Freehand mode.`, true);
         return;
     }
     
     const aveVal = item.AVE || item.price || 0; 
     const newItem = {
-        code: item.code, 
-        name: item.name, 
-        name_ar: item.name_ar || "", 
-        unit: item.unit, 
-        originalQty: qty, 
-        AVE: aveVal, 
-        price: aveVal, 
-        status: "pending"
+        code: item.code, name: item.name, name_ar: item.name_ar || "", 
+        unit: item.unit, originalQty: qty, AVE: aveVal, price: aveVal, status: "pending"
     }; 
     if(!currentOrderData.items) currentOrderData.items = []; 
     currentOrderData.items.push(newItem); 
     currentOrderStatus = getRequestStatus(currentOrderData.items); 
     document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
-    showToast(`${freehandMode ? '🔓 FREEHAND' : '✅'} Added "${item.name}" (x${qty})${freehandMode ? ' - No limits applied!' : ''}`); 
+    showToast(`${freehandMode ? '🔓 FREEHAND' : '✅'} Added "${item.name}" (x${qty})`); 
 };
+
 window.quickAddItemFromOrder = function() { 
-    if(!currentOrderDocId){ showToast("Load an order first",true); return; } 
-    if(currentOrderStatus!=="pending"){ showToast(`Cannot add: Order is ${currentOrderStatus}. Restore to pending first.`,true); return; } 
+    if(!currentOrderDocId) { showToast("Load an order first", true); return; } 
+    if(currentOrderStatus !== "pending") { showToast(`Cannot add: Order is ${currentOrderStatus}. Restore first.`, true); return; } 
     const code = prompt("Enter item code:"); 
     const name = prompt("Enter item name:"); 
     const ave = parseFloat(prompt("Enter AVE (average price):", "0")); 
-    if(!code || !name || isNaN(ave)){ showToast("Invalid input",true); return; } 
-    let qty = parseFloat(prompt(freehandMode ? "Enter quantity (Freehand Mode - any value allowed):" : "Enter quantity:", "1")); 
-    if(isNaN(qty) || qty<=0) return; 
-    const newItem = {code, name, name_ar: "", unit: "pcs", originalQty: qty, AVE: ave, price: ave, status: "pending"}; 
+    if(!code || !name || isNaN(ave)) { showToast("Invalid input", true); return; } 
+    let qty = parseFloat(prompt(freehandMode ? "Enter quantity (any value allowed):" : "Enter quantity:", "1")); 
+    if(isNaN(qty) || qty <= 0) return; 
+    const newItem = { code, name, name_ar: "", unit: "pcs", originalQty: qty, AVE: ave, price: ave, status: "pending" }; 
     if(!currentOrderData.items) currentOrderData.items = []; 
     currentOrderData.items.push(newItem); 
     document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
-    showToast(`${freehandMode ? '🔓 FREEHAND' : '✅'} Added "${name}" (x${qty})`); 
+    showToast(`✅ Added "${name}" (x${qty})`); 
 };
-async function restoreOrderToPending(docId){ if(!db) return; if(!confirm("Restore to PENDING? This resets approvals.")) return; try{ const doc=await db.collection("kitchen_requests").doc(docId).get(); if(!doc.exists) return; const data=doc.data(); if(data.items){ let changed=false; data.items.forEach(i=>{ if(i.status==="approved"||i.status==="rejected"){ i.status="pending"; delete i.approvedQty; delete i.rejectionReason; changed=true; } if(i.completedVia) delete i.completedVia; }); if(changed) await db.collection("kitchen_requests").doc(docId).update({items:data.items}); showToast(`Restored ${docId} to PENDING`); if(currentOrderDocId===docId) await fetchOrderDocument(); refreshOrdersList(); } }catch(e){ showToast("Restore failed",true); } }
-async function restoreSingleToPending(){ if(currentOrderDocId) await restoreOrderToPending(currentOrderDocId); else showToast("No doc loaded",true); }
 
-// JSON GENERATOR
-let menuItemsGen=[];
-function updateGeneratorUI(){ const span=document.getElementById("itemCount"); const itemsDiv=document.getElementById("itemsList"); span.innerText=`${menuItemsGen.length} items`; if(!menuItemsGen.length){ itemsDiv.innerHTML='<div style="padding:20px;text-align:center;">No items</div>'; document.getElementById("jsonOutput").value='[]'; return; } itemsDiv.innerHTML=menuItemsGen.map((it,i)=>`<div class="item-row"><span class="item-code">📌 ${escapeHtml(it.code)}</span><span><strong>${escapeHtml(it.name)}</strong> ${escapeHtml(it.nameAr||'')}</span><span>📦 ${escapeHtml(it.unit)}</span><span>🔢 ${it.maxLimit}</span><span>⚡ ${it.step}</span><span>💰 AVE: ${it.AVE}</span><button class="delete-item" onclick="removeItemGen(${i})">✖</button></div>`).join(''); const lines=menuItemsGen.map((it,i)=>`{"code": "${escapeJSON(it.code)}", "name": "${escapeJSON(it.name)}", "name_ar": "${escapeJSON(it.nameAr||'')}", "unit": "${escapeJSON(it.unit)}", "maxLimit": ${it.maxLimit}, "step": ${it.step}, "AVE": ${it.AVE}}${i<menuItemsGen.length-1?',':''}`); document.getElementById("jsonOutput").value='[\n'+lines.join('\n')+'\n]'; }
-function addItem(){ const code=document.getElementById("code").value.trim(), name=document.getElementById("name").value.trim(), unit=document.getElementById("unit").value.trim(); if(!code||!name||!unit){ showToast("Code, Name, Unit required",true); return; } const maxLimit=parseFloat(document.getElementById("maxLimit").value), step=parseFloat(document.getElementById("step").value), ave=parseFloat(document.getElementById("ave").value); if(isNaN(maxLimit)||isNaN(step)||isNaN(ave)) return; menuItemsGen.push({code,name,nameAr:document.getElementById("nameAr").value.trim(),unit,maxLimit,step,AVE:ave}); updateGeneratorUI(); document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("nameAr").value=""; document.getElementById("unit").value=""; document.getElementById("maxLimit").value=2; document.getElementById("step").value=1; document.getElementById("ave").value=45.5; showToast("Item added with AVE"); }
-window.removeItemGen=function(i){ menuItemsGen.splice(i,1); updateGeneratorUI(); };
-function clearAllItems(){ if(confirm("Clear all?")){ menuItemsGen=[]; updateGeneratorUI(); } }
-function clearForm(){ document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("nameAr").value=""; document.getElementById("unit").value=""; document.getElementById("maxLimit").value=2; document.getElementById("step").value=1; document.getElementById("ave").value=45.5; }
-function addSample(){ menuItemsGen.push({code:"161005",name:"Black Pepper Corn",nameAr:"حب الفلفل الأسود",unit:"kg",maxLimit:2,step:0.5,AVE:45.5}); updateGeneratorUI(); showToast("Sample added (AVE field)"); }
-async function copyJSON(){ if(menuItemsGen.length){ await navigator.clipboard.writeText(document.getElementById("jsonOutput").value); showToast("Copied"); } else showToast("No items",true); }
-function downloadJSON(){ if(!menuItemsGen.length) return; const blob=new Blob([document.getElementById("jsonOutput").value],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`menu_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href); }
-async function createNewUser(){ if(!auth) return; const email=document.getElementById("newUserEmail").value.trim(), pwd=document.getElementById("newUserPassword").value, confirm=document.getElementById("newUserConfirmPassword").value; if(!email||pwd!==confirm||pwd.length<6){ showToast("Invalid or mismatch",true); return; } try{ await auth.createUserWithEmailAndPassword(email,pwd); showToast(`User ${email} created`); }catch(e){ showToast(e.message,true); } }
-async function sendUserPasswordReset(){ if(!auth) return; const email=document.getElementById("resetUserEmail").value.trim(); if(!email) return; try{ await auth.sendPasswordResetEmail(email); showToast(`Reset email sent to ${email}`); }catch(e){ showToast(e.message,true); } }
-function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-function escapeJSON(str){ return str.replace(/\\/g,'\\\\').replace(/"/g,'\\"'); }
-function showToast(msg,isErr=false){ const t=document.createElement('div'); t.className='toast'; t.innerHTML=msg; if(isErr) t.style.borderLeftColor='#dc2626'; document.body.appendChild(t); setTimeout(()=>t.remove(),2500); }
-function switchTab(t){ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active-panel')); if(t==='orders'){ document.querySelectorAll('.tab-btn')[0].classList.add('active'); document.getElementById('ordersPanel').classList.add('active-panel'); refreshOrdersList(); } else if(t==='generator'){ document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('generatorPanel').classList.add('active-panel'); } else{ document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('usersPanel').classList.add('active-panel'); } }
+async function restoreOrderToPending(docId) { 
+    if(!confirm("Restore to PENDING? This resets approvals.")) return; 
+    try { 
+        const doc = await db.collection("kitchen_requests").doc(docId).get(); 
+        if(!doc.exists) return; 
+        const data = doc.data(); 
+        if(data.items) { 
+            let changed = false; 
+            data.items.forEach(i => { 
+                if(i.status === "approved" || i.status === "rejected") { 
+                    i.status = "pending"; 
+                    delete i.approvedQty; 
+                    delete i.rejectionReason; 
+                    changed = true; 
+                } 
+                if(i.completedVia) delete i.completedVia; 
+            }); 
+            if(changed) await db.collection("kitchen_requests").doc(docId).update({ items: data.items }); 
+            showToast(`Restored ${docId} to PENDING`); 
+            if(currentOrderDocId === docId) await fetchOrderDocument(); 
+            refreshOrdersList(); 
+        } 
+    } catch(e) { showToast("Restore failed", true); } 
+}
 
-// Start initialization
-initFirebase();
+async function restoreSingleToPending() { 
+    if(currentOrderDocId) await restoreOrderToPending(currentOrderDocId); 
+    else showToast("No doc loaded", true); 
+}
+
+// ============ JSON GENERATOR ============
+let menuItemsGen = [];
+
+function updateGeneratorUI() { 
+    const span = document.getElementById("itemCount"); 
+    const itemsDiv = document.getElementById("itemsList"); 
+    span.innerText = `${menuItemsGen.length} items`; 
+    if(!menuItemsGen.length) { 
+        itemsDiv.innerHTML = '<div style="padding:20px;text-align:center;">No items</div>'; 
+        document.getElementById("jsonOutput").value = '[]'; 
+        return; 
+    } 
+    itemsDiv.innerHTML = menuItemsGen.map((it, i) => `<div class="item-row">
+        <span class="item-code">📌 ${escapeHtml(it.code)}</span>
+        <span><strong>${escapeHtml(it.name)}</strong> ${escapeHtml(it.nameAr || '')}</span>
+        <span>📦 ${escapeHtml(it.unit)}</span>
+        <span>🔢 ${it.maxLimit}</span>
+        <span>⚡ ${it.step}</span>
+        <span>💰 AVE: ${it.AVE}</span>
+        <button class="delete-item" onclick="removeItemGen(${i})">✖</button>
+    </div>`).join(''); 
+    const lines = menuItemsGen.map((it, i) => `{"code": "${escapeJSON(it.code)}", "name": "${escapeJSON(it.name)}", "name_ar": "${escapeJSON(it.nameAr || '')}", "unit": "${escapeJSON(it.unit)}", "maxLimit": ${it.maxLimit}, "step": ${it.step}, "AVE": ${it.AVE}}${i < menuItemsGen.length - 1 ? ',' : ''}`); 
+    document.getElementById("jsonOutput").value = '[\n' + lines.join('\n') + '\n]'; 
+}
+
+function addItem() { 
+    const code = document.getElementById("code").value.trim(); 
+    const name = document.getElementById("name").value.trim(); 
+    const unit = document.getElementById("unit").value.trim(); 
+    if(!code || !name || !unit) { showToast("Code, Name, Unit required", true); return; } 
+    const maxLimit = parseFloat(document.getElementById("maxLimit").value); 
+    const step = parseFloat(document.getElementById("step").value); 
+    const ave = parseFloat(document.getElementById("ave").value); 
+    if(isNaN(maxLimit) || isNaN(step) || isNaN(ave)) return; 
+    menuItemsGen.push({ code, name, nameAr: document.getElementById("nameAr").value.trim(), unit, maxLimit, step, AVE: ave }); 
+    updateGeneratorUI(); 
+    document.getElementById("code").value = ""; 
+    document.getElementById("name").value = ""; 
+    document.getElementById("nameAr").value = ""; 
+    document.getElementById("unit").value = ""; 
+    document.getElementById("maxLimit").value = 2; 
+    document.getElementById("step").value = 1; 
+    document.getElementById("ave").value = 45.5; 
+    showToast("Item added with AVE"); 
+}
+
+window.removeItemGen = function(i) { menuItemsGen.splice(i, 1); updateGeneratorUI(); };
+function clearAllItems() { if(confirm("Clear all?")) { menuItemsGen = []; updateGeneratorUI(); } }
+function clearForm() { 
+    document.getElementById("code").value = ""; 
+    document.getElementById("name").value = ""; 
+    document.getElementById("nameAr").value = ""; 
+    document.getElementById("unit").value = ""; 
+    document.getElementById("maxLimit").value = 2; 
+    document.getElementById("step").value = 1; 
+    document.getElementById("ave").value = 45.5; 
+}
+function addSample() { 
+    menuItemsGen.push({ code: "161005", name: "Black Pepper Corn", nameAr: "حب الفلفل الأسود", unit: "kg", maxLimit: 2, step: 0.5, AVE: 45.5 }); 
+    updateGeneratorUI(); 
+    showToast("Sample added (AVE field)"); 
+}
+async function copyJSON() { 
+    if(menuItemsGen.length) { 
+        await navigator.clipboard.writeText(document.getElementById("jsonOutput").value); 
+        showToast("Copied"); 
+    } else showToast("No items", true); 
+}
+function downloadJSON() { 
+    if(!menuItemsGen.length) return; 
+    const blob = new Blob([document.getElementById("jsonOutput").value], { type: "application/json" }); 
+    const a = document.createElement("a"); 
+    a.href = URL.createObjectURL(blob); 
+    a.download = `menu_${Date.now()}.json`; 
+    a.click(); 
+    URL.revokeObjectURL(a.href); 
+}
+
+// ============ USER MANAGEMENT ============
+async function createNewUser() { 
+    const email = document.getElementById("newUserEmail").value.trim(); 
+    const pwd = document.getElementById("newUserPassword").value; 
+    const confirm = document.getElementById("newUserConfirmPassword").value; 
+    if(!email || pwd !== confirm || pwd.length < 6) { showToast("Invalid or mismatch", true); return; } 
+    try { 
+        await auth.createUserWithEmailAndPassword(email, pwd); 
+        showToast(`User ${email} created`); 
+    } catch(e) { showToast(e.message, true); } 
+}
+
+async function sendUserPasswordReset() { 
+    const email = document.getElementById("resetUserEmail").value.trim(); 
+    if(!email) return; 
+    try { 
+        await auth.sendPasswordResetEmail(email); 
+        showToast(`Reset email sent to ${email}`); 
+    } catch(e) { showToast(e.message, true); } 
+}
+
+// ============ UTILITIES ============
+function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+function escapeJSON(str) { return str.replace(/\\/g, '\\\\').replace(/"/g, '\\"'); }
+function showToast(msg, isErr = false) { 
+    const t = document.createElement('div'); 
+    t.className = 'toast'; 
+    t.innerHTML = msg; 
+    if(isErr) t.style.borderLeftColor = '#dc2626'; 
+    document.body.appendChild(t); 
+    setTimeout(() => t.remove(), 2500); 
+}
+function switchTab(t) { 
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel')); 
+    if(t === 'orders') { 
+        document.querySelectorAll('.tab-btn')[0].classList.add('active'); 
+        document.getElementById('ordersPanel').classList.add('active-panel'); 
+        refreshOrdersList(); 
+    } else if(t === 'generator') { 
+        document.querySelectorAll('.tab-btn')[1].classList.add('active'); 
+        document.getElementById('generatorPanel').classList.add('active-panel'); 
+    } else { 
+        document.querySelectorAll('.tab-btn')[2].classList.add('active'); 
+        document.getElementById('usersPanel').classList.add('active-panel'); 
+    } 
+}
+
+// Initialize
+loadAuthorizedDevelopers();
 </script>
 </body>
 </html>
