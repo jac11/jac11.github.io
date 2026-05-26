@@ -5,244 +5,41 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<!-- firebase-config.js is expected to initialize firebase; we'll provide a robust inline fallback -->
+<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Developer Console - Complete Control</title>
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Courier New', 'Segoe UI', monospace;
-    background: #0a0e27;
-    color: #e0e0e0;
-}
-
-.header {
-    background: linear-gradient(135deg, #0f0c29, #1a1a4e, #24243e);
-    padding: 20px 24px;
-    border-bottom: 3px solid #00d4ff;
-}
-
-.header h1 {
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.badge {
-    background: #00d4ff;
-    color: #0a0e27;
-    padding: 4px 12px;
-    border-radius: 40px;
-    font-size: 0.7rem;
-    font-weight: bold;
-}
-
-.badge-restricted {
-    background: #dc2626;
-    color: white;
-}
-
-.container {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 24px;
-}
-
-/* Login Modal */
-.login-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.95);
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-box {
-    background: #0f172a;
-    border: 2px solid #00d4ff;
-    border-radius: 24px;
-    padding: 40px;
-    width: 400px;
-    text-align: center;
-}
-
-.login-box h2 {
-    color: #00d4ff;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.login-box input {
-    width: 100%;
-    background: #1a1a2e;
-    border: 1px solid #2a3a5a;
-    padding: 14px;
-    border-radius: 12px;
-    color: white;
-    font-family: monospace;
-    font-size: 1rem;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.login-box button {
-    background: #00d4ff;
-    color: #0a0e27;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    margin-top: 10px;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Courier New', 'Segoe UI', monospace; background: #0a0e27; color: #e0e0e0; }
+.header { background: linear-gradient(135deg, #0f0c29, #1a1a4e, #24243e); padding: 20px 24px; border-bottom: 3px solid #00d4ff; }
+.header h1 { font-size: 1.4rem; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+.badge { background: #00d4ff; color: #0a0e27; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: bold; }
+.badge-restricted { background: #dc2626; color: white; }
+.container { max-width: 1600px; margin: 0 auto; padding: 24px; }
+.login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10000; display: flex; justify-content: center; align-items: center; }
+.login-box { background: #0f172a; border: 2px solid #00d4ff; border-radius: 24px; padding: 40px; width: 400px; text-align: center; }
+.login-box h2 { color: #00d4ff; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.login-box input { width: 100%; background: #1a1a2e; border: 1px solid #2a3a5a; padding: 14px; border-radius: 12px; color: white; font-family: monospace; font-size: 1rem; margin-bottom: 20px; text-align: center; }
+.login-box button { background: #00d4ff; color: #0a0e27; border: none; padding: 12px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; margin-top: 10px; }
 .login-box button:hover { opacity: 0.9; transform: scale(1.02); }
 .error-msg { color: #dc2626; margin-top: 10px; font-size: 0.8rem; }
 .info-msg { color: #00d4ff; margin-top: 10px; font-size: 0.8rem; }
 .success-msg { color: #10b981; margin-top: 10px; font-size: 0.8rem; }
-
-/* User Menu */
-.user-menu {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #1a1a2e;
-    padding: 6px 16px;
-    border-radius: 40px;
-    flex-wrap: wrap;
-}
-
-.user-email {
-    font-size: 0.75rem;
-    color: #00d4ff;
-}
-
-/* Tabs */
-.tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    background: #0f172a;
-    padding: 12px 20px;
-    border-radius: 20px;
-}
-
-.tab-btn {
-    background: #1e293b;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 40px;
-    color: #94a3b8;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-}
-
-.tab-btn.active {
-    background: #00d4ff;
-    color: #0a0e27;
-}
-
-/* Panels */
-.panel {
-    background: #0f172a;
-    border-radius: 24px;
-    border: 1px solid #2a3a5a;
-    overflow: hidden;
-    display: none;
-}
-
-.panel.active-panel {
-    display: block;
-}
-
-.panel-header {
-    background: #1a1a2e;
-    padding: 16px 24px;
-    border-bottom: 1px solid #2a3a5a;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.panel-header h2 {
-    font-size: 1rem;
-    color: #00d4ff;
-}
-
-/* Forms */
-.form-group {
-    padding: 20px 24px;
-}
-
-.form-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-}
-
-.form-input {
-    flex: 1;
-    min-width: 180px;
-    background: #1a1a2e;
-    border: 1px solid #2a3a5a;
-    padding: 12px 16px;
-    border-radius: 12px;
-    color: white;
-    font-family: monospace;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: #00d4ff;
-}
-
-textarea {
-    width: 100%;
-    background: #0a0e27;
-    border: 2px solid #2a3a5a;
-    color: #00ffcc;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    padding: 16px;
-    border-radius: 16px;
-    resize: vertical;
-    line-height: 1.5;
-}
-
-.btn {
-    padding: 10px 20px;
-    border-radius: 30px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: monospace;
-    font-size: 0.75rem;
-    transition: all 0.2s;
-}
-
+.user-menu { display: flex; align-items: center; gap: 12px; background: #1a1a2e; padding: 6px 16px; border-radius: 40px; flex-wrap: wrap; }
+.user-email { font-size: 0.75rem; color: #00d4ff; }
+.tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; background: #0f172a; padding: 12px 20px; border-radius: 20px; }
+.tab-btn { background: #1e293b; border: none; padding: 10px 24px; border-radius: 40px; color: #94a3b8; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+.tab-btn.active { background: #00d4ff; color: #0a0e27; }
+.panel { background: #0f172a; border-radius: 24px; border: 1px solid #2a3a5a; overflow: hidden; display: none; }
+.panel.active-panel { display: block; }
+.panel-header { background: #1a1a2e; padding: 16px 24px; border-bottom: 1px solid #2a3a5a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+.panel-header h2 { font-size: 1rem; color: #00d4ff; }
+.form-group { padding: 20px 24px; }
+.form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.form-input { flex: 1; min-width: 180px; background: #1a1a2e; border: 1px solid #2a3a5a; padding: 12px 16px; border-radius: 12px; color: white; font-family: monospace; }
+.form-input:focus { outline: none; border-color: #00d4ff; }
+textarea { width: 100%; background: #0a0e27; border: 2px solid #2a3a5a; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 12px; padding: 16px; border-radius: 16px; resize: vertical; line-height: 1.5; }
+.btn { padding: 10px 20px; border-radius: 30px; border: none; font-weight: 600; cursor: pointer; font-family: monospace; font-size: 0.75rem; transition: all 0.2s; }
 .btn-primary { background: #0066ff; color: white; }
 .btn-success { background: #10b981; color: white; }
 .btn-danger { background: #dc2626; color: white; }
@@ -252,375 +49,64 @@ textarea {
 .btn-add-item { background: #00d4ff; color: #0a0e27; }
 .btn-refresh { background: #00d4ff; color: #0a0e27; }
 .btn-disabled { background: #4a5568; color: #a0aec0; cursor: not-allowed; opacity: 0.6; }
-
 .btn:hover { transform: scale(1.02); opacity: 0.9; }
-
-/* Document List */
-.doc-list {
-    margin-top: 20px;
-}
-
-.doc-list-header {
-    background: #1a1a2e;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.doc-list-title {
-    font-weight: bold;
-    color: #00d4ff;
-    font-size: 0.9rem;
-}
-
-.doc-list-header-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.doc-items-container {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.doc-item {
-    background: #111827;
-    padding: 14px 18px;
-    margin-bottom: 8px;
-    border-radius: 12px;
-    border-left: 4px solid #00d4ff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.doc-item:hover {
-    background: #1f2937;
-    transform: translateX(2px);
-}
-
-.doc-item-info {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 15px;
-    flex: 2;
-}
-
-.doc-id-badge {
-    background: #0a0e27;
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 0.7rem;
-    color: #00d4ff;
-    font-weight: bold;
-}
-
-.doc-request-id {
-    background: #1e293b;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: #f59e0b;
-}
-
-.doc-chef {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.8rem;
-    color: #e0e0e0;
-}
-
-.doc-kitchen {
-    background: #1e293b;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    color: #94a3b8;
-}
-
-.status-badge {
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    min-width: 85px;
-    text-align: center;
-}
+.doc-list { margin-top: 20px; }
+.doc-list-header { background: #1a1a2e; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.doc-list-title { font-weight: bold; color: #00d4ff; font-size: 0.9rem; }
+.doc-list-header-actions { display: flex; gap: 10px; }
+.doc-items-container { max-height: 400px; overflow-y: auto; }
+.doc-item { background: #111827; padding: 14px 18px; margin-bottom: 8px; border-radius: 12px; border-left: 4px solid #00d4ff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; cursor: pointer; transition: all 0.2s; }
+.doc-item:hover { background: #1f2937; transform: translateX(2px); }
+.doc-item-info { display: flex; flex-wrap: wrap; align-items: center; gap: 15px; flex: 2; }
+.doc-id-badge { background: #0a0e27; padding: 5px 10px; border-radius: 8px; font-family: monospace; font-size: 0.7rem; color: #00d4ff; font-weight: bold; }
+.doc-request-id { background: #1e293b; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; color: #f59e0b; }
+.doc-chef { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: #e0e0e0; }
+.doc-kitchen { background: #1e293b; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #94a3b8; }
+.status-badge { padding: 5px 14px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; min-width: 85px; text-align: center; }
 .status-pending { background: #f59e0b; color: #1a1a2e; }
 .status-approved { background: #10b981; color: white; }
 .status-rejected { background: #dc2626; color: white; }
 .status-accepted { background: #8b5cf6; color: white; }
-
-.doc-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-icon {
-    padding: 5px 12px;
-    font-size: 0.7rem;
-}
-
-/* Menu Items Selector */
-.menu-selector {
-    background: #0a0e27;
-    border-radius: 16px;
-    padding: 16px;
-    margin-top: 20px;
-    border: 1px solid #2a3a5a;
-}
-
-.menu-title {
-    color: #00d4ff;
-    margin-bottom: 15px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.kitchen-menu-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-}
-
-.kitchen-menu-btn {
-    background: #1e293b;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 30px;
-    color: #94a3b8;
-    cursor: pointer;
-    font-size: 0.7rem;
-    transition: all 0.2s;
-}
-
-.kitchen-menu-btn.active {
-    background: #00d4ff;
-    color: #0a0e27;
-}
-
-.kitchen-menu-btn.disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    background: #1e293b;
-}
-
+.doc-actions { display: flex; gap: 8px; }
+.btn-icon { padding: 5px 12px; font-size: 0.7rem; }
+.menu-selector { background: #0a0e27; border-radius: 16px; padding: 16px; margin-top: 20px; border: 1px solid #2a3a5a; }
+.menu-title { color: #00d4ff; margin-bottom: 15px; font-weight: bold; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.kitchen-menu-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.kitchen-menu-btn { background: #1e293b; border: none; padding: 8px 16px; border-radius: 30px; color: #94a3b8; cursor: pointer; font-size: 0.7rem; transition: all 0.2s; }
+.kitchen-menu-btn.active { background: #00d4ff; color: #0a0e27; }
+.kitchen-menu-btn.disabled { opacity: 0.4; cursor: not-allowed; background: #1e293b; }
 .kitchen-menu-btn:not(.disabled):hover { background: #334155; }
-
-.menu-items-list {
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 10px;
-}
-
-.menu-item-card {
-    background: #111827;
-    padding: 10px 14px;
-    margin-bottom: 6px;
-    border-radius: 10px;
-    border-left: 3px solid #f59e0b;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    transition: all 0.2s;
-}
-
-.menu-item-card:hover {
-    background: #1f2937;
-    transform: translateX(4px);
-}
-
+.menu-items-list { max-height: 300px; overflow-y: auto; margin-top: 10px; }
+.menu-item-card { background: #111827; padding: 10px 14px; margin-bottom: 6px; border-radius: 10px; border-left: 3px solid #f59e0b; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; transition: all 0.2s; }
+.menu-item-card:hover { background: #1f2937; transform: translateX(4px); }
 .menu-item-code { color: #f59e0b; font-weight: bold; font-family: monospace; }
 .menu-item-name { flex: 2; font-size: 0.8rem; }
 .menu-item-unit { color: #9ca3af; font-size: 0.7rem; }
-.menu-item-price { color: #10b981; font-weight: bold; }
-
-.add-qty-control {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.qty-input-small {
-    width: 70px;
-    background: #1a1a2e;
-    border: 1px solid #2a3a5a;
-    padding: 4px 8px;
-    border-radius: 8px;
-    color: white;
-    text-align: center;
-}
-
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1f2937;
-    border-left: 4px solid #10b981;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-size: 13px;
-    z-index: 2000;
-    animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
-hr {
-    border-color: #2a3a5a;
-    margin: 15px 0;
-}
-
-.note {
-    font-size: 0.65rem;
-    color: #9ca3af;
-    text-align: center;
-    margin-top: 15px;
-}
-
-.warning-box {
-    background: #dc262620;
-    border-left: 3px solid #dc2626;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    color: #fca5a5;
-}
-
-/* User Management Section */
-.user-management {
-    background: #0a0e27;
-    border-radius: 16px;
-    padding: 20px;
-    margin-top: 20px;
-}
-
-.user-management h3 {
-    color: #00d4ff;
-    margin-bottom: 15px;
-    font-size: 1rem;
-}
-
-.user-card {
-    background: #111827;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 12px;
-    border-left: 3px solid #10b981;
-}
-
-.kitchen-list {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 10px;
-}
-
-.kitchen-tag {
-    background: #1e293b;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.kitchen-tag:hover {
-    background: #334155;
-}
-
-.items-list {
-    background: #0a0e27;
-    border-radius: 12px;
-    max-height: 250px;
-    overflow-y: auto;
-    margin-top: 15px;
-}
-
-.item-row {
-    background: #111827;
-    padding: 8px 12px;
-    margin: 5px;
-    border-radius: 8px;
-    border-left: 3px solid #00d4ff;
-    font-size: 0.7rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
+.menu-item-ave { color: #10b981; font-weight: bold; }
+.add-qty-control { display: flex; gap: 8px; align-items: center; }
+.qty-input-small { width: 70px; background: #1a1a2e; border: 1px solid #2a3a5a; padding: 4px 8px; border-radius: 8px; color: white; text-align: center; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f2937; border-left: 4px solid #10b981; padding: 12px 24px; border-radius: 30px; font-size: 13px; z-index: 2000; animation: fadeIn 0.3s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+hr { border-color: #2a3a5a; margin: 15px 0; }
+.note { font-size: 0.65rem; color: #9ca3af; text-align: center; margin-top: 15px; }
+.warning-box { background: #dc262620; border-left: 3px solid #dc2626; padding: 10px 15px; margin-bottom: 15px; border-radius: 10px; font-size: 0.75rem; color: #fca5a5; }
+.user-card { background: #111827; padding: 15px; margin-bottom: 15px; border-radius: 12px; border-left: 3px solid #10b981; }
+.items-list { background: #0a0e27; border-radius: 12px; max-height: 250px; overflow-y: auto; margin-top: 15px; }
+.item-row { background: #111827; padding: 8px 12px; margin: 5px; border-radius: 8px; border-left: 3px solid #00d4ff; font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
 .item-code { color: #00d4ff; font-weight: bold; }
 .delete-item { background: #dc2626; border: none; padding: 3px 10px; border-radius: 20px; color: white; cursor: pointer; font-size: 0.65rem; }
-
-.counter {
-    background: #00d4ff20;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    color: #00d4ff;
-}
-
-.row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 15px;
-}
-
-.field {
-    flex: 1;
-    min-width: 140px;
-}
-
-.field label {
-    display: block;
-    font-size: 0.7rem;
-    color: #9ca3af;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-}
-
-.field input {
-    width: 100%;
-    background: #1a1a2e;
-    border: 1px solid #2a3a5a;
-    padding: 10px 12px;
-    border-radius: 8px;
-    color: #00ffcc;
-    font-family: monospace;
-    font-size: 0.85rem;
-}
+.counter { background: #00d4ff20; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; color: #00d4ff; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 15px; }
+.field { flex: 1; min-width: 140px; }
+.field label { display: block; font-size: 0.7rem; color: #9ca3af; margin-bottom: 5px; text-transform: uppercase; }
+.field input { width: 100%; background: #1a1a2e; border: 1px solid #2a3a5a; padding: 10px 12px; border-radius: 8px; color: #00ffcc; font-family: monospace; font-size: 0.85rem; }
+.add-icon-btn { background: #00d4ff20; border: 1px solid #00d4ff; border-radius: 30px; padding: 6px 14px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; color: #00d4ff; }
+.add-icon-btn:hover { background: #00d4ff; color: #0a0e27; transform: scale(1.05); }
 </style>
 </head>
 <body>
 
-<!-- LOGIN MODAL (Icon restored) -->
+<!-- LOGIN MODAL with restored icon -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-box">
         <h2>🔐 Developer Access</h2>
@@ -634,36 +120,22 @@ hr {
 
 <div id="mainContent" style="display:none;">
     <div class="header">
-        <h1>
-            🛠️ DEVELOPER CONSOLE
-            <span class="badge">Edit Orders</span>
-            <span class="badge">Kitchen JSON</span>
-            <span class="badge">User Management</span>
-            <span class="badge badge-restricted">🔒 Secure Access</span>
-        </h1>
+        <h1>🛠️ DEVELOPER CONSOLE <span class="badge">Edit Orders</span><span class="badge">Kitchen JSON</span><span class="badge">User Management</span><span class="badge badge-restricted">🔒 Secure Access</span></h1>
         <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
             <div style="font-size: 0.7rem;">⚠️ For Approved/Rejected/Accepted orders: Click "Restore to Pending" first</div>
-            <div class="user-menu">
-                <span class="user-email" id="userEmailDisplay"></span>
-                <button class="btn btn-secondary btn-icon" onclick="logout()">🚪 Logout</button>
-            </div>
+            <div class="user-menu"><span class="user-email" id="userEmailDisplay"></span><button class="btn btn-secondary btn-icon" onclick="logout()">🚪 Logout</button></div>
         </div>
     </div>
-
     <div class="container">
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('orders')">📋 Edit Firestore Orders</button>
-            <button class="tab-btn" onclick="switchTab('generator')">📦 JSON Generator</button>
+            <button class="tab-btn" onclick="switchTab('generator')">📦 JSON Generator (AVE)</button>
             <button class="tab-btn" onclick="switchTab('users')">👥 User Management</button>
         </div>
 
         <!-- PANEL 1: FIRESTORE ORDERS EDITOR -->
         <div id="ordersPanel" class="panel active-panel">
-            <div class="panel-header">
-                <h2>📄 Edit Firestore Documents (kitchen_requests)</h2>
-                <div><button class="btn btn-primary" onclick="fetchOrderDocument()">🔍 Fetch by ID</button></div>
-            </div>
+            <div class="panel-header"><h2>📄 Edit Firestore Documents (kitchen_requests)</h2><div><button class="btn btn-primary" onclick="fetchOrderDocument()">🔍 Fetch by ID</button></div></div>
             <div class="form-group">
                 <div class="form-row"><input type="text" id="orderDocId" class="form-input" placeholder="Enter Firestore Document ID..."></div>
                 <div id="orderViewer" style="display:none;">
@@ -673,13 +145,14 @@ hr {
                         <button class="btn btn-success" id="saveOrderBtn" onclick="saveOrderDocument()">💾 SAVE to Firestore</button>
                         <button class="btn btn-danger" id="deleteOrderBtn" onclick="deleteOrderDocument()">🗑️ DELETE Document</button>
                         <button class="btn btn-restore" id="restoreOrderBtn" onclick="restoreSingleToPending()">🔄 Restore to Pending</button>
+                        <button class="add-icon-btn" onclick="quickAddItemFromOrder()" title="Quick Add Item without restrictions">➕ Quick Add Item (bypass limits)</button>
                     </div>
                     <div class="menu-selector">
                         <div class="menu-title">📦 ADD ITEM FROM KITCHEN MENU (JSON Files) <span style="font-size: 0.7rem;">📁 items/ folder</span></div>
                         <div class="kitchen-menu-buttons" id="kitchenMenuButtons"></div>
                         <div id="selectedKitchenName" style="margin-bottom: 10px; font-size: 0.75rem; color: #00d4ff;"></div>
                         <div id="menuItemsList" class="menu-items-list"><div style="padding:20px;text-align:center;">Click a kitchen button to load items</div></div>
-                        <div class="note">💡 Only the order's kitchen is enabled. Click the enabled kitchen button to load items, then click on any item to add it to the order.</div>
+                        <div class="note">💡 Only the order's kitchen is enabled. Click enabled kitchen to load items, then click "➕ Add" to add to order.</div>
                     </div>
                 </div>
                 <div class="doc-list">
@@ -689,76 +162,47 @@ hr {
             </div>
         </div>
 
-        <!-- PANEL 2: JSON GENERATOR -->
+        <!-- PANEL 2: JSON GENERATOR with AVE instead of PRICE -->
         <div id="generatorPanel" class="panel">
-            <div class="panel-header"><h2>📦 Generate Menu JSON (One Line + Trailing Commas)</h2><div><button class="btn btn-primary" onclick="copyJSON()">📋 Copy JSON</button><button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button></div></div>
-            <div class="form-group"><div class="row"><div class="field"><label>📌 CODE *</label><input type="text" id="code"></div><div class="field"><label>🏷️ NAME (EN) *</label><input type="text" id="name"></div><div class="field"><label>🌙 NAME (AR)</label><input type="text" id="nameAr"></div></div><div class="row"><div class="field"><label>📦 UNIT *</label><input type="text" id="unit"></div><div class="field"><label>🔢 MAX LIMIT *</label><input type="number" id="maxLimit" value="2" step="0.5"></div><div class="field"><label>⚡ STEP *</label><input type="number" id="step" value="1" step="0.5"></div><div class="field"><label>💰 PRICE (AVE) *</label><input type="number" id="price" value="45.50" step="0.01"></div></div><div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"><button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button><button class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button><button class="btn btn-warning" onclick="addSample()">📋 Add Sample</button><button class="btn btn-danger" onclick="clearAllItems()">Clear All Items</button></div><hr><div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>📋 ITEMS LIST</strong><span class="counter" id="itemCount">0 items</span></div><div id="itemsList" class="items-list"><div style="padding:20px;text-align:center;">No items added yet</div></div><hr><div style="margin-top:15px;"><strong>📄 JSON OUTPUT</strong><textarea id="jsonOutput" rows="10" readonly placeholder="JSON will appear here..." style="margin-top:10px;"></textarea></div><div class="note">⚡ Format: Each item on one line with trailing comma (except last). Ready to copy-paste into /items/ folder.</div></div>
+            <div class="panel-header"><h2>📦 Generate Menu JSON (AVE Field - Average Price)</h2><div><button class="btn btn-primary" onclick="copyJSON()">📋 Copy JSON</button><button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button></div></div>
+            <div class="form-group">
+                <div class="row"><div class="field"><label>📌 CODE *</label><input type="text" id="code" placeholder="e.g., 161005"></div><div class="field"><label>🏷️ NAME (EN) *</label><input type="text" id="name" placeholder="e.g., Black Pepper Corn"></div><div class="field"><label>🌙 NAME (AR)</label><input type="text" id="nameAr" placeholder="e.g., حب الفلفل الأسود"></div></div>
+                <div class="row"><div class="field"><label>📦 UNIT *</label><input type="text" id="unit" placeholder="e.g., kg, pcs"></div><div class="field"><label>🔢 MAX LIMIT *</label><input type="number" id="maxLimit" value="2" step="0.5"></div><div class="field"><label>⚡ STEP *</label><input type="number" id="step" value="1" step="0.5"></div><div class="field"><label>💰 AVE (Avg Price) *</label><input type="number" id="ave" value="45.50" step="0.01"></div></div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"><button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button><button class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button><button class="btn btn-warning" onclick="addSample()">📋 Add Sample</button><button class="btn btn-danger" onclick="clearAllItems()">Clear All Items</button></div>
+                <hr>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>📋 ITEMS LIST (AVE field)</strong><span class="counter" id="itemCount">0 items</span></div>
+                <div id="itemsList" class="items-list"><div style="padding:20px;text-align:center;">No items added yet</div></div>
+                <hr>
+                <div style="margin-top:15px;"><strong>📄 JSON OUTPUT (AVE format)</strong><textarea id="jsonOutput" rows="10" readonly placeholder="JSON will appear here..." style="margin-top:10px;"></textarea></div>
+                <div class="note">⚡ Each item includes "AVE" field (Average Price). Format: one line per item with trailing commas. Ready for /items/ folder.</div>
+            </div>
         </div>
 
         <!-- PANEL 3: USER MANAGEMENT -->
         <div id="usersPanel" class="panel">
             <div class="panel-header"><h2>👥 User Management - Add Users & Reset Passwords</h2></div>
-            <div class="form-group"><div class="user-card"><h3>➕ Add New User</h3><div class="form-row"><input type="email" id="newUserEmail" class="form-input" placeholder="Email Address"><input type="password" id="newUserPassword" class="form-input" placeholder="Password"><input type="password" id="newUserConfirmPassword" class="form-input" placeholder="Confirm Password"><button class="btn btn-success" onclick="createNewUser()">Create User</button></div><div id="addUserMsg" class="success-msg"></div></div><div class="user-card"><h3>🔑 Reset Any User Password</h3><div class="form-row"><input type="email" id="resetUserEmail" class="form-input" placeholder="User Email Address"><button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset Email</button></div><div id="resetUserMsg" class="success-msg"></div></div><div class="user-card"><h3>🍽️ Reset Kitchen / Chef Password</h3><div class="form-row"><select id="kitchenSelect" class="form-input"><option value="">Select Kitchen</option><option value="Hot Kitchen">🔥 Hot Kitchen</option><option value="Cold Kitchen">❄️ Cold Kitchen</option><option value="Pastry / Bakery">🍰 Pastry / Bakery</option><option value="Butchery">🥩 Butchery</option><option value="Beach House">🏖️ Beach House</option><option value="Nihon Kitchen">🍜 Nihon Kitchen</option><option value="Staff Kitchen">👥 Staff Kitchen</option></select><input type="email" id="kitchenChefEmail" class="form-input" placeholder="Chef's Email Address"><button class="btn btn-restore" onclick="resetKitchenPassword()">Reset Kitchen Password</button></div><div id="resetKitchenMsg" class="success-msg"></div></div><div class="user-card"><h3>✅ Authorized Developers (Can access this console)</h3><div id="authorizedDevsList"></div><div class="form-row"><input type="email" id="newDevEmail" class="form-input" placeholder="New Developer Email"><button class="btn btn-primary" onclick="addAuthorizedDeveloper()">➕ Add to Authorized List</button></div><div class="note">💡 Only emails in this list can login. Add email, then create account using "Add New User".</div></div></div>
+            <div class="form-group"><div class="user-card"><h3>➕ Add New User</h3><div class="form-row"><input type="email" id="newUserEmail" class="form-input" placeholder="Email"><input type="password" id="newUserPassword" class="form-input" placeholder="Password"><input type="password" id="newUserConfirmPassword" class="form-input" placeholder="Confirm"><button class="btn btn-success" onclick="createNewUser()">Create User</button></div><div id="addUserMsg"></div></div><div class="user-card"><h3>🔑 Reset Password</h3><div class="form-row"><input type="email" id="resetUserEmail" class="form-input" placeholder="User Email"><button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset Email</button></div><div id="resetUserMsg"></div></div><div class="user-card"><h3>✅ Authorized Developers</h3><div id="authorizedDevsList"></div><div class="form-row"><input type="email" id="newDevEmail" class="form-input" placeholder="Developer Email"><button class="btn btn-primary" onclick="addAuthorizedDeveloper()">➕ Add to Authorized List</button></div><div class="note">💡 Only emails in this list can login. Add email, then create account.</div></div></div>
         </div>
     </div>
 </div>
 
 <script>
-// FIREBASE CONFIGURATION (REQUIRED for login to work)
-// IMPORTANT: Replace this with your actual Firebase config. For demo, we provide a fallback that will error gracefully if not set.
-// The developer must place their valid config below or in external firebase-config.js
-window.firebaseConfig = window.firebaseConfig || {
-    apiKey: "AIzaSyDummyKeyReplaceWithYourOwn",
-    authDomain: "your-project.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abc123"
-};
-
-// Initialize Firebase if not already initialized
-if (!firebase.apps.length) {
-    try {
-        firebase.initializeApp(window.firebaseConfig);
-    } catch(e) { console.warn("Init error", e); }
-}
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// AUTHORIZED DEVELOPERS
+// Firebase initialized via firebase-config.js
+let currentDeveloperEmail = "";
 let AUTHORIZED_DEVELOPERS = ["dev@code.com"];
+let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
+let currentMenuItems = [], currentSelectedKitchen = "";
+const KITCHEN_JSON_FILES = { "Hot Kitchen":"hot-kitchen.json","Cold Kitchen":"cold-kitchen.json","Pastry / Bakery":"pastry.json","Butchery":"butchery.json","Beach House":"beach-house.json","Nihon Kitchen":"nihon-kitchen.json","Staff Kitchen":"staff-kitchen.json"};
+const JSON_BASE_PATH = "items/";
 
 async function loadAuthorizedDevelopers() {
-    try {
-        const doc = await db.collection("settings").doc("authorized_devs").get();
-        if (doc.exists && doc.data().emails) AUTHORIZED_DEVELOPERS = doc.data().emails;
-        else await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
-        displayAuthorizedDevelopers();
-    } catch(e) { console.error(e); }
+    try { const doc = await db.collection("settings").doc("authorized_devs").get(); if(doc.exists && doc.data().emails) AUTHORIZED_DEVELOPERS = doc.data().emails; else await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); displayAuthorizedDevelopers(); } catch(e) { console.error(e); }
 }
-function displayAuthorizedDevelopers() {
-    const container = document.getElementById("authorizedDevsList");
-    if(container) container.innerHTML = AUTHORIZED_DEVELOPERS.map(email => `<div style="display:flex; justify-content:space-between; padding:8px; margin:5px 0; background:#1a1a2e; border-radius:8px;"><span>📧 ${email}</span><button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${email}')" style="padding:4px 12px;">Remove</button></div>`).join('');
-}
-async function addAuthorizedDeveloper() {
-    const email = document.getElementById("newDevEmail").value.trim();
-    if(!email || AUTHORIZED_DEVELOPERS.includes(email)) { showToast("Invalid or duplicate", true); return; }
-    AUTHORIZED_DEVELOPERS.push(email);
-    await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
-    displayAuthorizedDevelopers();
-    showToast(`✅ Added ${email}`);
-    document.getElementById("newDevEmail").value = "";
-}
-async function removeAuthorizedDeveloper(email) {
-    if(email === "dev@code.com") { showToast("Cannot remove master dev", true); return; }
-    AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email);
-    await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
-    displayAuthorizedDevelopers();
-    showToast(`Removed ${email}`);
-}
+function displayAuthorizedDevelopers() { const c=document.getElementById("authorizedDevsList"); if(c) c.innerHTML = AUTHORIZED_DEVELOPERS.map(e=>`<div style="display:flex;justify-content:space-between;padding:8px;margin:5px 0;background:#1a1a2e;border-radius:8px;"><span>📧 ${e}</span><button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${e}')" style="padding:4px 12px;">Remove</button></div>`).join(''); }
+async function addAuthorizedDeveloper() { const email=document.getElementById("newDevEmail").value.trim(); if(!email||AUTHORIZED_DEVELOPERS.includes(email)){ showToast("Invalid or duplicate",true); return; } AUTHORIZED_DEVELOPERS.push(email); await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); displayAuthorizedDevelopers(); showToast(`✅ Added ${email}`); document.getElementById("newDevEmail").value=""; }
+async function removeAuthorizedDeveloper(email) { if(email==="dev@code.com"){ showToast("Cannot remove master dev",true); return; } AUTHORIZED_DEVELOPERS=AUTHORIZED_DEVELOPERS.filter(e=>e!==email); await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); displayAuthorizedDevelopers(); showToast(`Removed ${email}`); }
 function isAuthorized(email) { return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase()); }
 
-// LOGIN (with proper credential check and authorization)
 window.loginWithFirebase = async function() {
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
@@ -766,74 +210,51 @@ window.loginWithFirebase = async function() {
     if(!email || !password) { errorDiv.innerHTML = "Please enter email and password"; return; }
     errorDiv.innerHTML = "";
     try {
-        const userCred = await auth.signInWithEmailAndPassword(email, password);
+        const userCred = await firebase.auth().signInWithEmailAndPassword(email, password);
         await loadAuthorizedDevelopers();
-        if(!isAuthorized(userCred.user.email)) {
-            errorDiv.innerHTML = "❌ Access Denied. You are not authorized to use the Developer Console.";
-            await auth.signOut();
-            return;
-        }
+        if(!isAuthorized(userCred.user.email)) { errorDiv.innerHTML = "❌ Access Denied. Not authorized."; await firebase.auth().signOut(); return; }
         currentDeveloperEmail = userCred.user.email;
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
-        refreshOrdersList();
-        renderKitchenMenuButtons();
-    } catch(error) {
-        let msg = "Login failed: ";
-        if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') msg = "Invalid email or password";
-        else if(error.code === 'auth/invalid-email') msg = "Invalid email format";
-        else msg = error.message;
-        errorDiv.innerHTML = msg;
-    }
+        refreshOrdersList(); renderKitchenMenuButtons();
+    } catch(error) { errorDiv.innerHTML = error.code==='auth/user-not-found'||error.code==='auth/wrong-password' ? "Invalid email or password" : error.message; }
 };
-
-function logout() { if(confirm("Logout?")) auth.signOut().then(()=>{ location.reload(); }); }
-
-// Global vars
-let currentDeveloperEmail = "";
-let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
-let currentMenuItems = [], currentSelectedKitchen = "";
-const KITCHEN_JSON_FILES = { "Hot Kitchen":"hot-kitchen.json","Cold Kitchen":"cold-kitchen.json","Pastry / Bakery":"pastry.json","Butchery":"butchery.json","Beach House":"beach-house.json","Nihon Kitchen":"nihon-kitchen.json","Staff Kitchen":"staff-kitchen.json"};
-const JSON_BASE_PATH = "items/";
+function logout() { if(confirm("Logout?")) firebase.auth().signOut().then(()=>location.reload()); }
 
 function getRequestStatus(items) { if(!items||!items.length) return "pending"; let all=true,a=0,r=0; items.forEach(i=>{ if(i.status==="approved") a++; else if(i.status==="rejected") r++; else all=false; }); if(items[0]?.completedVia==="accept") return "accepted"; if(all&&a===items.length) return "approved"; if(all&&r===items.length) return "rejected"; return "pending"; }
 async function refreshOrdersList() { await listAllOrders(); }
 async function listAllOrders() { try { const snap=await db.collection("kitchen_requests").orderBy("timestamp","desc").limit(50).get(); const cont=document.getElementById("ordersList"); cont.innerHTML=snap.empty?'<div style="padding:30px;text-align:center;">📭 No orders</div>':''; snap.forEach(doc=>{ const d=doc.data(), st=getRequestStatus(d.items), cls=st==="approved"?"status-approved":st==="rejected"?"status-rejected":st==="accepted"?"status-accepted":"status-pending", txt=st.toUpperCase(); cont.innerHTML+=`<div class="doc-item" onclick="loadOrderById('${doc.id}')"><div class="doc-item-info"><span class="doc-id-badge">🆔 ${doc.id.substring(0,12)}...</span><span class="doc-request-id">📌 ${d.requestId||'N/A'}</span><span class="doc-chef">👨‍🍳 ${d.chefName||'?'}</span><span class="doc-kitchen">🍽️ ${d.section||'?'}</span></div><div><span class="status-badge ${cls}">${txt}</span><div class="doc-actions" style="display:inline-flex;margin-left:10px;"><button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')">🗑️</button><button class="btn btn-restore btn-icon" onclick="event.stopPropagation();restoreOrderToPending('${doc.id}')">🔄</button></div></div></div>`; }); } catch(e){ showToast("Error loading orders",true); } }
 async function loadOrderById(docId) { document.getElementById("orderDocId").value=docId; await fetchOrderDocument(); }
-async function fetchOrderDocument() { const id=document.getElementById("orderDocId").value.trim(); if(!id) return; try { const doc=await db.collection("kitchen_requests").doc(id).get(); if(!doc.exists) { showToast("Not found",true); return; } currentOrderDocId=id; currentOrderData={id:doc.id,...doc.data()}; currentOrderStatus=getRequestStatus(currentOrderData.items); document.getElementById("orderJsonEditor").value=JSON.stringify(currentOrderData,null,2); document.getElementById("orderViewer").style.display="block"; orderKitchen=currentOrderData.section||"Hot Kitchen"; showToast(`Loaded: ${id} | Status: ${currentOrderStatus}`); updateEditButtonsBasedOnStatus(); renderKitchenMenuButtons(); document.getElementById("menuItemsList").innerHTML='<div style="padding:20px;text-align:center;">Click enabled kitchen button</div>'; } catch(e){ showToast("Error:"+e.message,true); } }
+async function fetchOrderDocument() { const id=document.getElementById("orderDocId").value.trim(); if(!id) return; try { const doc=await db.collection("kitchen_requests").doc(id).get(); if(!doc.exists){ showToast("Not found",true); return; } currentOrderDocId=id; currentOrderData={id:doc.id,...doc.data()}; currentOrderStatus=getRequestStatus(currentOrderData.items); document.getElementById("orderJsonEditor").value=JSON.stringify(currentOrderData,null,2); document.getElementById("orderViewer").style.display="block"; orderKitchen=currentOrderData.section||"Hot Kitchen"; showToast(`Loaded: ${id} | Status: ${currentOrderStatus}`); updateEditButtonsBasedOnStatus(); renderKitchenMenuButtons(); document.getElementById("menuItemsList").innerHTML='<div style="padding:20px;text-align:center;">Click enabled kitchen button</div>'; } catch(e){ showToast("Error:"+e.message,true); } }
 function updateEditButtonsBasedOnStatus() { const pending=(currentOrderStatus==="pending"); const save=document.getElementById("saveOrderBtn"), del=document.getElementById("deleteOrderBtn"), restore=document.getElementById("restoreOrderBtn"); if(save) save.classList.toggle("btn-disabled",!pending); if(del) del.classList.toggle("btn-disabled",!pending); if(restore) restore.style.display=pending?"none":"inline-block"; document.querySelectorAll(".kitchen-menu-btn").forEach(btn=>{ if(!btn.classList.contains("disabled")) { btn.style.pointerEvents=pending?"auto":"none"; btn.style.opacity=pending?"1":"0.5"; } }); const warn=document.getElementById("orderStatusWarning"); if(warn) warn.style.display=pending?"none":"block"; if(warn&&!pending) document.getElementById("warningStatusText").innerText=currentOrderStatus.toUpperCase(); }
 async function saveOrderDocument() { if(!currentOrderDocId||currentOrderStatus!=="pending"){ showToast("Cannot save: Order not pending. Restore first.",true); return; } try{ const newData=JSON.parse(document.getElementById("orderJsonEditor").value); const {id,...update}=newData; await db.collection("kitchen_requests").doc(currentOrderDocId).update(update); currentOrderData=update; showToast("Saved"); refreshOrdersList(); }catch(e){ showToast("Save failed:"+e.message,true); } }
 async function deleteOrderDocument() { if(!currentOrderDocId||currentOrderStatus!=="pending"){ showToast("Cannot delete: Not pending.",true); return; } if(confirm("Delete permanently?")){ await db.collection("kitchen_requests").doc(currentOrderDocId).delete(); showToast("Deleted"); document.getElementById("orderViewer").style.display="none"; refreshOrdersList(); } }
 async function deleteOrderById(docId){ if(confirm("Delete?")){ await db.collection("kitchen_requests").doc(docId).delete(); showToast("Deleted"); refreshOrdersList(); if(currentOrderDocId===docId) document.getElementById("orderViewer").style.display="none"; } }
 function renderKitchenMenuButtons(){ const container=document.getElementById("kitchenMenuButtons"); if(!container) return; container.innerHTML=""; Object.keys(KITCHEN_JSON_FILES).forEach(kit=>{ const btn=document.createElement("button"); const isOk=(kit===orderKitchen); btn.className=`kitchen-menu-btn ${currentSelectedKitchen===kit?'active':''}`; btn.innerText=kit; if(!isOk){ btn.classList.add("disabled"); btn.title=`Only ${orderKitchen||'order kitchen'} enabled`; } btn.onclick=()=>{ if(!isOk){ showToast(`Only ${orderKitchen} is enabled`,true); return; } if(currentOrderStatus!=="pending"){ showToast(`Order is ${currentOrderStatus}, restore first`,true); return; } currentSelectedKitchen=kit; renderKitchenMenuButtons(); loadKitchenMenuJSON(kit); }; container.appendChild(btn); }); if(!orderKitchen) container.innerHTML+='<div style="font-size:0.7rem;color:#9ca3af;">⚠️ Load an order first</div>'; }
 async function loadKitchenMenuJSON(kitchen){ const file=KITCHEN_JSON_FILES[kitchen]; const path=`${JSON_BASE_PATH}${file}`; document.getElementById("selectedKitchenName").innerHTML=`📁 Loading ${path}`; try{ const res=await fetch(path); if(!res.ok) throw new Error(`HTTP ${res.status}`); const data=await res.json(); currentMenuItems=Array.isArray(data)?data:(data.items||[]); renderMenuItemsList(); document.getElementById("selectedKitchenName").innerHTML=`✅ Loaded ${currentMenuItems.length} items`; }catch(e){ document.getElementById("selectedKitchenName").innerHTML=`❌ ${file} missing. Create items/${file}`; currentMenuItems=[]; renderMenuItemsList(); } }
-function renderMenuItemsList(){ const container=document.getElementById("menuItemsList"); if(!container) return; if(!currentMenuItems.length){ container.innerHTML='<div style="padding:20px;text-align:center;">No items</div>'; return; } container.innerHTML=""; currentMenuItems.forEach((item,idx)=>{ const div=document.createElement("div"); div.className="menu-item-card"; div.innerHTML=`<span class="menu-item-code">📌 ${escapeHtml(item.code)}</span><span class="menu-item-name"><strong>${escapeHtml(item.name)}</strong><br><span style="font-size:0.65rem;">${escapeHtml(item.name_ar||'')}</span></span><span class="menu-item-unit">📦 ${escapeHtml(item.unit)}</span><span class="menu-item-price">💰 ${item.AVE||item.price||0}</span><div class="add-qty-control"><input type="number" id="qty_${idx}" class="qty-input-small" value="1" min="0.5" step="0.5"><button class="btn btn-add-item" onclick="addMenuItemToOrder(${idx})">➕ Add</button></div>`; container.appendChild(div); }); }
-window.addMenuItemToOrder=function(idx){ if(!currentOrderDocId||currentOrderStatus!=="pending"){ showToast("No pending order loaded",true); return; } const item=currentMenuItems[idx]; const qty=parseFloat(document.getElementById(`qty_${idx}`)?.value||1); if(!item||isNaN(qty)) return; const newItem={code:item.code,name:item.name,name_ar:item.name_ar||"",unit:item.unit,originalQty:qty,price:item.AVE||item.price||0,status:"pending"}; if(!currentOrderData.items) currentOrderData.items=[]; currentOrderData.items.push(newItem); currentOrderStatus=getRequestStatus(currentOrderData.items); document.getElementById("orderJsonEditor").value=JSON.stringify(currentOrderData,null,2); showToast(`Added ${item.name} (x${qty})`); };
-async function restoreOrderToPending(docId){ if(!confirm("Restore to PENDING? This resets all approvals.")) return; try{ const doc=await db.collection("kitchen_requests").doc(docId).get(); if(!doc.exists) return; const data=doc.data(); if(data.items){ let changed=false; data.items.forEach(i=>{ if(i.status==="approved"||i.status==="rejected"){ i.status="pending"; delete i.approvedQty; delete i.approvedBy; delete i.rejectionReason; changed=true; } if(i.completedVia) delete i.completedVia; }); if(changed) await db.collection("kitchen_requests").doc(docId).update({items:data.items}); showToast(`Restored ${docId} to PENDING`); if(currentOrderDocId===docId) await fetchOrderDocument(); refreshOrdersList(); } }catch(e){ showToast("Restore failed",true); } }
+function renderMenuItemsList(){ const container=document.getElementById("menuItemsList"); if(!container) return; if(!currentMenuItems.length){ container.innerHTML='<div style="padding:20px;text-align:center;">No items</div>'; return; } container.innerHTML=""; currentMenuItems.forEach((item,idx)=>{ const div=document.createElement("div"); div.className="menu-item-card"; const aveVal = item.AVE || item.price || 0; div.innerHTML=`<span class="menu-item-code">📌 ${escapeHtml(item.code)}</span><span class="menu-item-name"><strong>${escapeHtml(item.name)}</strong><br><span style="font-size:0.65rem;">${escapeHtml(item.name_ar||'')}</span></span><span class="menu-item-unit">📦 ${escapeHtml(item.unit)}</span><span class="menu-item-ave">💰 AVE: ${aveVal}</span><div class="add-qty-control"><input type="number" id="qty_${idx}" class="qty-input-small" value="1" min="0.5" step="0.5"><button class="btn btn-add-item" onclick="addMenuItemToOrder(${idx})">➕ Add</button></div>`; container.appendChild(div); }); }
+window.addMenuItemToOrder=function(idx){ if(!currentOrderDocId||currentOrderStatus!=="pending"){ showToast("No pending order loaded",true); return; } const item=currentMenuItems[idx]; const qty=parseFloat(document.getElementById(`qty_${idx}`)?.value||1); if(!item||isNaN(qty)) return; const aveVal = item.AVE || item.price || 0; const newItem={code:item.code,name:item.name,name_ar:item.name_ar||"",unit:item.unit,originalQty:qty,AVE:aveVal,price:aveVal,status:"pending"}; if(!currentOrderData.items) currentOrderData.items=[]; currentOrderData.items.push(newItem); currentOrderStatus=getRequestStatus(currentOrderData.items); document.getElementById("orderJsonEditor").value=JSON.stringify(currentOrderData,null,2); showToast(`Added ${item.name} (x${qty})`); };
+window.quickAddItemFromOrder = function() { if(!currentOrderDocId){ showToast("Load an order first",true); return; } if(currentOrderStatus!=="pending"){ showToast(`Cannot add: Order is ${currentOrderStatus}. Restore to pending first.`,true); return; } const code = prompt("Enter item code:"); const name = prompt("Enter item name:"); const ave = parseFloat(prompt("Enter AVE (average price):", "0")); if(!code || !name || isNaN(ave)){ showToast("Invalid input",true); return; } const qty = parseFloat(prompt("Enter quantity:", "1")); if(isNaN(qty) || qty<=0) return; const newItem={code,name,name_ar:"",unit:"pcs",originalQty:qty,AVE:ave,price:ave,status:"pending"}; if(!currentOrderData.items) currentOrderData.items=[]; currentOrderData.items.push(newItem); document.getElementById("orderJsonEditor").value=JSON.stringify(currentOrderData,null,2); showToast(`✅ Added "${name}" (x${qty})`); };
+async function restoreOrderToPending(docId){ if(!confirm("Restore to PENDING? This resets approvals.")) return; try{ const doc=await db.collection("kitchen_requests").doc(docId).get(); if(!doc.exists) return; const data=doc.data(); if(data.items){ let changed=false; data.items.forEach(i=>{ if(i.status==="approved"||i.status==="rejected"){ i.status="pending"; delete i.approvedQty; delete i.rejectionReason; changed=true; } if(i.completedVia) delete i.completedVia; }); if(changed) await db.collection("kitchen_requests").doc(docId).update({items:data.items}); showToast(`Restored ${docId} to PENDING`); if(currentOrderDocId===docId) await fetchOrderDocument(); refreshOrdersList(); } }catch(e){ showToast("Restore failed",true); } }
 async function restoreSingleToPending(){ if(currentOrderDocId) await restoreOrderToPending(currentOrderDocId); else showToast("No doc loaded",true); }
 
-// JSON GENERATOR LOGIC (simplified)
+// JSON GENERATOR using AVE field
 let menuItemsGen=[];
-function updateGeneratorUI(){ const span=document.getElementById("itemCount"); const itemsDiv=document.getElementById("itemsList"); span.innerText=`${menuItemsGen.length} items`; if(!menuItemsGen.length){ itemsDiv.innerHTML='<div style="padding:20px;text-align:center;">No items</div>'; document.getElementById("jsonOutput").value='[]'; return; } itemsDiv.innerHTML=menuItemsGen.map((it,i)=>`<div class="item-row"><span class="item-code">📌 ${escapeHtml(it.code)}</span><span><strong>${escapeHtml(it.name)}</strong> ${escapeHtml(it.nameAr||'')}</span><span>📦 ${escapeHtml(it.unit)}</span><span>🔢 ${it.maxLimit}</span><span>⚡ ${it.step}</span><span>💰 ${it.price}</span><button class="delete-item" onclick="removeItemGen(${i})">✖</button></div>`).join(''); const lines=menuItemsGen.map((it,i)=>`{"code": "${escapeJSON(it.code)}", "name": "${escapeJSON(it.name)}", "name_ar": "${escapeJSON(it.nameAr||'')}", "unit": "${escapeJSON(it.unit)}", "maxLimit": ${it.maxLimit}, "step": ${it.step}, "price": ${it.price}}${i<menuItemsGen.length-1?',':''}`); document.getElementById("jsonOutput").value='[\n'+lines.join('\n')+'\n]'; }
-function addItem(){ const code=document.getElementById("code").value.trim(), name=document.getElementById("name").value.trim(), unit=document.getElementById("unit").value.trim(); if(!code||!name||!unit){ showToast("Code, Name, Unit required",true); return; } const maxLimit=parseFloat(document.getElementById("maxLimit").value), step=parseFloat(document.getElementById("step").value), price=parseFloat(document.getElementById("price").value); if(isNaN(maxLimit)||isNaN(step)||isNaN(price)) return; menuItemsGen.push({code,name,nameAr:document.getElementById("nameAr").value.trim(),unit,maxLimit,step,price}); updateGeneratorUI(); document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("nameAr").value=""; document.getElementById("unit").value=""; document.getElementById("maxLimit").value=2; document.getElementById("step").value=1; document.getElementById("price").value=45.5; showToast("Item added"); }
+function updateGeneratorUI(){ const span=document.getElementById("itemCount"); const itemsDiv=document.getElementById("itemsList"); span.innerText=`${menuItemsGen.length} items`; if(!menuItemsGen.length){ itemsDiv.innerHTML='<div style="padding:20px;text-align:center;">No items</div>'; document.getElementById("jsonOutput").value='[]'; return; } itemsDiv.innerHTML=menuItemsGen.map((it,i)=>`<div class="item-row"><span class="item-code">📌 ${escapeHtml(it.code)}</span><span><strong>${escapeHtml(it.name)}</strong> ${escapeHtml(it.nameAr||'')}</span><span>📦 ${escapeHtml(it.unit)}</span><span>🔢 ${it.maxLimit}</span><span>⚡ ${it.step}</span><span>💰 AVE: ${it.AVE}</span><button class="delete-item" onclick="removeItemGen(${i})">✖</button></div>`).join(''); const lines=menuItemsGen.map((it,i)=>`{"code": "${escapeJSON(it.code)}", "name": "${escapeJSON(it.name)}", "name_ar": "${escapeJSON(it.nameAr||'')}", "unit": "${escapeJSON(it.unit)}", "maxLimit": ${it.maxLimit}, "step": ${it.step}, "AVE": ${it.AVE}}${i<menuItemsGen.length-1?',':''}`); document.getElementById("jsonOutput").value='[\n'+lines.join('\n')+'\n]'; }
+function addItem(){ const code=document.getElementById("code").value.trim(), name=document.getElementById("name").value.trim(), unit=document.getElementById("unit").value.trim(); if(!code||!name||!unit){ showToast("Code, Name, Unit required",true); return; } const maxLimit=parseFloat(document.getElementById("maxLimit").value), step=parseFloat(document.getElementById("step").value), ave=parseFloat(document.getElementById("ave").value); if(isNaN(maxLimit)||isNaN(step)||isNaN(ave)) return; menuItemsGen.push({code,name,nameAr:document.getElementById("nameAr").value.trim(),unit,maxLimit,step,AVE:ave}); updateGeneratorUI(); document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("nameAr").value=""; document.getElementById("unit").value=""; document.getElementById("maxLimit").value=2; document.getElementById("step").value=1; document.getElementById("ave").value=45.5; showToast("Item added with AVE"); }
 window.removeItemGen=function(i){ menuItemsGen.splice(i,1); updateGeneratorUI(); };
 function clearAllItems(){ if(confirm("Clear all?")){ menuItemsGen=[]; updateGeneratorUI(); } }
-function clearForm(){ document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("nameAr").value=""; document.getElementById("unit").value=""; document.getElementById("maxLimit").value=2; document.getElementById("step").value=1; document.getElementById("price").value=45.5; }
-function addSample(){ menuItemsGen.push({code:"161005",name:"Black Pepper Corn",nameAr:"حب الفلفل الأسود",unit:"kg",maxLimit:2,step:0.5,price:45.5}); updateGeneratorUI(); showToast("Sample added"); }
+function clearForm(){ document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("nameAr").value=""; document.getElementById("unit").value=""; document.getElementById("maxLimit").value=2; document.getElementById("step").value=1; document.getElementById("ave").value=45.5; }
+function addSample(){ menuItemsGen.push({code:"161005",name:"Black Pepper Corn",nameAr:"حب الفلفل الأسود",unit:"kg",maxLimit:2,step:0.5,AVE:45.5}); updateGeneratorUI(); showToast("Sample added (AVE field)"); }
 async function copyJSON(){ if(menuItemsGen.length){ await navigator.clipboard.writeText(document.getElementById("jsonOutput").value); showToast("Copied"); } else showToast("No items",true); }
 function downloadJSON(){ if(!menuItemsGen.length) return; const blob=new Blob([document.getElementById("jsonOutput").value],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`menu_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href); }
-
-// User management functions
-async function createNewUser(){ const email=document.getElementById("newUserEmail").value.trim(), pwd=document.getElementById("newUserPassword").value, confirm=document.getElementById("newUserConfirmPassword").value; if(!email||pwd!==confirm||pwd.length<6){ showToast("Invalid or mismatch",true); return; } try{ await auth.createUserWithEmailAndPassword(email,pwd); showToast(`User ${email} created`); }catch(e){ showToast(e.message,true); } }
-async function sendUserPasswordReset(){ const email=document.getElementById("resetUserEmail").value.trim(); if(!email) return; try{ await auth.sendPasswordResetEmail(email); showToast(`Reset email sent to ${email}`); }catch(e){ showToast(e.message,true); } }
-async function resetKitchenPassword(){ const kitchen=document.getElementById("kitchenSelect").value, email=document.getElementById("kitchenChefEmail").value.trim(); if(!kitchen||!email) return; try{ await auth.sendPasswordResetEmail(email); showToast(`Reset sent to ${email} (${kitchen})`); }catch(e){ showToast(e.message,true); } }
-
+async function createNewUser(){ const email=document.getElementById("newUserEmail").value.trim(), pwd=document.getElementById("newUserPassword").value, confirm=document.getElementById("newUserConfirmPassword").value; if(!email||pwd!==confirm||pwd.length<6){ showToast("Invalid or mismatch",true); return; } try{ await firebase.auth().createUserWithEmailAndPassword(email,pwd); showToast(`User ${email} created`); }catch(e){ showToast(e.message,true); } }
+async function sendUserPasswordReset(){ const email=document.getElementById("resetUserEmail").value.trim(); if(!email) return; try{ await firebase.auth().sendPasswordResetEmail(email); showToast(`Reset email sent to ${email}`); }catch(e){ showToast(e.message,true); } }
 function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 function escapeJSON(str){ return str.replace(/\\/g,'\\\\').replace(/"/g,'\\"'); }
 function showToast(msg,isErr=false){ const t=document.createElement('div'); t.className='toast'; t.innerHTML=msg; if(isErr) t.style.borderLeftColor='#dc2626'; document.body.appendChild(t); setTimeout(()=>t.remove(),2500); }
 function switchTab(t){ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active-panel')); if(t==='orders'){ document.querySelectorAll('.tab-btn')[0].classList.add('active'); document.getElementById('ordersPanel').classList.add('active-panel'); refreshOrdersList(); } else if(t==='generator'){ document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('generatorPanel').classList.add('active-panel'); } else{ document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('usersPanel').classList.add('active-panel'); } }
-
 loadAuthorizedDevelopers();
 </script>
 </body>
