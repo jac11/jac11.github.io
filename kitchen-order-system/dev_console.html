@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Developer Console - Order Editor + Kitchen Menu Loader</title>
+<title>Developer Console - Complete Control</title>
 <style>
 * {
     margin: 0;
@@ -43,6 +44,11 @@ body {
     font-weight: bold;
 }
 
+.badge-restricted {
+    background: #dc2626;
+    color: white;
+}
+
 .container {
     max-width: 1600px;
     margin: 0 auto;
@@ -68,7 +74,7 @@ body {
     border: 2px solid #00d4ff;
     border-radius: 24px;
     padding: 40px;
-    width: 350px;
+    width: 400px;
     text-align: center;
 }
 
@@ -100,10 +106,29 @@ body {
     cursor: pointer;
     width: 100%;
     font-size: 1rem;
+    margin-top: 10px;
 }
 
 .login-box button:hover { opacity: 0.9; transform: scale(1.02); }
 .error-msg { color: #dc2626; margin-top: 10px; font-size: 0.8rem; }
+.info-msg { color: #00d4ff; margin-top: 10px; font-size: 0.8rem; }
+.success-msg { color: #10b981; margin-top: 10px; font-size: 0.8rem; }
+
+/* User Menu */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #1a1a2e;
+    padding: 6px 16px;
+    border-radius: 40px;
+    flex-wrap: wrap;
+}
+
+.user-email {
+    font-size: 0.75rem;
+    color: #00d4ff;
+}
 
 /* Tabs */
 .tabs {
@@ -225,9 +250,8 @@ textarea {
 .btn-disabled { background: #4a5568; color: #a0aec0; cursor: not-allowed; opacity: 0.6; }
 
 .btn:hover { transform: scale(1.02); opacity: 0.9; }
-.btn-disabled:hover { transform: none; opacity: 0.6; }
 
-/* Document List - Clean Table Style */
+/* Document List */
 .doc-list {
     margin-top: 20px;
 }
@@ -483,6 +507,48 @@ hr {
     color: #fca5a5;
 }
 
+/* User Management Section */
+.user-management {
+    background: #0a0e27;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.user-management h3 {
+    color: #00d4ff;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.user-card {
+    background: #111827;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border-left: 3px solid #10b981;
+}
+
+.kitchen-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.kitchen-tag {
+    background: #1e293b;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.kitchen-tag:hover {
+    background: #334155;
+}
+
 /* JSON Generator Items List */
 .items-list {
     background: #0a0e27;
@@ -551,11 +617,14 @@ hr {
 </head>
 <body>
 
+<!-- LOGIN MODAL -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-box">
         <h2>🔐 Developer Access</h2>
-        <input type="password" id="devPasswordInput" placeholder="Enter Developer Password" autofocus>
-        <button onclick="checkDevLogin()">Unlock Console</button>
+        <div class="info-msg" style="margin-bottom: 15px;">⚠️ Authorized developers only</div>
+        <input type="email" id="devEmail" placeholder="Email Address" autocomplete="email">
+        <input type="password" id="devPassword" placeholder="Password" autocomplete="current-password">
+        <button onclick="loginWithFirebase()">Login</button>
         <div id="loginErrorMsg" class="error-msg"></div>
     </div>
 </div>
@@ -565,17 +634,25 @@ hr {
         <h1>
             🛠️ DEVELOPER CONSOLE
             <span class="badge">Edit Orders</span>
-            <span class="badge">Load Kitchen JSON</span>
-            <span class="badge">Add Items from Menu</span>
+            <span class="badge">Kitchen JSON</span>
+            <span class="badge">User Management</span>
+            <span class="badge badge-restricted">🔒 Secure Access</span>
         </h1>
-        <div style="margin-top: 8px; font-size: 0.7rem;">⚠️ For Approved/Rejected/Accepted orders: You MUST click "Restore to Pending" first before any edits</div>
+        <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div style="font-size: 0.7rem;">⚠️ For Approved/Rejected/Accepted orders: Click "Restore to Pending" first</div>
+            <div class="user-menu">
+                <span class="user-email" id="userEmailDisplay"></span>
+                <button class="btn btn-secondary btn-icon" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
     </div>
 
     <div class="container">
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('orders')">📋 Edit Firestore Orders</button>
-            <button class="tab-btn" onclick="switchTab('generator')">📦 JSON Generator (Menu Items)</button>
+            <button class="tab-btn" onclick="switchTab('generator')">📦 JSON Generator</button>
+            <button class="tab-btn" onclick="switchTab('users')">👥 User Management</button>
         </div>
 
         <!-- PANEL 1: FIRESTORE ORDERS EDITOR -->
@@ -601,7 +678,7 @@ hr {
                         <button class="btn btn-restore" id="restoreOrderBtn" onclick="restoreSingleToPending()">🔄 Restore to Pending</button>
                     </div>
                     
-                    <!-- MENU SELECTOR - Only order's kitchen is enabled -->
+                    <!-- MENU SELECTOR -->
                     <div class="menu-selector">
                         <div class="menu-title">
                             📦 ADD ITEM FROM KITCHEN MENU (JSON Files)
@@ -616,7 +693,7 @@ hr {
                     </div>
                 </div>
                 
-                <!-- Orders List with Header and Refresh Button -->
+                <!-- Orders List -->
                 <div class="doc-list">
                     <div class="doc-list-header">
                         <span class="doc-list-title">📋 RECENT ORDERS (click to edit)</span>
@@ -629,7 +706,7 @@ hr {
             </div>
         </div>
 
-        <!-- PANEL 2: JSON GENERATOR (Menu Items) -->
+        <!-- PANEL 2: JSON GENERATOR -->
         <div id="generatorPanel" class="panel">
             <div class="panel-header">
                 <h2>📦 Generate Menu JSON (One Line + Trailing Commas)</h2>
@@ -699,28 +776,318 @@ hr {
                 </div>
             </div>
         </div>
+
+        <!-- PANEL 3: USER MANAGEMENT -->
+        <div id="usersPanel" class="panel">
+            <div class="panel-header">
+                <h2>👥 User Management - Add Users & Reset Passwords</h2>
+            </div>
+            <div class="form-group">
+                <!-- Add New User -->
+                <div class="user-card">
+                    <h3>➕ Add New User</h3>
+                    <div class="form-row">
+                        <input type="email" id="newUserEmail" class="form-input" placeholder="Email Address">
+                        <input type="password" id="newUserPassword" class="form-input" placeholder="Password">
+                        <input type="password" id="newUserConfirmPassword" class="form-input" placeholder="Confirm Password">
+                        <button class="btn btn-success" onclick="createNewUser()">Create User</button>
+                    </div>
+                    <div id="addUserMsg" class="success-msg" style="margin-top: 10px;"></div>
+                </div>
+
+                <!-- Reset User Password -->
+                <div class="user-card">
+                    <h3>🔑 Reset Any User Password</h3>
+                    <div class="form-row">
+                        <input type="email" id="resetUserEmail" class="form-input" placeholder="User Email Address">
+                        <button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset Email</button>
+                    </div>
+                    <div id="resetUserMsg" class="success-msg" style="margin-top: 10px;"></div>
+                </div>
+
+                <!-- Reset Kitchen/Chef Password -->
+                <div class="user-card">
+                    <h3>🍽️ Reset Kitchen / Chef Password</h3>
+                    <div class="form-row">
+                        <select id="kitchenSelect" class="form-input">
+                            <option value="">Select Kitchen</option>
+                            <option value="Hot Kitchen">🔥 Hot Kitchen</option>
+                            <option value="Cold Kitchen">❄️ Cold Kitchen</option>
+                            <option value="Pastry / Bakery">🍰 Pastry / Bakery</option>
+                            <option value="Butchery">🥩 Butchery</option>
+                            <option value="Beach House">🏖️ Beach House</option>
+                            <option value="Nihon Kitchen">🍜 Nihon Kitchen</option>
+                            <option value="Staff Kitchen">👥 Staff Kitchen</option>
+                        </select>
+                        <input type="email" id="kitchenChefEmail" class="form-input" placeholder="Chef's Email Address">
+                        <button class="btn btn-restore" onclick="resetKitchenPassword()">Reset Kitchen Password</button>
+                    </div>
+                    <div id="resetKitchenMsg" class="success-msg" style="margin-top: 10px;"></div>
+                </div>
+
+                <!-- Authorized Developers List -->
+                <div class="user-card">
+                    <h3>✅ Authorized Developers (Can access this console)</h3>
+                    <div id="authorizedDevsList" style="margin-bottom: 15px;"></div>
+                    <div class="form-row">
+                        <input type="email" id="newDevEmail" class="form-input" placeholder="New Developer Email">
+                        <button class="btn btn-primary" onclick="addAuthorizedDeveloper()">➕ Add to Authorized List</button>
+                    </div>
+                    <div class="note" style="margin-top: 10px;">
+                        💡 Only emails in this list can login to the Developer Console. Add their email here, then create their account using "Add New User" above.
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-// ==================== PASSWORD ====================
-const DEV_PASSWORD = "Dev@2025Secure!";
+// ==================== AUTHORIZED DEVELOPER EMAILS ====================
+// Store authorized developers in Firestore for dynamic management
+let AUTHORIZED_DEVELOPERS = ["dev@code.com"];
 
-function checkDevLogin() {
-    const pass = document.getElementById("devPasswordInput").value;
-    if (pass === DEV_PASSWORD) {
-        document.getElementById("loginOverlay").style.display = "none";
-        document.getElementById("mainContent").style.display = "block";
-    } else {
-        document.getElementById("loginErrorMsg").innerHTML = "❌ Wrong password!";
+// Load authorized developers from Firestore
+async function loadAuthorizedDevelopers() {
+    try {
+        const doc = await db.collection("settings").doc("authorized_devs").get();
+        if (doc.exists && doc.data().emails) {
+            AUTHORIZED_DEVELOPERS = doc.data().emails;
+        } else {
+            // Initialize with default
+            await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
+        }
+        displayAuthorizedDevelopers();
+    } catch(e) {
+        console.error("Error loading authorized devs:", e);
     }
 }
 
-document.getElementById("devPasswordInput")?.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") checkDevLogin();
-});
+function displayAuthorizedDevelopers() {
+    const container = document.getElementById("authorizedDevsList");
+    if (!container) return;
+    container.innerHTML = AUTHORIZED_DEVELOPERS.map(email => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; margin:5px 0; background:#1a1a2e; border-radius:8px;">
+            <span>📧 ${email}</span>
+            <button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${email}')" style="padding:4px 12px;">Remove</button>
+        </div>
+    `).join('');
+}
 
-// ==================== KITCHEN JSON FILES MAPPING ====================
+async function addAuthorizedDeveloper() {
+    const email = document.getElementById("newDevEmail").value.trim();
+    if (!email) {
+        showToast("Please enter email", true);
+        return;
+    }
+    
+    if (!AUTHORIZED_DEVELOPERS.includes(email)) {
+        AUTHORIZED_DEVELOPERS.push(email);
+        await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
+        displayAuthorizedDevelopers();
+        showToast(`✅ Added ${email} to authorized developers`);
+        document.getElementById("newDevEmail").value = "";
+    } else {
+        showToast("Email already in list", true);
+    }
+}
+
+async function removeAuthorizedDeveloper(email) {
+    if (email === "dev@code.com") {
+        showToast("Cannot remove the master developer", true);
+        return;
+    }
+    AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email);
+    await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
+    displayAuthorizedDevelopers();
+    showToast(`🗑️ Removed ${email}`);
+}
+
+function isAuthorized(email) {
+    return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase());
+}
+
+// ==================== FIREBASE AUTH ====================
+let currentDeveloperEmail = "";
+
+function loginWithFirebase() {
+    const email = document.getElementById("devEmail").value.trim();
+    const password = document.getElementById("devPassword").value;
+    
+    if (!email || !password) {
+        document.getElementById("loginErrorMsg").innerHTML = "Please enter email and password";
+        return;
+    }
+    
+    document.getElementById("loginErrorMsg").innerHTML = "";
+    
+    auth.signInWithEmailAndPassword(email, password)
+        .then(async (userCredential) => {
+            const userEmail = userCredential.user.email;
+            
+            await loadAuthorizedDevelopers();
+            
+            if (!isAuthorized(userEmail)) {
+                document.getElementById("loginErrorMsg").innerHTML = "❌ Access Denied. You are not authorized to use the Developer Console.";
+                auth.signOut();
+                return;
+            }
+            
+            currentDeveloperEmail = userEmail;
+            document.getElementById("loginOverlay").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
+            document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
+            refreshOrdersList();
+            renderKitchenMenuButtons();
+        })
+        .catch((error) => {
+            let errorMsg = "Login failed: ";
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    errorMsg = "Invalid email or password";
+                    break;
+                case 'auth/wrong-password':
+                    errorMsg = "Invalid email or password";
+                    break;
+                case 'auth/invalid-email':
+                    errorMsg = "Invalid email format";
+                    break;
+                case 'auth/too-many-requests':
+                    errorMsg = "Too many failed attempts. Try again later";
+                    break;
+                default:
+                    errorMsg = error.message;
+            }
+            document.getElementById("loginErrorMsg").innerHTML = errorMsg;
+        });
+}
+
+function logout() {
+    if(confirm("Are you sure you want to logout?")) {
+        auth.signOut().then(() => {
+            document.getElementById("mainContent").style.display = "none";
+            document.getElementById("loginOverlay").style.display = "flex";
+            document.getElementById("devEmail").value = "";
+            document.getElementById("devPassword").value = "";
+            document.getElementById("loginErrorMsg").innerHTML = "";
+        });
+    }
+}
+
+// ============ ADD NEW USER ============
+async function createNewUser() {
+    const email = document.getElementById("newUserEmail").value.trim();
+    const password = document.getElementById("newUserPassword").value;
+    const confirmPassword = document.getElementById("newUserConfirmPassword").value;
+    const msgDiv = document.getElementById("addUserMsg");
+    
+    if (!email || !password) {
+        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Please enter email and password</span>";
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Passwords do not match</span>";
+        return;
+    }
+    
+    if (password.length < 6) {
+        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Password must be at least 6 characters</span>";
+        return;
+    }
+    
+    msgDiv.innerHTML = "<span style='color:#00d4ff'>⏳ Creating account...</span>";
+    
+    try {
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        msgDiv.innerHTML = `<span style='color:#10b981'>✅ Account created successfully for ${email}</span>`;
+        document.getElementById("newUserEmail").value = "";
+        document.getElementById("newUserPassword").value = "";
+        document.getElementById("newUserConfirmPassword").value = "";
+        setTimeout(() => msgDiv.innerHTML = "", 3000);
+    } catch (error) {
+        let errorMsg = "Failed: ";
+        switch (error.code) {
+            case 'auth/email-already-in-use':
+                errorMsg = "Email already in use";
+                break;
+            case 'auth/invalid-email':
+                errorMsg = "Invalid email format";
+                break;
+            default:
+                errorMsg = error.message;
+        }
+        msgDiv.innerHTML = `<span style='color:#dc2626'>❌ ${errorMsg}</span>`;
+    }
+}
+
+// ============ RESET USER PASSWORD ============
+async function sendUserPasswordReset() {
+    const email = document.getElementById("resetUserEmail").value.trim();
+    const msgDiv = document.getElementById("resetUserMsg");
+    
+    if (!email) {
+        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Please enter user email</span>";
+        return;
+    }
+    
+    msgDiv.innerHTML = "<span style='color:#00d4ff'>⏳ Sending reset email...</span>";
+    
+    try {
+        await auth.sendPasswordResetEmail(email);
+        msgDiv.innerHTML = `<span style='color:#10b981'>✅ Password reset email sent to ${email}</span>`;
+        document.getElementById("resetUserEmail").value = "";
+        setTimeout(() => msgDiv.innerHTML = "", 3000);
+    } catch (error) {
+        let errorMsg = "Failed: ";
+        switch (error.code) {
+            case 'auth/user-not-found':
+                errorMsg = "No account found with this email";
+                break;
+            default:
+                errorMsg = error.message;
+        }
+        msgDiv.innerHTML = `<span style='color:#dc2626'>❌ ${errorMsg}</span>`;
+    }
+}
+
+// ============ RESET KITCHEN PASSWORD ============
+async function resetKitchenPassword() {
+    const kitchen = document.getElementById("kitchenSelect").value;
+    const email = document.getElementById("kitchenChefEmail").value.trim();
+    const msgDiv = document.getElementById("resetKitchenMsg");
+    
+    if (!kitchen) {
+        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Please select a kitchen</span>";
+        return;
+    }
+    
+    if (!email) {
+        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Please enter chef's email</span>";
+        return;
+    }
+    
+    msgDiv.innerHTML = "<span style='color:#00d4ff'>⏳ Sending password reset...</span>";
+    
+    try {
+        await auth.sendPasswordResetEmail(email);
+        msgDiv.innerHTML = `<span style='color:#10b981'>✅ Password reset email sent to ${email} for ${kitchen}</span>`;
+        document.getElementById("kitchenChefEmail").value = "";
+        setTimeout(() => msgDiv.innerHTML = "", 3000);
+    } catch (error) {
+        let errorMsg = "Failed: ";
+        switch (error.code) {
+            case 'auth/user-not-found':
+                errorMsg = "No account found with this email";
+                break;
+            default:
+                errorMsg = error.message;
+        }
+        msgDiv.innerHTML = `<span style='color:#dc2626'>❌ ${errorMsg}</span>`;
+    }
+}
+
+// ==================== REST OF FUNCTIONS (Orders, JSON Generator, etc.) ====================
 const KITCHEN_JSON_FILES = {
     "Hot Kitchen": "hot-kitchen.json",
     "Cold Kitchen": "cold-kitchen.json",
@@ -740,7 +1107,6 @@ let currentOrderStatus = "pending";
 let currentOrderDocId = null;
 let currentOrderData = null;
 
-// ==================== FIRESTORE ORDERS ====================
 function getRequestStatus(items) {
     if(!items || items.length === 0) return "pending";
     let allProcessed = true;
@@ -757,43 +1123,6 @@ function getRequestStatus(items) {
         return "accepted";
     }
     return "pending";
-}
-
-function updateEditButtonsBasedOnStatus() {
-    const isPending = (currentOrderStatus === "pending");
-    const saveBtn = document.getElementById("saveOrderBtn");
-    const deleteBtn = document.getElementById("deleteOrderBtn");
-    const restoreBtn = document.getElementById("restoreOrderBtn");
-    
-    if (!isPending) {
-        if (saveBtn) saveBtn.classList.add("btn-disabled");
-        if (deleteBtn) deleteBtn.classList.add("btn-disabled");
-        if (restoreBtn) restoreBtn.style.display = "inline-block";
-        // Disable kitchen menu buttons visually
-        document.querySelectorAll(".kitchen-menu-btn").forEach(btn => {
-            if (!btn.classList.contains("disabled")) {
-                btn.style.pointerEvents = "none";
-                btn.style.opacity = "0.5";
-            }
-        });
-        const warningBox = document.getElementById("orderStatusWarning");
-        if (warningBox) {
-            warningBox.style.display = "block";
-            document.getElementById("warningStatusText").innerText = currentOrderStatus.toUpperCase();
-        }
-    } else {
-        if (saveBtn) saveBtn.classList.remove("btn-disabled");
-        if (deleteBtn) deleteBtn.classList.remove("btn-disabled");
-        if (restoreBtn) restoreBtn.style.display = "none";
-        document.querySelectorAll(".kitchen-menu-btn").forEach(btn => {
-            if (!btn.classList.contains("disabled")) {
-                btn.style.pointerEvents = "auto";
-                btn.style.opacity = "1";
-            }
-        });
-        const warningBox = document.getElementById("orderStatusWarning");
-        if (warningBox) warningBox.style.display = "none";
-    }
 }
 
 async function refreshOrdersList() {
@@ -821,7 +1150,6 @@ async function listAllOrders() {
             else if (status === "rejected") { statusClass = "status-rejected"; statusText = "Rejected"; }
             else if (status === "accepted") { statusClass = "status-accepted"; statusText = "Accepted"; }
             
-            // Clean and clear order display
             container.innerHTML += `
                 <div class="doc-item" onclick="loadOrderById('${doc.id}')">
                     <div class="doc-item-info">
@@ -875,6 +1203,42 @@ async function fetchOrderDocument() {
     } catch(e) { showToast("Error: " + e.message, true); }
 }
 
+function updateEditButtonsBasedOnStatus() {
+    const isPending = (currentOrderStatus === "pending");
+    const saveBtn = document.getElementById("saveOrderBtn");
+    const deleteBtn = document.getElementById("deleteOrderBtn");
+    const restoreBtn = document.getElementById("restoreOrderBtn");
+    
+    if (!isPending) {
+        if (saveBtn) saveBtn.classList.add("btn-disabled");
+        if (deleteBtn) deleteBtn.classList.add("btn-disabled");
+        if (restoreBtn) restoreBtn.style.display = "inline-block";
+        document.querySelectorAll(".kitchen-menu-btn").forEach(btn => {
+            if (!btn.classList.contains("disabled")) {
+                btn.style.pointerEvents = "none";
+                btn.style.opacity = "0.5";
+            }
+        });
+        const warningBox = document.getElementById("orderStatusWarning");
+        if (warningBox) {
+            warningBox.style.display = "block";
+            document.getElementById("warningStatusText").innerText = currentOrderStatus.toUpperCase();
+        }
+    } else {
+        if (saveBtn) saveBtn.classList.remove("btn-disabled");
+        if (deleteBtn) deleteBtn.classList.remove("btn-disabled");
+        if (restoreBtn) restoreBtn.style.display = "none";
+        document.querySelectorAll(".kitchen-menu-btn").forEach(btn => {
+            if (!btn.classList.contains("disabled")) {
+                btn.style.pointerEvents = "auto";
+                btn.style.opacity = "1";
+            }
+        });
+        const warningBox = document.getElementById("orderStatusWarning");
+        if (warningBox) warningBox.style.display = "none";
+    }
+}
+
 async function saveOrderDocument() {
     if (!currentOrderDocId) { showToast("No document loaded", true); return; }
     if (currentOrderStatus !== "pending") {
@@ -925,9 +1289,9 @@ async function deleteOrderById(docId) {
     }
 }
 
-// ============ KITCHEN MENU BUTTONS ============
 function renderKitchenMenuButtons() {
     const container = document.getElementById("kitchenMenuButtons");
+    if (!container) return;
     container.innerHTML = "";
     
     Object.keys(KITCHEN_JSON_FILES).forEach(kitchen => {
@@ -1008,6 +1372,7 @@ async function loadKitchenMenuJSON(kitchen) {
 
 function renderMenuItemsList() {
     const container = document.getElementById("menuItemsList");
+    if (!container) return;
     if (!currentMenuItems || currentMenuItems.length === 0) {
         container.innerHTML = '<div style="padding: 20px; text-align: center; color: #9ca3af;">No items found. Create the JSON file in the "items" folder.</div>';
         return;
@@ -1074,7 +1439,6 @@ function addMenuItemToOrder(index) {
     showToast(`✅ Added "${menuItem.name}" (x${quantity}) to order. Click SAVE to persist.`);
 }
 
-// ============ RESTORE TO PENDING FUNCTION ============
 async function restoreOrderToPending(docId) {
     if (!confirm(`Restore order to PENDING status?\n\nThis will reset all approved/rejected items back to pending. You can then edit, add, or remove items.\n\nContinue?`)) return;
     
@@ -1305,9 +1669,12 @@ function switchTab(tab) {
         document.querySelectorAll('.tab-btn')[0].classList.add('active');
         document.getElementById('ordersPanel').classList.add('active-panel');
         refreshOrdersList();
-    } else {
+    } else if (tab === 'generator') {
         document.querySelectorAll('.tab-btn')[1].classList.add('active');
         document.getElementById('generatorPanel').classList.add('active-panel');
+    } else {
+        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        document.getElementById('usersPanel').classList.add('active-panel');
     }
 }
 
@@ -1344,8 +1711,8 @@ codeInput?.addEventListener('keypress', handleEnter);
 nameInput?.addEventListener('keypress', handleEnter);
 unitInput?.addEventListener('keypress', handleEnter);
 
-// Initial load
-refreshOrdersList();
+// Load authorized developers on startup
+loadAuthorizedDevelopers();
 </script>
 </body>
 </html>
