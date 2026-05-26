@@ -5,7 +5,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
+<!-- firebase-config.js is expected to initialize firebase; we'll provide a robust inline fallback -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Developer Console - Complete Control</title>
 <style>
@@ -81,6 +81,10 @@ body {
 .login-box h2 {
     color: #00d4ff;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .login-box input {
@@ -549,7 +553,6 @@ hr {
     background: #334155;
 }
 
-/* JSON Generator Items List */
 .items-list {
     background: #0a0e27;
     border-radius: 12px;
@@ -617,14 +620,14 @@ hr {
 </head>
 <body>
 
-<!-- LOGIN MODAL -->
+<!-- LOGIN MODAL (Icon restored) -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-box">
         <h2>🔐 Developer Access</h2>
         <div class="info-msg" style="margin-bottom: 15px;">⚠️ Authorized developers only</div>
         <input type="email" id="devEmail" placeholder="Email Address" autocomplete="email">
         <input type="password" id="devPassword" placeholder="Password" autocomplete="current-password">
-        <button onclick="loginWithFirebase()">Login</button>
+        <button onclick="loginWithFirebase()">🔓 Login to Console</button>
         <div id="loginErrorMsg" class="error-msg"></div>
     </div>
 </div>
@@ -659,48 +662,28 @@ hr {
         <div id="ordersPanel" class="panel active-panel">
             <div class="panel-header">
                 <h2>📄 Edit Firestore Documents (kitchen_requests)</h2>
-                <div>
-                    <button class="btn btn-primary" onclick="fetchOrderDocument()">🔍 Fetch by ID</button>
-                </div>
+                <div><button class="btn btn-primary" onclick="fetchOrderDocument()">🔍 Fetch by ID</button></div>
             </div>
             <div class="form-group">
-                <div class="form-row">
-                    <input type="text" id="orderDocId" class="form-input" placeholder="Enter Firestore Document ID...">
-                </div>
+                <div class="form-row"><input type="text" id="orderDocId" class="form-input" placeholder="Enter Firestore Document ID..."></div>
                 <div id="orderViewer" style="display:none;">
-                    <div id="orderStatusWarning" class="warning-box" style="display:none;">
-                        ⚠️ This order is <strong id="warningStatusText">COMPLETED</strong>. You MUST click <strong>"Restore to Pending"</strong> before making any edits or adding items.
-                    </div>
+                    <div id="orderStatusWarning" class="warning-box" style="display:none;">⚠️ This order is <strong id="warningStatusText">COMPLETED</strong>. You MUST click <strong>"Restore to Pending"</strong> before making any edits or adding items.</div>
                     <textarea id="orderJsonEditor" rows="10" placeholder="Document JSON will appear here..."></textarea>
                     <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
                         <button class="btn btn-success" id="saveOrderBtn" onclick="saveOrderDocument()">💾 SAVE to Firestore</button>
                         <button class="btn btn-danger" id="deleteOrderBtn" onclick="deleteOrderDocument()">🗑️ DELETE Document</button>
                         <button class="btn btn-restore" id="restoreOrderBtn" onclick="restoreSingleToPending()">🔄 Restore to Pending</button>
                     </div>
-                    
-                    <!-- MENU SELECTOR -->
                     <div class="menu-selector">
-                        <div class="menu-title">
-                            📦 ADD ITEM FROM KITCHEN MENU (JSON Files)
-                            <span style="font-size: 0.7rem;">📁 items/ folder</span>
-                        </div>
+                        <div class="menu-title">📦 ADD ITEM FROM KITCHEN MENU (JSON Files) <span style="font-size: 0.7rem;">📁 items/ folder</span></div>
                         <div class="kitchen-menu-buttons" id="kitchenMenuButtons"></div>
                         <div id="selectedKitchenName" style="margin-bottom: 10px; font-size: 0.75rem; color: #00d4ff;"></div>
-                        <div id="menuItemsList" class="menu-items-list">
-                            <div style="padding: 20px; text-align: center; color: #9ca3af;">Click a kitchen button above to load menu items</div>
-                        </div>
-                        <div class="note" style="margin-top: 10px;">💡 Only the order's kitchen is enabled. Click the enabled kitchen button to load items, then click on any item to add it to the order.</div>
+                        <div id="menuItemsList" class="menu-items-list"><div style="padding:20px;text-align:center;">Click a kitchen button to load items</div></div>
+                        <div class="note">💡 Only the order's kitchen is enabled. Click the enabled kitchen button to load items, then click on any item to add it to the order.</div>
                     </div>
                 </div>
-                
-                <!-- Orders List -->
                 <div class="doc-list">
-                    <div class="doc-list-header">
-                        <span class="doc-list-title">📋 RECENT ORDERS (click to edit)</span>
-                        <div class="doc-list-header-actions">
-                            <button class="btn btn-refresh btn-icon" onclick="refreshOrdersList()">⟳ Refresh</button>
-                        </div>
-                    </div>
+                    <div class="doc-list-header"><span class="doc-list-title">📋 RECENT ORDERS (click to edit)</span><div class="doc-list-header-actions"><button class="btn btn-refresh btn-icon" onclick="refreshOrdersList()">⟳ Refresh</button></div></div>
                     <div id="ordersList" class="doc-items-container"></div>
                 </div>
             </div>
@@ -708,1010 +691,149 @@ hr {
 
         <!-- PANEL 2: JSON GENERATOR -->
         <div id="generatorPanel" class="panel">
-            <div class="panel-header">
-                <h2>📦 Generate Menu JSON (One Line + Trailing Commas)</h2>
-                <div>
-                    <button class="btn btn-primary" onclick="copyJSON()">📋 Copy JSON</button>
-                    <button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="row">
-                    <div class="field">
-                        <label>📌 CODE *</label>
-                        <input type="text" id="code" placeholder="e.g., 161005">
-                    </div>
-                    <div class="field">
-                        <label>🏷️ NAME (EN) *</label>
-                        <input type="text" id="name" placeholder="e.g., Black Pepper Corn">
-                    </div>
-                    <div class="field">
-                        <label>🌙 NAME (AR)</label>
-                        <input type="text" id="nameAr" placeholder="e.g., حب الفلفل الأسود">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="field">
-                        <label>📦 UNIT *</label>
-                        <input type="text" id="unit" placeholder="e.g., kg, pcs, 750g pkt">
-                    </div>
-                    <div class="field">
-                        <label>🔢 MAX LIMIT *</label>
-                        <input type="number" id="maxLimit" value="2" step="0.5">
-                    </div>
-                    <div class="field">
-                        <label>⚡ STEP *</label>
-                        <input type="number" id="step" value="1" step="0.5">
-                    </div>
-                    <div class="field">
-                        <label>💰 PRICE (AVE) *</label>
-                        <input type="number" id="price" value="45.50" step="0.01">
-                    </div>
-                </div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
-                    <button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button>
-                    <button class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button>
-                    <button class="btn btn-warning" onclick="addSample()">📋 Add Sample</button>
-                    <button class="btn btn-danger" onclick="clearAllItems()">Clear All Items</button>
-                </div>
-
-                <hr>
-
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <strong>📋 ITEMS LIST</strong>
-                    <span class="counter" id="itemCount">0 items</span>
-                </div>
-                <div id="itemsList" class="items-list">
-                    <div style="padding: 20px; text-align: center; color: #9ca3af;">No items added yet</div>
-                </div>
-
-                <hr>
-
-                <div style="margin-top: 15px;">
-                    <strong>📄 JSON OUTPUT</strong>
-                    <textarea id="jsonOutput" rows="10" readonly placeholder="JSON will appear here..." style="margin-top: 10px;"></textarea>
-                </div>
-                <div class="note">
-                    ⚡ Format: Each item on one line with trailing comma (except last). Ready to copy-paste into /items/ folder.
-                </div>
-            </div>
+            <div class="panel-header"><h2>📦 Generate Menu JSON (One Line + Trailing Commas)</h2><div><button class="btn btn-primary" onclick="copyJSON()">📋 Copy JSON</button><button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button></div></div>
+            <div class="form-group"><div class="row"><div class="field"><label>📌 CODE *</label><input type="text" id="code"></div><div class="field"><label>🏷️ NAME (EN) *</label><input type="text" id="name"></div><div class="field"><label>🌙 NAME (AR)</label><input type="text" id="nameAr"></div></div><div class="row"><div class="field"><label>📦 UNIT *</label><input type="text" id="unit"></div><div class="field"><label>🔢 MAX LIMIT *</label><input type="number" id="maxLimit" value="2" step="0.5"></div><div class="field"><label>⚡ STEP *</label><input type="number" id="step" value="1" step="0.5"></div><div class="field"><label>💰 PRICE (AVE) *</label><input type="number" id="price" value="45.50" step="0.01"></div></div><div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"><button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button><button class="btn btn-secondary" onclick="clearForm()">🗑️ Clear Form</button><button class="btn btn-warning" onclick="addSample()">📋 Add Sample</button><button class="btn btn-danger" onclick="clearAllItems()">Clear All Items</button></div><hr><div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><strong>📋 ITEMS LIST</strong><span class="counter" id="itemCount">0 items</span></div><div id="itemsList" class="items-list"><div style="padding:20px;text-align:center;">No items added yet</div></div><hr><div style="margin-top:15px;"><strong>📄 JSON OUTPUT</strong><textarea id="jsonOutput" rows="10" readonly placeholder="JSON will appear here..." style="margin-top:10px;"></textarea></div><div class="note">⚡ Format: Each item on one line with trailing comma (except last). Ready to copy-paste into /items/ folder.</div></div>
         </div>
 
         <!-- PANEL 3: USER MANAGEMENT -->
         <div id="usersPanel" class="panel">
-            <div class="panel-header">
-                <h2>👥 User Management - Add Users & Reset Passwords</h2>
-            </div>
-            <div class="form-group">
-                <!-- Add New User -->
-                <div class="user-card">
-                    <h3>➕ Add New User</h3>
-                    <div class="form-row">
-                        <input type="email" id="newUserEmail" class="form-input" placeholder="Email Address">
-                        <input type="password" id="newUserPassword" class="form-input" placeholder="Password">
-                        <input type="password" id="newUserConfirmPassword" class="form-input" placeholder="Confirm Password">
-                        <button class="btn btn-success" onclick="createNewUser()">Create User</button>
-                    </div>
-                    <div id="addUserMsg" class="success-msg" style="margin-top: 10px;"></div>
-                </div>
-
-                <!-- Reset User Password -->
-                <div class="user-card">
-                    <h3>🔑 Reset Any User Password</h3>
-                    <div class="form-row">
-                        <input type="email" id="resetUserEmail" class="form-input" placeholder="User Email Address">
-                        <button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset Email</button>
-                    </div>
-                    <div id="resetUserMsg" class="success-msg" style="margin-top: 10px;"></div>
-                </div>
-
-                <!-- Reset Kitchen/Chef Password -->
-                <div class="user-card">
-                    <h3>🍽️ Reset Kitchen / Chef Password</h3>
-                    <div class="form-row">
-                        <select id="kitchenSelect" class="form-input">
-                            <option value="">Select Kitchen</option>
-                            <option value="Hot Kitchen">🔥 Hot Kitchen</option>
-                            <option value="Cold Kitchen">❄️ Cold Kitchen</option>
-                            <option value="Pastry / Bakery">🍰 Pastry / Bakery</option>
-                            <option value="Butchery">🥩 Butchery</option>
-                            <option value="Beach House">🏖️ Beach House</option>
-                            <option value="Nihon Kitchen">🍜 Nihon Kitchen</option>
-                            <option value="Staff Kitchen">👥 Staff Kitchen</option>
-                        </select>
-                        <input type="email" id="kitchenChefEmail" class="form-input" placeholder="Chef's Email Address">
-                        <button class="btn btn-restore" onclick="resetKitchenPassword()">Reset Kitchen Password</button>
-                    </div>
-                    <div id="resetKitchenMsg" class="success-msg" style="margin-top: 10px;"></div>
-                </div>
-
-                <!-- Authorized Developers List -->
-                <div class="user-card">
-                    <h3>✅ Authorized Developers (Can access this console)</h3>
-                    <div id="authorizedDevsList" style="margin-bottom: 15px;"></div>
-                    <div class="form-row">
-                        <input type="email" id="newDevEmail" class="form-input" placeholder="New Developer Email">
-                        <button class="btn btn-primary" onclick="addAuthorizedDeveloper()">➕ Add to Authorized List</button>
-                    </div>
-                    <div class="note" style="margin-top: 10px;">
-                        💡 Only emails in this list can login to the Developer Console. Add their email here, then create their account using "Add New User" above.
-                    </div>
-                </div>
-            </div>
+            <div class="panel-header"><h2>👥 User Management - Add Users & Reset Passwords</h2></div>
+            <div class="form-group"><div class="user-card"><h3>➕ Add New User</h3><div class="form-row"><input type="email" id="newUserEmail" class="form-input" placeholder="Email Address"><input type="password" id="newUserPassword" class="form-input" placeholder="Password"><input type="password" id="newUserConfirmPassword" class="form-input" placeholder="Confirm Password"><button class="btn btn-success" onclick="createNewUser()">Create User</button></div><div id="addUserMsg" class="success-msg"></div></div><div class="user-card"><h3>🔑 Reset Any User Password</h3><div class="form-row"><input type="email" id="resetUserEmail" class="form-input" placeholder="User Email Address"><button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset Email</button></div><div id="resetUserMsg" class="success-msg"></div></div><div class="user-card"><h3>🍽️ Reset Kitchen / Chef Password</h3><div class="form-row"><select id="kitchenSelect" class="form-input"><option value="">Select Kitchen</option><option value="Hot Kitchen">🔥 Hot Kitchen</option><option value="Cold Kitchen">❄️ Cold Kitchen</option><option value="Pastry / Bakery">🍰 Pastry / Bakery</option><option value="Butchery">🥩 Butchery</option><option value="Beach House">🏖️ Beach House</option><option value="Nihon Kitchen">🍜 Nihon Kitchen</option><option value="Staff Kitchen">👥 Staff Kitchen</option></select><input type="email" id="kitchenChefEmail" class="form-input" placeholder="Chef's Email Address"><button class="btn btn-restore" onclick="resetKitchenPassword()">Reset Kitchen Password</button></div><div id="resetKitchenMsg" class="success-msg"></div></div><div class="user-card"><h3>✅ Authorized Developers (Can access this console)</h3><div id="authorizedDevsList"></div><div class="form-row"><input type="email" id="newDevEmail" class="form-input" placeholder="New Developer Email"><button class="btn btn-primary" onclick="addAuthorizedDeveloper()">➕ Add to Authorized List</button></div><div class="note">💡 Only emails in this list can login. Add email, then create account using "Add New User".</div></div></div>
         </div>
     </div>
 </div>
 
 <script>
-// ==================== AUTHORIZED DEVELOPER EMAILS ====================
-// Store authorized developers in Firestore for dynamic management
+// FIREBASE CONFIGURATION (REQUIRED for login to work)
+// IMPORTANT: Replace this with your actual Firebase config. For demo, we provide a fallback that will error gracefully if not set.
+// The developer must place their valid config below or in external firebase-config.js
+window.firebaseConfig = window.firebaseConfig || {
+    apiKey: "AIzaSyDummyKeyReplaceWithYourOwn",
+    authDomain: "your-project.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abc123"
+};
+
+// Initialize Firebase if not already initialized
+if (!firebase.apps.length) {
+    try {
+        firebase.initializeApp(window.firebaseConfig);
+    } catch(e) { console.warn("Init error", e); }
+}
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// AUTHORIZED DEVELOPERS
 let AUTHORIZED_DEVELOPERS = ["dev@code.com"];
 
-// Load authorized developers from Firestore
 async function loadAuthorizedDevelopers() {
     try {
         const doc = await db.collection("settings").doc("authorized_devs").get();
-        if (doc.exists && doc.data().emails) {
-            AUTHORIZED_DEVELOPERS = doc.data().emails;
-        } else {
-            // Initialize with default
-            await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
-        }
+        if (doc.exists && doc.data().emails) AUTHORIZED_DEVELOPERS = doc.data().emails;
+        else await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
         displayAuthorizedDevelopers();
-    } catch(e) {
-        console.error("Error loading authorized devs:", e);
-    }
+    } catch(e) { console.error(e); }
 }
-
 function displayAuthorizedDevelopers() {
     const container = document.getElementById("authorizedDevsList");
-    if (!container) return;
-    container.innerHTML = AUTHORIZED_DEVELOPERS.map(email => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; margin:5px 0; background:#1a1a2e; border-radius:8px;">
-            <span>📧 ${email}</span>
-            <button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${email}')" style="padding:4px 12px;">Remove</button>
-        </div>
-    `).join('');
+    if(container) container.innerHTML = AUTHORIZED_DEVELOPERS.map(email => `<div style="display:flex; justify-content:space-between; padding:8px; margin:5px 0; background:#1a1a2e; border-radius:8px;"><span>📧 ${email}</span><button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${email}')" style="padding:4px 12px;">Remove</button></div>`).join('');
 }
-
 async function addAuthorizedDeveloper() {
     const email = document.getElementById("newDevEmail").value.trim();
-    if (!email) {
-        showToast("Please enter email", true);
-        return;
-    }
-    
-    if (!AUTHORIZED_DEVELOPERS.includes(email)) {
-        AUTHORIZED_DEVELOPERS.push(email);
-        await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
-        displayAuthorizedDevelopers();
-        showToast(`✅ Added ${email} to authorized developers`);
-        document.getElementById("newDevEmail").value = "";
-    } else {
-        showToast("Email already in list", true);
-    }
+    if(!email || AUTHORIZED_DEVELOPERS.includes(email)) { showToast("Invalid or duplicate", true); return; }
+    AUTHORIZED_DEVELOPERS.push(email);
+    await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
+    displayAuthorizedDevelopers();
+    showToast(`✅ Added ${email}`);
+    document.getElementById("newDevEmail").value = "";
 }
-
 async function removeAuthorizedDeveloper(email) {
-    if (email === "dev@code.com") {
-        showToast("Cannot remove the master developer", true);
-        return;
-    }
+    if(email === "dev@code.com") { showToast("Cannot remove master dev", true); return; }
     AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email);
     await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
     displayAuthorizedDevelopers();
-    showToast(`🗑️ Removed ${email}`);
+    showToast(`Removed ${email}`);
 }
+function isAuthorized(email) { return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase()); }
 
-function isAuthorized(email) {
-    return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase());
-}
-
-// ==================== FIREBASE AUTH ====================
-let currentDeveloperEmail = "";
-
-function loginWithFirebase() {
+// LOGIN (with proper credential check and authorization)
+window.loginWithFirebase = async function() {
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
-    
-    if (!email || !password) {
-        document.getElementById("loginErrorMsg").innerHTML = "Please enter email and password";
-        return;
-    }
-    
-    document.getElementById("loginErrorMsg").innerHTML = "";
-    
-    auth.signInWithEmailAndPassword(email, password)
-        .then(async (userCredential) => {
-            const userEmail = userCredential.user.email;
-            
-            await loadAuthorizedDevelopers();
-            
-            if (!isAuthorized(userEmail)) {
-                document.getElementById("loginErrorMsg").innerHTML = "❌ Access Denied. You are not authorized to use the Developer Console.";
-                auth.signOut();
-                return;
-            }
-            
-            currentDeveloperEmail = userEmail;
-            document.getElementById("loginOverlay").style.display = "none";
-            document.getElementById("mainContent").style.display = "block";
-            document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
-            refreshOrdersList();
-            renderKitchenMenuButtons();
-        })
-        .catch((error) => {
-            let errorMsg = "Login failed: ";
-            switch (error.code) {
-                case 'auth/user-not-found':
-                    errorMsg = "Invalid email or password";
-                    break;
-                case 'auth/wrong-password':
-                    errorMsg = "Invalid email or password";
-                    break;
-                case 'auth/invalid-email':
-                    errorMsg = "Invalid email format";
-                    break;
-                case 'auth/too-many-requests':
-                    errorMsg = "Too many failed attempts. Try again later";
-                    break;
-                default:
-                    errorMsg = error.message;
-            }
-            document.getElementById("loginErrorMsg").innerHTML = errorMsg;
-        });
-}
-
-function logout() {
-    if(confirm("Are you sure you want to logout?")) {
-        auth.signOut().then(() => {
-            document.getElementById("mainContent").style.display = "none";
-            document.getElementById("loginOverlay").style.display = "flex";
-            document.getElementById("devEmail").value = "";
-            document.getElementById("devPassword").value = "";
-            document.getElementById("loginErrorMsg").innerHTML = "";
-        });
-    }
-}
-
-// ============ ADD NEW USER ============
-async function createNewUser() {
-    const email = document.getElementById("newUserEmail").value.trim();
-    const password = document.getElementById("newUserPassword").value;
-    const confirmPassword = document.getElementById("newUserConfirmPassword").value;
-    const msgDiv = document.getElementById("addUserMsg");
-    
-    if (!email || !password) {
-        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Please enter email and password</span>";
-        return;
-    }
-    
-    if (password !== confirmPassword) {
-        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Passwords do not match</span>";
-        return;
-    }
-    
-    if (password.length < 6) {
-        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Password must be at least 6 characters</span>";
-        return;
-    }
-    
-    msgDiv.innerHTML = "<span style='color:#00d4ff'>⏳ Creating account...</span>";
-    
+    const errorDiv = document.getElementById("loginErrorMsg");
+    if(!email || !password) { errorDiv.innerHTML = "Please enter email and password"; return; }
+    errorDiv.innerHTML = "";
     try {
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        msgDiv.innerHTML = `<span style='color:#10b981'>✅ Account created successfully for ${email}</span>`;
-        document.getElementById("newUserEmail").value = "";
-        document.getElementById("newUserPassword").value = "";
-        document.getElementById("newUserConfirmPassword").value = "";
-        setTimeout(() => msgDiv.innerHTML = "", 3000);
-    } catch (error) {
-        let errorMsg = "Failed: ";
-        switch (error.code) {
-            case 'auth/email-already-in-use':
-                errorMsg = "Email already in use";
-                break;
-            case 'auth/invalid-email':
-                errorMsg = "Invalid email format";
-                break;
-            default:
-                errorMsg = error.message;
+        const userCred = await auth.signInWithEmailAndPassword(email, password);
+        await loadAuthorizedDevelopers();
+        if(!isAuthorized(userCred.user.email)) {
+            errorDiv.innerHTML = "❌ Access Denied. You are not authorized to use the Developer Console.";
+            await auth.signOut();
+            return;
         }
-        msgDiv.innerHTML = `<span style='color:#dc2626'>❌ ${errorMsg}</span>`;
+        currentDeveloperEmail = userCred.user.email;
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+        document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
+        refreshOrdersList();
+        renderKitchenMenuButtons();
+    } catch(error) {
+        let msg = "Login failed: ";
+        if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') msg = "Invalid email or password";
+        else if(error.code === 'auth/invalid-email') msg = "Invalid email format";
+        else msg = error.message;
+        errorDiv.innerHTML = msg;
     }
-}
-
-// ============ RESET USER PASSWORD ============
-async function sendUserPasswordReset() {
-    const email = document.getElementById("resetUserEmail").value.trim();
-    const msgDiv = document.getElementById("resetUserMsg");
-    
-    if (!email) {
-        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Please enter user email</span>";
-        return;
-    }
-    
-    msgDiv.innerHTML = "<span style='color:#00d4ff'>⏳ Sending reset email...</span>";
-    
-    try {
-        await auth.sendPasswordResetEmail(email);
-        msgDiv.innerHTML = `<span style='color:#10b981'>✅ Password reset email sent to ${email}</span>`;
-        document.getElementById("resetUserEmail").value = "";
-        setTimeout(() => msgDiv.innerHTML = "", 3000);
-    } catch (error) {
-        let errorMsg = "Failed: ";
-        switch (error.code) {
-            case 'auth/user-not-found':
-                errorMsg = "No account found with this email";
-                break;
-            default:
-                errorMsg = error.message;
-        }
-        msgDiv.innerHTML = `<span style='color:#dc2626'>❌ ${errorMsg}</span>`;
-    }
-}
-
-// ============ RESET KITCHEN PASSWORD ============
-async function resetKitchenPassword() {
-    const kitchen = document.getElementById("kitchenSelect").value;
-    const email = document.getElementById("kitchenChefEmail").value.trim();
-    const msgDiv = document.getElementById("resetKitchenMsg");
-    
-    if (!kitchen) {
-        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Please select a kitchen</span>";
-        return;
-    }
-    
-    if (!email) {
-        msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Please enter chef's email</span>";
-        return;
-    }
-    
-    msgDiv.innerHTML = "<span style='color:#00d4ff'>⏳ Sending password reset...</span>";
-    
-    try {
-        await auth.sendPasswordResetEmail(email);
-        msgDiv.innerHTML = `<span style='color:#10b981'>✅ Password reset email sent to ${email} for ${kitchen}</span>`;
-        document.getElementById("kitchenChefEmail").value = "";
-        setTimeout(() => msgDiv.innerHTML = "", 3000);
-    } catch (error) {
-        let errorMsg = "Failed: ";
-        switch (error.code) {
-            case 'auth/user-not-found':
-                errorMsg = "No account found with this email";
-                break;
-            default:
-                errorMsg = error.message;
-        }
-        msgDiv.innerHTML = `<span style='color:#dc2626'>❌ ${errorMsg}</span>`;
-    }
-}
-
-// ==================== REST OF FUNCTIONS (Orders, JSON Generator, etc.) ====================
-const KITCHEN_JSON_FILES = {
-    "Hot Kitchen": "hot-kitchen.json",
-    "Cold Kitchen": "cold-kitchen.json",
-    "Pastry / Bakery": "pastry.json",
-    "Butchery": "butchery.json",
-    "Beach House": "beach-house.json",
-    "Nihon Kitchen": "nihon-kitchen.json",
-    "Staff Kitchen": "staff-kitchen.json"
 };
 
+function logout() { if(confirm("Logout?")) auth.signOut().then(()=>{ location.reload(); }); }
+
+// Global vars
+let currentDeveloperEmail = "";
+let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
+let currentMenuItems = [], currentSelectedKitchen = "";
+const KITCHEN_JSON_FILES = { "Hot Kitchen":"hot-kitchen.json","Cold Kitchen":"cold-kitchen.json","Pastry / Bakery":"pastry.json","Butchery":"butchery.json","Beach House":"beach-house.json","Nihon Kitchen":"nihon-kitchen.json","Staff Kitchen":"staff-kitchen.json"};
 const JSON_BASE_PATH = "items/";
 
-let currentMenuItems = [];
-let currentSelectedKitchen = "";
-let orderKitchen = "";
-let currentOrderStatus = "pending";
-let currentOrderDocId = null;
-let currentOrderData = null;
+function getRequestStatus(items) { if(!items||!items.length) return "pending"; let all=true,a=0,r=0; items.forEach(i=>{ if(i.status==="approved") a++; else if(i.status==="rejected") r++; else all=false; }); if(items[0]?.completedVia==="accept") return "accepted"; if(all&&a===items.length) return "approved"; if(all&&r===items.length) return "rejected"; return "pending"; }
+async function refreshOrdersList() { await listAllOrders(); }
+async function listAllOrders() { try { const snap=await db.collection("kitchen_requests").orderBy("timestamp","desc").limit(50).get(); const cont=document.getElementById("ordersList"); cont.innerHTML=snap.empty?'<div style="padding:30px;text-align:center;">📭 No orders</div>':''; snap.forEach(doc=>{ const d=doc.data(), st=getRequestStatus(d.items), cls=st==="approved"?"status-approved":st==="rejected"?"status-rejected":st==="accepted"?"status-accepted":"status-pending", txt=st.toUpperCase(); cont.innerHTML+=`<div class="doc-item" onclick="loadOrderById('${doc.id}')"><div class="doc-item-info"><span class="doc-id-badge">🆔 ${doc.id.substring(0,12)}...</span><span class="doc-request-id">📌 ${d.requestId||'N/A'}</span><span class="doc-chef">👨‍🍳 ${d.chefName||'?'}</span><span class="doc-kitchen">🍽️ ${d.section||'?'}</span></div><div><span class="status-badge ${cls}">${txt}</span><div class="doc-actions" style="display:inline-flex;margin-left:10px;"><button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')">🗑️</button><button class="btn btn-restore btn-icon" onclick="event.stopPropagation();restoreOrderToPending('${doc.id}')">🔄</button></div></div></div>`; }); } catch(e){ showToast("Error loading orders",true); } }
+async function loadOrderById(docId) { document.getElementById("orderDocId").value=docId; await fetchOrderDocument(); }
+async function fetchOrderDocument() { const id=document.getElementById("orderDocId").value.trim(); if(!id) return; try { const doc=await db.collection("kitchen_requests").doc(id).get(); if(!doc.exists) { showToast("Not found",true); return; } currentOrderDocId=id; currentOrderData={id:doc.id,...doc.data()}; currentOrderStatus=getRequestStatus(currentOrderData.items); document.getElementById("orderJsonEditor").value=JSON.stringify(currentOrderData,null,2); document.getElementById("orderViewer").style.display="block"; orderKitchen=currentOrderData.section||"Hot Kitchen"; showToast(`Loaded: ${id} | Status: ${currentOrderStatus}`); updateEditButtonsBasedOnStatus(); renderKitchenMenuButtons(); document.getElementById("menuItemsList").innerHTML='<div style="padding:20px;text-align:center;">Click enabled kitchen button</div>'; } catch(e){ showToast("Error:"+e.message,true); } }
+function updateEditButtonsBasedOnStatus() { const pending=(currentOrderStatus==="pending"); const save=document.getElementById("saveOrderBtn"), del=document.getElementById("deleteOrderBtn"), restore=document.getElementById("restoreOrderBtn"); if(save) save.classList.toggle("btn-disabled",!pending); if(del) del.classList.toggle("btn-disabled",!pending); if(restore) restore.style.display=pending?"none":"inline-block"; document.querySelectorAll(".kitchen-menu-btn").forEach(btn=>{ if(!btn.classList.contains("disabled")) { btn.style.pointerEvents=pending?"auto":"none"; btn.style.opacity=pending?"1":"0.5"; } }); const warn=document.getElementById("orderStatusWarning"); if(warn) warn.style.display=pending?"none":"block"; if(warn&&!pending) document.getElementById("warningStatusText").innerText=currentOrderStatus.toUpperCase(); }
+async function saveOrderDocument() { if(!currentOrderDocId||currentOrderStatus!=="pending"){ showToast("Cannot save: Order not pending. Restore first.",true); return; } try{ const newData=JSON.parse(document.getElementById("orderJsonEditor").value); const {id,...update}=newData; await db.collection("kitchen_requests").doc(currentOrderDocId).update(update); currentOrderData=update; showToast("Saved"); refreshOrdersList(); }catch(e){ showToast("Save failed:"+e.message,true); } }
+async function deleteOrderDocument() { if(!currentOrderDocId||currentOrderStatus!=="pending"){ showToast("Cannot delete: Not pending.",true); return; } if(confirm("Delete permanently?")){ await db.collection("kitchen_requests").doc(currentOrderDocId).delete(); showToast("Deleted"); document.getElementById("orderViewer").style.display="none"; refreshOrdersList(); } }
+async function deleteOrderById(docId){ if(confirm("Delete?")){ await db.collection("kitchen_requests").doc(docId).delete(); showToast("Deleted"); refreshOrdersList(); if(currentOrderDocId===docId) document.getElementById("orderViewer").style.display="none"; } }
+function renderKitchenMenuButtons(){ const container=document.getElementById("kitchenMenuButtons"); if(!container) return; container.innerHTML=""; Object.keys(KITCHEN_JSON_FILES).forEach(kit=>{ const btn=document.createElement("button"); const isOk=(kit===orderKitchen); btn.className=`kitchen-menu-btn ${currentSelectedKitchen===kit?'active':''}`; btn.innerText=kit; if(!isOk){ btn.classList.add("disabled"); btn.title=`Only ${orderKitchen||'order kitchen'} enabled`; } btn.onclick=()=>{ if(!isOk){ showToast(`Only ${orderKitchen} is enabled`,true); return; } if(currentOrderStatus!=="pending"){ showToast(`Order is ${currentOrderStatus}, restore first`,true); return; } currentSelectedKitchen=kit; renderKitchenMenuButtons(); loadKitchenMenuJSON(kit); }; container.appendChild(btn); }); if(!orderKitchen) container.innerHTML+='<div style="font-size:0.7rem;color:#9ca3af;">⚠️ Load an order first</div>'; }
+async function loadKitchenMenuJSON(kitchen){ const file=KITCHEN_JSON_FILES[kitchen]; const path=`${JSON_BASE_PATH}${file}`; document.getElementById("selectedKitchenName").innerHTML=`📁 Loading ${path}`; try{ const res=await fetch(path); if(!res.ok) throw new Error(`HTTP ${res.status}`); const data=await res.json(); currentMenuItems=Array.isArray(data)?data:(data.items||[]); renderMenuItemsList(); document.getElementById("selectedKitchenName").innerHTML=`✅ Loaded ${currentMenuItems.length} items`; }catch(e){ document.getElementById("selectedKitchenName").innerHTML=`❌ ${file} missing. Create items/${file}`; currentMenuItems=[]; renderMenuItemsList(); } }
+function renderMenuItemsList(){ const container=document.getElementById("menuItemsList"); if(!container) return; if(!currentMenuItems.length){ container.innerHTML='<div style="padding:20px;text-align:center;">No items</div>'; return; } container.innerHTML=""; currentMenuItems.forEach((item,idx)=>{ const div=document.createElement("div"); div.className="menu-item-card"; div.innerHTML=`<span class="menu-item-code">📌 ${escapeHtml(item.code)}</span><span class="menu-item-name"><strong>${escapeHtml(item.name)}</strong><br><span style="font-size:0.65rem;">${escapeHtml(item.name_ar||'')}</span></span><span class="menu-item-unit">📦 ${escapeHtml(item.unit)}</span><span class="menu-item-price">💰 ${item.AVE||item.price||0}</span><div class="add-qty-control"><input type="number" id="qty_${idx}" class="qty-input-small" value="1" min="0.5" step="0.5"><button class="btn btn-add-item" onclick="addMenuItemToOrder(${idx})">➕ Add</button></div>`; container.appendChild(div); }); }
+window.addMenuItemToOrder=function(idx){ if(!currentOrderDocId||currentOrderStatus!=="pending"){ showToast("No pending order loaded",true); return; } const item=currentMenuItems[idx]; const qty=parseFloat(document.getElementById(`qty_${idx}`)?.value||1); if(!item||isNaN(qty)) return; const newItem={code:item.code,name:item.name,name_ar:item.name_ar||"",unit:item.unit,originalQty:qty,price:item.AVE||item.price||0,status:"pending"}; if(!currentOrderData.items) currentOrderData.items=[]; currentOrderData.items.push(newItem); currentOrderStatus=getRequestStatus(currentOrderData.items); document.getElementById("orderJsonEditor").value=JSON.stringify(currentOrderData,null,2); showToast(`Added ${item.name} (x${qty})`); };
+async function restoreOrderToPending(docId){ if(!confirm("Restore to PENDING? This resets all approvals.")) return; try{ const doc=await db.collection("kitchen_requests").doc(docId).get(); if(!doc.exists) return; const data=doc.data(); if(data.items){ let changed=false; data.items.forEach(i=>{ if(i.status==="approved"||i.status==="rejected"){ i.status="pending"; delete i.approvedQty; delete i.approvedBy; delete i.rejectionReason; changed=true; } if(i.completedVia) delete i.completedVia; }); if(changed) await db.collection("kitchen_requests").doc(docId).update({items:data.items}); showToast(`Restored ${docId} to PENDING`); if(currentOrderDocId===docId) await fetchOrderDocument(); refreshOrdersList(); } }catch(e){ showToast("Restore failed",true); } }
+async function restoreSingleToPending(){ if(currentOrderDocId) await restoreOrderToPending(currentOrderDocId); else showToast("No doc loaded",true); }
 
-function getRequestStatus(items) {
-    if(!items || items.length === 0) return "pending";
-    let allProcessed = true;
-    let approved = 0, rejected = 0;
-    items.forEach(item => {
-        if(item.status === "approved") approved++;
-        else if(item.status === "rejected") rejected++;
-        else allProcessed = false;
-    });
-    if(items.length > 0 && items[0].completedVia === "accept") return "accepted";
-    if(allProcessed) {
-        if(approved === items.length) return "approved";
-        if(rejected === items.length) return "rejected";
-        return "accepted";
-    }
-    return "pending";
-}
+// JSON GENERATOR LOGIC (simplified)
+let menuItemsGen=[];
+function updateGeneratorUI(){ const span=document.getElementById("itemCount"); const itemsDiv=document.getElementById("itemsList"); span.innerText=`${menuItemsGen.length} items`; if(!menuItemsGen.length){ itemsDiv.innerHTML='<div style="padding:20px;text-align:center;">No items</div>'; document.getElementById("jsonOutput").value='[]'; return; } itemsDiv.innerHTML=menuItemsGen.map((it,i)=>`<div class="item-row"><span class="item-code">📌 ${escapeHtml(it.code)}</span><span><strong>${escapeHtml(it.name)}</strong> ${escapeHtml(it.nameAr||'')}</span><span>📦 ${escapeHtml(it.unit)}</span><span>🔢 ${it.maxLimit}</span><span>⚡ ${it.step}</span><span>💰 ${it.price}</span><button class="delete-item" onclick="removeItemGen(${i})">✖</button></div>`).join(''); const lines=menuItemsGen.map((it,i)=>`{"code": "${escapeJSON(it.code)}", "name": "${escapeJSON(it.name)}", "name_ar": "${escapeJSON(it.nameAr||'')}", "unit": "${escapeJSON(it.unit)}", "maxLimit": ${it.maxLimit}, "step": ${it.step}, "price": ${it.price}}${i<menuItemsGen.length-1?',':''}`); document.getElementById("jsonOutput").value='[\n'+lines.join('\n')+'\n]'; }
+function addItem(){ const code=document.getElementById("code").value.trim(), name=document.getElementById("name").value.trim(), unit=document.getElementById("unit").value.trim(); if(!code||!name||!unit){ showToast("Code, Name, Unit required",true); return; } const maxLimit=parseFloat(document.getElementById("maxLimit").value), step=parseFloat(document.getElementById("step").value), price=parseFloat(document.getElementById("price").value); if(isNaN(maxLimit)||isNaN(step)||isNaN(price)) return; menuItemsGen.push({code,name,nameAr:document.getElementById("nameAr").value.trim(),unit,maxLimit,step,price}); updateGeneratorUI(); document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("nameAr").value=""; document.getElementById("unit").value=""; document.getElementById("maxLimit").value=2; document.getElementById("step").value=1; document.getElementById("price").value=45.5; showToast("Item added"); }
+window.removeItemGen=function(i){ menuItemsGen.splice(i,1); updateGeneratorUI(); };
+function clearAllItems(){ if(confirm("Clear all?")){ menuItemsGen=[]; updateGeneratorUI(); } }
+function clearForm(){ document.getElementById("code").value=""; document.getElementById("name").value=""; document.getElementById("nameAr").value=""; document.getElementById("unit").value=""; document.getElementById("maxLimit").value=2; document.getElementById("step").value=1; document.getElementById("price").value=45.5; }
+function addSample(){ menuItemsGen.push({code:"161005",name:"Black Pepper Corn",nameAr:"حب الفلفل الأسود",unit:"kg",maxLimit:2,step:0.5,price:45.5}); updateGeneratorUI(); showToast("Sample added"); }
+async function copyJSON(){ if(menuItemsGen.length){ await navigator.clipboard.writeText(document.getElementById("jsonOutput").value); showToast("Copied"); } else showToast("No items",true); }
+function downloadJSON(){ if(!menuItemsGen.length) return; const blob=new Blob([document.getElementById("jsonOutput").value],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`menu_${Date.now()}.json`; a.click(); URL.revokeObjectURL(a.href); }
 
-async function refreshOrdersList() {
-    showToast("⟳ Refreshing orders list...");
-    await listAllOrders();
-}
+// User management functions
+async function createNewUser(){ const email=document.getElementById("newUserEmail").value.trim(), pwd=document.getElementById("newUserPassword").value, confirm=document.getElementById("newUserConfirmPassword").value; if(!email||pwd!==confirm||pwd.length<6){ showToast("Invalid or mismatch",true); return; } try{ await auth.createUserWithEmailAndPassword(email,pwd); showToast(`User ${email} created`); }catch(e){ showToast(e.message,true); } }
+async function sendUserPasswordReset(){ const email=document.getElementById("resetUserEmail").value.trim(); if(!email) return; try{ await auth.sendPasswordResetEmail(email); showToast(`Reset email sent to ${email}`); }catch(e){ showToast(e.message,true); } }
+async function resetKitchenPassword(){ const kitchen=document.getElementById("kitchenSelect").value, email=document.getElementById("kitchenChefEmail").value.trim(); if(!kitchen||!email) return; try{ await auth.sendPasswordResetEmail(email); showToast(`Reset sent to ${email} (${kitchen})`); }catch(e){ showToast(e.message,true); } }
 
-async function listAllOrders() {
-    try {
-        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").limit(50).get();
-        const container = document.getElementById("ordersList");
-        container.innerHTML = "";
-        
-        if (snapshot.empty) { 
-            container.innerHTML = '<div style="padding: 30px; text-align: center; color: #9ca3af;">📭 No orders found</div>'; 
-            return; 
-        }
-        
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const status = getRequestStatus(data.items);
-            let statusClass = "status-pending";
-            let statusText = "Pending";
-            if (status === "approved") { statusClass = "status-approved"; statusText = "Approved"; }
-            else if (status === "rejected") { statusClass = "status-rejected"; statusText = "Rejected"; }
-            else if (status === "accepted") { statusClass = "status-accepted"; statusText = "Accepted"; }
-            
-            container.innerHTML += `
-                <div class="doc-item" onclick="loadOrderById('${doc.id}')">
-                    <div class="doc-item-info">
-                        <span class="doc-id-badge">🆔 ${doc.id.substring(0, 12)}...</span>
-                        <span class="doc-request-id">📌 ${data.requestId || 'N/A'}</span>
-                        <span class="doc-chef">👨‍🍳 ${data.chefName || '?'}</span>
-                        <span class="doc-kitchen">🍽️ ${data.section || '?'}</span>
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <span class="status-badge ${statusClass}">${statusText}</span>
-                        <div class="doc-actions">
-                            <button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')" title="Delete Order">🗑️</button>
-                            <button class="btn btn-restore btn-icon" onclick="event.stopPropagation();restoreOrderToPending('${doc.id}')" title="Restore to Pending">🔄</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    } catch(e) { 
-        showToast("Error loading orders: " + e.message, true); 
-        document.getElementById("ordersList").innerHTML = '<div style="padding: 30px; text-align: center; color: #dc2626;">❌ Error loading orders</div>';
-    }
-}
+function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+function escapeJSON(str){ return str.replace(/\\/g,'\\\\').replace(/"/g,'\\"'); }
+function showToast(msg,isErr=false){ const t=document.createElement('div'); t.className='toast'; t.innerHTML=msg; if(isErr) t.style.borderLeftColor='#dc2626'; document.body.appendChild(t); setTimeout(()=>t.remove(),2500); }
+function switchTab(t){ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active-panel')); if(t==='orders'){ document.querySelectorAll('.tab-btn')[0].classList.add('active'); document.getElementById('ordersPanel').classList.add('active-panel'); refreshOrdersList(); } else if(t==='generator'){ document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('generatorPanel').classList.add('active-panel'); } else{ document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('usersPanel').classList.add('active-panel'); } }
 
-async function loadOrderById(docId) {
-    document.getElementById("orderDocId").value = docId;
-    await fetchOrderDocument();
-}
-
-async function fetchOrderDocument() {
-    const docId = document.getElementById("orderDocId").value.trim();
-    if (!docId) { showToast("Enter Document ID", true); return; }
-    try {
-        const doc = await db.collection("kitchen_requests").doc(docId).get();
-        if (!doc.exists) { showToast("Document not found", true); return; }
-        currentOrderDocId = docId;
-        currentOrderData = { id: doc.id, ...doc.data() };
-        currentOrderStatus = getRequestStatus(currentOrderData.items);
-        
-        document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2);
-        document.getElementById("orderViewer").style.display = "block";
-        
-        orderKitchen = currentOrderData.section || "Hot Kitchen";
-        showToast(`✅ Loaded: ${docId} | Status: ${currentOrderStatus.toUpperCase()} | Kitchen: ${orderKitchen}`);
-        
-        updateEditButtonsBasedOnStatus();
-        renderKitchenMenuButtons();
-        
-        document.getElementById("menuItemsList").innerHTML = '<div style="padding: 20px; text-align: center; color: #9ca3af;">Click the enabled kitchen button above to load menu items</div>';
-        
-    } catch(e) { showToast("Error: " + e.message, true); }
-}
-
-function updateEditButtonsBasedOnStatus() {
-    const isPending = (currentOrderStatus === "pending");
-    const saveBtn = document.getElementById("saveOrderBtn");
-    const deleteBtn = document.getElementById("deleteOrderBtn");
-    const restoreBtn = document.getElementById("restoreOrderBtn");
-    
-    if (!isPending) {
-        if (saveBtn) saveBtn.classList.add("btn-disabled");
-        if (deleteBtn) deleteBtn.classList.add("btn-disabled");
-        if (restoreBtn) restoreBtn.style.display = "inline-block";
-        document.querySelectorAll(".kitchen-menu-btn").forEach(btn => {
-            if (!btn.classList.contains("disabled")) {
-                btn.style.pointerEvents = "none";
-                btn.style.opacity = "0.5";
-            }
-        });
-        const warningBox = document.getElementById("orderStatusWarning");
-        if (warningBox) {
-            warningBox.style.display = "block";
-            document.getElementById("warningStatusText").innerText = currentOrderStatus.toUpperCase();
-        }
-    } else {
-        if (saveBtn) saveBtn.classList.remove("btn-disabled");
-        if (deleteBtn) deleteBtn.classList.remove("btn-disabled");
-        if (restoreBtn) restoreBtn.style.display = "none";
-        document.querySelectorAll(".kitchen-menu-btn").forEach(btn => {
-            if (!btn.classList.contains("disabled")) {
-                btn.style.pointerEvents = "auto";
-                btn.style.opacity = "1";
-            }
-        });
-        const warningBox = document.getElementById("orderStatusWarning");
-        if (warningBox) warningBox.style.display = "none";
-    }
-}
-
-async function saveOrderDocument() {
-    if (!currentOrderDocId) { showToast("No document loaded", true); return; }
-    if (currentOrderStatus !== "pending") {
-        showToast("❌ Cannot save: Order is not in PENDING status. Click 'Restore to Pending' first.", true);
-        return;
-    }
-    try {
-        const newData = JSON.parse(document.getElementById("orderJsonEditor").value);
-        const { id, ...updateData } = newData;
-        await db.collection("kitchen_requests").doc(currentOrderDocId).update(updateData);
-        currentOrderData = updateData;
-        showToast(`✅ Saved ${currentOrderDocId}`);
-        refreshOrdersList();
-    } catch(e) { showToast("Save failed: " + e.message, true); }
-}
-
-async function deleteOrderDocument() {
-    if (!currentOrderDocId) return;
-    if (currentOrderStatus !== "pending") {
-        showToast("❌ Cannot delete: Order is not in PENDING status. Click 'Restore to Pending' first.", true);
-        return;
-    }
-    if (confirm(`Delete ${currentOrderDocId} permanently?`)) {
-        await db.collection("kitchen_requests").doc(currentOrderDocId).delete();
-        showToast(`Deleted ${currentOrderDocId}`);
-        currentOrderDocId = null;
-        currentOrderData = null;
-        orderKitchen = "";
-        document.getElementById("orderViewer").style.display = "none";
-        document.getElementById("orderDocId").value = "";
-        refreshOrdersList();
-        renderKitchenMenuButtons();
-    }
-}
-
-async function deleteOrderById(docId) {
-    if (confirm(`Delete order ${docId}?`)) {
-        await db.collection("kitchen_requests").doc(docId).delete();
-        showToast(`Deleted ${docId}`);
-        refreshOrdersList();
-        if (currentOrderDocId === docId) {
-            currentOrderDocId = null;
-            currentOrderData = null;
-            orderKitchen = "";
-            document.getElementById("orderViewer").style.display = "none";
-            renderKitchenMenuButtons();
-        }
-    }
-}
-
-function renderKitchenMenuButtons() {
-    const container = document.getElementById("kitchenMenuButtons");
-    if (!container) return;
-    container.innerHTML = "";
-    
-    Object.keys(KITCHEN_JSON_FILES).forEach(kitchen => {
-        const btn = document.createElement("button");
-        const isOrderKitchen = (kitchen === orderKitchen);
-        
-        btn.className = `kitchen-menu-btn ${currentSelectedKitchen === kitchen ? 'active' : ''}`;
-        btn.innerText = kitchen;
-        
-        if (!isOrderKitchen) {
-            btn.classList.add("disabled");
-            btn.title = `Only ${orderKitchen || 'the order\'s kitchen'} is enabled`;
-        }
-        
-        btn.onclick = () => {
-            if (!isOrderKitchen) {
-                showToast(`Only the order's kitchen (${orderKitchen}) is enabled. Load an order with a different kitchen first.`, true);
-                return;
-            }
-            if (currentOrderStatus !== "pending") {
-                showToast(`❌ Cannot load items: Order is ${currentOrderStatus.toUpperCase()}. Click 'Restore to Pending' first.`, true);
-                return;
-            }
-            currentSelectedKitchen = kitchen;
-            renderKitchenMenuButtons();
-            loadKitchenMenuJSON(kitchen);
-        };
-        container.appendChild(btn);
-    });
-    
-    if (!orderKitchen) {
-        const infoDiv = document.createElement("div");
-        infoDiv.style.fontSize = "0.7rem";
-        infoDiv.style.color = "#9ca3af";
-        infoDiv.style.marginTop = "10px";
-        infoDiv.style.textAlign = "center";
-        infoDiv.innerText = "⚠️ Load an order first to enable its kitchen";
-        container.appendChild(infoDiv);
-    }
-}
-
-async function loadKitchenMenuJSON(kitchen) {
-    const fileName = KITCHEN_JSON_FILES[kitchen];
-    if (!fileName) {
-        showToast(`No JSON file mapping for ${kitchen}`, true);
-        return;
-    }
-    
-    const jsonPath = `${JSON_BASE_PATH}${fileName}`;
-    document.getElementById("selectedKitchenName").innerHTML = `📁 Loading: ${jsonPath}`;
-    
-    try {
-        const response = await fetch(jsonPath);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status} - File not found`);
-        }
-        const data = await response.json();
-        
-        if (Array.isArray(data)) {
-            currentMenuItems = data;
-        } else if (data.items && Array.isArray(data.items)) {
-            currentMenuItems = data.items;
-        } else {
-            currentMenuItems = [];
-        }
-        
-        renderMenuItemsList();
-        document.getElementById("selectedKitchenName").innerHTML = `✅ Loaded ${currentMenuItems.length} items from ${jsonPath}`;
-        showToast(`✅ Loaded ${currentMenuItems.length} items from ${kitchen}`);
-    } catch(e) {
-        console.error(e);
-        document.getElementById("selectedKitchenName").innerHTML = `❌ Error: ${jsonPath} not found. Create this file in the "items" folder.`;
-        showToast(`❌ ${fileName} not found. Create items/${fileName} file.`, true);
-        currentMenuItems = [];
-        renderMenuItemsList();
-    }
-}
-
-function renderMenuItemsList() {
-    const container = document.getElementById("menuItemsList");
-    if (!container) return;
-    if (!currentMenuItems || currentMenuItems.length === 0) {
-        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #9ca3af;">No items found. Create the JSON file in the "items" folder.</div>';
-        return;
-    }
-    
-    container.innerHTML = "";
-    currentMenuItems.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "menu-item-card";
-        div.innerHTML = `
-            <span class="menu-item-code">📌 ${escapeHtml(item.code || 'N/A')}</span>
-            <span class="menu-item-name"><strong>${escapeHtml(item.name || 'No name')}</strong><br><span style="font-size:0.65rem;">${escapeHtml(item.name_ar || '')}</span></span>
-            <span class="menu-item-unit">📦 ${escapeHtml(item.unit || '-')}</span>
-            <span class="menu-item-price">💰 ${item.AVE || item.price || 0}</span>
-            <div class="add-qty-control">
-                <input type="number" id="qty_${index}" class="qty-input-small" value="1" min="0.5" step="0.5" style="width:60px;">
-                <button class="btn btn-add-item" style="padding: 4px 12px;" onclick="addMenuItemToOrder(${index})">➕ Add</button>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-function addMenuItemToOrder(index) {
-    if (!currentOrderDocId || !currentOrderData) {
-        showToast("No order loaded. Please fetch an order first.", true);
-        return;
-    }
-    if (currentOrderStatus !== "pending") {
-        showToast(`❌ Cannot add items: Order is ${currentOrderStatus.toUpperCase()}. Click 'Restore to Pending' first.`, true);
-        return;
-    }
-    
-    const menuItem = currentMenuItems[index];
-    if (!menuItem) return;
-    
-    const qtyInput = document.getElementById(`qty_${index}`);
-    const quantity = parseFloat(qtyInput?.value || 1);
-    if (isNaN(quantity) || quantity <= 0) {
-        showToast("Invalid quantity", true);
-        return;
-    }
-    
-    const price = menuItem.AVE || menuItem.price || 0;
-    
-    const newItem = {
-        code: menuItem.code || "",
-        name: menuItem.name || "",
-        name_ar: menuItem.name_ar || "",
-        unit: menuItem.unit || "",
-        originalQty: quantity,
-        price: price,
-        status: "pending"
-    };
-    
-    if (!currentOrderData.items) {
-        currentOrderData.items = [];
-    }
-    currentOrderData.items.push(newItem);
-    currentOrderStatus = getRequestStatus(currentOrderData.items);
-    
-    document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2);
-    
-    showToast(`✅ Added "${menuItem.name}" (x${quantity}) to order. Click SAVE to persist.`);
-}
-
-async function restoreOrderToPending(docId) {
-    if (!confirm(`Restore order to PENDING status?\n\nThis will reset all approved/rejected items back to pending. You can then edit, add, or remove items.\n\nContinue?`)) return;
-    
-    try {
-        const doc = await db.collection("kitchen_requests").doc(docId).get();
-        if (!doc.exists) { showToast("Document not found", true); return; }
-        
-        const data = doc.data();
-        if (data.items && Array.isArray(data.items)) {
-            let changed = false;
-            data.items.forEach(item => {
-                if (item.status === "approved" || item.status === "rejected") {
-                    item.status = "pending";
-                    delete item.approvedQty;
-                    delete item.approvedBy;
-                    delete item.approvedAt;
-                    delete item.rejectionReason;
-                    delete item.rejectedBy;
-                    delete item.rejectedAt;
-                    changed = true;
-                }
-                if (item.completedVia) delete item.completedVia;
-            });
-            if (data.completedVia) delete data.completedVia;
-            
-            if (changed) {
-                await db.collection("kitchen_requests").doc(docId).update({ items: data.items });
-                showToast(`✅ Restored ${docId} to PENDING status. You can now edit, add, or remove items.`);
-                if (currentOrderDocId === docId) {
-                    await fetchOrderDocument();
-                }
-                refreshOrdersList();
-            } else {
-                showToast(`Order is already in PENDING status`);
-                if (currentOrderDocId === docId) {
-                    currentOrderStatus = "pending";
-                    updateEditButtonsBasedOnStatus();
-                }
-            }
-        }
-    } catch(e) { showToast("Restore failed: " + e.message, true); }
-}
-
-async function restoreSingleToPending() {
-    if (currentOrderDocId) {
-        await restoreOrderToPending(currentOrderDocId);
-    } else {
-        showToast("No document loaded", true);
-    }
-}
-
-// ==================== JSON GENERATOR ====================
-let menuItems = [];
-
-const codeInput = document.getElementById('code');
-const nameInput = document.getElementById('name');
-const nameArInput = document.getElementById('nameAr');
-const unitInput = document.getElementById('unit');
-const maxLimitInput = document.getElementById('maxLimit');
-const stepInput = document.getElementById('step');
-const priceInput = document.getElementById('price');
-const itemsListDiv = document.getElementById('itemsList');
-const jsonOutput = document.getElementById('jsonOutput');
-const itemCountSpan = document.getElementById('itemCount');
-
-function updateGeneratorUI() {
-    itemCountSpan.innerText = `${menuItems.length} item${menuItems.length !== 1 ? 's' : ''}`;
-    
-    if (menuItems.length === 0) {
-        itemsListDiv.innerHTML = '<div style="padding: 20px; text-align: center; color: #9ca3af;">No items added yet</div>';
-        jsonOutput.value = '[]';
-        return;
-    }
-    
-    itemsListDiv.innerHTML = '';
-    menuItems.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'item-row';
-        div.innerHTML = `
-            <span class="item-code">📌 ${escapeHtml(item.code)}</span>
-            <span><strong>${escapeHtml(item.name)}</strong> <span style="color:#9ca3af;">${escapeHtml(item.nameAr || '')}</span></span>
-            <span>📦 ${escapeHtml(item.unit)}</span>
-            <span>🔢 ${item.maxLimit}</span>
-            <span>⚡ ${item.step}</span>
-            <span>💰 ${item.price}</span>
-            <button class="delete-item" onclick="removeItem(${index})">✖</button>
-        `;
-        itemsListDiv.appendChild(div);
-    });
-    
-    generateJSON();
-}
-
-function generateJSON() {
-    if (menuItems.length === 0) {
-        jsonOutput.value = '[]';
-        return;
-    }
-    
-    let lines = [];
-    for (let i = 0; i < menuItems.length; i++) {
-        const item = menuItems[i];
-        let line = `{"code": "${escapeJSON(item.code)}", "name": "${escapeJSON(item.name)}", "name_ar": "${escapeJSON(item.nameAr || '')}", "unit": "${escapeJSON(item.unit)}", "maxLimit": ${item.maxLimit}, "step": ${item.step}, "price": ${item.price}}`;
-        if (i < menuItems.length - 1) {
-            line += ',';
-        }
-        lines.push(line);
-    }
-    jsonOutput.value = '[\n' + lines.join('\n') + '\n]';
-}
-
-function addItem() {
-    const code = codeInput.value.trim();
-    const name = nameInput.value.trim();
-    const unit = unitInput.value.trim();
-    
-    if (!code) { showToast('❌ Code is required'); return; }
-    if (!name) { showToast('❌ Name is required'); return; }
-    if (!unit) { showToast('❌ Unit is required'); return; }
-    
-    const maxLimit = parseFloat(maxLimitInput.value);
-    const step = parseFloat(stepInput.value);
-    const price = parseFloat(priceInput.value);
-    
-    if (isNaN(maxLimit)) { showToast('❌ Max Limit must be a number'); return; }
-    if (isNaN(step)) { showToast('❌ Step must be a number'); return; }
-    if (isNaN(price)) { showToast('❌ Price must be a number'); return; }
-    
-    const newItem = {
-        code: code,
-        name: name,
-        nameAr: nameArInput.value.trim(),
-        unit: unit,
-        maxLimit: maxLimit,
-        step: step,
-        price: price
-    };
-    
-    menuItems.push(newItem);
-    updateGeneratorUI();
-    
-    codeInput.value = '';
-    nameInput.value = '';
-    nameArInput.value = '';
-    unitInput.value = '';
-    maxLimitInput.value = '2';
-    stepInput.value = '1';
-    priceInput.value = '45.50';
-    codeInput.focus();
-    
-    showToast(`✅ Added "${name}"`);
-}
-
-function removeItem(index) {
-    const removed = menuItems[index];
-    menuItems.splice(index, 1);
-    updateGeneratorUI();
-    showToast(`🗑️ Removed "${removed.name}"`);
-}
-
-function clearAllItems() {
-    if (menuItems.length === 0) return;
-    if (confirm(`Delete all ${menuItems.length} items?`)) {
-        menuItems = [];
-        updateGeneratorUI();
-        showToast('All items cleared');
-    }
-}
-
-function clearForm() {
-    codeInput.value = '';
-    nameInput.value = '';
-    nameArInput.value = '';
-    unitInput.value = '';
-    maxLimitInput.value = '2';
-    stepInput.value = '1';
-    priceInput.value = '45.50';
-    codeInput.focus();
-    showToast('Form cleared');
-}
-
-function addSample() {
-    const sample = {
-        code: "161005",
-        name: "Black Pepper Corn",
-        nameAr: "حب الفلفل الأسود",
-        unit: "kg",
-        maxLimit: 2,
-        step: 0.5,
-        price: 45.50
-    };
-    menuItems.push(sample);
-    updateGeneratorUI();
-    showToast('✅ Sample item added');
-}
-
-async function copyJSON() {
-    if (menuItems.length === 0) {
-        showToast('No items to copy');
-        return;
-    }
-    const json = jsonOutput.value;
-    await navigator.clipboard.writeText(json);
-    showToast('📋 JSON copied to clipboard');
-}
-
-function downloadJSON() {
-    if (menuItems.length === 0) {
-        showToast('No items to download');
-        return;
-    }
-    const json = jsonOutput.value;
-    const blob = new Blob([json], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `menu_items_${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('📎 JSON file downloaded');
-}
-
-// ==================== UTILITIES ====================
-function switchTab(tab) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active-panel'));
-    if (tab === 'orders') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-        document.getElementById('ordersPanel').classList.add('active-panel');
-        refreshOrdersList();
-    } else if (tab === 'generator') {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-        document.getElementById('generatorPanel').classList.add('active-panel');
-    } else {
-        document.querySelectorAll('.tab-btn')[2].classList.add('active');
-        document.getElementById('usersPanel').classList.add('active-panel');
-    }
-}
-
-function escapeJSON(str) {
-    if (!str) return '';
-    return str.replace(/\\/g, '\\\\')
-              .replace(/"/g, '\\"')
-              .replace(/\n/g, '\\n')
-              .replace(/\r/g, '\\r');
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
-}
-
-function showToast(msg, isError = false) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = msg;
-    if (isError) toast.style.borderLeftColor = '#dc2626';
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2500);
-}
-
-function handleEnter(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        addItem();
-    }
-}
-
-codeInput?.addEventListener('keypress', handleEnter);
-nameInput?.addEventListener('keypress', handleEnter);
-unitInput?.addEventListener('keypress', handleEnter);
-
-// Load authorized developers on startup
 loadAuthorizedDevelopers();
 </script>
 </body>
