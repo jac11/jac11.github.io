@@ -94,6 +94,48 @@ body.arabic .qty-picker {
     color: #ffd700;
 }
 
+/* Freehand Status Indicator */
+.freehand-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
+    background: rgba(0,0,0,0.3);
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+}
+
+.status-light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #666;
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.status-light.active {
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulse 1.5s infinite;
+}
+
+.status-light.inactive {
+    background: #dc2626;
+    box-shadow: none;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.status-text {
+    font-weight: 500;
+}
+
 .header-buttons {
     display: flex;
     gap: 8px;
@@ -188,6 +230,34 @@ body.arabic .qty-picker {
     color: #1e3c72;
     border-left: 4px solid #3498db;
     padding-left: 10px;
+}
+
+/* Freehand Banner */
+.freehand-banner {
+    background: linear-gradient(135deg, #10b98120, #05966920);
+    border: 2px solid #10b981;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.freehand-banner span {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.freehand-banner .freehand-icon {
+    font-size: 1.2rem;
+}
+
+.freehand-banner.inactive {
+    display: none;
 }
 
 .input-group {
@@ -798,6 +868,11 @@ body.arabic .items-scroll-container {
         <div class="logo">
             <span class="logo-icon">🍳</span>
             <span>Kitchen Order <span>| Chef</span></span>
+            <!-- Freehand Status Indicator - Green light when active -->
+            <div class="freehand-status" id="freehandStatusIndicator">
+                <div class="status-light" id="statusLight"></div>
+                <span class="status-text" id="statusText">Freehand: OFF</span>
+            </div>
         </div>
         <div class="header-buttons">
             <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">🇸🇦 العربية</button>
@@ -841,7 +916,11 @@ const translations = {
         approvedBy: "Approved by", reason: "Reason:", fromDate: "From Date",
         toDate: "To Date", filter: "Filter", viewHistory: "View History",
         duplicateBlocked: "DUPLICATE ORDER BLOCKED",
-        duplicateMessage: "You already submitted an identical order on"
+        duplicateMessage: "You already submitted an identical order on",
+        freehandActive: "🔓 FREEHAND MODE ACTIVE - No quantity limits!",
+        freehandOff: "Quantity limits enabled",
+        freehandOn: "ON",
+        freehandOffStatus: "OFF"
     },
     ar: {
         chef: "شيف", chefInfo: "معلومات الشيف", chefName: "اسم الشيف",
@@ -863,11 +942,66 @@ const translations = {
         approvedBy: "تمت الموافقة بواسطة", reason: "السبب:", fromDate: "من تاريخ",
         toDate: "إلى تاريخ", filter: "فلتر", viewHistory: "عرض السجل",
         duplicateBlocked: "تم حظر الطلب المكرر",
-        duplicateMessage: "لقد أرسلت نفس الطلب مسبقاً في"
+        duplicateMessage: "لقد أرسلت نفس الطلب مسبقاً في",
+        freehandActive: "🔓 وضع الحرية مفعل - لا توجد حدود للكميات!",
+        freehandOff: "حدود الكميات مفعلة",
+        freehandOn: "مفعل",
+        freehandOffStatus: "غير مفعل"
     }
 };
 
 let currentLang = 'en';
+let freehandModeActive = false;  // Freehand mode state from Firestore
+
+// ============ UPDATE FREEHAND STATUS INDICATOR ============
+function updateFreehandStatusIndicator() {
+    const statusLight = document.getElementById('statusLight');
+    const statusText = document.getElementById('statusText');
+    
+    if (freehandModeActive) {
+        statusLight.className = 'status-light active';
+        statusText.innerHTML = currentLang === 'ar' ? '🟢 الوضع الحر: ' + translations.ar.freehandOn : '🟢 Freehand: ON';
+        statusText.style.color = '#10b981';
+    } else {
+        statusLight.className = 'status-light inactive';
+        statusText.innerHTML = currentLang === 'ar' ? '⚫ الوضع الحر: ' + translations.ar.freehandOffStatus : '⚫ Freehand: OFF';
+        statusText.style.color = '#999';
+    }
+}
+
+// ============ FREEHAND MODE LISTENER ============
+function initFreehandModeListener() {
+    db.collection("settings").doc("freehand_mode").onSnapshot((doc) => {
+        if (doc.exists) {
+            freehandModeActive = doc.data().enabled === true;
+        } else {
+            freehandModeActive = false;
+        }
+        updateFreehandUI();
+        updateFreehandStatusIndicator();  // Update the header indicator
+        // Re-render current items list to update limits display
+        if (currentKitchen) {
+            renderItemsList(currentKitchen);
+        }
+        const statusMsg = freehandModeActive ? 
+            (currentLang === 'ar' ? '🔓 الوضع الحر مفعل - لا توجد حدود للكميات!' : '🔓 FREEHAND MODE ACTIVE - No quantity limits!') :
+            (currentLang === 'ar' ? '🔒 الوضع الحر غير مفعل - الحدود مفعلة' : '🔒 Freehand mode disabled - Limits restored');
+        showToast(statusMsg);
+    }, (error) => {
+        console.error("Error listening to freehand mode:", error);
+    });
+}
+
+function updateFreehandUI() {
+    // Update all freehand banners on all kitchen pages
+    kitchens.forEach(kitchen => {
+        const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
+        const banner = document.getElementById(`freehandBanner_${kitchenId}`);
+        if (banner) {
+            banner.style.display = freehandModeActive ? "flex" : "none";
+        }
+    });
+}
 
 function toggleLanguage() {
     if(currentLang === 'en') {
@@ -889,6 +1023,7 @@ function toggleLanguage() {
     }
     generatePages();
     if(currentKitchen) selectKitchen(currentKitchen);
+    updateFreehandStatusIndicator();  // Update indicator text when language changes
 }
 
 function getItemName(item) {
@@ -1044,11 +1179,17 @@ async function forceReloadItems() {
     if (currentKitchen) { await renderItemsList(currentKitchen); showToast(`✅ Reloaded items for ${currentKitchen}`); }
 }
 
-// ============ HELPER: Get step value from item ============
+// ============ HELPER: Get step and max limit from item (respects freehand mode) ============
 function getItemStep(item) {
+    if (freehandModeActive) return 0.01;  // Any value allowed in freehand mode
     if (item.step !== undefined) return item.step;
     if (item.unit === "kg" || item.unit === "KG" || item.unit === "Kg") return 0.5;
     return 1;
+}
+
+function getItemMaxLimit(item) {
+    if (freehandModeActive) return 999999;  // No limit in freehand mode
+    return item.maxLimit || 99;
 }
 
 // ============ ORDER HISTORY FUNCTION ============
@@ -1110,7 +1251,7 @@ function restoreHistoryState(kitchen) {
     else section.style.display = "none";
 }
 
-// ============ ITEM LIST FUNCTIONS WITH DYNAMIC STEP FROM JSON ============
+// ============ ITEM LIST FUNCTIONS WITH DYNAMIC LIMITS RESPECTING FREEHAND MODE ============
 function filterItemsByFirstChar(kitchen, searchChar) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const displayDiv = document.getElementById(`itemsDisplay_${kitchenId}`);
@@ -1137,20 +1278,23 @@ function filterItemsByFirstChar(kitchen, searchChar) {
         const itemPrice = item.price || 0;
         const displayName = getItemName(item);
         const stepValue = getItemStep(item);
-        const stepText = stepValue === 0.5 ? "0.5" : "1";
-        const displayQty = stepValue === 0.5 ? currentQty.toFixed(1) : Math.floor(currentQty);
+        const maxLimitValue = getItemMaxLimit(item);
+        const stepText = freehandModeActive ? "ANY" : (stepValue === 0.5 ? "0.5" : "1");
+        const maxText = freehandModeActive ? "∞" : maxLimitValue;
+        const displayQty = stepValue === 0.5 && !freehandModeActive ? currentQty.toFixed(1) : Math.floor(currentQty);
+        const freehandClass = freehandModeActive ? 'freehand-mode' : '';
         html += `<div class="item-card ${selectedClass}" id="itemCard_${kitchenId}_${safeCode}">
             <div class="item-main-row"><div class="item-info"><div class="item-name">${escapeHtml(displayName)}</div>
             <div class="item-code">${item.code || "N/A"}</div><div class="item-price">💰 ${itemPrice.toFixed(2)} ${t('egp')} / ${item.unit}</div></div>
             <div class="item-meta"><span class="item-unit">${item.unit || "pcs"}</span>
-            <div class="item-max">${t('max')} ${item.maxLimit || 99}</div><div class="item-step">Step: ${stepText}</div></div>
+            <div class="item-max" style="${freehandModeActive ? 'color:#10b981;' : ''}">${t('max')} ${maxText}</div><div class="item-step">Step: ${stepText}</div></div>
             <div class="item-actions"><div class="qty-picker">
-            <button class="qty-btn" data-step="-${stepValue}" data-code="${item.code}" data-max="${item.maxLimit || 99}">−</button>
+            <button class="qty-btn ${freehandClass}" data-step="${freehandModeActive ? 0.01 : -stepValue}" data-code="${item.code}" data-max="${maxLimitValue}">−</button>
             <span class="qty-value" id="qtySpan_${kitchenId}_${safeCode}">${displayQty}</span>
-            <button class="qty-btn" data-step="${stepValue}" data-code="${item.code}" data-max="${item.maxLimit || 99}">+</button></div>
-            <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(displayName)}" data-unit="${item.unit || "pcs"}" data-max="${item.maxLimit || 99}" data-price="${itemPrice}" data-step="${stepValue}">${t('add')}</button></div></div></div>`;
+            <button class="qty-btn ${freehandClass}" data-step="${freehandModeActive ? 0.01 : stepValue}" data-code="${item.code}" data-max="${maxLimitValue}">+</button></div>
+            <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(displayName)}" data-unit="${item.unit || "pcs"}" data-max="${maxLimitValue}" data-price="${itemPrice}" data-step="${stepValue}">${t('add')}</button></div></div></div>`;
     });
-    html += `</div><div class="scroll-info">📜 ${sortedItems.length} ${t('allItems')}</div></div>`;
+    html += `</div><div class="scroll-info">📜 ${sortedItems.length} ${t('allItems')} ${freehandModeActive ? '🔓 FREEHAND MODE' : ''}</div></div>`;
     displayDiv.innerHTML = html;
     
     displayDiv.querySelectorAll('.qty-btn').forEach(btn => {
@@ -1191,17 +1335,27 @@ async function renderItemsList(kitchen) {
 function changeQuantity(kitchen, code, delta, maxLimit) {
     if (!selectedQuantities[kitchen]) selectedQuantities[kitchen] = {};
     let current = selectedQuantities[kitchen][code] || 0;
-    let newQty = parseFloat((current + delta).toFixed(1));
-    if (newQty < 0) newQty = 0;
-    if (newQty > maxLimit) newQty = maxLimit;
+    let newQty;
+    if (freehandModeActive) {
+        newQty = parseFloat((current + delta).toFixed(2));
+        if (newQty < 0) newQty = 0;
+    } else {
+        newQty = parseFloat((current + delta).toFixed(1));
+        if (newQty < 0) newQty = 0;
+        if (newQty > maxLimit) newQty = maxLimit;
+    }
     selectedQuantities[kitchen][code] = newQty;
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const safeCode = (code || "").replace(/[^a-zA-Z0-9]/g, '_');
     const span = document.getElementById(`qtySpan_${kitchenId}_${safeCode}`);
     if (span) {
-        const absDelta = Math.abs(delta);
-        if (absDelta === 0.5 || absDelta === -0.5) { span.innerText = newQty.toFixed(1); }
-        else { span.innerText = Math.floor(newQty); }
+        if (freehandModeActive) {
+            span.innerText = newQty.toFixed(2);
+        } else {
+            const step = Math.abs(delta);
+            if (step === 0.5 || step === -0.5) { span.innerText = newQty.toFixed(1); }
+            else { span.innerText = Math.floor(newQty); }
+        }
     }
 }
 
@@ -1215,14 +1369,14 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit, price, ste
     if (!item) return;
     const existing = kitchenData[kitchen].cart.find(i => i.code === code);
     let currentQty = existing ? existing.qty : 0;
-    let maxAllowed = item.maxLimit || maxLimit;
-    let remaining = maxAllowed - currentQty;
+    let actualMax = freehandModeActive ? 999999 : maxLimit;
+    let remaining = actualMax - currentQty;
     let actualQtyToAdd = qty;
-    if (remaining <= 0) { showToast(`⚠️ Maximum ${maxAllowed} ${item.unit || unit} reached!`); return; }
-    if (qty > remaining) { actualQtyToAdd = remaining; showToast(`⚠️ Only ${remaining.toFixed(1)} remaining. Added ${remaining.toFixed(1)} instead of ${qty.toFixed(1)}`); }
+    if (!freehandModeActive && remaining <= 0) { showToast(`⚠️ Maximum ${maxLimit} ${item.unit || unit} reached!`); return; }
+    if (!freehandModeActive && qty > remaining) { actualQtyToAdd = remaining; showToast(`⚠️ Only ${remaining.toFixed(1)} remaining. Added ${remaining.toFixed(1)} instead of ${qty.toFixed(1)}`); }
     const itemPrice = item.price || price || 0;
-    if (existing) { existing.qty += actualQtyToAdd; showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`); }
-    else { kitchenData[kitchen].cart.push({ code: item.code, name: item.name, name_ar: item.name_ar, unit: item.unit || unit, qty: actualQtyToAdd, maxLimit: item.maxLimit || maxLimit, price: itemPrice }); showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`); }
+    if (existing) { existing.qty += actualQtyToAdd; showToast(`✓ Added ${actualQtyToAdd.toFixed(freehandModeActive ? 2 : 1)} ${getItemName(item)}`); }
+    else { kitchenData[kitchen].cart.push({ code: item.code, name: item.name, name_ar: item.name_ar, unit: item.unit || unit, qty: actualQtyToAdd, maxLimit: item.maxLimit || maxLimit, price: itemPrice }); showToast(`✓ Added ${actualQtyToAdd.toFixed(freehandModeActive ? 2 : 1)} ${getItemName(item)}`); }
     addedItemsStatus[kitchen][code] = true;
     selectedQuantities[kitchen][code] = 0;
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
@@ -1241,7 +1395,7 @@ function renderCart(kitchen) {
     const cart = kitchenData[kitchen].cart;
     const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
     const totalValue = cart.reduce((sum, i) => sum + (i.qty * (i.price || 0)), 0);
-    document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty.toFixed(1);
+    document.getElementById(`totalItems_${kitchenId}`).innerText = totalQty.toFixed(freehandModeActive ? 2 : 1);
     document.getElementById(`lineCount_${kitchenId}`).innerText = cart.length;
     document.getElementById(`totalValue_${kitchenId}`).innerText = totalValue.toFixed(2);
     const desktopBody = document.getElementById(`cartTableDesktop_${kitchenId}`);
@@ -1252,7 +1406,7 @@ function renderCart(kitchen) {
             cart.forEach((item, idx) => {
                 const itemTotal = (item.qty * (item.price || 0)).toFixed(2);
                 const displayName = currentLang === 'ar' && item.name_ar ? item.name_ar : item.name;
-                desktopBody.innerHTML += `<tr><td>${item.code}</td><td><strong>${escapeHtml(displayName)}</strong></td><td>${item.qty.toFixed(1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${itemTotal}</td><td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">${t('remove')}</button></td></tr>`;
+                desktopBody.innerHTML += `<tr><td>${item.code}</td><td><strong>${escapeHtml(displayName)}</strong></td><td>${item.qty.toFixed(freehandModeActive ? 2 : 1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${itemTotal}</td><td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">${t('remove')}</button></td></tr>`;
             });
         }
     }
@@ -1366,7 +1520,7 @@ function exportToExcel(kitchen) {
     const cart = kitchenData[kitchen].cart;
     if (!cart.length) { showToast("No items"); return; }
     let csv = "Code,Item,Quantity,Unit,Price,Total Value\n";
-    cart.forEach(i => { const total = i.qty * (i.price || 0); csv += `${i.code},${i.name},${i.qty.toFixed(1)},${i.unit},${(i.price || 0).toFixed(2)},${total.toFixed(2)}\n`; });
+    cart.forEach(i => { const total = i.qty * (i.price || 0); csv += `${i.code},${i.name},${i.qty.toFixed(freehandModeActive ? 2 : 1)},${i.unit},${(i.price || 0).toFixed(2)},${total.toFixed(2)}\n`; });
     const blob = new Blob([csv], { type: "text/csv" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -1422,14 +1576,19 @@ function onChefNameChange(kitchen) {
 
 function createKitchenPage(kitchen) {
     const id = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    return `<div class="kitchen-page" id="page_${id}"><div class="card"><h3>👨‍🍳 ${t('chefInfo')} - ${kitchen}</h3><div class="input-group"><label>${t('chefName')} <span class="required">*</span></label><input type="text" id="chefName_${id}" placeholder="${t('enterChefName')}" onchange="onChefNameChange('${kitchen}')"></div></div>
-    <div class="card"><h3>📦 ${kitchen} ${t('items')} <span style="font-size:11px;">(${t('searchByFirstChar')})</span></h3><div id="itemsListContainer_${id}"></div></div>
-    <div class="card"><h3>🛒 ${t('currentRequest')} <button class="history-toggle-btn" onclick="toggleHistory('${kitchen}')">📜 ${t('viewHistory')}</button></h3>
-    <div class="cart-stats"><span>📦 ${t('totalQty')}: <strong id="totalItems_${id}">0</strong></span><span>📋 ${t('totalItems')}: <strong id="lineCount_${id}">0</strong></span><span>💰 ${t('totalValue')}: <strong id="totalValue_${id}">0.00</strong> ${t('egp')}</span></div>
-    <div class="desktop-table-view"><div class="table-wrapper"><table class="cart-table"><thead><tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('total')}</th><th></th></tr></thead><tbody id="cartTableDesktop_${id}"></tbody></table></div></div>
-    <div class="button-group"><button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 ${t('submit')}</button><button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 ${t('export')}</button><button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ ${t('clear')}</button></div></div>
-    <div class="card"><h3>📜 ${t('myRequests')} <span style="font-size:11px;">(${t('showsAdminPrice')})</span></h3><div id="myRequestsDesktop_${id}"></div></div>
-    <div class="card"><h3>📜 ${t('orderHistory')}</h3><div id="historySection_${id}" class="history-section" style="display:none;"><div class="history-toolbar"><input type="date" id="historyFrom_${id}" placeholder="${t('fromDate')}"><input type="date" id="historyTo_${id}" placeholder="${t('toDate')}"><button class="history-filter-btn" onclick="loadOrderHistory('${kitchen}')">🔍 ${t('filter')}</button></div><div id="orderHistoryContainer_${id}"></div></div></div></div>`;
+    return `<div class="kitchen-page" id="page_${id}">
+        <div id="freehandBanner_${id}" class="freehand-banner" style="display:none;">
+            <span class="freehand-icon">🔓</span>
+            <span>${t('freehandActive')}</span>
+        </div>
+        <div class="card"><h3>👨‍🍳 ${t('chefInfo')} - ${kitchen}</h3><div class="input-group"><label>${t('chefName')} <span class="required">*</span></label><input type="text" id="chefName_${id}" placeholder="${t('enterChefName')}" onchange="onChefNameChange('${kitchen}')"></div></div>
+        <div class="card"><h3>📦 ${kitchen} ${t('items')} <span style="font-size:11px;">(${t('searchByFirstChar')})</span></h3><div id="itemsListContainer_${id}"></div></div>
+        <div class="card"><h3>🛒 ${t('currentRequest')} <button class="history-toggle-btn" onclick="toggleHistory('${kitchen}')">📜 ${t('viewHistory')}</button></h3>
+        <div class="cart-stats"><span>📦 ${t('totalQty')}: <strong id="totalItems_${id}">0</strong></span><span>📋 ${t('totalItems')}: <strong id="lineCount_${id}">0</strong></span><span>💰 ${t('totalValue')}: <strong id="totalValue_${id}">0.00</strong> ${t('egp')}</span></div>
+        <div class="desktop-table-view"><div class="table-wrapper"><table class="cart-table"><thead><tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('total')}</th><th></th></tr></thead><tbody id="cartTableDesktop_${id}"></tbody>}</div></div>
+        <div class="button-group"><button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 ${t('submit')}</button><button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 ${t('export')}</button><button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ ${t('clear')}</button></div></div>
+        <div class="card"><h3>📜 ${t('myRequests')} <span style="font-size:11px;">(${t('showsAdminPrice')})</span></h3><div id="myRequestsDesktop_${id}"></div></div>
+        <div class="card"><h3>📜 ${t('orderHistory')}</h3><div id="historySection_${id}" class="history-section" style="display:none;"><div class="history-toolbar"><input type="date" id="historyFrom_${id}" placeholder="${t('fromDate')}"><input type="date" id="historyTo_${id}" placeholder="${t('toDate')}"><button class="history-filter-btn" onclick="loadOrderHistory('${kitchen}')">🔍 ${t('filter')}</button></div><div id="orderHistoryContainer_${id}"></div></div></div></div>`;
 }
 
 function generatePages() {
@@ -1447,6 +1606,8 @@ startAutoRefresh();
 loadRequestsFromFirebase();
 loadLastSelectedKitchen();
 db.collection("kitchen_requests").onSnapshot(() => { loadRequestsFromFirebase(); });
+initFreehandModeListener();  // Start listening to Freehand mode changes
+updateFreehandStatusIndicator(); // Initialize indicator
 </script>
 </body>
 </html>
