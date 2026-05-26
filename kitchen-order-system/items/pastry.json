@@ -169,5 +169,10 @@
   {"code": "161145", "name": "Cinnamon Sticks (Cigar) (PURE)", "name_ar": "أعواد قرفة (سيجار) (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 406.7},
   {"code": "161163", "name": "White Pepper Powder (PURE)", "name_ar": "فلفل أبيض بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 872.2},
   {"code": "164041", "name": "Rice Flour", "name_ar": "دقيق أرز", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 44},
+  {"code": "175123", "name": "BetiFore Mix", "name_ar": "بيتى فور ميكس", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 260.4},
+  {"code": "175125", "name": "Biscuit Plain", "name_ar": "بسكويت ساده", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 210},
+  {"code": "175119", "name": "Cake Plain", "name_ar": "كعك ساده", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 231},
+  {"code": "175120", "name": "Cake with Dates", "name_ar": "كعك بالعجوه", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 231},
+  {"code": "175121", "name": "Cake With Malban", "name_ar": "كعك بالملبن", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 231},
   {"code": "166034", "name": "Borgoul Seeds (PURE)", "name_ar": "برغل (نقي)", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 34.3}
 ]
