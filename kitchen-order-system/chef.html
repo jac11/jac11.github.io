@@ -94,7 +94,7 @@ body.arabic .qty-picker {
     color: #ffd700;
 }
 
-/* Freehand Status Indicator - NEW */
+/* Freehand Status Indicator */
 .freehand-status {
     display: inline-flex;
     align-items: center;
@@ -757,17 +757,164 @@ body.arabic .items-scroll-container {
     }
 }
 
+/* ============ FIXED MOBILE VIEW - ONLY CHANGES HERE ============ */
 @media (max-width: 768px) {
-    .cart-table th, .cart-table td {
-        padding: 8px 6px;
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .logo {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .freehand-status {
+        margin-left: 0;
+        margin-top: 5px;
+    }
+    
+    .header-buttons {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .kitchen-tabs {
+        top: 110px;
+    }
+    
+    .tabs-container {
+        padding: 8px 0;
+    }
+    
+    .tab-btn {
+        padding: 6px 12px;
         font-size: 11px;
     }
-    .cart-stats {
-        font-size: 10px;
+    
+    .card {
+        padding: 12px;
     }
+    
+    .card h3 {
+        font-size: 0.9rem;
+    }
+    
+    .item-main-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .item-meta {
+        text-align: left;
+        width: 100%;
+    }
+    
+    .item-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .qty-picker {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .add-item-btn {
+        flex: 1;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .button-group .btn {
+        width: 100%;
+    }
+    
+    .cart-stats {
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+    }
+    
     .request-card-header {
         flex-direction: column;
         align-items: flex-start;
+    }
+    
+    .history-toolbar {
+        flex-direction: column;
+    }
+    
+    .history-toolbar input,
+    .history-filter-btn {
+        width: 100%;
+    }
+    
+    .freehand-banner {
+        font-size: 0.7rem;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .items-scroll-container {
+        max-height: 400px;
+    }
+    
+    .item-card {
+        padding: 10px;
+    }
+    
+    .item-name {
+        font-size: 0.8rem;
+    }
+    
+    .item-price {
+        font-size: 0.65rem;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .tab-btn {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+    
+    .cart-table th, .cart-table td {
+        padding: 6px 4px;
+        font-size: 10px;
+    }
+    
+    .cart-stats {
+        font-size: 9px;
+    }
+    
+    .qty-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+    
+    .qty-value {
+        min-width: 40px;
+        font-size: 0.9rem;
+    }
+    
+    .add-item-btn {
+        padding: 6px 12px;
+        font-size: 0.65rem;
+    }
+    
+    .remove-btn {
+        padding: 3px 8px;
+        font-size: 9px;
+    }
+    
+    .status-badge {
+        padding: 3px 8px;
+        font-size: 9px;
     }
 }
 
@@ -935,7 +1082,7 @@ function initFreehandModeListener() {
 
 // ============ GET MAX LIMIT - ONLY THIS CHANGES IN FREEHAND MODE ============
 function getItemMaxLimit(item) {
-    if (freehandModeActive) return 999999;  // No limit when freehand is ON
+    if (freehandModeActive) return 999999;
     return item.maxLimit || 99;
 }
 
@@ -1207,7 +1354,15 @@ function loadOrderHistory(kitchen) {
             if (item.status === "approved") { statusDisplay = `✅ ${t('approved')}`; statusColor = "#27ae60"; }
             else if (item.status === "rejected") { statusDisplay = `❌ ${t('rejected')}`; statusColor = "#e74c3c"; if(item.rejectionReason) { statusDisplay += `<div class="rejection-reason">${t('reason')} ${escapeHtml(item.rejectionReason)}</div>`; } }
             else { statusDisplay = `⏳ ${t('pending')}`; statusColor = "#f39c12"; }
-            itemsHtml += `<tr><td>${item.code}</td>}<strong>${escapeHtml(displayName)}</strong></td><td>${item.originalQty.toFixed(1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td>}<span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span></td></tr>`;
+            itemsHtml += `<tr>
+                <td>${item.code}</td>
+                <td><strong>${escapeHtml(displayName)}</strong></td>
+                <td>${item.originalQty.toFixed(1)}</td>
+                <td>${item.unit}</td>
+                <td>${(item.price || 0).toFixed(2)}</td>
+                <td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td>
+                <td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span></td>
+            </tr>`;
         });
         itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;"><td colspan="6" style="text-align:right;">💰 ${t('totalValue')} (Approved):</td><td class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</td></tr>`;
         itemsHtml += `</tbody></table></div>`;
@@ -1235,7 +1390,7 @@ function restoreHistoryState(kitchen) {
     else section.style.display = "none";
 }
 
-// ============ ITEM LIST FUNCTIONS WITH FREEHAND MODE SUPPORT ============
+// ============ ITEM LIST FUNCTIONS ============
 function filterItemsByFirstChar(kitchen, searchChar) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const displayDiv = document.getElementById(`itemsDisplay_${kitchenId}`);
@@ -1321,7 +1476,6 @@ function changeQuantity(kitchen, code, delta, maxLimit) {
     let current = selectedQuantities[kitchen][code] || 0;
     let newQty = parseFloat((current + delta).toFixed(1));
     if (newQty < 0) newQty = 0;
-    // Only check max limit when freehand mode is OFF
     if (!freehandModeActive && newQty > maxLimit) newQty = maxLimit;
     selectedQuantities[kitchen][code] = newQty;
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
@@ -1398,7 +1552,7 @@ function renderCart(kitchen) {
 function removeItem(kitchen, index) { kitchenData[kitchen].cart.splice(index, 1); renderCart(kitchen); saveCart(); showToast("Item removed"); }
 function clearCart(kitchen) { if (confirm("Clear all items?")) { kitchenData[kitchen].cart = []; renderCart(kitchen); saveCart(); showToast("Cart cleared"); } }
 
-// ============ SUBMIT REQUEST WITH DUPLICATE CHECK ============
+// ============ SUBMIT REQUEST ============
 async function submitRequest(kitchen) {
     const chefName = chefNames[kitchen];
     const cart = kitchenData[kitchen].cart;
