@@ -6,669 +6,439 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<title>Developer Console - Complete Control</title>
+<title>Dev Console • Freehand (Limits OFF, Steps preserved)</title>
 <style>
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', monospace;
 }
-
 body {
-    font-family: 'Courier New', 'Segoe UI', monospace;
-    background: #0a0e27;
-    color: #e0e0e0;
+    background: radial-gradient(circle at 10% 20%, #0a0f1e, #03060c);
+    min-height: 100vh;
+    padding: 20px;
+    color: #eef2ff;
 }
-
-.header {
-    background: linear-gradient(135deg, #0f0c29, #1a1a4e, #24243e);
-    padding: 20px 24px;
-    border-bottom: 3px solid #00d4ff;
-}
-
-.header h1 {
-    font-size: 1.4rem;
+/* LOGIN OVERLAY */
+.login-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
+    justify-content: center;
+    z-index: 1000;
 }
-
-.badge {
-    background: #00d4ff;
-    color: #0a0e27;
-    padding: 4px 12px;
-    border-radius: 40px;
-    font-size: 0.7rem;
+.login-box {
+    background: #111827;
+    border-radius: 42px;
+    padding: 40px 30px;
+    width: 380px;
+    text-align: center;
+    box-shadow: 0 20px 35px rgba(0,0,0,0.6), 0 0 0 1px rgba(75,130,255,0.2);
+    border: 1px solid #2d3a5e;
+}
+.login-box h2 {
+    font-weight: 600;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, #c084fc, #60a5fa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.info-msg {
+    background: #1e293b;
+    padding: 6px 12px;
+    border-radius: 60px;
+    font-size: 0.8rem;
+    color: #facc15;
+}
+.login-box input {
+    width: 100%;
+    padding: 14px 16px;
+    margin: 12px 0;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 60px;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+}
+.login-box input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+}
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(95deg, #3b82f6, #8b5cf6);
+    border: none;
+    border-radius: 60px;
     font-weight: bold;
+    color: white;
+    cursor: pointer;
+    margin-top: 12px;
 }
-
-.badge-restricted {
+.back-btn {
+    background: #334155 !important;
+    margin-top: 8px !important;
+}
+.error-msg {
+    color: #f87171;
+    margin-top: 14px;
+    font-size: 0.8rem;
+}
+/* MAIN PANEL */
+.header {
+    background: rgba(15, 25, 45, 0.7);
+    backdrop-filter: blur(12px);
+    border-radius: 40px;
+    padding: 18px 28px;
+    margin-bottom: 25px;
+    border: 1px solid #2d3a5e;
+}
+.header h1 {
+    font-size: 1.7rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+.badge {
+    background: #1e293b;
+    padding: 4px 12px;
+    border-radius: 60px;
+    font-size: 0.7rem;
+    font-weight: normal;
+    color: #94a3b8;
+}
+.badge-freehand {
     background: #dc2626;
     color: white;
 }
-
-.badge-freehand {
-    background: #f59e0b;
-    color: #1a1a2e;
-}
-
-.container {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 24px;
-}
-
-/* Login Modal */
-.login-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.95);
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-box {
-    background: #0f172a;
-    border: 2px solid #00d4ff;
-    border-radius: 24px;
-    padding: 40px;
-    width: 400px;
-    text-align: center;
-}
-
-.login-box h2 {
-    color: #00d4ff;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.login-box input {
-    width: 100%;
-    background: #1a1a2e;
-    border: 1px solid #2a3a5a;
-    padding: 14px;
-    border-radius: 12px;
-    color: white;
-    font-family: monospace;
-    font-size: 1rem;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.login-box button {
-    background: #00d4ff;
-    color: #0a0e27;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    margin-top: 10px;
-}
-
-.login-box button:hover { opacity: 0.9; transform: scale(1.02); }
-.login-box .back-btn { background: #334155; color: white; margin-top: 10px; }
-.login-box .back-btn:hover { background: #475569; }
-.error-msg { color: #dc2626; margin-top: 10px; font-size: 0.8rem; }
-.info-msg { color: #00d4ff; margin-top: 10px; font-size: 0.8rem; }
-.success-msg { color: #10b981; margin-top: 10px; font-size: 0.8rem; }
-
-/* User Menu */
 .user-menu {
     display: flex;
+    gap: 15px;
     align-items: center;
-    gap: 12px;
-    background: #1a1a2e;
-    padding: 6px 16px;
-    border-radius: 40px;
-    flex-wrap: wrap;
 }
-
 .user-email {
-    font-size: 0.75rem;
-    color: #00d4ff;
+    font-family: monospace;
+    background: #0f172a;
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
 }
-
-/* Tabs */
+.btn-secondary {
+    background: #334155;
+}
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
 .tabs {
     display: flex;
-    gap: 8px;
+    gap: 12px;
     margin-bottom: 24px;
     flex-wrap: wrap;
-    background: #0f172a;
-    padding: 12px 20px;
-    border-radius: 20px;
 }
-
 .tab-btn {
-    background: #1e293b;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 40px;
-    color: #94a3b8;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-}
-
-.tab-btn.active {
-    background: #00d4ff;
-    color: #0a0e27;
-}
-
-/* Panels */
-.panel {
     background: #0f172a;
-    border-radius: 24px;
-    border: 1px solid #2a3a5a;
-    overflow: hidden;
-    display: none;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 60px;
+    font-weight: 600;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: 0.2s;
 }
-
-.panel.active-panel {
+.tab-btn.active {
+    background: #3b82f6;
+    color: white;
+    box-shadow: 0 6px 14px rgba(59,130,246,0.3);
+}
+.panel {
+    display: none;
+    background: rgba(15, 25, 45, 0.5);
+    backdrop-filter: blur(4px);
+    border-radius: 32px;
+    padding: 26px;
+    border: 1px solid #2d3a5e;
+}
+.active-panel {
     display: block;
 }
-
 .panel-header {
-    background: #1a1a2e;
-    padding: 16px 24px;
-    border-bottom: 1px solid #2a3a5a;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 15px;
+    margin-bottom: 22px;
 }
-
-.panel-header h2 {
-    font-size: 1rem;
-    color: #00d4ff;
-}
-
-/* Forms */
 .form-group {
-    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
-
 .form-row {
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 16px;
 }
-
 .form-input {
     flex: 1;
-    min-width: 180px;
-    background: #1a1a2e;
-    border: 1px solid #2a3a5a;
-    padding: 12px 16px;
-    border-radius: 12px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    padding: 12px 18px;
+    border-radius: 40px;
     color: white;
-    font-family: monospace;
 }
-
-.form-input:focus {
-    outline: none;
-    border-color: #00d4ff;
-}
-
 textarea {
     width: 100%;
-    background: #0a0e27;
-    border: 2px solid #2a3a5a;
-    color: #00ffcc;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
+    background: #0a0f1a;
+    border: 1px solid #2d3a5e;
+    border-radius: 20px;
     padding: 16px;
-    border-radius: 16px;
-    resize: vertical;
-    line-height: 1.5;
+    color: #e2e8f0;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
 }
-
 .btn {
     padding: 10px 20px;
-    border-radius: 30px;
+    border-radius: 40px;
+    font-weight: bold;
     border: none;
-    font-weight: 600;
     cursor: pointer;
-    font-family: monospace;
-    font-size: 0.75rem;
-    transition: all 0.2s;
+    transition: 0.15s;
 }
-
-.btn-primary { background: #0066ff; color: white; }
+.btn-primary { background: #2563eb; color: white; }
 .btn-success { background: #10b981; color: white; }
 .btn-danger { background: #dc2626; color: white; }
-.btn-warning { background: #f59e0b; color: #1a1a2e; }
-.btn-secondary { background: #334155; color: white; }
+.btn-warning { background: #f59e0b; color: #1e1b2f; }
 .btn-restore { background: #8b5cf6; color: white; }
-.btn-add-item { background: #00d4ff; color: #0a0e27; }
-.btn-refresh { background: #00d4ff; color: #0a0e27; }
-.btn-freehand { background: #f59e0b; color: #1a1a2e; font-weight: bold; }
-.btn-freehand.active { background: #10b981; color: white; box-shadow: 0 0 10px #10b981; }
-.btn-freehand.inactive { background: #dc2626; color: white; }
-.btn-disabled { background: #4a5568; color: #a0aec0; cursor: not-allowed; opacity: 0.6; }
-
-.btn:hover { transform: scale(1.02); opacity: 0.9; }
-
-/* Document List */
-.doc-list {
-    margin-top: 20px;
-}
-
-.doc-list-header {
-    background: #1a1a2e;
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.doc-list-title {
-    font-weight: bold;
-    color: #00d4ff;
-    font-size: 0.9rem;
-}
-
-.doc-list-header-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.doc-items-container {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.doc-item {
-    background: #111827;
-    padding: 14px 18px;
-    margin-bottom: 8px;
-    border-radius: 12px;
-    border-left: 4px solid #00d4ff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.doc-item:hover {
-    background: #1f2937;
-    transform: translateX(2px);
-}
-
-.doc-item-info {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 15px;
-    flex: 2;
-}
-
-.doc-id-badge {
-    background: #0a0e27;
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-family: monospace;
-    font-size: 0.7rem;
-    color: #00d4ff;
-    font-weight: bold;
-}
-
-.doc-request-id {
-    background: #1e293b;
-    padding: 5px 12px;
+.btn-freehand { background: #334155; }
+.btn-freehand.active { background: #10b981; box-shadow: 0 0 8px #10b981; }
+.freehand-banner {
+    background: #10b98122;
+    border-left: 5px solid #10b981;
+    padding: 12px 20px;
     border-radius: 20px;
-    font-size: 0.75rem;
     font-weight: bold;
-    color: #f59e0b;
+    animation: softPulse 1.2s infinite;
 }
-
-.doc-chef {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.8rem;
-    color: #e0e0e0;
+@keyframes softPulse {
+    0% { background: #10b98122; }
+    50% { background: #10b98144; }
+    100% { background: #10b98122; }
 }
-
-.doc-kitchen {
-    background: #1e293b;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    color: #94a3b8;
-}
-
-.status-badge {
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    min-width: 85px;
-    text-align: center;
-}
-.status-pending { background: #f59e0b; color: #1a1a2e; }
-.status-approved { background: #10b981; color: white; }
-.status-rejected { background: #dc2626; color: white; }
-.status-accepted { background: #8b5cf6; color: white; }
-
-.doc-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.btn-icon {
-    padding: 5px 12px;
-    font-size: 0.7rem;
-}
-
-/* Menu Items Selector */
-.menu-selector {
-    background: #0a0e27;
+.warning-box {
+    background: #dc262622;
+    border-left: 4px solid #dc2626;
+    padding: 12px;
     border-radius: 16px;
+    margin-bottom: 16px;
+}
+.doc-list {
+    margin-top: 30px;
+    background: #03071270;
+    border-radius: 24px;
     padding: 16px;
-    margin-top: 20px;
-    border: 1px solid #2a3a5a;
 }
-
-.menu-title {
-    color: #00d4ff;
-    margin-bottom: 15px;
-    font-weight: bold;
+.doc-list-header {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 12px;
 }
-
-.kitchen-menu-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-}
-
-.kitchen-menu-btn {
-    background: #1e293b;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 30px;
-    color: #94a3b8;
-    cursor: pointer;
-    font-size: 0.7rem;
-    transition: all 0.2s;
-}
-
-.kitchen-menu-btn.active {
-    background: #00d4ff;
-    color: #0a0e27;
-}
-
-.kitchen-menu-btn.disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    background: #1e293b;
-}
-
-.kitchen-menu-btn:not(.disabled):hover { background: #334155; }
-
-.menu-items-list {
+.doc-items-container {
     max-height: 300px;
     overflow-y: auto;
-    margin-top: 10px;
 }
-
-.menu-item-card {
+.doc-item {
     background: #111827;
-    padding: 10px 14px;
-    margin-bottom: 6px;
-    border-radius: 10px;
-    border-left: 3px solid #f59e0b;
+    border-radius: 16px;
+    padding: 12px 18px;
+    margin: 8px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    transition: all 0.2s;
+    cursor: pointer;
 }
-
-.menu-item-card:hover {
-    background: #1f2937;
-    transform: translateX(4px);
+.doc-item:hover { background: #1e293b; }
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: bold;
 }
-
-.menu-item-code { color: #f59e0b; font-weight: bold; font-family: monospace; }
-.menu-item-name { flex: 2; font-size: 0.8rem; }
-.menu-item-unit { color: #9ca3af; font-size: 0.7rem; }
-.menu-item-price { color: #10b981; font-weight: bold; }
-
-.add-qty-control {
+.status-pending { background: #facc15; color: #1e1e2a; }
+.status-approved { background: #10b981; color: white; }
+.status-rejected { background: #ef4444; color: white; }
+.menu-selector {
+    margin-top: 28px;
+    border-top: 1px solid #2d3a5e;
+    padding-top: 22px;
+}
+.kitchen-menu-buttons {
     display: flex;
-    gap: 8px;
-    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 15px 0;
 }
-
-.qty-input-small {
-    width: 70px;
-    background: #1a1a2e;
-    border: 1px solid #2a3a5a;
-    padding: 4px 8px;
-    border-radius: 8px;
+.kitchen-menu-btn {
+    background: #0f172a;
+    border: 1px solid #334155;
+    padding: 8px 18px;
+    border-radius: 60px;
+    color: #cbd5e6;
+    cursor: pointer;
+}
+.kitchen-menu-btn.active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+.menu-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 380px;
+    overflow-y: auto;
+}
+.menu-item-card {
+    background: #0f172a;
+    padding: 12px 18px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.menu-item-card input {
+    width: 90px;
+    background: #030712;
+    border: 1px solid #3b82f6;
+    border-radius: 30px;
+    padding: 6px;
     color: white;
     text-align: center;
 }
-
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1f2937;
-    border-left: 4px solid #10b981;
-    padding: 12px 24px;
-    border-radius: 30px;
-    font-size: 13px;
-    z-index: 2000;
-    animation: fadeIn 0.3s;
+.add-icon-btn {
+    background: #2563eb;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 40px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
 }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
-hr {
-    border-color: #2a3a5a;
-    margin: 15px 0;
-}
-
-.note {
-    font-size: 0.65rem;
-    color: #9ca3af;
-    text-align: center;
-    margin-top: 15px;
-}
-
-.warning-box {
-    background: #dc262620;
-    border-left: 3px solid #dc2626;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    color: #fca5a5;
-}
-
-/* User Management Section */
-.user-card {
-    background: #111827;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 12px;
-    border-left: 3px solid #10b981;
-}
-
+/* generator styles */
 .items-list {
-    background: #0a0e27;
-    border-radius: 12px;
-    max-height: 250px;
+    max-height: 220px;
     overflow-y: auto;
-    margin-top: 15px;
 }
-
 .item-row {
-    background: #111827;
-    padding: 8px 12px;
-    margin: 5px;
-    border-radius: 8px;
-    border-left: 3px solid #00d4ff;
-    font-size: 0.7rem;
+    background: #0f172a;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 14px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     flex-wrap: wrap;
     gap: 8px;
+    align-items: center;
+    justify-content: space-between;
 }
-
-.item-code { color: #00d4ff; font-weight: bold; }
-.delete-item { background: #dc2626; border: none; padding: 3px 10px; border-radius: 20px; color: white; cursor: pointer; font-size: 0.65rem; }
-
-.counter {
-    background: #00d4ff20;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    color: #00d4ff;
-}
-
 .row {
     display: flex;
-    gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 15px;
+    gap: 12px;
 }
-
 .field {
     flex: 1;
-    min-width: 140px;
 }
-
 .field label {
     display: block;
     font-size: 0.7rem;
-    color: #9ca3af;
-    margin-bottom: 5px;
-    text-transform: uppercase;
+    opacity: 0.7;
 }
-
 .field input {
     width: 100%;
-    background: #1a1a2e;
-    border: 1px solid #2a3a5a;
-    padding: 10px 12px;
-    border-radius: 8px;
-    color: #00ffcc;
-    font-family: monospace;
-    font-size: 0.85rem;
+    background: #0f172a;
+    border: 1px solid #334155;
+    padding: 10px;
+    border-radius: 28px;
+    color: white;
 }
-
-.add-icon-btn {
-    background: #00d4ff20;
-    border: 1px solid #00d4ff;
+hr {
+    border-color: #2d3a5e;
+    margin: 12px 0;
+}
+.counter {
+    margin-left: 12px;
+    background: #1e293b;
+    padding: 4px 10px;
     border-radius: 30px;
-    padding: 6px 14px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: #00d4ff;
 }
-
-.add-icon-btn:hover {
-    background: #00d4ff;
-    color: #0a0e27;
-    transform: scale(1.05);
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #1e293b;
+    border-left: 5px solid #10b981;
+    padding: 12px 24px;
+    border-radius: 40px;
+    color: white;
+    font-weight: 500;
+    z-index: 1200;
+    animation: fadeSlide 0.3s ease;
 }
-
-.freehand-banner {
-    background: #10b98120;
-    border: 2px solid #10b981;
-    border-radius: 12px;
-    padding: 12px 15px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
 }
-
-.freehand-banner.inactive {
-    display: none;
-}
-
-/* Freehand Status Indicator */
 .freehand-status-dev {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-left: 15px;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.4);
     padding: 4px 12px;
-    border-radius: 30px;
+    border-radius: 40px;
     font-size: 0.7rem;
 }
-
 .status-light-dev {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: #666;
-    transition: all 0.3s ease;
+    background: #5f6c84;
 }
-
 .status-light-dev.active {
     background: #10b981;
     box-shadow: 0 0 8px #10b981;
-    animation: pulse 1.5s infinite;
+    animation: pulseGlow 1.5s infinite;
 }
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-    70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 #10b98180; }
+    70% { box-shadow: 0 0 0 6px #10b98100; }
+}
+.note {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-top: 10px;
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN MODAL -->
 <div id="loginOverlay" class="login-overlay">
     <div class="login-box">
-        <h2>🔐 Developer Access</h2>
-        <div class="info-msg" style="margin-bottom: 15px;">⚠️ Authorized developers only</div>
-        <input type="email" id="devEmail" placeholder="Email Address" autocomplete="email" value="jac11devel@gmail.com">
-        <input type="password" id="devPassword" placeholder="Password" autocomplete="current-password">
-        <button id="loginBtn" onclick="loginWithFirebase()">🔓 Login to Console</button>
-        <button class="back-btn" onclick="goBackToIndex()">◀ Go Back to Home</button>
+        <h2>🔐 DEV ACCESS</h2>
+        <div class="info-msg">⚠️ Authorized developers only</div>
+        <input type="email" id="devEmail" placeholder="Email" autocomplete="email">
+        <input type="password" id="devPassword" placeholder="Password">
+        <button onclick="loginWithFirebase()">🔓 Login to Console</button>
+        <button class="back-btn" onclick="goBackToIndex()">◀ Back to Home</button>
         <div id="loginErrorMsg" class="error-msg"></div>
     </div>
 </div>
@@ -676,119 +446,108 @@ hr {
 <div id="mainContent" style="display:none;">
     <div class="header">
         <h1>
-            🛠️ DEVELOPER CONSOLE 
-            <span class="badge">Edit Orders</span>
+            🛠️ DEV CONSOLE 
+            <span class="badge">Orders</span>
             <span class="badge">Kitchen JSON</span>
-            <span class="badge">User Management</span>
+            <span class="badge">Users</span>
             <span class="badge badge-freehand" id="freehandBadge">✋ Freehand: OFF</span>
-            <div class="freehand-status-dev" id="devFreehandStatus">
+            <div class="freehand-status-dev">
                 <div class="status-light-dev" id="devStatusLight"></div>
                 <span id="devStatusText">Freehand: OFF</span>
             </div>
         </h1>
-        <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-            <div style="font-size: 0.7rem;">⚠️ Freehand mode saves to Firestore - affects ALL chefs permanently until changed</div>
-            <div class="user-menu"><span class="user-email" id="userEmailDisplay"></span><button class="btn btn-secondary btn-icon" onclick="logout()">🚪 Logout</button></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 8px;">
+            <div style="font-size: 0.7rem; background:#00000040; padding:4px 12px; border-radius: 30px;">⚡ FREEHAND MODE = removes quantity limits only (steps/step values remain unchanged)</div>
+            <div class="user-menu"><span class="user-email" id="userEmailDisplay"></span><button class="btn btn-secondary" onclick="logout()">🚪 Logout</button></div>
         </div>
     </div>
     <div class="container">
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('orders')">📋 Edit Firestore Orders</button>
-            <button class="tab-btn" onclick="switchTab('generator')">📦 JSON Generator (AVE)</button>
-            <button class="tab-btn" onclick="switchTab('users')">👥 User Management</button>
+            <button class="tab-btn active" onclick="switchTab('orders')">📋 Firestore Orders</button>
+            <button class="tab-btn" onclick="switchTab('generator')">📦 JSON Builder (AVE)</button>
+            <button class="tab-btn" onclick="switchTab('users')">👥 User Admin</button>
         </div>
 
-        <!-- PANEL 1: FIRESTORE ORDERS EDITOR -->
+        <!-- ORDERS PANEL -->
         <div id="ordersPanel" class="panel active-panel">
             <div class="panel-header">
-                <h2>📄 Edit Firestore Documents (kitchen_requests)</h2>
+                <h2>📄 Edit kitchen_requests</h2>
                 <div style="display: flex; gap: 10px;">
-                    <button id="freehandToggleBtn" class="btn btn-freehand inactive" onclick="toggleFreehandMode()">✋ Freehand Mode: OFF</button>
+                    <button id="freehandToggleBtn" class="btn btn-freehand" onclick="toggleFreehandMode()">✋ Freehand Mode: OFF</button>
                     <button class="btn btn-primary" onclick="fetchOrderDocument()">🔍 Fetch by ID</button>
                 </div>
             </div>
             <div class="form-group">
-                <div id="freehandBanner" class="freehand-banner inactive">
-                    <span>⚡</span>
-                    <span><strong>FREEHAND MODE ACTIVE</strong> - Quantity limits are DISABLED for ALL chefs!</span>
-                </div>
+                <div id="freehandBanner" class="freehand-banner" style="display:none;">⚡ <strong>FREEHAND MODE ACTIVE</strong> ⚡ – Quantity limits DISABLED for ALL chefs (steps unchanged)</div>
                 <div class="form-row"><input type="text" id="orderDocId" class="form-input" placeholder="Enter Firestore Document ID..."></div>
                 <div id="orderViewer" style="display:none;">
-                    <div id="orderStatusWarning" class="warning-box" style="display:none;">⚠️ This order is <strong id="warningStatusText">COMPLETED</strong>. You MUST click <strong>"Restore to Pending"</strong> before making any edits or adding items.</div>
-                    <textarea id="orderJsonEditor" rows="10" placeholder="Document JSON will appear here..."></textarea>
+                    <div id="orderStatusWarning" class="warning-box" style="display:none;">⚠️ Order is <strong id="warningStatusText">COMPLETED</strong> — click "Restore to Pending" before editing.</div>
+                    <textarea id="orderJsonEditor" rows="8" placeholder="JSON content..."></textarea>
                     <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
-                        <button class="btn btn-success" id="saveOrderBtn" onclick="saveOrderDocument()">💾 SAVE to Firestore</button>
-                        <button class="btn btn-danger" id="deleteOrderBtn" onclick="deleteOrderDocument()">🗑️ DELETE Document</button>
-                        <button class="btn btn-restore" id="restoreOrderBtn" onclick="restoreSingleToPending()">🔄 Restore to Pending</button>
-                        <button class="add-icon-btn" onclick="quickAddItemFromOrder()" title="Quick Add Item">➕ Quick Add Item</button>
+                        <button class="btn btn-success" onclick="saveOrderDocument()">💾 SAVE</button>
+                        <button class="btn btn-danger" onclick="deleteOrderDocument()">🗑️ DELETE</button>
+                        <button class="btn btn-restore" onclick="restoreSingleToPending()">🔄 Restore to Pending</button>
+                        <button class="add-icon-btn" onclick="quickAddItemFromOrder()">➕ Quick Add Item</button>
                     </div>
                     <div class="menu-selector">
-                        <div class="menu-title">📦 ADD ITEM FROM KITCHEN MENU (JSON Files)</div>
+                        <div class="menu-title">📦 ADD FROM KITCHEN JSON (global menu)</div>
                         <div class="kitchen-menu-buttons" id="kitchenMenuButtons"></div>
-                        <div id="selectedKitchenName" style="margin-bottom: 10px; font-size: 0.75rem; color: #00d4ff;"></div>
+                        <div id="selectedKitchenName" style="margin:8px 0; font-size:0.75rem; color:#7aa2f7;"></div>
                         <div id="menuItemsList" class="menu-items-list"></div>
-                        <div class="note">💡 Freehand mode saves to Firestore - affects ALL chefs!</div>
+                        <div class="note">💡 Freehand mode only removes maxLimit restriction — step values are NOT changed.</div>
                     </div>
                 </div>
                 <div class="doc-list">
-                    <div class="doc-list-header"><span class="doc-list-title">📋 RECENT ORDERS</span><div><button class="btn btn-refresh btn-icon" onclick="refreshOrdersList()">⟳ Refresh</button></div></div>
+                    <div class="doc-list-header"><span class="doc-list-title">📋 RECENT ORDERS (50)</span><button class="btn btn-primary btn-icon" onclick="refreshOrdersList()" style="padding:6px 16px;">⟳ Refresh</button></div>
                     <div id="ordersList" class="doc-items-container"></div>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 2: JSON GENERATOR -->
+        <!-- JSON GENERATOR -->
         <div id="generatorPanel" class="panel">
-            <div class="panel-header"><h2>📦 Generate Menu JSON (AVE Field)</h2><div><button class="btn btn-primary" onclick="copyJSON()">📋 Copy JSON</button><button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button></div></div>
+            <div class="panel-header"><h2>📦 Generate Menu JSON (AVE schema)</h2><div><button class="btn btn-primary" onclick="copyJSON()">📋 Copy</button><button class="btn btn-secondary" onclick="downloadJSON()">💾 Download</button></div></div>
             <div class="form-group">
-                <div class="row"><div class="field"><label>📌 CODE</label><input type="text" id="code"></div><div class="field"><label>🏷️ NAME (EN)</label><input type="text" id="name"></div><div class="field"><label>🌙 NAME (AR)</label><input type="text" id="nameAr"></div></div>
-                <div class="row"><div class="field"><label>📦 UNIT</label><input type="text" id="unit"></div><div class="field"><label>🔢 MAX LIMIT</label><input type="number" id="maxLimit" value="2"></div><div class="field"><label>⚡ STEP</label><input type="number" id="step" value="1"></div><div class="field"><label>💰 AVE</label><input type="number" id="ave" value="45.50"></div></div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;"><button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button><button class="btn btn-secondary" onclick="clearForm()">Clear Form</button><button class="btn btn-warning" onclick="addSample()">Add Sample</button><button class="btn btn-danger" onclick="clearAllItems()">Clear All</button></div>
-                <hr><div><strong>ITEMS LIST</strong><span id="itemCount" class="counter">0 items</span></div>
+                <div class="row"><div class="field"><label>📌 CODE</label><input type="text" id="code" placeholder="e.g. 161005"></div><div class="field"><label>🏷️ NAME (EN)</label><input type="text" id="name"></div><div class="field"><label>🌙 NAME (AR)</label><input type="text" id="nameAr"></div></div>
+                <div class="row"><div class="field"><label>📦 UNIT</label><input type="text" id="unit" placeholder="kg / pcs"></div><div class="field"><label>🔢 MAX LIMIT</label><input type="number" id="maxLimit" value="2"></div><div class="field"><label>⚡ STEP</label><input type="number" id="step" value="1" step="0.1"></div><div class="field"><label>💰 AVE</label><input type="number" id="ave" value="45.50"></div></div>
+                <div><button class="btn btn-success" onclick="addItem()">➕ ADD ITEM</button><button class="btn btn-secondary" onclick="clearForm()">Clear</button><button class="btn btn-warning" onclick="addSample()">Sample</button><button class="btn btn-danger" onclick="clearAllItems()">Clear All</button></div>
+                <hr><div><strong>📋 ITEMS LIST</strong><span id="itemCount" class="counter">0 items</span></div>
                 <div id="itemsList" class="items-list"></div>
-                <hr><div><strong>JSON OUTPUT</strong><textarea id="jsonOutput" rows="8" readonly></textarea></div>
+                <hr><div><strong>📄 JSON OUTPUT</strong></div>
+                <textarea id="jsonOutput" rows="8" readonly></textarea>
             </div>
         </div>
 
-        <!-- PANEL 3: USER MANAGEMENT -->
+        <!-- USER MANAGEMENT -->
         <div id="usersPanel" class="panel">
-            <div class="panel-header"><h2>👥 User Management</h2></div>
+            <div class="panel-header"><h2>👥 User & Developer Control</h2></div>
             <div class="form-group">
-                <div class="user-card"><h3>➕ Add New User</h3><div class="form-row"><input type="email" id="newUserEmail" placeholder="Email"><input type="password" id="newUserPassword" placeholder="Password"><input type="password" id="newUserConfirmPassword" placeholder="Confirm"><button class="btn btn-success" onclick="createNewUser()">Create</button></div><div id="addUserMsg" class="success-msg"></div></div>
-                <div class="user-card"><h3>🔑 Reset Password</h3><div class="form-row"><input type="email" id="resetUserEmail" placeholder="Email"><button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset</button></div><div id="resetUserMsg" class="success-msg"></div></div>
-                <div class="user-card"><h3>✅ Authorized Developers</h3><div id="authorizedDevsList"></div><div class="form-row"><input type="email" id="newDevEmail" placeholder="Developer Email"><button class="btn btn-primary" onclick="addAuthorizedDeveloper()">Add</button></div></div>
+                <div class="user-card" style="background:#0f172a; border-radius:24px; padding:20px;"><h3>➕ Create Chef Account</h3><div class="form-row"><input type="email" id="newUserEmail" placeholder="Email"><input type="password" id="newUserPassword" placeholder="Password"><input type="password" id="newUserConfirmPassword" placeholder="Confirm"><button class="btn btn-success" onclick="createNewUser()">Create</button></div></div>
+                <div class="user-card" style="background:#0f172a; border-radius:24px; padding:20px;"><h3>🔑 Password Reset</h3><div class="form-row"><input type="email" id="resetUserEmail" placeholder="Chef Email"><button class="btn btn-warning" onclick="sendUserPasswordReset()">Send Reset Link</button></div></div>
+                <div class="user-card" style="background:#0f172a; border-radius:24px; padding:20px;"><h3>✅ Authorized Developers</h3><div id="authorizedDevsList"></div><div class="form-row"><input type="email" id="newDevEmail" placeholder="Developer Email"><button class="btn btn-primary" onclick="addAuthorizedDeveloper()">Grant Access</button></div></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// ============ FIREBASE CONFIG (BUILT-IN - NO EXTERNAL FILE NEEDED) ============
+// FIREBASE INIT
 const firebaseConfig = {
     apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
     authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
     projectId: "kitchenordersystem-66eb2",
     storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
-    messagingSenderId: "786074432195",
-    appId: "1:786074432195:web:8381f2cba8f43002232876"
 };
-
-// Initialize Firebase
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-    console.log("✅ Firebase initialized successfully");
-}
-
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ============ GLOBAL VARIABLES ============
+// GLOBALS
 let currentDeveloperEmail = "";
 let AUTHORIZED_DEVELOPERS = ["dev@code.com", "jac11devel@gmail.com"];
 let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
 let currentMenuItems = [], currentSelectedKitchen = "";
 let freehandMode = false;
-
 const KITCHEN_JSON_FILES = { 
     "Hot Kitchen": "hot-kitchen.json", "Cold Kitchen": "cold-kitchen.json", 
     "Pastry / Bakery": "pastry.json", "Butchery": "butchery.json",
@@ -796,529 +555,161 @@ const KITCHEN_JSON_FILES = {
     "Staff Kitchen": "staff-kitchen.json"
 };
 
-// ============ FREEHAND MODE - PERSISTENT IN FIRESTORE ============
+// ========== FREEHAND PERSISTENCE (ONLY REMOVES MAX LIMIT, KEEPS STEP) ==========
 async function saveFreehandModeToFirestore(enabled) {
-    try {
-        await db.collection("settings").doc("freehand_mode").set({
-            enabled: enabled,
-            updatedBy: currentDeveloperEmail,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        console.log(`✅ Freehand mode ${enabled ? 'ENABLED' : 'DISABLED'} saved to Firestore`);
-        showToast(`🌍 Freehand mode ${enabled ? 'ENABLED for ALL chefs' : 'DISABLED for ALL chefs'}`);
-        updateDevStatusIndicator(enabled);
-    } catch(e) {
-        console.error("Error saving freehand mode:", e);
-        showToast("Failed to save freehand mode to Firestore", true);
-    }
+    await db.collection("settings").doc("freehand_mode").set({
+        enabled: enabled,
+        updatedBy: currentDeveloperEmail,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showToast(`🌍 Freehand ${enabled ? 'ON (limits removed, steps preserved)' : 'OFF (normal limits restored)'}`);
+    updateDevStatusIndicator(enabled);
 }
-
 async function loadFreehandModeFromFirestore() {
     try {
         const doc = await db.collection("settings").doc("freehand_mode").get();
-        if (doc.exists) {
-            freehandMode = doc.data().enabled === true;
-        } else {
-            await saveFreehandModeToFirestore(false);
-            freehandMode = false;
-        }
+        if (doc.exists) freehandMode = doc.data().enabled === true;
+        else { await saveFreehandModeToFirestore(false); freehandMode = false; }
         updateFreehandModeUI();
         updateDevStatusIndicator(freehandMode);
-        console.log(`📡 Freehand mode loaded from Firestore: ${freehandMode ? 'ON' : 'OFF'}`);
-    } catch(e) {
-        console.error("Error loading freehand mode:", e);
-        freehandMode = false;
-        updateFreehandModeUI();
-    }
+    } catch(e) { freehandMode = false; updateFreehandModeUI(); }
 }
-
 function updateDevStatusIndicator(enabled) {
-    const statusLight = document.getElementById('devStatusLight');
-    const statusText = document.getElementById('devStatusText');
-    const freehandBadge = document.getElementById('freehandBadge');
-    
-    if (statusLight) {
-        statusLight.className = enabled ? 'status-light-dev active' : 'status-light-dev';
-    }
-    if (statusText) {
-        statusText.innerHTML = enabled ? '🟢 Freehand: ON' : '⚫ Freehand: OFF';
-    }
-    if (freehandBadge) {
-        freehandBadge.textContent = enabled ? '✋ Freehand: ON (Global)' : '✋ Freehand: OFF';
-        freehandBadge.style.background = enabled ? '#10b981' : '#dc2626';
-    }
+    const light = document.getElementById('devStatusLight');
+    const txt = document.getElementById('devStatusText');
+    const badge = document.getElementById('freehandBadge');
+    if(light) light.className = enabled ? 'status-light-dev active' : 'status-light-dev';
+    if(txt) txt.innerText = enabled ? '🟢 Freehand: ON (no limits)' : '⚫ Freehand: OFF';
+    if(badge) { badge.innerText = enabled ? '✋ Freehand: ON (Limits OFF)' : '✋ Freehand: OFF'; badge.style.background = enabled ? '#10b981' : '#dc2626'; }
 }
-
 function toggleFreehandMode() {
-    const warningMsg = freehandMode 
-        ? "⚠️ DISABLE Freehand Mode?\n\nWhen disabled, quantity limits will be restored for ALL chefs.\n\nThis setting will be saved to Firestore permanently until changed again." 
-        : "⚠️ ENABLE Freehand Mode?\n\nWhen enabled, ALL CHEFS CAN ORDER ANY QUANTITY without limits!\n\nThis setting will be saved to Firestore permanently and survive browser closes/refreshes.\n\nAre you sure?";
-    
-    if(confirm(warningMsg)) {
-        freehandMode = !freehandMode;
-        updateFreehandModeUI();
-        saveFreehandModeToFirestore(freehandMode);
-        if(currentMenuItems.length > 0) renderMenuItemsList();
-    }
+    let msg = freehandMode ? "⚠️ DISABLE Freehand Mode? Quantity limits will be restored for ALL chefs. Step values remain untouched." : "⚠️ ENABLE Freehand Mode? ALL CHEFS can order ANY QUANTITY (step values stay as defined in menu).";
+    if(confirm(msg)) { freehandMode = !freehandMode; updateFreehandModeUI(); saveFreehandModeToFirestore(freehandMode); if(currentMenuItems.length) renderMenuItemsList(); }
 }
-
 function updateFreehandModeUI() {
     const toggleBtn = document.getElementById("freehandToggleBtn");
-    const freehandBanner = document.getElementById("freehandBanner");
-    
-    if(toggleBtn) {
-        toggleBtn.textContent = freehandMode ? "✋ Freehand Mode: ON (Global)" : "✋ Freehand Mode: OFF";
-        toggleBtn.className = freehandMode ? "btn btn-freehand active" : "btn btn-freehand inactive";
-    }
-    if(freehandBanner) {
-        freehandBanner.style.display = freehandMode ? "flex" : "none";
-    }
+    const banner = document.getElementById("freehandBanner");
+    if(toggleBtn) { toggleBtn.innerText = freehandMode ? "✋ Freehand Mode: ON (No Limits)" : "✋ Freehand Mode: OFF"; toggleBtn.className = freehandMode ? "btn btn-freehand active" : "btn btn-freehand"; }
+    if(banner) banner.style.display = freehandMode ? "flex" : "none";
     updateDevStatusIndicator(freehandMode);
 }
-
+// CRITICAL: getQuantityLimits - removes maxLimit but KEEPS ORIGINAL STEP
 function getQuantityLimits(item) {
-    if(freehandMode) return { maxLimit: 999999, step: 0.01 };
+    if(freehandMode) {
+        // Only remove max limit — step remains exactly as defined in item (never overwritten)
+        return { maxLimit: 999999, step: item.step || 1 };
+    }
     return { maxLimit: item.maxLimit || 2, step: item.step || 1 };
 }
 
-// ============ NAVIGATION ============
-function goBackToIndex() { window.location.href = "index.html"; }
-
-// ============ AUTH ============
+// Auth & devs
 async function loadAuthorizedDevelopers() {
-    try { 
-        const doc = await db.collection("settings").doc("authorized_devs").get(); 
-        if(doc.exists && doc.data().emails) AUTHORIZED_DEVELOPERS = doc.data().emails;
-        else await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
-        displayAuthorizedDevelopers(); 
-    } catch(e) { console.error(e); displayAuthorizedDevelopers(); }
+    try { const doc = await db.collection("settings").doc("authorized_devs").get(); if(doc.exists && doc.data().emails) AUTHORIZED_DEVELOPERS = doc.data().emails; else await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); displayAuthorizedDevelopers(); } catch(e) { displayAuthorizedDevelopers(); }
 }
+function displayAuthorizedDevelopers() { const c = document.getElementById("authorizedDevsList"); if(c) c.innerHTML = AUTHORIZED_DEVELOPERS.map(e => `<div style="display:flex;justify-content:space-between;padding:10px;background:#111827;border-radius:16px;margin:6px 0;"><span>📧 ${e}</span><button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${e}')">Remove</button></div>`).join(''); }
+async function addAuthorizedDeveloper() { const email = document.getElementById("newDevEmail").value.trim(); if(!email || AUTHORIZED_DEVELOPERS.includes(email)) return; AUTHORIZED_DEVELOPERS.push(email); await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); displayAuthorizedDevelopers(); showToast(`✅ ${email} added`); }
+async function removeAuthorizedDeveloper(email) { if(email === "dev@code.com") return; AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email); await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); displayAuthorizedDevelopers(); }
 
-function displayAuthorizedDevelopers() { 
-    const c = document.getElementById("authorizedDevsList"); 
-    if(c) c.innerHTML = AUTHORIZED_DEVELOPERS.map(e => `<div style="display:flex;justify-content:space-between;padding:8px;margin:5px 0;background:#1a1a2e;border-radius:8px;"><span>📧 ${e}</span><button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${e}')">Remove</button></div>`).join(''); 
-}
-
-async function addAuthorizedDeveloper() { 
-    const email = document.getElementById("newDevEmail").value.trim(); 
-    if(!email || AUTHORIZED_DEVELOPERS.includes(email)) return;
-    AUTHORIZED_DEVELOPERS.push(email); 
-    await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); 
-    displayAuthorizedDevelopers(); 
-    showToast(`✅ Added ${email}`);
-}
-
-async function removeAuthorizedDeveloper(email) { 
-    if(email === "dev@code.com") return;
-    AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email); 
-    await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); 
-    displayAuthorizedDevelopers(); 
-}
-
-// MAIN LOGIN FUNCTION - FIXED
 window.loginWithFirebase = async function() {
     const email = document.getElementById("devEmail").value.trim();
-    const password = document.getElementById("devPassword").value;
-    const errorDiv = document.getElementById("loginErrorMsg");
-    
-    console.log("Login attempted for:", email);
-    
-    if(!email || !password) { 
-        errorDiv.innerHTML = "Please enter email and password"; 
-        return; 
-    }
-    
-    errorDiv.innerHTML = "⏳ Logging in...";
-    errorDiv.style.color = "#00d4ff";
-    
+    const pwd = document.getElementById("devPassword").value;
+    const errDiv = document.getElementById("loginErrorMsg");
+    if(!email || !pwd) { errDiv.innerText = "Enter credentials"; return; }
+    errDiv.innerText = "⏳ Verifying...";
     try {
-        const userCred = await auth.signInWithEmailAndPassword(email, password);
-        console.log("Login successful:", userCred.user.email);
-        
+        const cred = await auth.signInWithEmailAndPassword(email, pwd);
         await loadAuthorizedDevelopers();
-        
-        if(!AUTHORIZED_DEVELOPERS.includes(userCred.user.email.toLowerCase())) {
-            errorDiv.innerHTML = "❌ Access Denied. Your email is not authorized.";
-            errorDiv.style.color = "#dc2626";
-            await auth.signOut();
-            return;
-        }
-        
-        currentDeveloperEmail = userCred.user.email;
+        if(!AUTHORIZED_DEVELOPERS.includes(cred.user.email.toLowerCase())) { errDiv.innerText = "❌ Unauthorized developer."; await auth.signOut(); return; }
+        currentDeveloperEmail = cred.user.email;
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
-        
         await loadFreehandModeFromFirestore();
-        refreshOrdersList(); 
+        refreshOrdersList();
         renderKitchenMenuButtons();
-        
-    } catch(error) {
-        console.error("Login error:", error);
-        let msg = "";
-        if(error.code === 'auth/user-not-found') {
-            msg = "❌ No account found with this email. Please check your credentials.";
-        } else if(error.code === 'auth/wrong-password') {
-            msg = "❌ Invalid password. Please try again.";
-        } else if(error.code === 'auth/invalid-email') {
-            msg = "❌ Invalid email format.";
-        } else if(error.code === 'auth/too-many-requests') {
-            msg = "❌ Too many failed attempts. Try again later.";
-        } else {
-            msg = "❌ " + error.message;
-        }
-        errorDiv.innerHTML = msg;
-        errorDiv.style.color = "#dc2626";
-    }
+    } catch(e) { errDiv.innerText = e.message; }
 };
+function logout() { if(confirm("Logout?")) auth.signOut().then(() => location.reload()); }
+function goBackToIndex() { window.location.href = "index.html"; }
 
-function logout() { 
-    if(confirm("Logout?")) auth.signOut().then(() => location.reload()); 
-}
+// ORDER CRUD + status helper
+function getRequestStatus(items) { if(!items || !items.length) return "pending"; let a=0,r=0; items.forEach(i => { if(i.status === "approved") a++; else if(i.status === "rejected") r++; }); if(a===items.length) return "approved"; if(r===items.length) return "rejected"; return "pending"; }
+async function refreshOrdersList() { try { const snap = await db.collection("kitchen_requests").orderBy("timestamp","desc").limit(50).get(); const cont = document.getElementById("ordersList"); cont.innerHTML = snap.empty ? "<div style='padding:20px;text-align:center;'>No orders</div>" : ""; snap.forEach(doc => { const d = doc.data(), st = getRequestStatus(d.items); const cls = st==="approved"?"status-approved":st==="rejected"?"status-rejected":"status-pending"; cont.innerHTML += `<div class="doc-item" onclick="loadOrderById('${doc.id}')"><div><span class="doc-id-badge">📄 ${doc.id.slice(0,10)}...</span><span>👨‍🍳 ${d.chefName||'?'}</span><span>🍽️ ${d.section||'?'}</span></div><div><span class="status-badge ${cls}">${st.toUpperCase()}</span><button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')">🗑️</button></div></div>`; }); } catch(e) { showToast("Error loading", true); } }
+async function loadOrderById(id) { document.getElementById("orderDocId").value = id; await fetchOrderDocument(); }
+async function fetchOrderDocument() { const id = document.getElementById("orderDocId").value.trim(); if(!id) return; try { const doc = await db.collection("kitchen_requests").doc(id).get(); if(!doc.exists) return; currentOrderDocId = id; currentOrderData = { id: doc.id, ...doc.data() }; currentOrderStatus = getRequestStatus(currentOrderData.items); document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); document.getElementById("orderViewer").style.display = "block"; orderKitchen = currentOrderData.section || "Hot Kitchen"; const warnDiv = document.getElementById("orderStatusWarning"); if(warnDiv) warnDiv.style.display = currentOrderStatus !== "pending" ? "flex" : "none"; if(currentOrderStatus !== "pending") document.getElementById("warningStatusText").innerText = currentOrderStatus.toUpperCase(); renderKitchenMenuButtons(); } catch(e) { showToast("Fetch failed", true); } }
+async function saveOrderDocument() { if(!currentOrderDocId || currentOrderStatus !== "pending") { showToast("Only PENDING orders can be edited", true); return; } try { const newData = JSON.parse(document.getElementById("orderJsonEditor").value); const { id, ...update } = newData; await db.collection("kitchen_requests").doc(currentOrderDocId).update(update); showToast("✅ Saved"); refreshOrdersList(); } catch(e) { showToast("Invalid JSON", true); } }
+async function deleteOrderById(docId) { if(confirm("Permanently delete?")) { await db.collection("kitchen_requests").doc(docId).delete(); if(currentOrderDocId === docId) document.getElementById("orderViewer").style.display = "none"; refreshOrdersList(); showToast("Deleted"); } }
+async function restoreOrderToPending(docId) { if(!confirm("Restore order to pending?")) return; const doc = await db.collection("kitchen_requests").doc(docId).get(); if(!doc.exists) return; const data = doc.data(); if(data.items){ let changed = false; data.items.forEach(i => { if(i.status === "approved" || i.status === "rejected") { i.status = "pending"; delete i.approvedQty; delete i.rejectionReason; changed = true; } }); if(changed) await db.collection("kitchen_requests").doc(docId).update({ items: data.items }); showToast(`Order restored to PENDING`); if(currentOrderDocId === docId) await fetchOrderDocument(); refreshOrdersList(); } }
+function restoreSingleToPending() { if(currentOrderDocId) restoreOrderToPending(currentOrderDocId); else showToast("No order loaded", true); }
 
-// ============ ORDER MANAGEMENT ============
-function getRequestStatus(items) { 
-    if(!items || !items.length) return "pending"; 
-    let all = true, a = 0, r = 0; 
-    items.forEach(i => { 
-        if(i.status === "approved") a++; 
-        else if(i.status === "rejected") r++; 
-        else all = false; 
-    }); 
-    if(all && a === items.length) return "approved"; 
-    if(all && r === items.length) return "rejected"; 
-    return "pending"; 
-}
-
-async function refreshOrdersList() { 
-    try { 
-        const snap = await db.collection("kitchen_requests").orderBy("timestamp", "desc").limit(50).get(); 
-        const cont = document.getElementById("ordersList"); 
-        if(!cont) return;
-        cont.innerHTML = snap.empty ? '<div style="padding:30px;text-align:center;">No orders</div>' : ''; 
-        snap.forEach(doc => { 
-            const d = doc.data(), st = getRequestStatus(d.items); 
-            const cls = st === "approved" ? "status-approved" : st === "rejected" ? "status-rejected" : "status-pending"; 
-            cont.innerHTML += `<div class="doc-item" onclick="loadOrderById('${doc.id}')">
-                <div class="doc-item-info">
-                    <span class="doc-id-badge">🆔 ${doc.id.substring(0,12)}...</span>
-                    <span class="doc-request-id">📌 ${d.requestId || 'N/A'}</span>
-                    <span class="doc-chef">👨‍🍳 ${d.chefName || '?'}</span>
-                    <span class="doc-kitchen">🍽️ ${d.section || '?'}</span>
-                </div>
-                <div style="display:flex; gap:10px; align-items:center;">
-                    <span class="status-badge ${cls}">${st.toUpperCase()}</span>
-                    <button class="btn btn-secondary btn-icon" onclick="event.stopPropagation();deleteOrderById('${doc.id}')">🗑️</button>
-                </div>
-            </div>`; 
-        }); 
-    } catch(e) { showToast("Error loading orders", true); } 
-}
-
-async function loadOrderById(docId) { 
-    document.getElementById("orderDocId").value = docId; 
-    await fetchOrderDocument(); 
-}
-
-async function fetchOrderDocument() { 
-    const id = document.getElementById("orderDocId").value.trim(); 
-    if(!id) { showToast("Enter Document ID", true); return; }
-    try { 
-        const doc = await db.collection("kitchen_requests").doc(id).get(); 
-        if(!doc.exists) { showToast("Document not found", true); return; }
-        currentOrderDocId = id; 
-        currentOrderData = { id: doc.id, ...doc.data() }; 
-        currentOrderStatus = getRequestStatus(currentOrderData.items); 
-        document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
-        document.getElementById("orderViewer").style.display = "block"; 
-        orderKitchen = currentOrderData.section || "Hot Kitchen"; 
-        renderKitchenMenuButtons(); 
-        showToast(`✅ Loaded: ${id} | Status: ${currentOrderStatus}`);
-    } catch(e) { showToast("Error loading document", true); } 
-}
-
-async function saveOrderDocument() { 
-    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
-        showToast("Cannot save: Order not pending. Restore first.", true);
-        return; 
-    }
-    try { 
-        const newData = JSON.parse(document.getElementById("orderJsonEditor").value); 
-        const { id, ...update } = newData; 
-        await db.collection("kitchen_requests").doc(currentOrderDocId).update(update); 
-        showToast("✅ Saved successfully"); 
-        refreshOrdersList(); 
-    } catch(e) { showToast("Save failed: " + e.message, true); } 
-}
-
-async function deleteOrderById(docId) { 
-    if(confirm("Delete this order permanently?")) { 
-        await db.collection("kitchen_requests").doc(docId).delete(); 
-        showToast("🗑️ Order deleted");
-        refreshOrdersList(); 
-        if(currentOrderDocId === docId) {
-            document.getElementById("orderViewer").style.display = "none";
-            document.getElementById("orderDocId").value = "";
-        }
-    } 
-}
-
-async function deleteOrderDocument() {
-    if(currentOrderDocId) await deleteOrderById(currentOrderDocId);
-}
-
-function renderKitchenMenuButtons() { 
-    const container = document.getElementById("kitchenMenuButtons"); 
-    if(!container) return; 
-    container.innerHTML = ""; 
-    Object.keys(KITCHEN_JSON_FILES).forEach(kit => { 
-        const btn = document.createElement("button"); 
-        btn.className = `kitchen-menu-btn ${currentSelectedKitchen === kit ? 'active' : ''}`; 
-        btn.innerText = kit; 
-        btn.onclick = () => { 
-            currentSelectedKitchen = kit; 
-            renderKitchenMenuButtons(); 
-            loadKitchenMenuJSON(kit); 
-        }; 
-        container.appendChild(btn); 
-    }); 
-}
-
-async function loadKitchenMenuJSON(kitchen) { 
-    const path = `items/${KITCHEN_JSON_FILES[kitchen]}`; 
-    document.getElementById("selectedKitchenName").innerHTML = `📁 Loading: ${path}`;
-    try { 
-        const res = await fetch(path); 
-        if(!res.ok) throw new Error("File not found");
-        const data = await res.json(); 
-        currentMenuItems = Array.isArray(data) ? data : (data.items || []); 
-        renderMenuItemsList(); 
-        document.getElementById("selectedKitchenName").innerHTML = `✅ Loaded ${currentMenuItems.length} items from ${kitchen}`;
-    } catch(e) { 
-        currentMenuItems = []; 
-        renderMenuItemsList(); 
-        document.getElementById("selectedKitchenName").innerHTML = `❌ Error: ${path} not found`;
-        showToast(`❌ ${KITCHEN_JSON_FILES[kitchen]} not found`, true);
-    } 
-}
-
+// KITCHEN MENU - preserves step always
+function renderKitchenMenuButtons() { const cont = document.getElementById("kitchenMenuButtons"); if(!cont) return; cont.innerHTML = ""; Object.keys(KITCHEN_JSON_FILES).forEach(kit => { const btn = document.createElement("button"); btn.className = `kitchen-menu-btn ${currentSelectedKitchen === kit ? 'active' : ''}`; btn.innerText = kit; btn.onclick = () => { currentSelectedKitchen = kit; renderKitchenMenuButtons(); loadKitchenMenuJSON(kit); }; cont.appendChild(btn); }); }
+async function loadKitchenMenuJSON(kitchen) { const path = `items/${KITCHEN_JSON_FILES[kitchen]}`; try { const res = await fetch(path); const data = await res.json(); currentMenuItems = Array.isArray(data) ? data : (data.items || []); renderMenuItemsList(); } catch(e) { currentMenuItems = []; renderMenuItemsList(); } }
 function renderMenuItemsList() { 
     const container = document.getElementById("menuItemsList"); 
     if(!container) return; 
-    if(!currentMenuItems.length) { 
-        container.innerHTML = '<div style="padding:20px;text-align:center;">No items found. Create the JSON file in the "items" folder.</div>'; 
-        return; 
-    } 
+    if(!currentMenuItems.length) { container.innerHTML = '<div style="padding:20px;text-align:center;">⚠️ Load menu JSON first</div>'; return; } 
     container.innerHTML = ""; 
     currentMenuItems.forEach((item, idx) => { 
-        const limits = getQuantityLimits(item);
-        const limitText = freehandMode ? '🔓 FREEHAND (No Limits)' : `Max: ${limits.maxLimit} | Step: ${limits.step}`;
-        const aveVal = item.AVE || item.price || 0;
+        const limits = getQuantityLimits(item);  // returns max (999999 if freehand) + original step
+        const stepValue = limits.step;
+        const maxForInput = limits.maxLimit;
+        const limitHint = freehandMode ? `🔓 No limit (step: ${stepValue})` : `Max:${limits.maxLimit} | Step:${stepValue}`;
         container.innerHTML += `<div class="menu-item-card">
-            <span class="menu-item-code">📌 ${item.code}</span>
-            <span class="menu-item-name"><strong>${item.name}</strong><br><span style="font-size:0.65rem;">${item.name_ar || ''}</span></span>
-            <span class="menu-item-unit">📦 ${item.unit}</span>
-            <span class="menu-item-price">💰 ${aveVal}</span>
-            <span style="font-size:0.65rem; color:#9ca3af;">${limitText}</span>
-            <div class="add-qty-control">
-                <input type="number" id="qty_${idx}" class="qty-input-small" value="1" min="0.01" step="${freehandMode ? 'any' : limits.step}" ${freehandMode ? '' : `max="${limits.maxLimit}"`}>
-                <button class="btn btn-add-item" onclick="addToOrder(${idx})">➕ Add</button>
+            <span><strong>${item.code}</strong> ${item.name}</span>
+            <span>${item.unit}</span>
+            <span>💰 ${item.AVE || item.price}</span>
+            <span style="font-size:0.65rem;">${limitHint}</span>
+            <div>
+                <input type="number" id="qty_${idx}" value="1" step="${stepValue}" ${freehandMode ? '' : `max="${maxForInput}"`} style="width:90px;">
+                <button onclick="addToOrder(${idx})">➕ Add</button>
             </div>
         </div>`; 
     }); 
 }
-
 window.addToOrder = function(idx) { 
-    if(!currentOrderDocId) { showToast("No order loaded. Fetch an order first.", true); return; }
-    if(currentOrderStatus !== "pending") { showToast(`Cannot add: Order is ${currentOrderStatus}. Restore to pending first.`, true); return; }
+    if(!currentOrderDocId) { showToast("Load an order first", true); return; } 
+    if(currentOrderStatus !== "pending") { showToast(`Order is ${currentOrderStatus}, restore first`, true); return; } 
     const item = currentMenuItems[idx]; 
     let qty = parseFloat(document.getElementById(`qty_${idx}`).value); 
-    if(!item || isNaN(qty) || qty <= 0) return;
-    const limits = getQuantityLimits(item);
-    if(!freehandMode && qty > limits.maxLimit) {
-        showToast(`❌ Quantity exceeds max limit of ${limits.maxLimit}. Use Freehand mode for unlimited quantity.`, true);
-        return;
-    }
-    const aveVal = item.AVE || item.price || 0;
-    const newItem = { 
-        code: item.code, 
-        name: item.name, 
-        name_ar: item.name_ar || "", 
-        unit: item.unit, 
-        originalQty: qty, 
-        AVE: aveVal, 
-        price: aveVal, 
-        status: "pending" 
-    }; 
-    if(!currentOrderData.items) currentOrderData.items = []; 
+    const limits = getQuantityLimits(item); // uses freehand flag but keeps step unchanged
+    if(!freehandMode && qty > limits.maxLimit) { showToast(`Exceeds max limit ${limits.maxLimit}`, true); return; }
+    const newItem = { code: item.code, name: item.name, unit: item.unit, originalQty: qty, AVE: item.AVE || item.price || 0, status: "pending" }; 
     currentOrderData.items.push(newItem); 
-    currentOrderStatus = getRequestStatus(currentOrderData.items);
     document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
-    showToast(`${freehandMode ? '🔓 FREEHAND' : '✅'} Added "${item.name}" (x${qty})`); 
+    showToast(`➕ ${item.name} x${qty} (step:${limits.step})`); 
 };
-
-async function restoreOrderToPending(docId){ 
-    if(!confirm("Restore order to PENDING status?\n\nThis will reset all approved/rejected items back to pending.")) return; 
-    try{ 
-        const doc = await db.collection("kitchen_requests").doc(docId).get(); 
-        if(!doc.exists) return; 
-        const data = doc.data(); 
-        if(data.items){ 
-            let changed=false; 
-            data.items.forEach(i=>{ 
-                if(i.status==="approved"||i.status==="rejected"){ 
-                    i.status="pending"; 
-                    delete i.approvedQty; 
-                    delete i.approvedBy; 
-                    delete i.approvedAt;
-                    delete i.rejectionReason; 
-                    delete i.rejectedBy;
-                    delete i.rejectedAt;
-                    changed=true; 
-                } 
-                if(i.completedVia) delete i.completedVia; 
-            }); 
-            if(data.completedVia) delete data.completedVia;
-            if(changed) await db.collection("kitchen_requests").doc(docId).update({items:data.items}); 
-            showToast(`✅ Restored ${docId} to PENDING`); 
-            if(currentOrderDocId===docId) await fetchOrderDocument(); 
-            refreshOrdersList(); 
-        } 
-    } catch(e){ showToast("Restore failed", true); } 
-}
-
-async function restoreSingleToPending(){ 
-    if(currentOrderDocId) await restoreOrderToPending(currentOrderDocId); 
-    else showToast("No document loaded", true); 
-}
-
 window.quickAddItemFromOrder = function() { 
-    if(!currentOrderDocId){ showToast("Load an order first",true); return; } 
-    if(currentOrderStatus!=="pending"){ showToast(`Cannot add: Order is ${currentOrderStatus}. Restore to pending first.`,true); return; } 
-    const code = prompt("Enter item code:"); 
-    const name = prompt("Enter item name:"); 
-    const ave = parseFloat(prompt("Enter AVE (average price):", "0")); 
-    if(!code || !name || isNaN(ave)){ showToast("Invalid input",true); return; } 
-    let qty = parseFloat(prompt(freehandMode ? "Enter quantity (any value allowed):" : "Enter quantity:", "1")); 
-    if(isNaN(qty) || qty<=0) return; 
-    const newItem = {code, name, name_ar: "", unit: "pcs", originalQty: qty, AVE: ave, price: ave, status: "pending"}; 
-    if(!currentOrderData.items) currentOrderData.items = []; 
-    currentOrderData.items.push(newItem); 
+    if(!currentOrderDocId || currentOrderStatus !== "pending") { showToast("Load pending order first", true); return; } 
+    const code = prompt("Item code:"); const name = prompt("Name:"); const ave = parseFloat(prompt("AVE price:")); 
+    if(!code||!name||isNaN(ave)) return; 
+    let qty = parseFloat(prompt(freehandMode ? "Quantity (no limit):" : "Quantity:")); 
+    if(isNaN(qty)) return; 
+    currentOrderData.items.push({ code, name, unit: "pcs", originalQty: qty, AVE: ave, status: "pending" }); 
     document.getElementById("orderJsonEditor").value = JSON.stringify(currentOrderData, null, 2); 
-    showToast(`✅ Added "${name}" (x${qty})`); 
+    showToast(`✨ Added ${name}`); 
 };
 
-// ============ JSON GENERATOR ==========
+// JSON Generator (unchanged but step precision kept)
 let menuItemsGen = [];
-function updateGeneratorUI() { 
-    const itemsDiv = document.getElementById("itemsList"); 
-    document.getElementById("itemCount").innerText = `${menuItemsGen.length} items`;
-    if(!menuItemsGen.length) { itemsDiv.innerHTML = '<div style="padding:20px;text-align:center;">No items added yet</div>'; document.getElementById("jsonOutput").value = '[]'; return; }
-    itemsDiv.innerHTML = menuItemsGen.map((it, i) => `<div class="item-row">
-        <span class="item-code">📌 ${escapeHtml(it.code)}</span>
-        <span><strong>${escapeHtml(it.name)}</strong> ${escapeHtml(it.nameAr || '')}</span>
-        <span>📦 ${escapeHtml(it.unit)}</span>
-        <span>🔢 ${it.maxLimit}</span>
-        <span>⚡ ${it.step}</span>
-        <span>💰 ${it.AVE}</span>
-        <button class="delete-item" onclick="removeItemGen(${i})">✖</button>
-    </div>`).join('');
-    const lines = menuItemsGen.map((it, i) => `{"code": "${escapeJSON(it.code)}", "name": "${escapeJSON(it.name)}", "name_ar": "${escapeJSON(it.nameAr || '')}", "unit": "${escapeJSON(it.unit)}", "maxLimit": ${it.maxLimit}, "step": ${it.step}, "AVE": ${it.AVE}}${i < menuItemsGen.length-1 ? ',' : ''}`);
-    document.getElementById("jsonOutput").value = '[\n' + lines.join('\n') + '\n]';
-}
-function addItem() { 
-    const code = document.getElementById("code").value.trim(), name = document.getElementById("name").value.trim(), unit = document.getElementById("unit").value.trim();
-    if(!code || !name || !unit){ showToast("Code, Name, Unit required", true); return; }
-    const maxLimit = parseFloat(document.getElementById("maxLimit").value), step = parseFloat(document.getElementById("step").value), ave = parseFloat(document.getElementById("ave").value);
-    if(isNaN(maxLimit) || isNaN(step) || isNaN(ave)) return;
-    menuItemsGen.push({ code, name, nameAr: document.getElementById("nameAr").value, unit, maxLimit, step, AVE: ave });
-    updateGeneratorUI();
-    clearForm();
-    showToast(`✅ Added "${name}"`);
-}
-window.removeItemGen = function(i) { const removed = menuItemsGen[i]; menuItemsGen.splice(i,1); updateGeneratorUI(); showToast(`🗑️ Removed "${removed.name}"`); };
-function clearAllItems() { if(confirm("Clear all items?")) { menuItemsGen = []; updateGeneratorUI(); showToast("All items cleared"); } }
-function clearForm() { 
-    document.getElementById("code").value = ""; document.getElementById("name").value = ""; 
-    document.getElementById("nameAr").value = ""; document.getElementById("unit").value = ""; 
-    document.getElementById("maxLimit").value = 2; document.getElementById("step").value = 1; document.getElementById("ave").value = 45.5;
-}
-function addSample() { 
-    menuItemsGen.push({ code: "161005", name: "Black Pepper Corn", nameAr: "حب الفلفل الأسود", unit: "kg", maxLimit: 2, step: 0.5, AVE: 45.5 }); 
-    updateGeneratorUI(); 
-    showToast("✅ Sample item added");
-}
-async function copyJSON() { 
-    if(menuItemsGen.length) { 
-        await navigator.clipboard.writeText(document.getElementById("jsonOutput").value); 
-        showToast("📋 JSON copied to clipboard"); 
-    } else showToast("No items to copy", true); 
-}
-function downloadJSON() { 
-    if(!menuItemsGen.length) { showToast("No items to download", true); return; }
-    const blob = new Blob([document.getElementById("jsonOutput").value], {type:"application/json"}); 
-    const a = document.createElement("a"); 
-    a.href = URL.createObjectURL(blob); 
-    a.download = `menu_${Date.now()}.json`; 
-    a.click(); 
-    URL.revokeObjectURL(a.href);
-    showToast("📎 JSON file downloaded");
-}
+function updateGeneratorUI() { const itemsDiv = document.getElementById("itemsList"); document.getElementById("itemCount").innerText = `${menuItemsGen.length} items`; if(!menuItemsGen.length) { itemsDiv.innerHTML = "<div>No items</div>"; document.getElementById("jsonOutput").value = "[]"; return; } itemsDiv.innerHTML = menuItemsGen.map((it,i)=>`<div class="item-row"><span>${it.code}</span><span>${it.name}</span><span>${it.unit}</span><span>Max:${it.maxLimit}</span><span>Step:${it.step}</span><span>AVE:${it.AVE}</span><button onclick="removeItem(${i})">✖</button></div>`).join(''); const lines = menuItemsGen.map((it,i)=>`{"code":"${it.code}","name":"${it.name}","name_ar":"${it.nameAr || ''}","unit":"${it.unit}","maxLimit":${it.maxLimit},"step":${it.step},"AVE":${it.AVE}}${i<menuItemsGen.length-1?',':''}`); document.getElementById("jsonOutput").value = '[\n' + lines.join('\n') + '\n]'; }
+function addItem() { const code = document.getElementById("code").value.trim(), name = document.getElementById("name").value.trim(), unit = document.getElementById("unit").value.trim(); if(!code||!name||!unit) return; menuItemsGen.push({ code, name, nameAr: document.getElementById("nameAr").value, unit, maxLimit: parseFloat(document.getElementById("maxLimit").value), step: parseFloat(document.getElementById("step").value), AVE: parseFloat(document.getElementById("ave").value) }); updateGeneratorUI(); clearForm(); }
+window.removeItem = function(i) { menuItemsGen.splice(i,1); updateGeneratorUI(); };
+function clearAllItems() { if(confirm("Clear all items?")){ menuItemsGen=[]; updateGeneratorUI(); } }
+function clearForm() { document.getElementById("code").value = ""; document.getElementById("name").value = ""; document.getElementById("nameAr").value = ""; document.getElementById("unit").value = ""; document.getElementById("maxLimit").value = 2; document.getElementById("step").value = 1; document.getElementById("ave").value = 45.5; }
+function addSample() { menuItemsGen.push({ code: "161005", name: "Black Pepper Corn", nameAr: "", unit: "kg", maxLimit: 2, step: 0.5, AVE: 45.5 }); updateGeneratorUI(); }
+async function copyJSON() { if(menuItemsGen.length) { await navigator.clipboard.writeText(document.getElementById("jsonOutput").value); showToast("JSON copied"); } }
+function downloadJSON() { if(!menuItemsGen.length) return; const blob = new Blob([document.getElementById("jsonOutput").value], {type:"application/json"}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `menu_${Date.now()}.json`; a.click(); }
 
-// ============ USER MGMT ==========
-async function createNewUser() { 
-    const email = document.getElementById("newUserEmail").value.trim(), pwd = document.getElementById("newUserPassword").value, confirm = document.getElementById("newUserConfirmPassword").value;
-    if(!email || pwd !== confirm || pwd.length < 6){ showToast("Invalid or password mismatch", true); return; }
-    try { 
-        await auth.createUserWithEmailAndPassword(email, pwd); 
-        showToast(`✅ User ${email} created`);
-        document.getElementById("newUserEmail").value = "";
-        document.getElementById("newUserPassword").value = "";
-        document.getElementById("newUserConfirmPassword").value = "";
-    } catch(e) { showToast(e.message, true); }
-}
-async function sendUserPasswordReset() { 
-    const email = document.getElementById("resetUserEmail").value.trim();
-    if(!email) return;
-    try { 
-        await auth.sendPasswordResetEmail(email); 
-        showToast(`✅ Reset email sent to ${email}`);
-        document.getElementById("resetUserEmail").value = "";
-    } catch(e) { showToast(e.message, true); }
-}
+// User Management
+async function createNewUser() { const email = document.getElementById("newUserEmail").value.trim(), pwd = document.getElementById("newUserPassword").value, conf = document.getElementById("newUserConfirmPassword").value; if(!email || pwd !== conf || pwd.length<6) { showToast("Check password match/min 6 chars", true); return; } try { await auth.createUserWithEmailAndPassword(email, pwd); showToast(`✅ ${email} created`); } catch(e) { showToast(e.message, true); } }
+async function sendUserPasswordReset() { const email = document.getElementById("resetUserEmail").value.trim(); if(!email) return; try { await auth.sendPasswordResetEmail(email); showToast(`Reset link sent to ${email}`); } catch(e) { showToast(e.message, true); } }
 
-// ============ UTILITIES ==========
-function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
-function escapeJSON(str) { return str.replace(/\\/g,'\\\\').replace(/"/g,'\\"'); }
-function showToast(msg, isErr = false) { 
-    const t = document.createElement('div'); 
-    t.className = 'toast'; 
-    t.innerHTML = msg; 
-    if(isErr) t.style.borderLeftColor = '#dc2626'; 
-    document.body.appendChild(t); 
-    setTimeout(() => t.remove(), 2500); 
-}
-function switchTab(tab) { 
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); 
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active-panel')); 
-    if(tab === 'orders') { 
-        document.querySelectorAll('.tab-btn')[0].classList.add('active'); 
-        document.getElementById('ordersPanel').classList.add('active-panel'); 
-        refreshOrdersList(); 
-    }
-    else if(tab === 'generator') { 
-        document.querySelectorAll('.tab-btn')[1].classList.add('active'); 
-        document.getElementById('generatorPanel').classList.add('active-panel'); 
-    }
-    else { 
-        document.querySelectorAll('.tab-btn')[2].classList.add('active'); 
-        document.getElementById('usersPanel').classList.add('active-panel'); 
-    }
-}
+function showToast(msg, isErr=false) { const t = document.createElement('div'); t.className = 'toast'; t.innerText = msg; if(isErr) t.style.borderLeftColor = "#dc2626"; document.body.appendChild(t); setTimeout(()=>t.remove(), 2700); }
+function switchTab(tab) { document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active-panel')); if(tab==='orders') { document.querySelector('.tab-btn:first-child').classList.add('active'); document.getElementById('ordersPanel').classList.add('active-panel'); refreshOrdersList(); } else if(tab==='generator') { document.querySelectorAll('.tab-btn')[1].classList.add('active'); document.getElementById('generatorPanel').classList.add('active-panel'); } else { document.querySelectorAll('.tab-btn')[2].classList.add('active'); document.getElementById('usersPanel').classList.add('active-panel'); } }
+window.deleteOrderDocument = function() { if(currentOrderDocId) deleteOrderById(currentOrderDocId); else showToast("No document selected", true); };
 
-// Initialize everything
 loadAuthorizedDevelopers();
-console.log("Developer Console Ready - Firebase connected");
 </script>
 </body>
 </html>
