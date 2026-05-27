@@ -213,7 +213,44 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
 </div>
 
 <script>
-// ============ FIREBASE AUTH IS IN firebase-config.js ============
+// Wait for firebase-config.js to load and initialize auth
+let auth = null;
+let db = null;
+
+// Function to initialize after firebase-config.js loads
+function initFirebase() {
+    // Check if Firebase is already initialized
+    if (typeof firebase !== 'undefined' && firebase.apps.length) {
+        auth = firebase.auth();
+        db = firebase.firestore();
+        console.log("✅ Firebase Auth and Firestore ready");
+        
+        // Now check if user is already logged in
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                await loadAuthorizedDevelopers();
+                if(isAuthorized(user.email)) {
+                    currentDeveloperEmail = user.email;
+                    document.getElementById("loginOverlay").style.display = "none";
+                    document.getElementById("mainContent").style.display = "block";
+                    document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
+                    refreshOrdersList();
+                    renderKitchenMenuButtons();
+                    updateFreehandModeUI();
+                } else {
+                    await auth.signOut();
+                }
+            }
+        });
+        
+        loadAuthorizedDevelopers();
+    } else {
+        console.log("⏳ Waiting for Firebase...");
+        setTimeout(initFirebase, 500);
+    }
+}
+
+// ============ GLOBAL VARIABLES ============
 let currentDeveloperEmail = "";
 let AUTHORIZED_DEVELOPERS = [];
 let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
@@ -274,18 +311,19 @@ function getQuantityLimits(item) {
 
 // ============ AUTH & AUTHORIZATION ============
 async function loadAuthorizedDevelopers() {
+    if(!db) return;
     try { 
         const doc = await db.collection("settings").doc("authorized_devs").get(); 
         if(doc.exists && doc.data().emails) {
             AUTHORIZED_DEVELOPERS = doc.data().emails;
         } else {
-            AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
+            AUTHORIZED_DEVELOPERS = ["dev@code.com", "jac11devel@gmail.com"];
             await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
         }
         displayAuthorizedDevelopers(); 
     } catch(e) { 
         console.error("Error loading authorized devs:", e);
-        AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
+        AUTHORIZED_DEVELOPERS = ["dev@code.com", "jac11devel@gmail.com"];
         displayAuthorizedDevelopers();
     }
 }
@@ -296,6 +334,7 @@ function displayAuthorizedDevelopers() {
 }
 
 async function addAuthorizedDeveloper() { 
+    if(!db) return;
     const email = document.getElementById("newDevEmail").value.trim(); 
     if(!email || AUTHORIZED_DEVELOPERS.includes(email)){ showToast("Invalid or duplicate",true); return; }
     AUTHORIZED_DEVELOPERS.push(email); 
@@ -306,7 +345,8 @@ async function addAuthorizedDeveloper() {
 }
 
 async function removeAuthorizedDeveloper(email) { 
-    if(email === "jac11devel@gmail.com"){ showToast("Cannot remove master developer",true); return; } 
+    if(!db) return;
+    if(email === "dev@code.com"){ showToast("Cannot remove master developer",true); return; } 
     AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email); 
     await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); 
     displayAuthorizedDevelopers(); 
@@ -317,6 +357,12 @@ function isAuthorized(email) { return AUTHORIZED_DEVELOPERS.includes(email.toLow
 
 // LOGIN FUNCTION
 window.loginWithFirebase = async function() {
+    if(!auth) {
+        document.getElementById("loginErrorMsg").innerHTML = "⏳ Loading Firebase... Please wait.";
+        setTimeout(() => loginWithFirebase(), 1000);
+        return;
+    }
+    
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
     const errorDiv = document.getElementById("loginErrorMsg");
@@ -364,6 +410,7 @@ window.loginWithFirebase = async function() {
 };
 
 function logout() { 
+    if(!auth) return;
     if(confirm("Logout?")) auth.signOut().then(() => {
         document.getElementById("mainContent").style.display = "none";
         document.getElementById("loginOverlay").style.display = "flex";
@@ -388,9 +435,10 @@ function getRequestStatus(items) {
     return "pending"; 
 }
 
-async function refreshOrdersList() { await listAllOrders(); }
+async function refreshOrdersList() { if(db) await listAllOrders(); }
 
 async function listAllOrders() { 
+    if(!db) return;
     try { 
         const snap = await db.collection("kitchen_requests").orderBy("timestamp", "desc").limit(50).get(); 
         const cont = document.getElementById("ordersList"); 
@@ -425,6 +473,7 @@ window.loadOrderById = async function(docId) {
 };
 
 async function fetchOrderDocument() { 
+    if(!db) return;
     const id = document.getElementById("orderDocId").value.trim(); 
     if(!id) { showToast("Enter Document ID", true); return; }
     try { 
@@ -461,7 +510,7 @@ function updateEditButtonsBasedOnStatus() {
 }
 
 async function saveOrderDocument() { 
-    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
+    if(!db || !currentOrderDocId || currentOrderStatus !== "pending") { 
         showToast("Cannot save: Order not pending. Restore first.", true); 
         return; 
     } 
@@ -476,7 +525,7 @@ async function saveOrderDocument() {
 }
 
 async function deleteOrderDocument() { 
-    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
+    if(!db || !currentOrderDocId || currentOrderStatus !== "pending") { 
         showToast("Cannot delete: Not pending. Restore first.", true); 
         return; 
     } 
@@ -489,6 +538,7 @@ async function deleteOrderDocument() {
 }
 
 async function deleteOrderById(docId) { 
+    if(!db) return;
     if(confirm("⚠️ Delete this order?")) { 
         await db.collection("kitchen_requests").doc(docId).delete(); 
         showToast("🗑️ Deleted"); 
@@ -621,6 +671,7 @@ window.quickAddItemFromOrder = function() {
 };
 
 async function restoreOrderToPending(docId) { 
+    if(!db) return;
     if(!confirm("Restore order to PENDING status?\n\nThis will reset all approved/rejected items back to pending.")) return; 
     try { 
         const doc = await db.collection("kitchen_requests").doc(docId).get(); 
@@ -754,6 +805,7 @@ function downloadJSON() {
 
 // ============ USER MANAGEMENT ============
 async function createNewUser() { 
+    if(!auth) return;
     const email = document.getElementById("newUserEmail").value.trim(); 
     const pwd = document.getElementById("newUserPassword").value; 
     const confirm = document.getElementById("newUserConfirmPassword").value; 
@@ -778,6 +830,7 @@ async function createNewUser() {
 }
 
 async function sendUserPasswordReset() { 
+    if(!auth) return;
     const email = document.getElementById("resetUserEmail").value.trim(); 
     const msgDiv = document.getElementById("resetUserMsg");
     if(!email) { msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Enter email</span>"; return; }
@@ -819,26 +872,9 @@ function switchTab(t) {
     } 
 }
 
-// ============ INITIALIZE ============
-// Check if already logged in
-auth.onAuthStateChanged(async (user) => {
-    if (user) {
-        await loadAuthorizedDevelopers();
-        if(isAuthorized(user.email)) {
-            currentDeveloperEmail = user.email;
-            document.getElementById("loginOverlay").style.display = "none";
-            document.getElementById("mainContent").style.display = "block";
-            document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
-            refreshOrdersList();
-            renderKitchenMenuButtons();
-            updateFreehandModeUI();
-        } else {
-            await auth.signOut();
-        }
-    }
-});
-
-loadAuthorizedDevelopers();
+// ============ START ============
+// Initialize Firebase connection
+initFirebase();
 </script>
 </body>
 </html>
