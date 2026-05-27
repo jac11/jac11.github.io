@@ -910,8 +910,9 @@ const translations = {
 let currentLang = 'en';
 
 // ============ FREEHAND MODE FUNCTIONS ============
+
 function updateFreehandUI() {
-    updateFreehandStatusIndicator();
+    updateFreehandStatusIndicator();  // Add this line
     if (currentKitchen) {
         renderItemsList(currentKitchen);
         renderCart(currentKitchen);
@@ -921,7 +922,6 @@ function updateFreehandUI() {
         '🔒 Freehand mode disabled - Limits restored';
     showToast(statusMsg);
 }
-
 function initFreehandModeListener() {
     if (freehandUnsubscribe) freehandUnsubscribe();
     
@@ -992,7 +992,22 @@ let currentItemsList = [];
 let autoRefreshInterval = null;
 let freehandModeActive = false;
 let freehandUnsubscribe = null;
-
+// Update freehand status indicator in header
+function updateFreehandStatusIndicator() {
+    const statusLight = document.getElementById('statusLight');
+    const statusText = document.getElementById('statusText');
+    if (statusLight && statusText) {
+        if (freehandModeActive) {
+            statusLight.className = 'status-light active';
+            statusText.innerHTML = '🟢 Freehand: ON';
+            statusText.style.color = '#10b981';
+        } else {
+            statusLight.className = 'status-light inactive';
+            statusText.innerHTML = '⚫ Freehand: OFF';
+            statusText.style.color = '#999';
+        }
+    }
+}
 function startAutoRefresh() {
     if(autoRefreshInterval) clearInterval(autoRefreshInterval);
     autoRefreshInterval = setInterval(function() {
