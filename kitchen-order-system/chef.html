@@ -789,6 +789,41 @@ body.arabic .items-scroll-container {
 .history-toggle-btn:hover {
     background: #6c3483;
 }
+/* Freehand Status Indicator */
+.freehand-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
+    background: rgba(0,0,0,0.3);
+    padding: 4px 10px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+}
+
+.status-light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dc2626;
+    transition: all 0.3s ease;
+}
+
+.status-light.active {
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.status-text {
+    font-weight: 500;
+}
 </style>
 </head>
 <body>
@@ -798,6 +833,11 @@ body.arabic .items-scroll-container {
         <div class="logo">
             <span class="logo-icon">🍳</span>
             <span>Kitchen Order <span>| Chef</span></span>
+                <!-- Freehand Status Indicator -->
+            <div class="freehand-status" id="freehandStatusIndicator">
+                 <div class="status-light" id="statusLight"></div>
+                <span class="status-text" id="statusText">Freehand: OFF</span>
+            </div>
         </div>
         <div class="header-buttons">
             <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">🇸🇦 العربية</button>
@@ -871,6 +911,7 @@ let currentLang = 'en';
 
 // ============ FREEHAND MODE FUNCTIONS ============
 function updateFreehandUI() {
+    updateFreehandStatusIndicator();
     if (currentKitchen) {
         renderItemsList(currentKitchen);
         renderCart(currentKitchen);
@@ -915,6 +956,7 @@ function toggleLanguage() {
     }
     generatePages();
     if(currentKitchen) selectKitchen(currentKitchen);
+    updateFreehandStatusIndicator();
 }
 
 function getItemName(item) {
