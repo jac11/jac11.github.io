@@ -94,65 +94,6 @@ body.arabic .qty-picker {
     color: #ffd700;
 }
 
-/* Freehand Status Indicator */
-.freehand-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-left: 12px;
-    background: rgba(0,0,0,0.3);
-    padding: 4px 10px;
-    border-radius: 30px;
-    font-size: 0.7rem;
-}
-
-.status-light {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #666;
-    transition: all 0.3s ease;
-}
-
-.status-light.active {
-    background: #10b981;
-    box-shadow: 0 0 8px #10b981;
-    animation: pulse 1.5s infinite;
-}
-
-.status-light.inactive {
-    background: #dc2626;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
-    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-}
-
-.status-text {
-    font-weight: 500;
-}
-
-.freehand-banner {
-    background: linear-gradient(135deg, #10b98120, #05966920);
-    border: 2px solid #10b981;
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.freehand-banner span {
-    color: #10b981;
-    font-weight: bold;
-    font-size: 0.85rem;
-}
-
 .header-buttons {
     display: flex;
     gap: 8px;
@@ -757,164 +698,17 @@ body.arabic .items-scroll-container {
     }
 }
 
-/* ============ FIXED MOBILE VIEW - ONLY CHANGES HERE ============ */
 @media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .logo {
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    .freehand-status {
-        margin-left: 0;
-        margin-top: 5px;
-    }
-    
-    .header-buttons {
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .kitchen-tabs {
-        top: 110px;
-    }
-    
-    .tabs-container {
-        padding: 8px 0;
-    }
-    
-    .tab-btn {
-        padding: 6px 12px;
+    .cart-table th, .cart-table td {
+        padding: 8px 6px;
         font-size: 11px;
     }
-    
-    .card {
-        padding: 12px;
-    }
-    
-    .card h3 {
-        font-size: 0.9rem;
-    }
-    
-    .item-main-row {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .item-meta {
-        text-align: left;
-        width: 100%;
-    }
-    
-    .item-actions {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .qty-picker {
-        flex: 1;
-        justify-content: center;
-    }
-    
-    .add-item-btn {
-        flex: 1;
-    }
-    
-    .button-group {
-        flex-direction: column;
-    }
-    
-    .button-group .btn {
-        width: 100%;
-    }
-    
     .cart-stats {
-        flex-direction: column;
-        text-align: center;
-        gap: 5px;
+        font-size: 10px;
     }
-    
     .request-card-header {
         flex-direction: column;
         align-items: flex-start;
-    }
-    
-    .history-toolbar {
-        flex-direction: column;
-    }
-    
-    .history-toolbar input,
-    .history-filter-btn {
-        width: 100%;
-    }
-    
-    .freehand-banner {
-        font-size: 0.7rem;
-        text-align: center;
-        justify-content: center;
-    }
-    
-    .items-scroll-container {
-        max-height: 400px;
-    }
-    
-    .item-card {
-        padding: 10px;
-    }
-    
-    .item-name {
-        font-size: 0.8rem;
-    }
-    
-    .item-price {
-        font-size: 0.65rem;
-    }
-}
-
-/* Extra small devices */
-@media (max-width: 480px) {
-    .tab-btn {
-        padding: 5px 10px;
-        font-size: 10px;
-    }
-    
-    .cart-table th, .cart-table td {
-        padding: 6px 4px;
-        font-size: 10px;
-    }
-    
-    .cart-stats {
-        font-size: 9px;
-    }
-    
-    .qty-btn {
-        width: 30px;
-        height: 30px;
-        font-size: 1rem;
-    }
-    
-    .qty-value {
-        min-width: 40px;
-        font-size: 0.9rem;
-    }
-    
-    .add-item-btn {
-        padding: 6px 12px;
-        font-size: 0.65rem;
-    }
-    
-    .remove-btn {
-        padding: 3px 8px;
-        font-size: 9px;
-    }
-    
-    .status-badge {
-        padding: 3px 8px;
-        font-size: 9px;
     }
 }
 
@@ -1004,11 +798,6 @@ body.arabic .items-scroll-container {
         <div class="logo">
             <span class="logo-icon">🍳</span>
             <span>Kitchen Order <span>| Chef</span></span>
-            <!-- Freehand Status Indicator -->
-            <div class="freehand-status" id="freehandStatusIndicator">
-                <div class="status-light" id="statusLight"></div>
-                <span class="status-text" id="statusText">Freehand: OFF</span>
-            </div>
         </div>
         <div class="header-buttons">
             <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">🇸🇦 العربية</button>
@@ -1030,62 +819,6 @@ body.arabic .items-scroll-container {
 <div class="sync-status" id="syncStatus">🔄 Connecting... <span id="autoRefreshIndicator" class="auto-refresh-indicator">(Auto-refresh: 60s)</span></div>
 
 <script>
-// ============ FREEHAND MODE ============
-let freehandModeActive = false;
-let freehandUnsubscribe = null;
-
-// Update freehand status indicator
-function updateFreehandStatusIndicator() {
-    const statusLight = document.getElementById('statusLight');
-    const statusText = document.getElementById('statusText');
-    if (statusLight && statusText) {
-        if (freehandModeActive) {
-            statusLight.className = 'status-light active';
-            statusText.innerHTML = '🟢 Freehand: ON';
-            statusText.style.color = '#10b981';
-        } else {
-            statusLight.className = 'status-light inactive';
-            statusText.innerHTML = '⚫ Freehand: OFF';
-            statusText.style.color = '#999';
-        }
-    }
-}
-
-// Update UI when freehand mode changes
-function updateFreehandUI() {
-    updateFreehandStatusIndicator();
-    if (currentKitchen) {
-        renderItemsList(currentKitchen);
-        renderCart(currentKitchen);
-    }
-    const statusMsg = freehandModeActive ? 
-        '🔓 FREEHAND MODE ACTIVE - No quantity limits!' : 
-        '🔒 Freehand mode disabled - Limits restored';
-    showToast(statusMsg);
-}
-
-// Listen to Freehand Mode changes from Firestore
-function initFreehandModeListener() {
-    if (freehandUnsubscribe) freehandUnsubscribe();
-    
-    freehandUnsubscribe = db.collection("settings").doc("global_settings").onSnapshot((doc) => {
-        if (doc.exists) {
-            freehandModeActive = doc.data().freehandMode === true;
-        } else {
-            freehandModeActive = false;
-        }
-        updateFreehandUI();
-    }, (error) => {
-        console.error("Error listening to freehand mode:", error);
-    });
-}
-
-// ============ GET MAX LIMIT - ONLY THIS CHANGES IN FREEHAND MODE ============
-function getItemMaxLimit(item) {
-    if (freehandModeActive) return 999999;
-    return item.maxLimit || 99;
-}
-
 // ============ LANGUAGE TRANSLATIONS ============
 const translations = {
     en: {
@@ -1108,9 +841,7 @@ const translations = {
         approvedBy: "Approved by", reason: "Reason:", fromDate: "From Date",
         toDate: "To Date", filter: "Filter", viewHistory: "View History",
         duplicateBlocked: "DUPLICATE ORDER BLOCKED",
-        duplicateMessage: "You already submitted an identical order on",
-        freehandActive: "🔓 FREEHAND MODE ACTIVE - No quantity limits!",
-        freehandOff: "Quantity limits enabled"
+        duplicateMessage: "You already submitted an identical order on"
     },
     ar: {
         chef: "شيف", chefInfo: "معلومات الشيف", chefName: "اسم الشيف",
@@ -1132,14 +863,38 @@ const translations = {
         approvedBy: "تمت الموافقة بواسطة", reason: "السبب:", fromDate: "من تاريخ",
         toDate: "إلى تاريخ", filter: "فلتر", viewHistory: "عرض السجل",
         duplicateBlocked: "تم حظر الطلب المكرر",
-        duplicateMessage: "لقد أرسلت نفس الطلب مسبقاً في",
-        freehandActive: "🔓 الوضع الحر مفعل - لا توجد حدود للكميات!",
-        freehandOff: "حدود الكميات مفعلة"
+        duplicateMessage: "لقد أرسلت نفس الطلب مسبقاً في"
     }
 };
 
 let currentLang = 'en';
 
+// ============ FREEHAND MODE FUNCTIONS ============
+function updateFreehandUI() {
+    if (currentKitchen) {
+        renderItemsList(currentKitchen);
+        renderCart(currentKitchen);
+    }
+    const statusMsg = freehandModeActive ? 
+        '🔓 FREEHAND MODE ACTIVE - No quantity limits!' : 
+        '🔒 Freehand mode disabled - Limits restored';
+    showToast(statusMsg);
+}
+
+function initFreehandModeListener() {
+    if (freehandUnsubscribe) freehandUnsubscribe();
+    
+    freehandUnsubscribe = db.collection("settings").doc("global_settings").onSnapshot((doc) => {
+        if (doc.exists) {
+            freehandModeActive = doc.data().freehandMode === true;
+        } else {
+            freehandModeActive = false;
+        }
+        updateFreehandUI();
+    }, (error) => {
+        console.error("Error listening to freehand mode:", error);
+    });
+}
 function toggleLanguage() {
     if(currentLang === 'en') {
         currentLang = 'ar';
@@ -1160,7 +915,6 @@ function toggleLanguage() {
     }
     generatePages();
     if(currentKitchen) selectKitchen(currentKitchen);
-    updateFreehandStatusIndicator();
 }
 
 function getItemName(item) {
@@ -1194,6 +948,8 @@ let selectedQuantities = {};
 let addedItemsStatus = {};
 let currentItemsList = [];
 let autoRefreshInterval = null;
+let freehandModeActive = false;
+let freehandUnsubscribe = null;
 
 function startAutoRefresh() {
     if(autoRefreshInterval) clearInterval(autoRefreshInterval);
@@ -1354,17 +1110,9 @@ function loadOrderHistory(kitchen) {
             if (item.status === "approved") { statusDisplay = `✅ ${t('approved')}`; statusColor = "#27ae60"; }
             else if (item.status === "rejected") { statusDisplay = `❌ ${t('rejected')}`; statusColor = "#e74c3c"; if(item.rejectionReason) { statusDisplay += `<div class="rejection-reason">${t('reason')} ${escapeHtml(item.rejectionReason)}</div>`; } }
             else { statusDisplay = `⏳ ${t('pending')}`; statusColor = "#f39c12"; }
-            itemsHtml += `<tr>
-                <td>${item.code}</td>
-                <td><strong>${escapeHtml(displayName)}</strong></td>
-                <td>${item.originalQty.toFixed(1)}</td>
-                <td>${item.unit}</td>
-                <td>${(item.price || 0).toFixed(2)}</td>
-                <td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td>
-                <td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span></td>
-            </tr>`;
+            itemsHtml += `<tr><td>${item.code}</td><td><strong>${escapeHtml(displayName)}</strong></td><td>${item.originalQty.toFixed(1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td><td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span></td></tr>`;
         });
-        itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;"><td colspan="6" style="text-align:right;">💰 ${t('totalValue')} (Approved):</td><td class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</td></tr>`;
+        itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;"><td colspan="6" style="text-align:right;">💰 ${t('totalValue')} (Approved):</td><td><span class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</span></td></tr>`;
         itemsHtml += `</tbody></table></div>`;
         container.innerHTML += `<div class="request-card"><div class="request-card-header"><span class="request-id">📜 ${req.requestId}</span><div style="display:flex; gap:10px; flex-wrap:wrap;"><span style="background:linear-gradient(135deg, #1e3c72, #2a5298); color:white; padding:6px 14px; border-radius:20px; font-size:0.75rem;">💰 ${requestTotalValue.toFixed(2)} ${t('egp')}</span><span class="approved-by-text">${t('approvedBy')}: <span>${escapeHtml(adminName)}</span></span><span class="status-badge ${statusClass}">${statusText}</span></div></div><div class="request-info-row"><div class="info-item"><div class="info-label">👨‍🍳 ${t('chefLabel')}</div><div class="info-value">${escapeHtml(req.chefName)}</div></div><div class="info-item"><div class="info-label">📅 ${t('submitted')}</div><div class="info-value">${req.submittedAt}</div></div></div>${itemsHtml}</div>`;
     });
@@ -1390,7 +1138,7 @@ function restoreHistoryState(kitchen) {
     else section.style.display = "none";
 }
 
-// ============ ITEM LIST FUNCTIONS ============
+// ============ ITEM LIST FUNCTIONS WITH DYNAMIC STEP FROM JSON ============
 function filterItemsByFirstChar(kitchen, searchChar) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const displayDiv = document.getElementById(`itemsDisplay_${kitchenId}`);
@@ -1417,23 +1165,20 @@ function filterItemsByFirstChar(kitchen, searchChar) {
         const itemPrice = item.price || 0;
         const displayName = getItemName(item);
         const stepValue = getItemStep(item);
-        const maxLimitValue = getItemMaxLimit(item);
-        const stepText = stepValue === 0.5 ? "0.5" : stepValue.toString();
-        const maxDisplay = freehandModeActive ? "∞" : (item.maxLimit || 99);
-        const maxColor = freehandModeActive ? "#10b981" : "#e67e22";
+        const stepText = stepValue === 0.5 ? "0.5" : "1";
         const displayQty = stepValue === 0.5 ? currentQty.toFixed(1) : Math.floor(currentQty);
         html += `<div class="item-card ${selectedClass}" id="itemCard_${kitchenId}_${safeCode}">
             <div class="item-main-row"><div class="item-info"><div class="item-name">${escapeHtml(displayName)}</div>
             <div class="item-code">${item.code || "N/A"}</div><div class="item-price">💰 ${itemPrice.toFixed(2)} ${t('egp')} / ${item.unit}</div></div>
             <div class="item-meta"><span class="item-unit">${item.unit || "pcs"}</span>
-            <div class="item-max" style="color:${maxColor};">${t('max')} ${maxDisplay}</div><div class="item-step">Step: ${stepText}</div></div>
+            <div class="item-max" style="color:${freehandModeActive ? '#10b981' : '#e67e22'};">${t('max')} ${freehandModeActive ? '∞' : (item.maxLimit || 99)}</div><div class="item-step">Step: ${stepText}</div></div>
             <div class="item-actions"><div class="qty-picker">
-            <button class="qty-btn" data-step="-${stepValue}" data-code="${item.code}" data-max="${maxLimitValue}">−</button>
+            <button class="qty-btn" data-step="-${stepValue}" data-code="${item.code}" data-max="${item.maxLimit || 99}">−</button>
             <span class="qty-value" id="qtySpan_${kitchenId}_${safeCode}">${displayQty}</span>
-            <button class="qty-btn" data-step="${stepValue}" data-code="${item.code}" data-max="${maxLimitValue}">+</button></div>
-            <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(displayName)}" data-unit="${item.unit || "pcs"}" data-max="${maxLimitValue}" data-price="${itemPrice}" data-step="${stepValue}">${t('add')}</button></div></div></div>`;
+            <button class="qty-btn" data-step="${stepValue}" data-code="${item.code}" data-max="${item.maxLimit || 99}">+</button></div>
+            <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(displayName)}" data-unit="${item.unit || "pcs"}" data-max="${item.maxLimit || 99}" data-price="${itemPrice}" data-step="${stepValue}">${t('add')}</button></div></div></div>`;
     });
-    html += `</div><div class="scroll-info">📜 ${sortedItems.length} ${t('allItems')} ${freehandModeActive ? '🔓 FREEHAND MODE' : ''}</div></div>`;
+    html += `</div><div class="scroll-info">📜 ${sortedItems.length} ${t('allItems')}</div></div>`;
     displayDiv.innerHTML = html;
     
     displayDiv.querySelectorAll('.qty-btn').forEach(btn => {
@@ -1502,7 +1247,7 @@ function addItemWithQuantity(kitchen, code, itemName, unit, maxLimit, price, ste
     let remaining = maxAllowed - currentQty;
     let actualQtyToAdd = qty;
     if (!freehandModeActive && remaining <= 0) { showToast(`⚠️ Maximum ${maxAllowed} ${item.unit || unit} reached!`); return; }
-    if (!freehandModeActive && qty > remaining) { actualQtyToAdd = remaining; showToast(`⚠️ Only ${remaining.toFixed(1)} remaining. Added ${remaining.toFixed(1)} instead of ${qty.toFixed(1)}`); }
+    if (qty > remaining) { actualQtyToAdd = remaining; showToast(`⚠️ Only ${remaining.toFixed(1)} remaining. Added ${remaining.toFixed(1)} instead of ${qty.toFixed(1)}`); }
     const itemPrice = item.price || price || 0;
     if (existing) { existing.qty += actualQtyToAdd; showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`); }
     else { kitchenData[kitchen].cart.push({ code: item.code, name: item.name, name_ar: item.name_ar, unit: item.unit || unit, qty: actualQtyToAdd, maxLimit: item.maxLimit || maxLimit, price: itemPrice }); showToast(`✓ Added ${actualQtyToAdd.toFixed(step === 0.5 ? 1 : 0)} ${getItemName(item)}`); }
@@ -1535,15 +1280,7 @@ function renderCart(kitchen) {
             cart.forEach((item, idx) => {
                 const itemTotal = (item.qty * (item.price || 0)).toFixed(2);
                 const displayName = currentLang === 'ar' && item.name_ar ? item.name_ar : item.name;
-                desktopBody.innerHTML += `<tr>
-                    <td>${item.code}</td>
-                    <td><strong>${escapeHtml(displayName)}</strong></td>
-                    <td>${item.qty.toFixed(1)}</td>
-                    <td>${item.unit}</td>
-                    <td>${(item.price || 0).toFixed(2)}</td>
-                    <td>${itemTotal}</td>
-                    <td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">${t('remove')}</button></td>
-                </tr>`;
+                desktopBody.innerHTML += `<tr><td>${item.code}</td><td><strong>${escapeHtml(displayName)}</strong></td><td>${item.qty.toFixed(1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${itemTotal}</td><td><button class="remove-btn" onclick="removeItem('${kitchen}', ${idx})">${t('remove')}</button></td></tr>`;
             });
         }
     }
@@ -1552,7 +1289,7 @@ function renderCart(kitchen) {
 function removeItem(kitchen, index) { kitchenData[kitchen].cart.splice(index, 1); renderCart(kitchen); saveCart(); showToast("Item removed"); }
 function clearCart(kitchen) { if (confirm("Clear all items?")) { kitchenData[kitchen].cart = []; renderCart(kitchen); saveCart(); showToast("Cart cleared"); } }
 
-// ============ SUBMIT REQUEST ============
+// ============ SUBMIT REQUEST WITH DUPLICATE CHECK ============
 async function submitRequest(kitchen) {
     const chefName = chefNames[kitchen];
     const cart = kitchenData[kitchen].cart;
@@ -1645,18 +1382,9 @@ function loadMyRequests(kitchen) {
             if(item.status === "approved") { statusDisplay = `✅ ${t('approved')}`; statusColor = "#27ae60"; }
             else if(item.status === "rejected") { statusDisplay = `❌ ${t('rejected')}`; statusColor = "#e74c3c"; if(item.rejectionReason) { rejectionHtml = `<div class="rejection-reason">${t('reason')} ${escapeHtml(item.rejectionReason)}</div>`; } }
             else { statusDisplay = `⏳ ${t('pending')}`; statusColor = "#f39c12"; }
-            itemsHtml += `<tr>
-                <td>${item.code}</td>
-                <td><div><strong>${escapeHtml(displayName)}</strong></div></td>
-                <td>${qty.toFixed(1)}</td>
-                <td>${item.unit}</td>
-                <td>${price.toFixed(2)}</td>
-                <td>${total.toFixed(2)}</td>
-                <td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td>
-                <td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span>${rejectionHtml}</td>
-            </tr>`;
+            itemsHtml += `<tr><td>${item.code}</td><td><div><strong>${escapeHtml(displayName)}</strong></div></td><td>${qty.toFixed(1)}</td><td>${item.unit}</td><td>${price.toFixed(2)}</td><td>${total.toFixed(2)}</td><td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td><td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span>${rejectionHtml}</td></tr>`;
         });
-        itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;"><td colspan="7" style="text-align:right;">💰 ${t('totalValue')} (Approved only):</td><td class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</td></tr>`;
+        itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;"><td colspan="7" style="text-align:right;">💰 ${t('totalValue')} (Approved only):</td><td><span class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</span></td></tr>`;
         itemsHtml += `</tbody></table></div>`;
         container.innerHTML += `<div class="request-card"><div class="request-card-header"><span class="request-id">📄 ${req.requestId}</span><div style="display:flex; gap:10px; flex-wrap:wrap;"><span style="background:linear-gradient(135deg, #1e3c72, #2a5298); color:white; padding:6px 14px; border-radius:20px; font-size:0.75rem;">💰 ${t('totalValue')}: ${requestTotalValue.toFixed(2)} ${t('egp')}</span><span class="approved-by-text">${t('approvedBy')}: <span>${escapeHtml(adminName)}</span></span><span class="status-badge ${statusClass}">${statusText}</span></div></div><div class="request-info-row"><div class="info-item"><div class="info-label">👨‍🍳 ${t('chefLabel')}</div><div class="info-value">${escapeHtml(req.chefName)}</div></div><div class="info-item"><div class="info-label">📅 ${t('submitted')}</div><div class="info-value">${req.submittedAt}</div></div></div>${itemsHtml}</div>`;
     });
@@ -1682,7 +1410,6 @@ function escapeHtml(str) { return str ? str.replace(/[&<>]/g, m => ({ '&': '&amp
 function logout() {
     if (confirm("Logout? All unlocked kitchens will be locked.")) {
         if(autoRefreshInterval) clearInterval(autoRefreshInterval);
-        if (freehandUnsubscribe) freehandUnsubscribe();
         unlockedKitchens = {};
         localStorage.removeItem("unlockedKitchens");
         kitchens.forEach(k => localStorage.removeItem(`kitchen_password_${k}`));
@@ -1723,20 +1450,14 @@ function onChefNameChange(kitchen) {
 
 function createKitchenPage(kitchen) {
     const id = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
-    const freehandBannerDisplay = freehandModeActive ? 'flex' : 'none';
-    return `<div class="kitchen-page" id="page_${id}">
-        <div id="freehandBanner_${id}" class="freehand-banner" style="display:${freehandBannerDisplay};">
-            <span class="freehand-icon">🔓</span>
-            <span>${t('freehandActive')}</span>
-        </div>
-        <div class="card"><h3>👨‍🍳 ${t('chefInfo')} - ${kitchen}</h3><div class="input-group"><label>${t('chefName')} <span class="required">*</span></label><input type="text" id="chefName_${id}" placeholder="${t('enterChefName')}" onchange="onChefNameChange('${kitchen}')"></div></div>
-        <div class="card"><h3>📦 ${kitchen} ${t('items')} <span style="font-size:11px;">(${t('searchByFirstChar')})</span></h3><div id="itemsListContainer_${id}"></div></div>
-        <div class="card"><h3>🛒 ${t('currentRequest')} <button class="history-toggle-btn" onclick="toggleHistory('${kitchen}')">📜 ${t('viewHistory')}</button></h3>
-        <div class="cart-stats"><span>📦 ${t('totalQty')}: <strong id="totalItems_${id}">0</strong></span><span>📋 ${t('totalItems')}: <strong id="lineCount_${id}">0</strong></span><span>💰 ${t('totalValue')}: <strong id="totalValue_${id}">0.00</strong> ${t('egp')}</span></div>
-        <div class="desktop-table-view"><div class="table-wrapper"><table class="cart-table"><thead><tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('total')}</th><th></th></tr></thead><tbody id="cartTableDesktop_${id}"></tbody>}</div></div>
-        <div class="button-group"><button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 ${t('submit')}</button><button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 ${t('export')}</button><button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ ${t('clear')}</button></div></div>
-        <div class="card"><h3>📜 ${t('myRequests')} <span style="font-size:11px;">(${t('showsAdminPrice')})</span></h3><div id="myRequestsDesktop_${id}"></div></div>
-        <div class="card"><h3>📜 ${t('orderHistory')}</h3><div id="historySection_${id}" class="history-section" style="display:none;"><div class="history-toolbar"><input type="date" id="historyFrom_${id}" placeholder="${t('fromDate')}"><input type="date" id="historyTo_${id}" placeholder="${t('toDate')}"><button class="history-filter-btn" onclick="loadOrderHistory('${kitchen}')">🔍 ${t('filter')}</button></div><div id="orderHistoryContainer_${id}"></div></div></div></div>`;
+    return `<div class="kitchen-page" id="page_${id}"><div class="card"><h3>👨‍🍳 ${t('chefInfo')} - ${kitchen}</h3><div class="input-group"><label>${t('chefName')} <span class="required">*</span></label><input type="text" id="chefName_${id}" placeholder="${t('enterChefName')}" onchange="onChefNameChange('${kitchen}')"></div></div>
+    <div class="card"><h3>📦 ${kitchen} ${t('items')} <span style="font-size:11px;">(${t('searchByFirstChar')})</span></h3><div id="itemsListContainer_${id}"></div></div>
+    <div class="card"><h3>🛒 ${t('currentRequest')} <button class="history-toggle-btn" onclick="toggleHistory('${kitchen}')">📜 ${t('viewHistory')}</button></h3>
+    <div class="cart-stats"><span>📦 ${t('totalQty')}: <strong id="totalItems_${id}">0</strong></span><span>📋 ${t('totalItems')}: <strong id="lineCount_${id}">0</strong></span><span>💰 ${t('totalValue')}: <strong id="totalValue_${id}">0.00</strong> ${t('egp')}</span></div>
+    <div class="desktop-table-view"><div class="table-wrapper"><table class="cart-table"><thead><tr><th>${t('code')}</th><th>${t('item')}</th><th>${t('qty')}</th><th>${t('unit')}</th><th>${t('price')}</th><th>${t('total')}</th><th></th></tr></thead><tbody id="cartTableDesktop_${id}"></tbody></table></div></div>
+    <div class="button-group"><button class="btn btn-success" onclick="submitRequest('${kitchen}')">📤 ${t('submit')}</button><button class="btn btn-warning" onclick="exportToExcel('${kitchen}')">📎 ${t('export')}</button><button class="btn btn-danger" onclick="clearCart('${kitchen}')">🗑️ ${t('clear')}</button></div></div>
+    <div class="card"><h3>📜 ${t('myRequests')} <span style="font-size:11px;">(${t('showsAdminPrice')})</span></h3><div id="myRequestsDesktop_${id}"></div></div>
+    <div class="card"><h3>📜 ${t('orderHistory')}</h3><div id="historySection_${id}" class="history-section" style="display:none;"><div class="history-toolbar"><input type="date" id="historyFrom_${id}" placeholder="${t('fromDate')}"><input type="date" id="historyTo_${id}" placeholder="${t('toDate')}"><button class="history-filter-btn" onclick="loadOrderHistory('${kitchen}')">🔍 ${t('filter')}</button></div><div id="orderHistoryContainer_${id}"></div></div></div></div>`;
 }
 
 function generatePages() {
@@ -1756,6 +1477,7 @@ loadLastSelectedKitchen();
 db.collection("kitchen_requests").onSnapshot(() => { loadRequestsFromFirebase(); });
 // Initialize Freehand Mode Listener
 initFreehandModeListener();
+
 </script>
 </body>
 </html>
