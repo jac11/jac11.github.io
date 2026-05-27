@@ -5,7 +5,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Developer Console - Complete Control</title>
 <style>
@@ -764,7 +763,7 @@ hr {
 </div>
 
 <script>
-// ============ FIREBASE CONFIG ============
+// ============ FIREBASE CONFIG (BUILT-IN - NO EXTERNAL FILE NEEDED) ============
 const firebaseConfig = {
     apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
     authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
@@ -774,7 +773,12 @@ const firebaseConfig = {
     appId: "1:786074432195:web:8381f2cba8f43002232876"
 };
 
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log("✅ Firebase initialized successfully");
+}
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 
@@ -911,29 +915,60 @@ async function removeAuthorizedDeveloper(email) {
     displayAuthorizedDevelopers(); 
 }
 
+// MAIN LOGIN FUNCTION - FIXED
 window.loginWithFirebase = async function() {
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
     const errorDiv = document.getElementById("loginErrorMsg");
-    if(!email || !password) { errorDiv.innerHTML = "Enter email and password"; return; }
+    
+    console.log("Login attempted for:", email);
+    
+    if(!email || !password) { 
+        errorDiv.innerHTML = "Please enter email and password"; 
+        return; 
+    }
+    
     errorDiv.innerHTML = "⏳ Logging in...";
+    errorDiv.style.color = "#00d4ff";
+    
     try {
         const userCred = await auth.signInWithEmailAndPassword(email, password);
+        console.log("Login successful:", userCred.user.email);
+        
         await loadAuthorizedDevelopers();
+        
         if(!AUTHORIZED_DEVELOPERS.includes(userCred.user.email.toLowerCase())) {
-            errorDiv.innerHTML = "❌ Not authorized. Your email is not in the authorized developers list.";
+            errorDiv.innerHTML = "❌ Access Denied. Your email is not authorized.";
+            errorDiv.style.color = "#dc2626";
             await auth.signOut();
             return;
         }
+        
         currentDeveloperEmail = userCred.user.email;
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
+        
         await loadFreehandModeFromFirestore();
         refreshOrdersList(); 
         renderKitchenMenuButtons();
+        
     } catch(error) {
-        errorDiv.innerHTML = error.code === 'auth/user-not-found' ? "Invalid email or password" : error.message;
+        console.error("Login error:", error);
+        let msg = "";
+        if(error.code === 'auth/user-not-found') {
+            msg = "❌ No account found with this email. Please check your credentials.";
+        } else if(error.code === 'auth/wrong-password') {
+            msg = "❌ Invalid password. Please try again.";
+        } else if(error.code === 'auth/invalid-email') {
+            msg = "❌ Invalid email format.";
+        } else if(error.code === 'auth/too-many-requests') {
+            msg = "❌ Too many failed attempts. Try again later.";
+        } else {
+            msg = "❌ " + error.message;
+        }
+        errorDiv.innerHTML = msg;
+        errorDiv.style.color = "#dc2626";
     }
 };
 
@@ -987,7 +1022,7 @@ async function loadOrderById(docId) {
 
 async function fetchOrderDocument() { 
     const id = document.getElementById("orderDocId").value.trim(); 
-    if(!id) return; 
+    if(!id) { showToast("Enter Document ID", true); return; }
     try { 
         const doc = await db.collection("kitchen_requests").doc(id).get(); 
         if(!doc.exists) { showToast("Document not found", true); return; }
@@ -1173,7 +1208,7 @@ window.quickAddItemFromOrder = function() {
     showToast(`✅ Added "${name}" (x${qty})`); 
 };
 
-// ============ JSON GENERATOR ============
+// ============ JSON GENERATOR ==========
 let menuItemsGen = [];
 function updateGeneratorUI() { 
     const itemsDiv = document.getElementById("itemsList"); 
@@ -1230,7 +1265,7 @@ function downloadJSON() {
     showToast("📎 JSON file downloaded");
 }
 
-// ============ USER MGMT ============
+// ============ USER MGMT ==========
 async function createNewUser() { 
     const email = document.getElementById("newUserEmail").value.trim(), pwd = document.getElementById("newUserPassword").value, confirm = document.getElementById("newUserConfirmPassword").value;
     if(!email || pwd !== confirm || pwd.length < 6){ showToast("Invalid or password mismatch", true); return; }
@@ -1252,7 +1287,7 @@ async function sendUserPasswordReset() {
     } catch(e) { showToast(e.message, true); }
 }
 
-// ============ UTILITIES ============
+// ============ UTILITIES ==========
 function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
 function escapeJSON(str) { return str.replace(/\\/g,'\\\\').replace(/"/g,'\\"'); }
 function showToast(msg, isErr = false) { 
@@ -1281,8 +1316,9 @@ function switchTab(tab) {
     }
 }
 
-// Initialize
+// Initialize everything
 loadAuthorizedDevelopers();
+console.log("Developer Console Ready - Firebase connected");
 </script>
 </body>
 </html>
