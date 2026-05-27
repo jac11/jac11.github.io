@@ -211,7 +211,7 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
 </div>
 
 <script>
-// ============ FIREBASE CONFIGURATION (DIRECT - NO EXTERNAL FILE) ============
+// ============ FIREBASE CONFIGURATION ============
 const firebaseConfig = {
     apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
     authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
@@ -232,7 +232,7 @@ const db = firebase.firestore();
 
 // ============ GLOBAL VARIABLES ============
 let currentDeveloperEmail = "";
-let AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];  // Only this email can login
+let AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
 let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
 let currentMenuItems = [], currentSelectedKitchen = "";
 let freehandMode = false;
@@ -248,19 +248,52 @@ const KITCHEN_JSON_FILES = {
 };
 const JSON_BASE_PATH = "items/";
 
-// ============ GO BACK FUNCTION ============
-function goBackToIndex() { window.location.href = "index.html"; }
+// ============ GLOBAL FREEHAND MODE FUNCTIONS (Stored in Firestore) ============
+// Save freehand mode to Firestore so all pages can access it
+async function saveFreehandModeToFirestore(isEnabled) {
+    try {
+        await db.collection("settings").doc("global_settings").set({
+            freehandMode: isEnabled,
+            updatedAt: new Date().toISOString(),
+            updatedBy: currentDeveloperEmail || "developer"
+        }, { merge: true });
+        console.log("✅ Freehand mode saved to Firestore:", isEnabled);
+    } catch(e) {
+        console.error("Error saving freehand mode:", e);
+    }
+}
+
+// Load freehand mode from Firestore
+async function loadFreehandModeFromFirestore() {
+    try {
+        const doc = await db.collection("settings").doc("global_settings").get();
+        if (doc.exists && doc.data().freehandMode !== undefined) {
+            freehandMode = doc.data().freehandMode;
+            console.log("✅ Freehand mode loaded from Firestore:", freehandMode);
+        } else {
+            // Default to false
+            freehandMode = false;
+            await saveFreehandModeToFirestore(false);
+        }
+        updateFreehandModeUI();
+        if(currentMenuItems.length > 0) renderMenuItemsList();
+    } catch(e) {
+        console.error("Error loading freehand mode:", e);
+        freehandMode = false;
+    }
+}
 
 // ============ FREEHAND MODE TOGGLE ============
-window.toggleFreehandMode = function() {
+window.toggleFreehandMode = async function() {
     const warningMsg = freehandMode 
-        ? "⚠️ Disable Freehand Mode?\n\nWhen disabled, quantity limits will be restored." 
-        : "⚠️ ENABLE Freehand Mode?\n\nWhen enabled, USERS CAN ORDER ANY QUANTITY without limits!";
+        ? "⚠️ Disable Freehand Mode?\n\nWhen disabled, quantity limits will be restored for all users." 
+        : "⚠️ ENABLE Freehand Mode?\n\nWhen enabled, ALL USERS CAN ORDER ANY QUANTITY without limits! This affects Chef Dashboard, Admin Dashboard, and Storekeeper pages.";
     
     if(confirm(warningMsg)) {
         freehandMode = !freehandMode;
+        await saveFreehandModeToFirestore(freehandMode);
         updateFreehandModeUI();
-        showToast(freehandMode ? "✅ FREEHAND MODE ENABLED - No quantity limits!" : "❌ Freehand Mode DISABLED - Limits restored");
+        showToast(freehandMode ? "✅ FREEHAND MODE ENABLED - No quantity limits for any user!" : "❌ Freehand Mode DISABLED - Limits restored for all users");
         if(currentMenuItems.length > 0) renderMenuItemsList();
     }
 };
@@ -277,6 +310,9 @@ function updateFreehandModeUI() {
     if(freehandBanner) {
         freehandBanner.style.display = freehandMode ? "flex" : "none";
         freehandBanner.className = freehandMode ? "freehand-banner active" : "freehand-banner inactive";
+        if(freehandBanner.children[0]) {
+            freehandBanner.children[0].innerHTML = freehandMode ? "⚡ FREEHAND MODE ACTIVE ⚡" : "⚡ FREEHAND MODE INACTIVE ⚡";
+        }
     }
     if(freehandBadge) {
         freehandBadge.textContent = freehandMode ? "✋ Freehand: ON" : "✋ Freehand: OFF";
@@ -331,7 +367,7 @@ function isAuthorized(email) {
     return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase()); 
 }
 
-// LOGIN FUNCTION - SIMPLE AND WORKING
+// LOGIN FUNCTION
 window.loginWithFirebase = async function() {
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
@@ -359,10 +395,12 @@ window.loginWithFirebase = async function() {
         document.getElementById("mainContent").style.display = "block";
         document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
         
+        // Load freehand mode from Firestore FIRST
+        await loadFreehandModeFromFirestore();
+        
         // Load initial data
         refreshOrdersList(); 
         renderKitchenMenuButtons();
-        updateFreehandModeUI();
         
     } catch(error) {
         console.error("Login error:", error);
@@ -847,9 +885,9 @@ auth.onAuthStateChanged(async (user) => {
             document.getElementById("loginOverlay").style.display = "none";
             document.getElementById("mainContent").style.display = "block";
             document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
+            await loadFreehandModeFromFirestore();
             refreshOrdersList();
             renderKitchenMenuButtons();
-            updateFreehandModeUI();
         } else {
             await auth.signOut();
         }
