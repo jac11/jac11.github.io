@@ -279,13 +279,13 @@ async function loadAuthorizedDevelopers() {
         if(doc.exists && doc.data().emails) {
             AUTHORIZED_DEVELOPERS = doc.data().emails;
         } else {
-            AUTHORIZED_DEVELOPERS = ["dev@code.com"];
+            AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com];
             await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
         }
         displayAuthorizedDevelopers(); 
     } catch(e) { 
         console.error("Error loading authorized devs:", e);
-        AUTHORIZED_DEVELOPERS = ["dev@code.com"];
+        AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
         displayAuthorizedDevelopers();
     }
 }
@@ -306,7 +306,7 @@ async function addAuthorizedDeveloper() {
 }
 
 async function removeAuthorizedDeveloper(email) { 
-    if(email === "dev@code.com"){ showToast("Cannot remove master developer",true); return; } 
+    if(email === "jac11devel@gmail.com"){ showToast("Cannot remove master developer",true); return; } 
     AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email); 
     await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); 
     displayAuthorizedDevelopers(); 
