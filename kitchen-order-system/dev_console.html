@@ -273,23 +273,24 @@ function getQuantityLimits(item) {
 }
 
 // ============ AUTH & AUTHORIZATION ============
+
+// ============ AUTH & AUTHORIZATION ============
 async function loadAuthorizedDevelopers() {
     try { 
         const doc = await db.collection("settings").doc("authorized_devs").get(); 
         if(doc.exists && doc.data().emails) {
             AUTHORIZED_DEVELOPERS = doc.data().emails;
         } else {
-            AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com];
+            AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];  // ← Fixed missing quote
             await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
         }
         displayAuthorizedDevelopers(); 
     } catch(e) { 
         console.error("Error loading authorized devs:", e);
-        AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
+        AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];  // ← Fixed missing quote
         displayAuthorizedDevelopers();
     }
 }
-
 function displayAuthorizedDevelopers() { 
     const c = document.getElementById("authorizedDevsList"); 
     if(c) c.innerHTML = AUTHORIZED_DEVELOPERS.map(e => `<div style="display:flex;justify-content:space-between;padding:8px;margin:5px 0;background:#1a1a2e;border-radius:8px;"><span>📧 ${e}</span><button class="btn btn-danger" onclick="removeAuthorizedDeveloper('${e}')" style="padding:4px 12px;">Remove</button></div>`).join(''); 
