@@ -5,7 +5,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Developer Console - Complete Control</title>
 <style>
@@ -27,7 +26,6 @@ body { font-family: 'Courier New', 'Segoe UI', monospace; background: #0a0e27; c
 .login-box .back-btn:hover { background: #475569; }
 .error-msg { color: #dc2626; margin-top: 10px; font-size: 0.8rem; }
 .info-msg { color: #00d4ff; margin-top: 10px; font-size: 0.8rem; }
-.success-msg { color: #10b981; margin-top: 10px; font-size: 0.8rem; }
 .user-menu { display: flex; align-items: center; gap: 12px; background: #1a1a2e; padding: 6px 16px; border-radius: 40px; flex-wrap: wrap; }
 .user-email { font-size: 0.75rem; color: #00d4ff; }
 .tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; background: #0f172a; padding: 12px 20px; border-radius: 20px; }
@@ -213,48 +211,28 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
 </div>
 
 <script>
-// Wait for Firebase to be ready
-let auth = null;
-let db = null;
-let firebaseReady = false;
+// ============ FIREBASE CONFIGURATION (DIRECT - NO EXTERNAL FILE) ============
+const firebaseConfig = {
+    apiKey: "AIzaSyB7xF2kP5jgH6xyGg7-S-T_QgMoBDIoBBc",
+    authDomain: "kitchenordersystem-66eb2.firebaseapp.com",
+    projectId: "kitchenordersystem-66eb2",
+    storageBucket: "kitchenordersystem-66eb2.firebasestorage.app",
+    messagingSenderId: "786074432195",
+    appId: "1:786074432195:web:8381f2cba8f43002232876"
+};
 
-// Function to initialize after firebase-config.js loads
-function initFirebase() {
-    // Check if Firebase is already initialized (from firebase-config.js)
-    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-        auth = firebase.auth();
-        db = firebase.firestore();
-        firebaseReady = true;
-        console.log("✅ Firebase Auth and Firestore ready");
-        
-        // Check if user is already logged in
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                await loadAuthorizedDevelopers();
-                if(isAuthorized(user.email)) {
-                    currentDeveloperEmail = user.email;
-                    document.getElementById("loginOverlay").style.display = "none";
-                    document.getElementById("mainContent").style.display = "block";
-                    document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
-                    refreshOrdersList();
-                    renderKitchenMenuButtons();
-                    updateFreehandModeUI();
-                } else {
-                    await auth.signOut();
-                }
-            }
-        });
-        
-        loadAuthorizedDevelopers();
-    } else {
-        console.log("⏳ Waiting for Firebase to initialize...");
-        setTimeout(initFirebase, 500);
-    }
+// Initialize Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+    console.log("✅ Firebase initialized successfully");
 }
+
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 // ============ GLOBAL VARIABLES ============
 let currentDeveloperEmail = "";
-let AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];  // Only this email
+let AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];  // Only this email can login
 let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
 let currentMenuItems = [], currentSelectedKitchen = "";
 let freehandMode = false;
@@ -313,19 +291,16 @@ function getQuantityLimits(item) {
 
 // ============ AUTH & AUTHORIZATION ============
 async function loadAuthorizedDevelopers() {
-    if(!db) return;
     try { 
         const doc = await db.collection("settings").doc("authorized_devs").get(); 
         if(doc.exists && doc.data().emails) {
             AUTHORIZED_DEVELOPERS = doc.data().emails;
         } else {
-            AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
             await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
         }
         displayAuthorizedDevelopers(); 
     } catch(e) { 
         console.error("Error loading authorized devs:", e);
-        AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
         displayAuthorizedDevelopers();
     }
 }
@@ -336,7 +311,6 @@ function displayAuthorizedDevelopers() {
 }
 
 async function addAuthorizedDeveloper() { 
-    if(!db) return;
     const email = document.getElementById("newDevEmail").value.trim(); 
     if(!email || AUTHORIZED_DEVELOPERS.includes(email)){ showToast("Invalid or duplicate",true); return; }
     AUTHORIZED_DEVELOPERS.push(email); 
@@ -347,7 +321,6 @@ async function addAuthorizedDeveloper() {
 }
 
 async function removeAuthorizedDeveloper(email) { 
-    if(!db) return;
     AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email); 
     await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); 
     displayAuthorizedDevelopers(); 
@@ -358,18 +331,11 @@ function isAuthorized(email) {
     return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase()); 
 }
 
-// LOGIN FUNCTION - FIXED
+// LOGIN FUNCTION - SIMPLE AND WORKING
 window.loginWithFirebase = async function() {
-    const errorDiv = document.getElementById("loginErrorMsg");
-    
-    // Check if Firebase is ready
-    if (!firebaseReady || !auth) {
-        errorDiv.innerHTML = "⏳ Loading Firebase... Please wait and try again.";
-        return;
-    }
-    
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
+    const errorDiv = document.getElementById("loginErrorMsg");
     
     if(!email || !password) { 
         errorDiv.innerHTML = "Please enter email and password"; 
@@ -392,9 +358,12 @@ window.loginWithFirebase = async function() {
         document.getElementById("loginOverlay").style.display = "none";
         document.getElementById("mainContent").style.display = "block";
         document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
+        
+        // Load initial data
         refreshOrdersList(); 
         renderKitchenMenuButtons();
         updateFreehandModeUI();
+        
     } catch(error) {
         console.error("Login error:", error);
         let msg = "";
@@ -414,7 +383,6 @@ window.loginWithFirebase = async function() {
 };
 
 function logout() { 
-    if(!auth) return;
     if(confirm("Logout?")) auth.signOut().then(() => {
         document.getElementById("mainContent").style.display = "none";
         document.getElementById("loginOverlay").style.display = "flex";
@@ -439,10 +407,9 @@ function getRequestStatus(items) {
     return "pending"; 
 }
 
-async function refreshOrdersList() { if(db) await listAllOrders(); }
+async function refreshOrdersList() { await listAllOrders(); }
 
 async function listAllOrders() { 
-    if(!db) return;
     try { 
         const snap = await db.collection("kitchen_requests").orderBy("timestamp", "desc").limit(50).get(); 
         const cont = document.getElementById("ordersList"); 
@@ -477,7 +444,6 @@ window.loadOrderById = async function(docId) {
 };
 
 async function fetchOrderDocument() { 
-    if(!db) return;
     const id = document.getElementById("orderDocId").value.trim(); 
     if(!id) { showToast("Enter Document ID", true); return; }
     try { 
@@ -514,7 +480,7 @@ function updateEditButtonsBasedOnStatus() {
 }
 
 async function saveOrderDocument() { 
-    if(!db || !currentOrderDocId || currentOrderStatus !== "pending") { 
+    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
         showToast("Cannot save: Order not pending. Restore first.", true); 
         return; 
     } 
@@ -529,7 +495,7 @@ async function saveOrderDocument() {
 }
 
 async function deleteOrderDocument() { 
-    if(!db || !currentOrderDocId || currentOrderStatus !== "pending") { 
+    if(!currentOrderDocId || currentOrderStatus !== "pending") { 
         showToast("Cannot delete: Not pending. Restore first.", true); 
         return; 
     } 
@@ -542,7 +508,6 @@ async function deleteOrderDocument() {
 }
 
 async function deleteOrderById(docId) { 
-    if(!db) return;
     if(confirm("⚠️ Delete this order?")) { 
         await db.collection("kitchen_requests").doc(docId).delete(); 
         showToast("🗑️ Deleted"); 
@@ -675,7 +640,6 @@ window.quickAddItemFromOrder = function() {
 };
 
 async function restoreOrderToPending(docId) { 
-    if(!db) return;
     if(!confirm("Restore order to PENDING status?\n\nThis will reset all approved/rejected items back to pending.")) return; 
     try { 
         const doc = await db.collection("kitchen_requests").doc(docId).get(); 
@@ -809,7 +773,6 @@ function downloadJSON() {
 
 // ============ USER MANAGEMENT ============
 async function createNewUser() { 
-    if(!auth) return;
     const email = document.getElementById("newUserEmail").value.trim(); 
     const pwd = document.getElementById("newUserPassword").value; 
     const confirm = document.getElementById("newUserConfirmPassword").value; 
@@ -834,7 +797,6 @@ async function createNewUser() {
 }
 
 async function sendUserPasswordReset() { 
-    if(!auth) return;
     const email = document.getElementById("resetUserEmail").value.trim(); 
     const msgDiv = document.getElementById("resetUserMsg");
     if(!email) { msgDiv.innerHTML = "<span style='color:#dc2626'>❌ Enter email</span>"; return; }
@@ -876,9 +838,25 @@ function switchTab(t) {
     } 
 }
 
-// ============ START ============
-// Initialize Firebase connection
-initFirebase();
+// ============ CHECK IF ALREADY LOGGED IN ============
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        await loadAuthorizedDevelopers();
+        if(isAuthorized(user.email)) {
+            currentDeveloperEmail = user.email;
+            document.getElementById("loginOverlay").style.display = "none";
+            document.getElementById("mainContent").style.display = "block";
+            document.getElementById("userEmailDisplay").innerHTML = currentDeveloperEmail;
+            refreshOrdersList();
+            renderKitchenMenuButtons();
+            updateFreehandModeUI();
+        } else {
+            await auth.signOut();
+        }
+    }
+});
+
+loadAuthorizedDevelopers();
 </script>
 </body>
 </html>
