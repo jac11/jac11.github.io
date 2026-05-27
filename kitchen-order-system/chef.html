@@ -94,7 +94,7 @@ body.arabic .qty-picker {
     color: #ffd700;
 }
 
-/* Freehand Status Indicator */
+/* Freehand Status Indicator - NEW */
 .freehand-status {
     display: inline-flex;
     align-items: center;
@@ -676,15 +676,8 @@ body.arabic .items-scroll-container {
 
 .item-max {
     font-size: 0.65rem;
-    margin-top: 4px;
-}
-
-.item-max-normal {
     color: #e67e22;
-}
-
-.item-max-freehand {
-    color: #10b981;
+    margin-top: 4px;
 }
 
 .item-step {
@@ -894,18 +887,18 @@ body.arabic .items-scroll-container {
 let freehandModeActive = false;
 let freehandUnsubscribe = null;
 
-// Update freehand status indicator in header
+// Update freehand status indicator
 function updateFreehandStatusIndicator() {
     const statusLight = document.getElementById('statusLight');
     const statusText = document.getElementById('statusText');
     if (statusLight && statusText) {
         if (freehandModeActive) {
             statusLight.className = 'status-light active';
-            statusText.innerHTML = '🟢 Freehand: ON (No Limits)';
+            statusText.innerHTML = '🟢 Freehand: ON';
             statusText.style.color = '#10b981';
         } else {
             statusLight.className = 'status-light inactive';
-            statusText.innerHTML = '⚫ Freehand: OFF (Limits Active)';
+            statusText.innerHTML = '⚫ Freehand: OFF';
             statusText.style.color = '#999';
         }
     }
@@ -919,8 +912,8 @@ function updateFreehandUI() {
         renderCart(currentKitchen);
     }
     const statusMsg = freehandModeActive ? 
-        '🔓 FREEHAND MODE ACTIVE - No quantity limits! (Step values unchanged)' : 
-        '🔒 Freehand mode disabled - Max limits restored';
+        '🔓 FREEHAND MODE ACTIVE - No quantity limits!' : 
+        '🔒 Freehand mode disabled - Limits restored';
     showToast(statusMsg);
 }
 
@@ -938,13 +931,6 @@ function initFreehandModeListener() {
     }, (error) => {
         console.error("Error listening to freehand mode:", error);
     });
-}
-
-// ============ GET ITEM STEP - NEVER CHANGES (KEEP ORIGINAL STEP) ============
-function getItemStep(item) {
-    if (item.step !== undefined) return item.step;
-    if (item.unit === "kg" || item.unit === "KG" || item.unit === "Kg") return 0.5;
-    return 1;
 }
 
 // ============ GET MAX LIMIT - ONLY THIS CHANGES IN FREEHAND MODE ============
@@ -1183,6 +1169,13 @@ async function forceReloadItems() {
     if (currentKitchen) { await renderItemsList(currentKitchen); showToast(`✅ Reloaded items for ${currentKitchen}`); }
 }
 
+// ============ HELPER: Get step value from item ============
+function getItemStep(item) {
+    if (item.step !== undefined) return item.step;
+    if (item.unit === "kg" || item.unit === "KG" || item.unit === "Kg") return 0.5;
+    return 1;
+}
+
 // ============ ORDER HISTORY FUNCTION ============
 function loadOrderHistory(kitchen) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
@@ -1214,7 +1207,7 @@ function loadOrderHistory(kitchen) {
             if (item.status === "approved") { statusDisplay = `✅ ${t('approved')}`; statusColor = "#27ae60"; }
             else if (item.status === "rejected") { statusDisplay = `❌ ${t('rejected')}`; statusColor = "#e74c3c"; if(item.rejectionReason) { statusDisplay += `<div class="rejection-reason">${t('reason')} ${escapeHtml(item.rejectionReason)}</div>`; } }
             else { statusDisplay = `⏳ ${t('pending')}`; statusColor = "#f39c12"; }
-            itemsHtml += `<tr><td>${item.code}</td><td><strong>${escapeHtml(displayName)}</strong></td><td>${item.originalQty.toFixed(1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td><td><span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span></td></tr>`;
+            itemsHtml += `<tr><td>${item.code}</td>}<strong>${escapeHtml(displayName)}</strong></td><td>${item.originalQty.toFixed(1)}</td><td>${item.unit}</td><td>${(item.price || 0).toFixed(2)}</td><td>${approvedQty > 0 ? approvedQty.toFixed(1) : "0"}</td>}<span style="color:${statusColor}; font-weight:600;">${statusDisplay}</span></td></tr>`;
         });
         itemsHtml += `<tr style="background:#f8f9fa; font-weight:bold;"><td colspan="6" style="text-align:right;">💰 ${t('totalValue')} (Approved):</td><td class="price-total">${approvedTotalValue.toFixed(2)} ${t('egp')}</td></tr>`;
         itemsHtml += `</tbody></table></div>`;
@@ -1242,7 +1235,7 @@ function restoreHistoryState(kitchen) {
     else section.style.display = "none";
 }
 
-// ============ ITEM LIST FUNCTIONS - STEP NEVER CHANGES, ONLY MAX LIMIT ============
+// ============ ITEM LIST FUNCTIONS WITH FREEHAND MODE SUPPORT ============
 function filterItemsByFirstChar(kitchen, searchChar) {
     const kitchenId = kitchen.replace(/\s/g, '_').replace(/\//g, '_');
     const displayDiv = document.getElementById(`itemsDisplay_${kitchenId}`);
@@ -1270,9 +1263,7 @@ function filterItemsByFirstChar(kitchen, searchChar) {
         const displayName = getItemName(item);
         const stepValue = getItemStep(item);
         const maxLimitValue = getItemMaxLimit(item);
-        // Step text NEVER changes - always show actual step
         const stepText = stepValue === 0.5 ? "0.5" : stepValue.toString();
-        // Max text changes to ∞ when freehand mode is ON
         const maxDisplay = freehandModeActive ? "∞" : (item.maxLimit || 99);
         const maxColor = freehandModeActive ? "#10b981" : "#e67e22";
         const displayQty = stepValue === 0.5 ? currentQty.toFixed(1) : Math.floor(currentQty);
@@ -1287,7 +1278,7 @@ function filterItemsByFirstChar(kitchen, searchChar) {
             <button class="qty-btn" data-step="${stepValue}" data-code="${item.code}" data-max="${maxLimitValue}">+</button></div>
             <button class="add-item-btn" data-code="${item.code}" data-name="${escapeHtml(displayName)}" data-unit="${item.unit || "pcs"}" data-max="${maxLimitValue}" data-price="${itemPrice}" data-step="${stepValue}">${t('add')}</button></div></div></div>`;
     });
-    html += `</div><div class="scroll-info">📜 ${sortedItems.length} ${t('allItems')} ${freehandModeActive ? '🔓 FREEHAND MODE (No limits, step unchanged)' : ''}</div></div>`;
+    html += `</div><div class="scroll-info">📜 ${sortedItems.length} ${t('allItems')} ${freehandModeActive ? '🔓 FREEHAND MODE' : ''}</div></div>`;
     displayDiv.innerHTML = html;
     
     displayDiv.querySelectorAll('.qty-btn').forEach(btn => {
