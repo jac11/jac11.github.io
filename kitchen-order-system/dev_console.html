@@ -213,19 +213,21 @@ hr { border-color: #2a3a5a; margin: 15px 0; }
 </div>
 
 <script>
-// Wait for firebase-config.js to load and initialize auth
+// Wait for Firebase to be ready
 let auth = null;
 let db = null;
+let firebaseReady = false;
 
 // Function to initialize after firebase-config.js loads
 function initFirebase() {
-    // Check if Firebase is already initialized
-    if (typeof firebase !== 'undefined' && firebase.apps.length) {
+    // Check if Firebase is already initialized (from firebase-config.js)
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
         auth = firebase.auth();
         db = firebase.firestore();
+        firebaseReady = true;
         console.log("✅ Firebase Auth and Firestore ready");
         
-        // Now check if user is already logged in
+        // Check if user is already logged in
         auth.onAuthStateChanged(async (user) => {
             if (user) {
                 await loadAuthorizedDevelopers();
@@ -245,14 +247,14 @@ function initFirebase() {
         
         loadAuthorizedDevelopers();
     } else {
-        console.log("⏳ Waiting for Firebase...");
+        console.log("⏳ Waiting for Firebase to initialize...");
         setTimeout(initFirebase, 500);
     }
 }
 
 // ============ GLOBAL VARIABLES ============
 let currentDeveloperEmail = "";
-let AUTHORIZED_DEVELOPERS = [];
+let AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];  // Only this email
 let currentOrderDocId = null, currentOrderData = null, currentOrderStatus = "pending", orderKitchen = "";
 let currentMenuItems = [], currentSelectedKitchen = "";
 let freehandMode = false;
@@ -317,13 +319,13 @@ async function loadAuthorizedDevelopers() {
         if(doc.exists && doc.data().emails) {
             AUTHORIZED_DEVELOPERS = doc.data().emails;
         } else {
-            AUTHORIZED_DEVELOPERS = ["dev@code.com", "jac11devel@gmail.com"];
+            AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
             await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS });
         }
         displayAuthorizedDevelopers(); 
     } catch(e) { 
         console.error("Error loading authorized devs:", e);
-        AUTHORIZED_DEVELOPERS = ["dev@code.com", "jac11devel@gmail.com"];
+        AUTHORIZED_DEVELOPERS = ["jac11devel@gmail.com"];
         displayAuthorizedDevelopers();
     }
 }
@@ -346,26 +348,28 @@ async function addAuthorizedDeveloper() {
 
 async function removeAuthorizedDeveloper(email) { 
     if(!db) return;
-    if(email === "dev@code.com"){ showToast("Cannot remove master developer",true); return; } 
     AUTHORIZED_DEVELOPERS = AUTHORIZED_DEVELOPERS.filter(e => e !== email); 
     await db.collection("settings").doc("authorized_devs").set({ emails: AUTHORIZED_DEVELOPERS }); 
     displayAuthorizedDevelopers(); 
     showToast(`Removed ${email}`); 
 }
 
-function isAuthorized(email) { return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase()); }
+function isAuthorized(email) { 
+    return AUTHORIZED_DEVELOPERS.includes(email.toLowerCase()); 
+}
 
-// LOGIN FUNCTION
+// LOGIN FUNCTION - FIXED
 window.loginWithFirebase = async function() {
-    if(!auth) {
-        document.getElementById("loginErrorMsg").innerHTML = "⏳ Loading Firebase... Please wait.";
-        setTimeout(() => loginWithFirebase(), 1000);
+    const errorDiv = document.getElementById("loginErrorMsg");
+    
+    // Check if Firebase is ready
+    if (!firebaseReady || !auth) {
+        errorDiv.innerHTML = "⏳ Loading Firebase... Please wait and try again.";
         return;
     }
     
     const email = document.getElementById("devEmail").value.trim();
     const password = document.getElementById("devPassword").value;
-    const errorDiv = document.getElementById("loginErrorMsg");
     
     if(!email || !password) { 
         errorDiv.innerHTML = "Please enter email and password"; 
