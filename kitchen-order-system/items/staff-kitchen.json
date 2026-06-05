@@ -13,7 +13,7 @@
   {"code": "160079", "name": "Tomato Paste Wadi Food", "name_ar": "صلصة طماطم وادي فود", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05624},
   {"code": "177068", "name": "Honey Black El Rashedy", "name_ar": "عسل أسود الرشيدي", "unit": "650g jar", "maxLimit": 5, "step": 1, "AVE": 42.45296},
   {"code": "151005", "name": "Butter Fern", "name_ar": "زبدة فيرن", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 147.69841},
-  {"code": "153036", "name": "Cheese Smoked Farm Cheese", "name_ar": "جبنة مدخنة", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 344.75},
+  {"code": "153036", "name": "Cheese Smoked Farm Cheese", "name_ar": "جبنة مدخنة", "unit": "kg", "maxLimit": 4.5, "step": 4.5, "AVE": 344.75},
   {"code": "161006", "name": "Black Pepper Powder", "name_ar": "مسحوق الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 475.3},
   {"code": "161011", "name": "Cardamom Seeds", "name_ar": "حب الهال", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 1960},
   {"code": "161019", "name": "Chili Powder", "name_ar": "مسحوق شطة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 117.6},
