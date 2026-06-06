@@ -42,6 +42,6 @@
   {"code": "163005", "name": "Oil Corn", "name_ar": "زيت ذرة", "unit": "L", "maxLimit": 6, "step": 1, "AVE": 79.81302},
   {"code": "167017", "name": "Vinegar Heinz White", "name_ar": "خل أبيض هاينز", "unit": "L", "maxLimit": 3, "step": 1, "AVE": 16.29254},
   {"code": "167006", "name": "Mustard Dijon", "name_ar": "موسترد ديجون", "unit": "370g jar", "maxLimit": 2, "step": 1, "AVE": 127.53333},
-  {"code": "175248", "name": "Bread Crumb Imported Coarse", "name_ar": "بقسماط خشن مستورد", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 149.76413},
+  {"code": "175248", "name": "Bread Crumb Imported Coarse", "name_ar": "بقسماط خشن مستورد", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 149.76413},
   {"code": "161138", "name": "Black Pepper Powder (PURE)", "name_ar": "فلفل أسود بودرة (نقي)", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 529.2}
 ]
