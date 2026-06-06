@@ -22,7 +22,6 @@
   {"code": "131055", "name": "Salmon Whole Side Fillet Skin On Maxim", "name_ar": "فيليه سلمون كامل بالجلد ماكسيم", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 830},
   {"code": "131073", "name": "Salmon Whole Side Fillet Skin On brand", "name_ar": "فيليه سلمون كامل بالجلد", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 900.00},
   {"code": "131014", "name": "Sea Scallop Wild Atlantic", "name_ar": "اسكالوب البحر الأطلسي", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 2200},
-  {"code": "132006", "name": "Mussels Whole Shell", "name_ar": "بلح البحر بقشرته", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 273.57706},
   {"code": "132010", "name": "Shrimps Large (16-20)", "name_ar": "جمبري كبير (16-20)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 813.48095},
   {"code": "131018", "name": "Tuna Saku", "name_ar": "تونة ساكو", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 751.6129},
   {"code": "132012", "name": "Shrimps Meat (26-30)", "name_ar": "لحم جمبري (26-30)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 987.91904},
