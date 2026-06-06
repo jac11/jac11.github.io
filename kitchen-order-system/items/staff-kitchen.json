@@ -13,7 +13,6 @@
   {"code": "153038", "name": "Cheese White Gallon", "name_ar": "جبنة بيضاء جالون", "unit": "10kg gal", "maxLimit": 1, "step": 1, "AVE": 700.0522},
   {"code": "120055", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "step": 0.5, "AVE": 160},
   {"code": "160102", "name": "Tomato Paste El Rashedy El Mizan", "name_ar": "معجون طماطم الرشيدي الميزان", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05},
-  {"code": "160079", "name": "Tomato Paste Wadi Food", "name_ar": "صلصة طماطم وادي فود", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05624},
   {"code": "177068", "name": "Honey Black El Rashedy", "name_ar": "عسل أسود الرشيدي", "unit": "650g jar", "maxLimit": 5, "step": 1, "AVE": 42.45296},
   {"code": "151005", "name": "Butter Fern", "name_ar": "زبدة فيرن", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 147.69841},
   {"code": "153036", "name": "Cheese Smoked Farm Cheese", "name_ar": "جبنة مدخنة", "unit": "kg", "maxLimit": 4.5, "step": 4.5, "AVE": 344.75},
