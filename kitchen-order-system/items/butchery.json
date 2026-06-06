@@ -14,6 +14,8 @@
   {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "name_ar": "دجاج كامل 1100 جرام برازيلي", "unit": "kg", "maxLimit": 40, "step": 0.5, "AVE": 157.79083},
   {"code": "120011", "name": "Duck Whole Al Abed", "name_ar": "بط كامل العابد", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 116.12726},
   {"code": "130012", "name": "Calamari Baby", "name_ar": "كالاماري صغير", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 559.93},
+  {"code": "132044", "name": "Mussil Imported 1kg", "name_ar": "محار مستورد، عبوة 1 كجم", "unit": "kg", "maxLimit": 3, "step": 1, "AVE": 273.57706},
+  {"code": "160102", "name": "Tomato Paste El Rashedy El Mizan", "name_ar": "معجون طماطم الرشيدي الميزان", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05},
   {"code": "132016", "name": "Crabs Whole Frozen", "name_ar": "كابوريا كاملة مجمدة", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 220},
   {"code": "131055", "name": "Salmon Whole Side Fillet Skin On Maxim", "name_ar": "فيليه سلمون كامل بالجلد ماكسيم", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 830},
   {"code": "131073", "name": "Salmon Whole Side Fillet Skin On brand", "name_ar": "فيليه سلمون كامل بالجلد", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 900.00},
