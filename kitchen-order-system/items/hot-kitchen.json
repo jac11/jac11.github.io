@@ -32,7 +32,6 @@
   {"code": "160023", "name": "Red Kidney Beans", "name_ar": "فاصوليا حمراء", "unit": "400g tin", "maxLimit": 10, "step": 1, "AVE": 26.96067},
   {"code": "160027", "name": "Sweet Corn", "name_ar": "ذرة حلوة", "unit": "400g tin", "maxLimit": 12, "step": 1, "AVE": 26.14861},
   {"code": "160028", "name": "Sweet Corn", "name_ar": "ذرة حلوة", "unit": "425g tin", "maxLimit": 12, "step": 1, "AVE": 26.5},
-//  {"code": "160079", "name": "Tomato Paste Wadi Food", "name_ar": "صلصة طماطم وادي فود", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05624},
   {"code": "160086", "name": "Tomato Peeled", "name_ar": "طماطم مقشرة", "unit": "2.55kg tin", "maxLimit": 6, "step": 1, "AVE": 165.43757},
   {"code": "161005", "name": "Black Pepper Corn", "name_ar": "حب الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 514.5},
   {"code": "161006", "name": "Black Pepper Powder", "name_ar": "مسحوق الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 475.3},
