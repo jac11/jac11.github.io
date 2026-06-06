@@ -6,7 +6,7 @@
   {"code": "143006", "name": "Raspberry Frozen", "name_ar": "توت أحمر مجمد", "unit": "kg", "maxLimit": 2.5, "step": 0.5, "AVE": 665},
   {"code": "143008", "name": "Red Currant Frozen", "name_ar": "كشمش أحمر مجمد", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 410},
   {"code": "177008", "name": "Honey Bee Hero", "name_ar": "عسل نحل هيرو", "unit": "650g jar", "maxLimit": 6, "step": 1, "AVE": 148.67917},
-  {"code": "166016", "name": "Sesame Seeds", "name_ar": "سمسم", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 196},
+  {"code": "166016", "name": "Sesame Seeds", "name_ar": "سمسم", "unit": "kg", "maxLimit": 1, "step": 1, "AVE": 196},
   {"code": "176021", "name": "Pine Nut", "name_ar": "صنوبر", "unit": "500g pkt", "maxLimit": 1, "step": 1, "AVE": 1675},
   {"code": "151005", "name": "Butter Fern", "name_ar": "زبدة فيرن", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 147.69841},
   {"code": "151006", "name": "Butter Flechard French Block", "name_ar": "زبدة فليشار فرنسي", "unit": "10kg box", "maxLimit": 2, "step": 1, "AVE": 7069.9051},
