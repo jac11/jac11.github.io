@@ -58,7 +58,7 @@
   {"code": "175248", "name": "Bread Crumb Imported Coarse", "name_ar": "بقسماط خشن مستورد", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 149.76413},
   {"code": "175133", "name": "Corn Flour Dreem", "name_ar": "دقيق ذرة دريم", "unit": "240g pkt", "maxLimit": 8, "step": 1, "AVE": 11.8798},
   {"code": "151018", "name": "Peanut Butter", "name_ar": "زبدة الفول السوداني", "unit": "300g jar", "maxLimit": 3, "step": 1, "AVE": 87.44643},
-  {"code": "175036", "name": "Flour Tempura", "name_ar": "دقيق تمبورا", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 118.32954},
+  {"code": "175036", "name": "Flour Tempura", "name_ar": "دقيق تمبورا", "unit": "kg", "maxLimit": 6, "step": 1, "AVE": 118.32954},
   {"code": "176007", "name": "Cashew Abu Auf", "name_ar": "كاجو أبو عوف", "unit": "500g pkt", "maxLimit": 2, "step": 1, "AVE": 329.99965},
   {"code": "176018", "name": "Peanuts For Pastry", "name_ar": "فول سوداني للحلويات", "unit": "500g pkt", "maxLimit": 8, "step": 1, "AVE": 80},
   {"code": "177008", "name": "Honey Bee Hero", "name_ar": "عسل نحل هيرو", "unit": "650g jar", "maxLimit": 6, "step": 1, "AVE": 148.67917},
