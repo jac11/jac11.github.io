@@ -9,7 +9,7 @@
   {"code": "120055", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "step": 0.5, "AVE": 160},
   {"code": "110010", "name": "Beef Fillet Brazil", "name_ar": "فيليه لحم برازيلي", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 689.2963},
   {"code": "184140", "name": "Macaroni Imported Penne", "name_ar": "مكرونه بنا مستورد", "unit": "500g pkt", "maxLimit": 3, "step": 1, "AVE": 89.8932},
-  {"code": "132044", "name": "Mussil Imported 1kg", "name_ar": "محار مستورد، عبوة 1 كجم", "unit": kg", "maxLimit": 3, "step": 1, "AVE": 273.57706},
+  {"code": "132044", "name": "Mussil Imported 1kg", "name_ar": "محار مستورد، عبوة 1 كجم", "unit": "kg", "maxLimit": 3, "step": 1, "AVE": 273.57706},
   {"code": "160102", "name": "Tomato Paste El Rashedy El Mizan", "name_ar": "معجون طماطم الرشيدي الميزان", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05},
   {"code": "131008", "name": "Fish Fillet Seabass", "name_ar": "فيليه سمك القاروص", "unit": "kg", "maxLimit": 40, "step": 0.5, "AVE": 433.437},
   {"code": "110148", "name": "Beef Rib Eye Russian", "name_ar": "ريب آي لحم روسي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 1950},
