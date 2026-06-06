@@ -42,7 +42,7 @@
   {"code": "166004", "name": "Chick Peas Dry", "name_ar": "حمص يابس", "unit": "kg", "maxLimit": 12, "step": 0.5, "AVE": 151.9},
   {"code": "166008", "name": "Fava Beans Dry Local", "name_ar": "فول يابس محلي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 61.74},
   {"code": "166018", "name": "Wheat Whole", "name_ar": "قمح كامل", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 29.4},
-  {"code": "166019", "name": "White Beans", "name_ar": "فاصوليا بيضاء", "unit": "kg", "maxLimit": 12, "step": 0.5, "AVE": 117.6},
+  {"code": "166043", "name": "White Beans (PURE)", "name_ar": "فاصوليا بيضاء", "unit": "kg", "maxLimit": 12, "step": 0.5, "AVE": 117.6},
   {"code": "166020", "name": "Yellow Lentil", "name_ar": "عدس أصفر", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 78.4},
   {"code": "177003", "name": "Halawa Tahine", "name_ar": "حلاوة طحينية", "unit": "4kg tin", "maxLimit": 2, "step": 1, "AVE": 420.18},
   {"code": "177018", "name": "Jam Apricot", "name_ar": "مربى مشمش", "unit": "5kg gal", "maxLimit": 2, "step": 1, "AVE": 247.29595},
