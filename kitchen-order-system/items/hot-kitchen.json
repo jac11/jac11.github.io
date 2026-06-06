@@ -36,7 +36,7 @@
   {"code": "161005", "name": "Black Pepper Corn", "name_ar": "حب الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 514.5},
   {"code": "161006", "name": "Black Pepper Powder", "name_ar": "مسحوق الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 475.3},
   {"code": "161096", "name": "Black Seeds", "name_ar": "حبة البركة", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 176.4},
-  {"code": "161008", "name": "Black Sesame Seeds", "name_ar": "سمسم أسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 550},
+  {"code": "161008", "name": "Black Sesame Seeds", "name_ar": "سمسم أسود", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 550},
   {"code": "161011", "name": "Cardamom Seeds", "name_ar": "حب الهال", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 1960},
   {"code": "161019", "name": "Chili Powder", "name_ar": "مسحوق شطة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 117.6},
   {"code": "161022", "name": "Chilli Whole Red Indian", "name_ar": "شطة حمراء كاملة هندي", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 176.4},
