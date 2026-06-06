@@ -23,7 +23,6 @@
   {"code": "131058", "name": "Smoked Salmon Sliced Skin On (10/10)", "name_ar": "سلمون مدخن شرائح بالجلد", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 1050},
   {"code": "131054", "name": "Smoked Salmon Sliced Skin On Maxim", "name_ar": "سلمون مدخن شرائح بالجلد ماكسيم", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 1000},
   {"code": "131018", "name": "Tuna Saku", "name_ar": "تونة ساكو", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 751.6129},
-  {"code": "132006", "name": "Mussels Whole Shell", "name_ar": "بلح البحر بقشرته", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 273.57706},
   {"code": "132010", "name": "Shrimps Large (16-20)", "name_ar": "جمبري كبير (16-20)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 813.48095},
   {"code": "132012", "name": "Shrimps Meat (26-30)", "name_ar": "لحم جمبري (26-30)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 987.91904},
   {"code": "132013", "name": "Shrimps Medium (20-30)", "name_ar": "جمبري متوسط (20-30)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 714.375},
