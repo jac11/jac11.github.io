@@ -6,6 +6,8 @@
   {"code": "113034", "name": "Spring Roll With Vegetables", "name_ar": "سبرينج رول", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 124.6875},
   {"code": "140198", "name": "Wine Leaves Stuffed", "name_ar": "ورق عنب محشي", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 120},
   {"code": "142041", "name": "Croquettes Potato", "name_ar": "كروكيت بطاطس", "unit": "15kg box", "maxLimit": 1, "step": 0.5, "AVE": 1480.14705},
+  {"code": "184140", "name": "Macaroni Imported Penne", "name_ar": "مكرونه بنا مستورد", "unit": "500g pkt", "maxLimit": 3, "step": 1, "AVE": 89.8932},
+  {"code": "160102", "name": "Tomato Paste El Rashedy El Mizan", "name_ar": "معجون طماطم الرشيدي الميزان", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05},
   {"code": "142006", "name": "French Fried Allumettes", "name_ar": "بطاطس فرنش فرايد ألوميت", "unit": "12.5kg box", "maxLimit": 2, "step": 1, "AVE": 675.15},
   {"code": "142012", "name": "Molokia Frozen Americana", "name_ar": "ملوخية مجمدة أمريكانا", "unit": "20x400g box", "maxLimit": 1, "step": 0.5, "AVE": 212.5},
   {"code": "142013", "name": "Okra Frozen Americana", "name_ar": "بامية مجمدة أمريكانا", "unit": "10kg box", "maxLimit": 1, "step": 0.5, "AVE": 696.9983},
