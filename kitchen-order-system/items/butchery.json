@@ -1,6 +1,6 @@
 [
   {"code": "110050", "name": "beef Tenderloin Angus", "name_ar": "فيليه تندرلوين أنجوس", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 900}, 
-  {"code": "110010", "name": "Beef Fillet Brazil", "name_ar": "فيليه لحم برازيلي", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 689.2963},
+  {"code": "110158", "name": "Beef Fillet Brazil(Minirva)", "name_ar": "فيليه لحم بقري برازيلي (مينيرفا)", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 850},
   {"code": "110148", "name": "Beef Rib Eye Russian", "name_ar": "ريب آي لحم روسي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 1950},
   {"code": "110028", "name": "Beef Shoulder Brazil", "name_ar": "كتف لحم برازيلي", "unit": "kg", "maxLimit": 20, "step": 0.5, "AVE": 278.89508},
   {"code": "110029", "name": "Beef Shoulder Indian", "name_ar": "كتف لحم هندي", "unit": "kg", "maxLimit": 40, "step": 0.5, "AVE": 249.7167},
