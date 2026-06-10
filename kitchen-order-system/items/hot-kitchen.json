@@ -5,7 +5,7 @@
   {"code": "113026", "name": "Chicken Sausage Chipolata", "name_ar": "سجق دجاج شيبولاتا", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 193.6},
   {"code": "113034", "name": "Spring Roll With Vegetables", "name_ar": "سبرينج رول", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 124.6875},
   {"code": "140198", "name": "Wine Leaves Stuffed", "name_ar": "ورق عنب محشي", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 120},
-  {"code": "142019", "name": "Spinach Americana", "name_ar": "سبانخ أمريكانا", "unit": "20x400g box", "maxLimit": 1, "step": 1, "AVE": 195.5},
+  {"code": "142019", "name": "Spinach Americana", "name_ar": "سبانخ أمريكانا", "unit": "20x400g box", "maxLimit": 1, "step": 0.5, "AVE": 195.5},
   {"code": "142041", "name": "Croquettes Potato", "name_ar": "كروكيت بطاطس", "unit": "15kg box", "maxLimit": 1, "step": 0.5, "AVE": 1480.14705},
   {"code": "164140", "name": "Macaroni Imported Penne", "name_ar": "مكرونه بنا مستورد", "unit": "500g pkt", "maxLimit": 3, "step": 1, "AVE": 89.8932},
   {"code": "160102", "name": "Tomato Paste El Rashedy El Mizan", "name_ar": "معجون طماطم الرشيدي الميزان", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05},
