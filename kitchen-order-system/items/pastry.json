@@ -23,6 +23,7 @@
   {"code": "152018", "name": "Rich Cream Juhayna Whipping", "name_ar": "كريمة خفق جهينة", "unit": "L", "maxLimit": 8, "step": 1, "AVE": 172.20338},
   {"code": "153068", "name": "Cheese Cream Milkana", "name_ar": "جبنة كريم ميلكانا", "unit": "6.4kg gal", "maxLimit": 2, "step": 1, "AVE": 1950},
   {"code": "153069", "name": "Cheese Kiri Creamy", "name_ar": "جبنة كيري كريمي", "unit": "350g jar", "maxLimit": 6, "step": 1, "AVE": 190.71483},
+  {"code": "155023", "name": "Ice Cream Strawbery Movenpick", "name_ar": "آيس كريم فراولة موفنبيك", "unit": "5L gal", "maxLimit": 2, "step": 1, "AVE": 1000},
   {"code": "155001", "name": "Ice Cream Black & White Movenpick", "name_ar": "آيس كريم بلاك آند وايت موفنبيك", "unit": "5L gal", "maxLimit": 2, "step": 1, "AVE": 1000.00},
   {"code": "155002", "name": "Ice Cream Blackberry Movenpick", "name_ar": "آيس كريم توت أسود موفنبيك", "unit": "5L gal", "maxLimit": 2, "step": 1, "AVE": 1000.00},
   {"code": "155003", "name": "Ice Cream Carmelita Movenpick", "name_ar": "آيس كريم كارميلتا موفنبيك", "unit": "5L gal", "maxLimit": 2, "step": 1, "AVE": 1000.00},
