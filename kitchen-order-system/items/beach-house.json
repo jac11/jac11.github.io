@@ -5,6 +5,7 @@
   {"code": "175020", "name": "Taco Shell Corn", "name_ar": "تاكو شل ذرة", "unit": "pkt", "maxLimit": 6, "step": 1, "AVE": 57.750},
   {"code": "176001", "name": "Almond Slice Abu Auf", "name_ar": "شرائح لوز أبو عوف", "unit": "500g pkt", "maxLimit": 6, "step": 1, "price": 350.57},
   {"code": "161005", "name": "Black Pepper Corn", "name_ar": "حب الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "price": 45.50},
+  {"code": "155023", "name": "Ice Cream Strawbery Movenpick", "name_ar": "آيس كريم فراولة موفنبيك", "unit": "5L gal", "maxLimit": 2, "step": 1, "AVE": 1000},
   {"code": "161006", "name": "Black Pepper Powder", "name_ar": "مسحوق الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "price": 48.00},
   {"code": "120055", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "step": 0.5, "AVE": 160},
   {"code": "110158", "name": "Beef Fillet Brazil(Minirva)", "name_ar": "فيليه لحم بقري برازيلي (مينيرفا)", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 850},
