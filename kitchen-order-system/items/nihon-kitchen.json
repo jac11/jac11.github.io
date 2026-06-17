@@ -1,6 +1,6 @@
 [
   {"code": "131054", "name": "Smoked Salmon Sliced Skin On Maxim", "name_ar": "سلمون مدخن شرائح بالجلد ماكسيم", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 1000},
-  {"code": "110050", "name": "beef Tenderloin Angus", "name_ar": "فيليه تندرلوين أنجوس", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 900},
+  {"code": "110050", "name": "beef Tenderloin Angus", "name_ar": "فيليه تندرلوين أنجوس", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 2850},
   {"code": "110028", "name": "Beef Shoulder Brazil", "name_ar": "كتف لحم برازيلي", "unit": "kg", "maxLimit": 20, "step": 0.5, "AVE": 278.89508},
   {"code": "120047", "name": "Chicken Breast Size 4-5", "name_ar": "صدر دجاج مقاس 4-5", "unit": "kg", "maxLimit": 15, "step": 1, "AVE": 221.75556},
   {"code": "131002", "name": "Crab Steaks", "name_ar": "ستيك كابوريا", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 120},
