@@ -164,7 +164,7 @@
   {"code": "176025", "name": "Walnuts", "name_ar": "جوز", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 517.65577},
   {"code": "178026", "name": "Sugar Brown", "name_ar": "سكر بني", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 85},
   {"code": "178041", "name": "Sugar Brown Portion", "name_ar": "سكر بني قطعة", "unit": "200 bags", "maxLimit": 2, "step": 1, "AVE": 61.02},
-  {"code": "178010", "name": "Sugar Crystal", "name_ar": "سكر بلوري", "unit": "50kg", "maxLimit": 1, "step": 1, "AVE": 25.66631},
+  {"code": "178010", "name": "Sugar Crystal", "name_ar": "سكر بلوري", "unit": "50kg", "maxLimit": 50, "step": 50, "AVE": 25.66631},
   {"code": "178021", "name": "Sugar Powder", "name_ar": "سكر بودرة", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 28.36364},
   {"code": "153036", "name": "Cheese Smoked Farm Cheese", "name_ar": "جبنة مدخنة", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 344.75},
   {"code": "161138", "name": "Black Pepper Powder (PURE)", "name_ar": "فلفل أسود بودرة (نقي)", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 529.2},
