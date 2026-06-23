@@ -7,7 +7,7 @@
   {"code": "131002", "name": "Crab Steaks", "name_ar": "ستيك كابوريا", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 120},
   {"code": "110158", "name": "Beef Fillet Brazil(Minirva)", "name_ar": "فيليه لحم بقري برازيلي (مينيرفا)", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 850},
   {"code": "131015", "name": "Smoked Eel", "name_ar": "ثعبان البحر مدخن", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 844.8},
-  {"code": "131073", "name": "Salmon Whole Side Fillet Skin On brand", "name_ar": "فيليه سلمون كامل بالجلد", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 900.00},
+  {"code": "131055", "name": "Salmon Whole Side Fillet Skin On Maxim", "name_ar": "فيليه سلمون كامل بالجلد ماكسيم", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 830},
   {"code": "164039", "name": "Rice Basmati", "name_ar": "أرز بسمتي", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 86},
   {"code": "131018", "name": "Tuna Saku", "name_ar": "تونة ساكو", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 751.6129},
   {"code": "113034", "name": "Spring Roll With Vegetables", "name_ar": "سبرينج رول", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 124.6875},
