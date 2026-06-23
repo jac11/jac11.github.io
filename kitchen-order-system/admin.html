@@ -1,813 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="firebase-config.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-<title>Admin Dashboard - Full Quantity Control</title>
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f0f4f8;
-}
-
-.header {
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: white;
-    padding: 12px 16px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.logo {
-    font-size: 1.2rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.logo-icon {
-    font-size: 1.5rem;
-}
-
-.logo span {
-    color: #ffd700;
-}
-
-.header-buttons {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.btn-header {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    padding: 6px 12px;
-    border-radius: 25px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.3s;
-}
-
-.btn-header:hover {
-    background: rgba(255,255,255,0.3);
-    transform: scale(1.02);
-}
-
-.btn-analytics {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-.btn-danger {
-    background: #e74c3c;
-}
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-}
-
-.stat-card {
-    background: white;
-    padding: 16px;
-    border-radius: 14px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.stat-number {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #e94560;
-}
-
-.stat-label {
-    color: #666;
-    margin-top: 5px;
-    font-size: 0.75rem;
-}
-
-.kitchen-filters {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    background: white;
-    padding: 12px 16px;
-    border-radius: 14px;
-}
-
-.kitchen-filter-btn {
-    padding: 6px 16px;
-    background: #f0f2f5;
-    border: none;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.3s;
-}
-
-.kitchen-filter-btn:hover {
-    background: #e0e0e0;
-}
-
-.kitchen-filter-btn.active {
-    background: #1e3c72;
-    color: white;
-}
-
-.tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
- .info-item {
-    display: flex;
-    flex-direction: column;
-    min-width: 140px;
-}
-
-.info-label {
-    font-size: 0.65rem;
-    color: #999;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-}
-
-.info-value {
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #2c3e50;
-}
-
-.firebase-id {
-    font-family: monospace;
-    font-size: 11px;
-    color: #1e3c72;
-    cursor: pointer;
-    background: #eef4ff;
-    border: 1px solid #d6e4ff;
-    padding: 6px 10px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    word-break: break-all;
-    max-width: 250px;
-}
-
-.firebase-id:hover {
-    background: #dbeafe;
-    border-color: #93c5fd;
-    transform: scale(1.02);
-}
-
-.firebase-id:active {
-    transform: scale(0.98);
-}   
-
-.tab-btn {
-    padding: 8px 20px;
-    background: white;
-    border: none;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.tab-btn.active {
-    background: #e94560;
-    color: white;
-}
-
-.request-card {
-    background: white;
-    border-radius: 14px;
-    margin-bottom: 16px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    overflow: hidden;
-}
-
-.request-header {
-    background: #f8f9fa;
-    padding: 14px 18px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.request-id {
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: #1e3c72;
-    font-family: monospace;
-}
-
-.duplicate-warning {
-    background: #f39c12;
-    color: #fff;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    margin-left: 10px;
-    display: inline-block;
-}
-
-.request-total-badge {
-    display: flex;
-    gap: 15px;
-    background: #1e3c72;
-    color: white;
-    padding: 5px 15px;
-    border-radius: 25px;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
-
-.kitchen-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
-
-.kitchen-hot { background: #fee2e2; color: #e74c3c; }
-.kitchen-cold { background: #e3f2fd; color: #3498db; }
-.kitchen-pastry { background: #fff3e0; color: #f39c12; }
-.kitchen-butchery { background: #f3e5f5; color: #8e44ad; }
-.kitchen-beach { background: #e0f2f1; color: #1abc9c; }
-.kitchen-nihon { background: #fce4ec; color: #e91e63; }
-.kitchen-staff { background: #eceff1; color: #7f8c8d; }
-
-.status-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-}
-
-.status-pending { background: #f39c12; color: white; }
-.status-approved { background: #27ae60; color: white; }
-.status-rejected { background: #e74c3c; color: white; }
-.status-accepted { background: #8e44ad; color: white; }
-
-.request-info {
-    display: flex;
-    gap: 20px;
-    padding: 12px 18px;
-    background: white;
-    border-bottom: 1px solid #f0f0f0;
-    flex-wrap: wrap;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.info-label {
-    font-size: 0.6rem;
-    color: #999;
-    text-transform: uppercase;
-}
-
-.info-value {
-    font-weight: 600;
-    font-size: 0.85rem;
-    margin-top: 3px;
-}
-
-.table-wrapper {
-    overflow-x: auto;
-    padding: 0 18px 18px 18px;
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 1050px;
-}
-
-.admin-table th {
-    text-align: left;
-    padding: 12px 8px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #555;
-    background: #fafcfc;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.admin-table td {
-    padding: 12px 8px;
-    border-bottom: 1px solid #f0f0f0;
-    vertical-align: middle;
-    font-size: 0.8rem;
-}
-
-.item-name {
-    font-weight: 600;
-    color: #2c3e50;
-}
-
-.item-code {
-    font-size: 0.65rem;
-    color: #999;
-    font-family: monospace;
-    margin-top: 3px;
-}
-
-.item-price {
-    font-size: 0.7rem;
-    color: #e67e22;
-    font-weight: 500;
-}
-
-.requested-qty {
-    background: #f1f5f9;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.75rem;
-    display: inline-block;
-}
-
-.approval-input {
-    width: 100px;
-    padding: 6px 8px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.approval-input:focus {
-    outline: none;
-    border-color: #3498db;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
-
-.btn-approve {
-    background: #27ae60;
-    color: white;
-    border: none;
-    padding: 5px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.7rem;
-}
-
-.btn-approve:hover {
-    background: #219a52;
-}
-
-.btn-reject {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 5px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.7rem;
-}
-
-.btn-reject:hover {
-    background: #c0392b;
-}
-
-.status-approved-cell {
-    background: #d4edda;
-    color: #27ae60;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.status-rejected-cell {
-    background: #f8d7da;
-    color: #e74c3c;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.status-pending-cell {
-    background: #fff3cd;
-    color: #f39c12;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.admin-info-text {
-    font-size: 0.65rem;
-    color: #666;
-    margin-top: 5px;
-    line-height: 1.4;
-}
-
-.request-actions {
-    display: flex;
-    gap: 12px;
-    padding: 14px 18px;
-    background: #f8f9fa;
-    border-top: 1px solid #eee;
-}
-
-.btn-approve-all {
-    flex: 1;
-    background: #27ae60;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-reject-all {
-    flex: 1;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-accept {
-    flex: 1;
-    background: #8e44ad;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 30px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.btn-approve-all:disabled, .btn-reject-all:disabled {
-    background: #95a5a6;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-.btn-accept:disabled {
-    background: #95a5a6;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 50px;
-    background: white;
-    border-radius: 14px;
-    color: #999;
-}
-
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #333;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-size: 12px;
-    z-index: 1000;
-    animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-
-.modal {
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 24px;
-    text-align: center;
-    max-width: 360px;
-    width: 90%;
-}
-
-.modal-content h2 {
-    margin-bottom: 15px;
-    color: #1e3c72;
-}
-
-.user-selector {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.user-btn {
-    background: #f0f2f5;
-    border: none;
-    padding: 12px;
-    border-radius: 40px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s;
-}
-
-.user-btn:hover {
-    background: #e0e0e0;
-}
-
-.user-title {
-    font-size: 11px;
-    color: #666;
-    margin-top: 3px;
-}
-
-.modal-content input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 40px;
-    font-size: 14px;
-    text-align: center;
-}
-
-.modal-content button {
-    background: #3498db;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 40px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-}
-
-.error-msg {
-    color: #e74c3c;
-    margin-top: 10px;
-    font-size: 0.8rem;
-}
-
-.close-modal {
-    background: #95a5a6 !important;
-    margin-top: 10px;
-}
-
-.close-modal:hover {
-    background: #7f8c8d;
-}
-
-.confirm-modal {
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.9);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.confirm-modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 24px;
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-}
-
-.confirm-modal-content h3 {
-    color: #e74c3c;
-    margin-bottom: 15px;
-    font-size: 1.4rem;
-}
-
-.confirm-modal-content .warning-text {
-    color: #e74c3c;
-    font-weight: bold;
-    margin: 15px 0;
-}
-
-.confirm-modal-content input {
-    width: 100%;
-    padding: 12px;
-    margin: 20px 0;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    font-size: 16px;
-    text-align: center;
-    letter-spacing: 2px;
-    font-weight: bold;
-}
-
-.confirm-modal-content input:focus {
-    outline: none;
-    border-color: #e74c3c;
-}
-
-.confirm-buttons {
-    display: flex;
-    gap: 12px;
-    margin-top: 10px;
-}
-
-.confirm-buttons button {
-    flex: 1;
-    padding: 12px;
-    border-radius: 40px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    font-size: 14px;
-}
-
-.btn-confirm-delete {
-    background: #e74c3c;
-    color: white;
-}
-
-.btn-confirm-delete:disabled {
-    background: #95a5a6;
-    cursor: not-allowed;
-}
-
-.btn-cancel-delete {
-    background: #95a5a6;
-    color: white;
-}
-
-.free-adjust-badge {
-    background: #3498db;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.6rem;
-    margin-left: 8px;
-    vertical-align: middle;
-}
-
-@media (max-width: 768px) {
-    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .stat-card { padding: 12px; }
-    .stat-number { font-size: 1.5rem; }
-    .kitchen-filters { overflow-x: auto; flex-wrap: nowrap; }
-    .kitchen-filter-btn { white-space: nowrap; font-size: 11px; }
-    .tabs { overflow-x: auto; flex-wrap: nowrap; }
-    .tab-btn { white-space: nowrap; font-size: 12px; padding: 6px 14px; }
-    .request-info { flex-direction: column; gap: 8px; }
-    .admin-table th, .admin-table td { padding: 8px 6px; font-size: 11px; }
-    .approval-input { width: 70px; padding: 5px; font-size: 11px; }
-    .btn-approve { padding: 4px 10px; font-size: 0.65rem; }
-    .request-actions { flex-direction: column; }
-    .request-total-badge { flex-direction: column; gap: 5px; text-align: center; }
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Admin Dashboard · Full Quantity Control</title>
+  <!-- Firebase compat (v10) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- firebase-config.js is expected to exist in the same folder -->
+  <script src="firebase-config.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; }
+
+    .header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 100; }
+    .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; flex-wrap: wrap; gap: 10px; }
+    .logo { font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+    .logo-icon { font-size: 1.5rem; }
+    .logo span { color: #ffd700; }
+    .header-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-header { background: rgba(255,255,255,0.2); border: none; padding: 6px 12px; border-radius: 25px; color: white; font-weight: 600; cursor: pointer; font-size: 12px; transition: all 0.3s; }
+    .btn-header:hover { background: rgba(255,255,255,0.3); transform: scale(1.02); }
+    .btn-analytics { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .btn-danger { background: #e74c3c; }
+    .btn-refresh { background: #2ecc71; color: #fff; }
+    .btn-refresh:hover { background: #27ae60; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: white; padding: 16px; border-radius: 14px; text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .stat-number { font-size: 2rem; font-weight: bold; color: #e94560; }
+    .stat-label { color: #666; margin-top: 5px; font-size: 0.75rem; }
+
+    .kitchen-filters { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; background: white; padding: 12px 16px; border-radius: 14px; }
+    .kitchen-filter-btn { padding: 6px 16px; background: #f0f2f5; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; font-size: 12px; transition: all 0.3s; }
+    .kitchen-filter-btn:hover { background: #e0e0e0; }
+    .kitchen-filter-btn.active { background: #1e3c72; color: white; }
+
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-btn { padding: 8px 20px; background: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+    .tab-btn.active { background: #e94560; color: white; }
+
+    .request-card { background: white; border-radius: 14px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
+    .request-header { background: #f8f9fa; padding: 14px 18px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .request-id { font-weight: bold; font-size: 0.9rem; color: #1e3c72; font-family: monospace; }
+    .duplicate-warning { background: #f39c12; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; margin-left: 10px; display: inline-block; }
+    .request-total-badge { display: flex; gap: 15px; background: #1e3c72; color: white; padding: 5px 15px; border-radius: 25px; font-size: 0.7rem; font-weight: 600; }
+    .kitchen-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .kitchen-hot { background: #fee2e2; color: #e74c3c; }
+    .kitchen-cold { background: #e3f2fd; color: #3498db; }
+    .kitchen-pastry { background: #fff3e0; color: #f39c12; }
+    .kitchen-butchery { background: #f3e5f5; color: #8e44ad; }
+    .kitchen-beach { background: #e0f2f1; color: #1abc9c; }
+    .kitchen-nihon { background: #fce4ec; color: #e91e63; }
+    .kitchen-staff { background: #eceff1; color: #7f8c8d; }
+
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+    .status-pending { background: #f39c12; color: white; }
+    .status-approved { background: #27ae60; color: white; }
+    .status-rejected { background: #e74c3c; color: white; }
+    .status-accepted { background: #8e44ad; color: white; }
+
+    .request-info { display: flex; gap: 20px; padding: 12px 18px; background: white; border-bottom: 1px solid #f0f0f0; flex-wrap: wrap; }
+    .info-item { display: flex; flex-direction: column; }
+    .info-label { font-size: 0.6rem; color: #999; text-transform: uppercase; }
+    .info-value { font-weight: 600; font-size: 0.85rem; margin-top: 3px; }
+
+    .firebase-id { font-family: monospace; font-size: 11px; color: #1e3c72; cursor: pointer; background: #eef4ff; border: 1px solid #d6e4ff; padding: 6px 10px; border-radius: 8px; transition: all 0.2s ease; word-break: break-all; max-width: 250px; }
+    .firebase-id:hover { background: #dbeafe; border-color: #93c5fd; transform: scale(1.02); }
+    .firebase-id:active { transform: scale(0.98); }
+
+    .table-wrapper { overflow-x: auto; padding: 0 18px 18px 18px; }
+    .admin-table { width: 100%; border-collapse: collapse; min-width: 1050px; }
+    .admin-table th { text-align: left; padding: 12px 8px; font-size: 0.75rem; font-weight: 600; color: #555; background: #fafcfc; border-bottom: 1px solid #e0e0e0; }
+    .admin-table td { padding: 12px 8px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; font-size: 0.8rem; }
+    .item-name { font-weight: 600; color: #2c3e50; }
+    .item-code { font-size: 0.65rem; color: #999; font-family: monospace; margin-top: 3px; }
+    .item-price { font-size: 0.7rem; color: #e67e22; font-weight: 500; }
+    .requested-qty { background: #f1f5f9; padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 0.75rem; display: inline-block; }
+    .approval-input { width: 100px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 0.8rem; font-weight: 600; }
+    .approval-input:focus { outline: none; border-color: #3498db; }
+    .action-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
+    .btn-approve { background: #27ae60; color: white; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.7rem; }
+    .btn-approve:hover { background: #219a52; }
+    .btn-reject { background: #e74c3c; color: white; border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 0.7rem; }
+    .btn-reject:hover { background: #c0392b; }
+    .status-approved-cell { background: #d4edda; color: #27ae60; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+    .status-rejected-cell { background: #f8d7da; color: #e74c3c; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+    .status-pending-cell { background: #fff3cd; color: #f39c12; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+    .admin-info-text { font-size: 0.65rem; color: #666; margin-top: 5px; line-height: 1.4; }
+
+    .request-actions { display: flex; gap: 12px; padding: 14px 18px; background: #f8f9fa; border-top: 1px solid #eee; }
+    .btn-approve-all { flex: 1; background: #27ae60; color: white; border: none; padding: 10px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-reject-all { flex: 1; background: #e74c3c; color: white; border: none; padding: 10px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-accept { flex: 1; background: #8e44ad; color: white; border: none; padding: 10px; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-approve-all:disabled, .btn-reject-all:disabled { background: #95a5a6; cursor: not-allowed; opacity: 0.6; }
+    .btn-accept:disabled { background: #95a5a6; cursor: not-allowed; opacity: 0.6; }
+
+    .empty-state { text-align: center; padding: 50px; background: white; border-radius: 14px; color: #999; }
+    .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 30px; font-size: 12px; z-index: 1000; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+    .modal { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+    .modal-content { background: white; padding: 30px; border-radius: 24px; text-align: center; max-width: 360px; width: 90%; }
+    .modal-content h2 { margin-bottom: 15px; color: #1e3c72; }
+    .user-selector { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .user-btn { background: #f0f2f5; border: none; padding: 12px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s; }
+    .user-btn:hover { background: #e0e0e0; }
+    .user-title { font-size: 11px; color: #666; margin-top: 3px; }
+    .modal-content input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 40px; font-size: 14px; text-align: center; }
+    .modal-content button { background: #3498db; color: white; border: none; padding: 12px; border-radius: 40px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem; }
+    .error-msg { color: #e74c3c; margin-top: 10px; font-size: 0.8rem; }
+    .close-modal { background: #95a5a6 !important; margin-top: 10px; }
+    .close-modal:hover { background: #7f8c8d; }
+
+    .confirm-modal { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
+    .confirm-modal-content { background: white; padding: 30px; border-radius: 24px; text-align: center; max-width: 400px; width: 90%; }
+    .confirm-modal-content h3 { color: #e74c3c; margin-bottom: 15px; font-size: 1.4rem; }
+    .confirm-modal-content .warning-text { color: #e74c3c; font-weight: bold; margin: 15px 0; }
+    .confirm-modal-content input { width: 100%; padding: 12px; margin: 20px 0; border: 2px solid #ddd; border-radius: 12px; font-size: 16px; text-align: center; letter-spacing: 2px; font-weight: bold; }
+    .confirm-modal-content input:focus { outline: none; border-color: #e74c3c; }
+    .confirm-buttons { display: flex; gap: 12px; margin-top: 10px; }
+    .confirm-buttons button { flex: 1; padding: 12px; border-radius: 40px; font-weight: 600; cursor: pointer; border: none; font-size: 14px; }
+    .btn-confirm-delete { background: #e74c3c; color: white; }
+    .btn-confirm-delete:disabled { background: #95a5a6; cursor: not-allowed; }
+    .btn-cancel-delete { background: #95a5a6; color: white; }
+
+    .free-adjust-badge { background: #3498db; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.6rem; margin-left: 8px; vertical-align: middle; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-card { padding: 12px; }
+      .stat-number { font-size: 1.5rem; }
+      .kitchen-filters { overflow-x: auto; flex-wrap: nowrap; }
+      .kitchen-filter-btn { white-space: nowrap; font-size: 11px; }
+      .tabs { overflow-x: auto; flex-wrap: nowrap; }
+      .tab-btn { white-space: nowrap; font-size: 12px; padding: 6px 14px; }
+      .request-info { flex-direction: column; gap: 8px; }
+      .admin-table th, .admin-table td { padding: 8px 6px; font-size: 11px; }
+      .approval-input { width: 70px; padding: 5px; font-size: 11px; }
+      .btn-approve { padding: 4px 10px; font-size: 0.65rem; }
+      .request-actions { flex-direction: column; }
+      .request-total-badge { flex-direction: column; gap: 5px; text-align: center; }
+    }
+  </style>
 </head>
 <body>
 
+<!-- password modal -->
 <div id="passwordModal" class="modal">
-    <div class="modal-content">
-        <h2>🔐 Admin Login</h2>
-        <div class="user-selector">
-            <button class="user-btn" onclick="selectUser('Marco')">👨‍💼 Marco<br><span class="user-title">Administrator</span></button>
-            <button class="user-btn" onclick="selectUser('Nady')">👨‍💼 Nady<br><span class="user-title">Administrator</span></button>
-            <button class="user-btn" onclick="selectUser('Ahmed')">👨‍💻 Ahmed<br><span class="user-title">Administrator</span></button>
-            <button class="user-btn" onclick="selectUser('Nader')">👨‍💼 Nader<br><span class="user-title">Administrator</span></button>
-        </div>
-        <input type="password" id="passwordInput" placeholder="Enter password" style="display:none;">
-        <button id="loginBtn" style="display:none;" onclick="checkLogin()">Login</button>
-        <div id="loginError" class="error-msg"></div>
-        <button class="close-modal" onclick="goBackToIndex()">← Back to Home</button>
+  <div class="modal-content">
+    <h2>🔐 Admin Login</h2>
+    <div class="user-selector">
+      <button class="user-btn" onclick="selectUser('Marco')">👨‍💼 Marco<br><span class="user-title">Administrator</span></button>
+      <button class="user-btn" onclick="selectUser('Nady')">👨‍💼 Nady<br><span class="user-title">Administrator</span></button>
+      <button class="user-btn" onclick="selectUser('Ahmed')">👨‍💻 Ahmed<br><span class="user-title">Administrator</span></button>
+      <button class="user-btn" onclick="selectUser('Nader')">👨‍💼 Nader<br><span class="user-title">Administrator</span></button>
     </div>
+    <input type="password" id="passwordInput" placeholder="Enter password" style="display:none;">
+    <button id="loginBtn" style="display:none;" onclick="checkLogin()">Login</button>
+    <div id="loginError" class="error-msg"></div>
+    <button class="close-modal" onclick="goBackToIndex()">← Back to Home</button>
+  </div>
 </div>
 
+<!-- main dashboard -->
 <div id="mainContent" style="display:none;">
-    <div class="header">
-        <div class="header-content">
-            <div class="logo">
-                <span class="logo-icon">👑</span>
-                <span>Admin <span>Dashboard</span></span>
-                <span class="free-adjust-badge">✏️ FULL QUANTITY CONTROL</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span id="adminNameDisplay" style="font-weight: 600;"></span>
-                <span style="font-size: 10px; opacity: 0.8;">Administrator</span>
-                <button class="btn-header" onclick="logout()">🚪 Logout</button>
-            </div>
-            <div class="header-buttons">
-                <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
-                <button class="btn-header" onclick="exportExcel()">📎 Export</button>
-                <button class="btn-header" onclick="window.print()">🖨️ Print</button>
-                <button class="btn-header" onclick="openRevenue()">💰 Revenue</button>
-                <button class="btn-header btn-danger" onclick="showResetConfirmModal()">🗑️ Reset</button>
-            </div>
-        </div>
+  <div class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">👑</span>
+        <span>Admin <span>Dashboard</span></span>
+        <span class="free-adjust-badge">✏️ FULL QUANTITY CONTROL</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <span id="adminNameDisplay" style="font-weight: 600;"></span>
+        <span style="font-size: 10px; opacity: 0.8;">Administrator</span>
+        <button class="btn-header" onclick="logout()">🚪 Logout</button>
+      </div>
+      <div class="header-buttons">
+        <button class="btn-header btn-refresh" onclick="manualRefresh()">🔄 Refresh</button>
+        <button class="btn-header btn-analytics" onclick="openAnalytics()">📊 Analytics</button>
+        <button class="btn-header" onclick="exportExcel()">📎 Export</button>
+        <button class="btn-header" onclick="window.print()">🖨️ Print</button>
+        <button class="btn-header" onclick="openRevenue()">💰 Revenue</button>
+        <button class="btn-header btn-danger" onclick="showResetConfirmModal()">🗑️ Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card" onclick="setFilter('pending')"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">⏳ Pending</div></div>
+      <div class="stat-card" onclick="setFilter('approved')"><div class="stat-number" id="approvedCount">0</div><div class="stat-label">✅ Approved</div></div>
+      <div class="stat-card" onclick="setFilter('rejected')"><div class="stat-number" id="rejectedCount">0</div><div class="stat-label">❌ Rejected</div></div>
+      <div class="stat-card" onclick="setFilter('accepted')"><div class="stat-number" id="acceptedCount">0</div><div class="stat-label">🟣 Accepted</div></div>
+      <div class="stat-card" onclick="setFilter('all')"><div class="stat-number" id="totalCount">0</div><div class="stat-label">📦 Total</div></div>
     </div>
 
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat-card" onclick="setFilter('pending')"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">⏳ Pending</div></div>
-            <div class="stat-card" onclick="setFilter('approved')"><div class="stat-number" id="approvedCount">0</div><div class="stat-label">✅ Approved</div></div>
-            <div class="stat-card" onclick="setFilter('rejected')"><div class="stat-number" id="rejectedCount">0</div><div class="stat-label">❌ Rejected</div></div>
-            <div class="stat-card" onclick="setFilter('accepted')"><div class="stat-number" id="acceptedCount">0</div><div class="stat-label">🟣 Accepted</div></div>
-            <div class="stat-card" onclick="setFilter('all')"><div class="stat-number" id="totalCount">0</div><div class="stat-label">📦 Total</div></div>
-        </div>
-
-        <div class="kitchen-filters" id="kitchenFilters"></div>
-        <div class="tabs" id="statusTabs"></div>
-        <div id="requestsContainer"></div>
-    </div>
+    <div class="kitchen-filters" id="kitchenFilters"></div>
+    <div class="tabs" id="statusTabs"></div>
+    <div id="requestsContainer"></div>
+  </div>
 </div>
 
 <script>
+// ---------- FIREBASE INIT (from firebase-config.js) ----------
+// expects firebaseConfig to be defined in firebase-config.js
+if (typeof firebaseConfig !== 'undefined') {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  console.warn('firebaseConfig not found – using fallback (ensure firebase-config.js is loaded)');
+  // fallback config (only for demo, replace with your own)
+  const fallbackConfig = {
+    apiKey: "AIzaSyDemoKeyNotValid",
+    authDomain: "demo.firebaseapp.com",
+    projectId: "demo-project"
+  };
+  firebase.initializeApp(fallbackConfig);
+}
+const db = firebase.firestore();
+
+// ---------- CONSTANTS ----------
 const ADMIN_PASSWORDS = { "Marco": "NNNNNNNN000000", "Nady": "Nn639123", "Ahmed": "j1cadm1n", "Nader": "nader123" };
 const KITCHENS = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
@@ -818,376 +233,393 @@ let allRequests = [];
 let selectedUser = "";
 let duplicateMap = new Map();
 
+// ---------- HELPERS ----------
 function goBackToIndex() { window.location.href = "index.html"; }
 function openAnalytics() { window.open("analytics.html", "_blank"); }
 function openRevenue() { window.open("revenue.html", "_blank"); }
 
 function selectUser(user) {
-    selectedUser = user;
-    document.getElementById("passwordInput").style.display = "block";
-    document.getElementById("loginBtn").style.display = "block";
-    document.getElementById("passwordInput").placeholder = `Password for ${user}`;
-    document.getElementById("loginError").innerHTML = "";
+  selectedUser = user;
+  document.getElementById("passwordInput").style.display = "block";
+  document.getElementById("loginBtn").style.display = "block";
+  document.getElementById("passwordInput").placeholder = `Password for ${user}`;
+  document.getElementById("loginError").innerHTML = "";
 }
 
 function checkLogin() {
-    const pass = document.getElementById("passwordInput").value;
-    if(selectedUser && ADMIN_PASSWORDS[selectedUser] === pass) {
-        currentAdmin = selectedUser;
-        document.getElementById("adminNameDisplay").innerText = currentAdmin;
-        document.getElementById("passwordModal").style.display = "none";
-        document.getElementById("mainContent").style.display = "block";
-        localStorage.setItem("admin", currentAdmin);
-        loadRequests();
-    } else {
-        document.getElementById("loginError").innerHTML = "❌ Wrong password!";
-    }
+  const pass = document.getElementById("passwordInput").value;
+  if(selectedUser && ADMIN_PASSWORDS[selectedUser] === pass) {
+    currentAdmin = selectedUser;
+    document.getElementById("adminNameDisplay").innerText = currentAdmin;
+    document.getElementById("passwordModal").style.display = "none";
+    document.getElementById("mainContent").style.display = "block";
+    localStorage.setItem("admin", currentAdmin);
+    loadRequests();
+  } else {
+    document.getElementById("loginError").innerHTML = "❌ Wrong password!";
+  }
 }
 
+// ---------- REFRESH (manual) ----------
+function manualRefresh() {
+  showToast("🔄 Refreshing...");
+  loadRequests();
+}
+
+// ---------- LOAD REQUESTS ----------
 async function loadRequests() {
-    try {
-        const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
-        allRequests = [];
-        snapshot.forEach(doc => allRequests.push({ id: doc.id, ...doc.data() }));
-        findDuplicateRequests();
-        renderUI();
-        updateStats();
-    } catch(e) { showToast("Error loading"); }
+  try {
+    const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
+    allRequests = [];
+    snapshot.forEach(doc => allRequests.push({ id: doc.id, ...doc.data() }));
+    findDuplicateRequests();
+    renderUI();
+    updateStats();
+    showToast("✅ Data updated");
+  } catch(e) { 
+    console.error(e);
+    showToast("❌ Error loading data"); 
+  }
 }
 
 function findDuplicateRequests() {
-    duplicateMap.clear();
-    const signatureMap = new Map();
-    for (const req of allRequests) {
-        const itemSignature = req.items.map(item => `${item.code}|${item.originalQty}`).join(';');
-        const signature = `${req.section}|${req.chefName}|${itemSignature}`;
-        if (!signatureMap.has(signature)) signatureMap.set(signature, []);
-        signatureMap.get(signature).push(req);
+  duplicateMap.clear();
+  const signatureMap = new Map();
+  for (const req of allRequests) {
+    const itemSignature = req.items.map(item => `${item.code}|${item.originalQty}`).join(';');
+    const signature = `${req.section}|${req.chefName}|${itemSignature}`;
+    if (!signatureMap.has(signature)) signatureMap.set(signature, []);
+    signatureMap.get(signature).push(req);
+  }
+  for (const [sig, requests] of signatureMap.entries()) {
+    if (requests.length > 1) {
+      for (const req of requests) {
+        duplicateMap.set(req.id, { isDuplicate: true, count: requests.length, otherIds: requests.filter(r => r.id !== req.id).map(r => r.requestId) });
+      }
     }
-    for (const [sig, requests] of signatureMap.entries()) {
-        if (requests.length > 1) {
-            for (const req of requests) {
-                duplicateMap.set(req.id, { isDuplicate: true, count: requests.length, otherIds: requests.filter(r => r.id !== req.id).map(r => r.requestId) });
-            }
-        }
-    }
+  }
 }
 
 function getRequestStatus(items) {
-    if(!items || items.length === 0) return "pending";
-    let allProcessed = true;
-    let approved = 0, rejected = 0;
-    items.forEach(item => {
-        if(item.status === "approved") approved++;
-        else if(item.status === "rejected") rejected++;
-        else allProcessed = false;
-    });
-    if(items.length > 0 && items[0].completedVia === "accept") return "accepted";
-    if(allProcessed) {
-        if(approved === items.length) return "approved";
-        if(rejected === items.length) return "rejected";
-        return "accepted";
-    }
-    return "pending";
+  if(!items || items.length === 0) return "pending";
+  let allProcessed = true;
+  let approved = 0, rejected = 0;
+  items.forEach(item => {
+    if(item.status === "approved") approved++;
+    else if(item.status === "rejected") rejected++;
+    else allProcessed = false;
+  });
+  if(items.length > 0 && items[0].completedVia === "accept") return "accepted";
+  if(allProcessed) {
+    if(approved === items.length) return "approved";
+    if(rejected === items.length) return "rejected";
+    return "accepted";
+  }
+  return "pending";
 }
 
 async function updateRequest(id, items) {
-    try {
-        await db.collection("kitchen_requests").doc(id).update({ items });
-        showToast(`✅ Updated by ${currentAdmin}`);
-        await loadRequests();
-        return true;
-    } catch(e) { showToast("Update error"); return false; }
+  try {
+    await db.collection("kitchen_requests").doc(id).update({ items });
+    showToast(`✅ Updated by ${currentAdmin}`);
+    await loadRequests();
+    return true;
+  } catch(e) { showToast("Update error"); return false; }
 }
 
+// ---------- ACTIONS ----------
 async function approveItemFlex(reqId, idx) {
-    const input = document.getElementById(`qty_${reqId}_${idx}`);
-    let qty = parseFloat(input?.value || 0);
-    if(isNaN(qty) || qty < 0) { showToast("Enter valid quantity"); return; }
+  const input = document.getElementById(`qty_${reqId}_${idx}`);
+  let qty = parseFloat(input?.value || 0);
+  if(isNaN(qty) || qty < 0) { showToast("Enter valid quantity"); return; }
+  const req = allRequests.find(r => r.id === reqId);
+  if(req) {
+    const item = req.items[idx];
+    item.status = "approved";
+    item.approvedQty = qty;
+    item.approvedBy = currentAdmin;
+    item.approvedAt = new Date().toLocaleString();
+    delete item.rejectionReason;
+    delete item.rejectedBy;
+    delete item.rejectedAt;
+    await updateRequest(reqId, req.items);
+  }
+}
+
+async function rejectItem(reqId, idx) {
+  const reason = prompt(`Rejection reason (${currentAdmin}):`, "Out of stock");
+  if(reason) {
     const req = allRequests.find(r => r.id === reqId);
     if(req) {
-        const item = req.items[idx];
+      req.items[idx].status = "rejected";
+      req.items[idx].rejectionReason = reason;
+      req.items[idx].rejectedBy = currentAdmin;
+      req.items[idx].rejectedAt = new Date().toLocaleString();
+      req.items[idx].approvedQty = 0;
+      delete req.items[idx].approvedBy;
+      delete req.items[idx].approvedAt;
+      await updateRequest(reqId, req.items);
+    }
+  }
+}
+
+async function approveAllFlex(reqId) {
+  if(!confirm(`Approve ALL items?`)) return;
+  const req = allRequests.find(r => r.id === reqId);
+  if(req) {
+    for(let i=0; i<req.items.length; i++) {
+      const input = document.getElementById(`qty_${reqId}_${i}`);
+      let qty = parseFloat(input?.value || 0);
+      if(isNaN(qty)) qty = 0;
+      const item = req.items[i];
+      item.status = "approved";
+      item.approvedQty = qty;
+      item.approvedBy = currentAdmin;
+      item.approvedAt = new Date().toLocaleString();
+      delete item.rejectionReason;
+      delete item.rejectedBy;
+      delete item.rejectedAt;
+    }
+    await updateRequest(reqId, req.items);
+  }
+}
+
+async function rejectAll(reqId) {
+  const reason = prompt(`Rejection reason for ALL:`, "Not available");
+  if(reason) {
+    const req = allRequests.find(r => r.id === reqId);
+    if(req) {
+      req.items.forEach(item => {
+        item.status = "rejected";
+        item.rejectionReason = reason;
+        item.rejectedBy = currentAdmin;
+        item.rejectedAt = new Date().toLocaleString();
+        item.approvedQty = 0;
+        delete item.approvedBy;
+        delete item.approvedAt;
+      });
+      await updateRequest(reqId, req.items);
+    }
+  }
+}
+
+async function acceptRequest(reqId) {
+  if(!confirm(`✅ ACCEPT REQUEST?\n\n• PENDING items will be AUTO-APPROVED with original quantities\n• Approved/Rejected stay as is\n\nContinue?`)) return;
+  const req = allRequests.find(r => r.id === reqId);
+  if(req) {
+    req.items.forEach(item => {
+      if(item.status !== "approved" && item.status !== "rejected") {
         item.status = "approved";
-        item.approvedQty = qty;
+        item.approvedQty = item.originalQty;
         item.approvedBy = currentAdmin;
         item.approvedAt = new Date().toLocaleString();
         delete item.rejectionReason;
         delete item.rejectedBy;
         delete item.rejectedAt;
-        await updateRequest(reqId, req.items);
-    }
+      }
+      item.completedVia = "accept";
+    });
+    await updateRequest(reqId, req.items);
+    showToast(`✅ Request accepted!`);
+  }
 }
 
-async function rejectItem(reqId, idx) {
-    const reason = prompt(`Rejection reason (${currentAdmin}):`, "Out of stock");
-    if(reason) {
-        const req = allRequests.find(r => r.id === reqId);
-        if(req) {
-            req.items[idx].status = "rejected";
-            req.items[idx].rejectionReason = reason;
-            req.items[idx].rejectedBy = currentAdmin;
-            req.items[idx].rejectedAt = new Date().toLocaleString();
-            req.items[idx].approvedQty = 0;
-            delete req.items[idx].approvedBy;
-            delete req.items[idx].approvedAt;
-            await updateRequest(reqId, req.items);
-        }
-    }
-}
-
-async function approveAllFlex(reqId) {
-    if(!confirm(`Approve ALL items?`)) return;
-    const req = allRequests.find(r => r.id === reqId);
-    if(req) {
-        for(let i=0; i<req.items.length; i++) {
-            const input = document.getElementById(`qty_${reqId}_${i}`);
-            let qty = parseFloat(input?.value || 0);
-            if(isNaN(qty)) qty = 0;
-            const item = req.items[i];
-            item.status = "approved";
-            item.approvedQty = qty;
-            item.approvedBy = currentAdmin;
-            item.approvedAt = new Date().toLocaleString();
-            delete item.rejectionReason;
-            delete item.rejectedBy;
-            delete item.rejectedAt;
-        }
-        await updateRequest(reqId, req.items);
-    }
-}
-
-async function rejectAll(reqId) {
-    const reason = prompt(`Rejection reason for ALL:`, "Not available");
-    if(reason) {
-        const req = allRequests.find(r => r.id === reqId);
-        if(req) {
-            req.items.forEach(item => {
-                item.status = "rejected";
-                item.rejectionReason = reason;
-                item.rejectedBy = currentAdmin;
-                item.rejectedAt = new Date().toLocaleString();
-                item.approvedQty = 0;
-                delete item.approvedBy;
-                delete item.approvedAt;
-            });
-            await updateRequest(reqId, req.items);
-        }
-    }
-}
-
-async function acceptRequest(reqId) {
-    if(!confirm(`✅ ACCEPT REQUEST?\n\n• PENDING items will be AUTO-APPROVED with original quantities\n• Approved/Rejected stay as is\n\nContinue?`)) return;
-    const req = allRequests.find(r => r.id === reqId);
-    if(req) {
-        req.items.forEach(item => {
-            if(item.status !== "approved" && item.status !== "rejected") {
-                item.status = "approved";
-                item.approvedQty = item.originalQty;
-                item.approvedBy = currentAdmin;
-                item.approvedAt = new Date().toLocaleString();
-                delete item.rejectionReason;
-                delete item.rejectedBy;
-                delete item.rejectedAt;
-            }
-            item.completedVia = "accept";
-        });
-        await updateRequest(reqId, req.items);
-        showToast(`✅ Request accepted!`);
-    }
-}
-
+// ---------- RESET MODAL ----------
 function showResetConfirmModal() {
-    const toDelete = allRequests.filter(req => getRequestStatus(req.items) !== "pending");
-    if(toDelete.length === 0) { showToast("ℹ️ No completed requests to delete"); return; }
-    const modal = document.createElement('div');
-    modal.className = 'confirm-modal';
-    modal.innerHTML = `
-        <div class="confirm-modal-content">
-            <h3>⚠️ PERMANENT DELETION ⚠️</h3>
-            <p>Delete <strong>${toDelete.length}</strong> completed request(s)?</p>
-            <p class="warning-text">Type <strong>DELETE</strong> to confirm:</p>
-            <input type="text" id="confirmDeleteInput" autocomplete="off">
-            <div class="confirm-buttons">
-                <button class="btn-cancel-delete" onclick="this.closest('.confirm-modal').remove()">Cancel</button>
-                <button class="btn-confirm-delete" id="confirmDeleteBtn" disabled>Delete</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    const input = modal.querySelector('#confirmDeleteInput');
-    const confirmBtn = modal.querySelector('#confirmDeleteBtn');
-    input.focus();
-    input.addEventListener('input', (e) => { confirmBtn.disabled = e.target.value !== 'DELETE'; });
-    confirmBtn.onclick = async () => {
-        if(input.value === 'DELETE') {
-            modal.remove();
-            let deletedCount = 0;
-            for(const req of toDelete) {
-                try { await db.collection("kitchen_requests").doc(req.id).delete(); deletedCount++; }
-                catch(e) { console.error(e); }
-            }
-            await loadRequests();
-            showToast(`✅ Deleted ${deletedCount} requests.`);
-        } else { showToast("Cancelled"); modal.remove(); }
-    };
+  const toDelete = allRequests.filter(req => getRequestStatus(req.items) !== "pending");
+  if(toDelete.length === 0) { showToast("ℹ️ No completed requests to delete"); return; }
+  const modal = document.createElement('div');
+  modal.className = 'confirm-modal';
+  modal.innerHTML = `
+    <div class="confirm-modal-content">
+      <h3>⚠️ PERMANENT DELETION ⚠️</h3>
+      <p>Delete <strong>${toDelete.length}</strong> completed request(s)?</p>
+      <p class="warning-text">Type <strong>DELETE</strong> to confirm:</p>
+      <input type="text" id="confirmDeleteInput" autocomplete="off">
+      <div class="confirm-buttons">
+        <button class="btn-cancel-delete" onclick="this.closest('.confirm-modal').remove()">Cancel</button>
+        <button class="btn-confirm-delete" id="confirmDeleteBtn" disabled>Delete</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  const input = modal.querySelector('#confirmDeleteInput');
+  const confirmBtn = modal.querySelector('#confirmDeleteBtn');
+  input.focus();
+  input.addEventListener('input', (e) => { confirmBtn.disabled = e.target.value !== 'DELETE'; });
+  confirmBtn.onclick = async () => {
+    if(input.value === 'DELETE') {
+      modal.remove();
+      let deletedCount = 0;
+      for(const req of toDelete) {
+        try { await db.collection("kitchen_requests").doc(req.id).delete(); deletedCount++; }
+        catch(e) { console.error(e); }
+      }
+      await loadRequests();
+      showToast(`✅ Deleted ${deletedCount} requests.`);
+    } else { showToast("Cancelled"); modal.remove(); }
+  };
 }
 
+// ---------- EXPORT ----------
 function exportExcel() {
-    if(!allRequests.length) { showToast("No data"); return; }
-    let csv = "Request ID,Kitchen,Chef,Date,Item,Code,Requested Qty,Unit,Price/Unit (EGP),Approved Qty,Status,Action By,Total Value (EGP),Duplicate\n";
-    allRequests.forEach(req => {
-        const isDup = duplicateMap.has(req.id) ? "YES" : "NO";
-        req.items.forEach(item => {
-            let status = item.status, actionBy = "";
-            const price = item.price || 0;
-            const approvedQty = item.status === "approved" ? (item.approvedQty || 0) : 0;
-            const totalValue = approvedQty * price;
-            if(item.status === "approved") { status = "Approved"; actionBy = item.approvedBy || ""; }
-            else if(item.status === "rejected") { status = "Rejected"; actionBy = item.rejectedBy || ""; }
-            else if(item.completedVia === "accept") { status = "Accepted"; actionBy = item.approvedBy || item.rejectedBy || currentAdmin; }
-            else { status = "Pending"; actionBy = "-"; }
-            csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}","${item.code}",${item.originalQty},"${item.unit}",${price},${approvedQty},"${status}","${actionBy}",${totalValue},"${isDup}"\n`;
-        });
+  if(!allRequests.length) { showToast("No data"); return; }
+  let csv = "Request ID,Kitchen,Chef,Date,Item,Code,Requested Qty,Unit,Price/Unit (EGP),Approved Qty,Status,Action By,Total Value (EGP),Duplicate\n";
+  allRequests.forEach(req => {
+    const isDup = duplicateMap.has(req.id) ? "YES" : "NO";
+    req.items.forEach(item => {
+      let status = item.status, actionBy = "";
+      const price = item.price || 0;
+      const approvedQty = item.status === "approved" ? (item.approvedQty || 0) : 0;
+      const totalValue = approvedQty * price;
+      if(item.status === "approved") { status = "Approved"; actionBy = item.approvedBy || ""; }
+      else if(item.status === "rejected") { status = "Rejected"; actionBy = item.rejectedBy || ""; }
+      else if(item.completedVia === "accept") { status = "Accepted"; actionBy = item.approvedBy || item.rejectedBy || currentAdmin; }
+      else { status = "Pending"; actionBy = "-"; }
+      csv += `"${req.requestId}","${req.section}","${req.chefName}","${req.submittedAt}","${item.name}","${item.code}",${item.originalQty},"${item.unit}",${price},${approvedQty},"${status}","${actionBy}",${totalValue},"${isDup}"\n`;
     });
-    const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8"});
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `orders_${Date.now()}.csv`;
-    link.click();
+  });
+  const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8"});
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `orders_${Date.now()}.csv`;
+  link.click();
 }
 
+// ---------- STATS & FILTERS ----------
 function updateStats() {
-    let pending=0, approved=0, rejected=0, accepted=0;
-    allRequests.forEach(req => {
-        const s = getRequestStatus(req.items);
-        if(s === "pending") pending++;
-        else if(s === "approved") approved++;
-        else if(s === "rejected") rejected++;
-        else if(s === "accepted") accepted++;
-    });
-    document.getElementById("pendingCount").innerText = pending;
-    document.getElementById("approvedCount").innerText = approved;
-    document.getElementById("rejectedCount").innerText = rejected;
-    document.getElementById("acceptedCount").innerText = accepted;
-    document.getElementById("totalCount").innerText = allRequests.length;
+  let pending=0, approved=0, rejected=0, accepted=0;
+  allRequests.forEach(req => {
+    const s = getRequestStatus(req.items);
+    if(s === "pending") pending++;
+    else if(s === "approved") approved++;
+    else if(s === "rejected") rejected++;
+    else if(s === "accepted") accepted++;
+  });
+  document.getElementById("pendingCount").innerText = pending;
+  document.getElementById("approvedCount").innerText = approved;
+  document.getElementById("rejectedCount").innerText = rejected;
+  document.getElementById("acceptedCount").innerText = accepted;
+  document.getElementById("totalCount").innerText = allRequests.length;
 }
 
 function setFilter(status) { currentStatus = status; renderUI(); }
 function filterKitchen(kitchen) { currentKitchen = kitchen; renderUI(); }
 
+// ---------- RENDER ----------
 function renderUI() {
-    const kitchenDiv = document.getElementById("kitchenFilters");
-    kitchenDiv.innerHTML = `<button class="kitchen-filter-btn ${currentKitchen === 'all' ? 'active' : ''}" onclick="filterKitchen('all')">📋 All</button>`;
-    KITCHENS.forEach(k => {
-        let icon = k === 'Hot Kitchen' ? '🔥' : k === 'Cold Kitchen' ? '❄️' : k === 'Pastry / Bakery' ? '🍰' : k === 'Butchery' ? '🥩' : k === 'Beach House' ? '🏖️' : k === 'Nihon Kitchen' ? '🍜' : '👥';
-        let name = k.replace(' Kitchen', '').replace(' / Bakery', '');
-        kitchenDiv.innerHTML += `<button class="kitchen-filter-btn ${currentKitchen === k ? 'active' : ''}" onclick="filterKitchen('${k}')">${icon} ${name}</button>`;
+  const kitchenDiv = document.getElementById("kitchenFilters");
+  kitchenDiv.innerHTML = `<button class="kitchen-filter-btn ${currentKitchen === 'all' ? 'active' : ''}" onclick="filterKitchen('all')">📋 All</button>`;
+  KITCHENS.forEach(k => {
+    let icon = k === 'Hot Kitchen' ? '🔥' : k === 'Cold Kitchen' ? '❄️' : k === 'Pastry / Bakery' ? '🍰' : k === 'Butchery' ? '🥩' : k === 'Beach House' ? '🏖️' : k === 'Nihon Kitchen' ? '🍜' : '👥';
+    let name = k.replace(' Kitchen', '').replace(' / Bakery', '');
+    kitchenDiv.innerHTML += `<button class="kitchen-filter-btn ${currentKitchen === k ? 'active' : ''}" onclick="filterKitchen('${k}')">${icon} ${name}</button>`;
+  });
+  
+  const tabsDiv = document.getElementById("statusTabs");
+  const statuses = ["pending", "approved", "rejected", "accepted", "all"];
+  const statusNames = ["⏳ Pending", "✅ Approved", "❌ Rejected", "🟣 Accepted", "📋 All"];
+  tabsDiv.innerHTML = "";
+  statuses.forEach((s, i) => {
+    tabsDiv.innerHTML += `<button class="tab-btn ${currentStatus === s ? 'active' : ''}" onclick="setFilter('${s}')">${statusNames[i]}</button>`;
+  });
+  
+  let filtered = [...allRequests];
+  if(currentKitchen !== "all") filtered = filtered.filter(r => r.section === currentKitchen);
+  if(currentStatus !== "all") filtered = filtered.filter(r => getRequestStatus(r.items) === currentStatus);
+  
+  const container = document.getElementById("requestsContainer");
+  if(!filtered.length) { container.innerHTML = `<div class="empty-state">📭 No requests found</div>`; return; }
+  
+  container.innerHTML = "";
+  filtered.forEach(req => {
+    const requestStatus = getRequestStatus(req.items);
+    const kitchenClass = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" }[req.section] || "kitchen-staff";
+    
+    const duplicateInfo = duplicateMap.get(req.id);
+    const duplicateWarning = duplicateInfo ? `<span class="duplicate-warning">⚠️ DUPLICATE (${duplicateInfo.count} identical)</span>` : '';
+    
+    let requestedTotalValue = 0, approvedTotalValue = 0;
+    req.items.forEach(item => {
+      const price = item.price || 0;
+      requestedTotalValue += item.originalQty * price;
+      if(item.status === "approved") approvedTotalValue += (item.approvedQty || 0) * price;
     });
     
-    const tabsDiv = document.getElementById("statusTabs");
-    const statuses = ["pending", "approved", "rejected", "accepted", "all"];
-    const statusNames = ["⏳ Pending", "✅ Approved", "❌ Rejected", "🟣 Accepted", "📋 All"];
-    tabsDiv.innerHTML = "";
-    statuses.forEach((s, i) => {
-        tabsDiv.innerHTML += `<button class="tab-btn ${currentStatus === s ? 'active' : ''}" onclick="setFilter('${s}')">${statusNames[i]}</button>`;
-    });
-    
-    let filtered = [...allRequests];
-    if(currentKitchen !== "all") filtered = filtered.filter(r => r.section === currentKitchen);
-    if(currentStatus !== "all") filtered = filtered.filter(r => getRequestStatus(r.items) === currentStatus);
-    
-    const container = document.getElementById("requestsContainer");
-    if(!filtered.length) { container.innerHTML = `<div class="empty-state">📭 No requests found</div>`; return; }
-    
-    container.innerHTML = "";
-    filtered.forEach(req => {
-        const requestStatus = getRequestStatus(req.items);
-        const kitchenClass = { "Hot Kitchen": "kitchen-hot", "Cold Kitchen": "kitchen-cold", "Pastry / Bakery": "kitchen-pastry", "Butchery": "kitchen-butchery", "Beach House": "kitchen-beach", "Nihon Kitchen": "kitchen-nihon", "Staff Kitchen": "kitchen-staff" }[req.section] || "kitchen-staff";
-        
-        const duplicateInfo = duplicateMap.get(req.id);
-        const duplicateWarning = duplicateInfo ? `<span class="duplicate-warning">⚠️ DUPLICATE (${duplicateInfo.count} identical)</span>` : '';
-        
-        let requestedTotalValue = 0, approvedTotalValue = 0;
-        req.items.forEach(item => {
-            const price = item.price || 0;
-            requestedTotalValue += item.originalQty * price;
-            if(item.status === "approved") approvedTotalValue += (item.approvedQty || 0) * price;
-        });
-        
-        let hasIndividualAction = false;
-        let isCompleted = false;
-        if(requestStatus === "pending") {
-            for(const item of req.items) {
-                if(item.status === "approved" || item.status === "rejected") {
-                    hasIndividualAction = true;
-                    break;
-                }
-            }
-        } else { isCompleted = true; }
-        
-        let itemsHtml = `<div class="table-wrapper"><table class="admin-table"><thead><tr><th>Code</th><th>Item</th><th>Requested Qty</th><th>Unit</th><th>Price/Unit</th><th>Admin Qty</th><th>Total Value</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
-        
-        req.items.forEach((item, idx) => {
-            const price = item.price || 0;
-            const approvedQty = item.status === "approved" ? (item.approvedQty || 0) : 0;
-            const totalValue = approvedQty * price;
-            
-            if(item.status === "approved") {
-                itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td class="item-price">${price.toFixed(2)}</td><td><strong>${approvedQty.toFixed(1)}</strong></td><td><strong style="color:#27ae60;">${totalValue.toFixed(2)}</strong></td><td><span class="btn-approve" style="background:#27ae60;opacity:0.7;">✅ Approved</span></td><td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</div></td></tr>`;
-            } else if(item.status === "rejected") {
-                itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td class="item-price">${price.toFixed(2)}</td><td><strong>0</strong></td><td><strong style="color:#e74c3c;">0.00</strong></td><td><span class="btn-reject" style="background:#e74c3c;opacity:0.7;">❌ Rejected</span></td><td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td></tr>`;
-            } else {
-                const currentVal = (item.originalQty || 0).toFixed(1);
-                itemsHtml += `<tr style="background:#fff8e7;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td class="item-price">${price.toFixed(2)}</td><td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${currentVal}" min="0" step="0.5" style="background:#fef9e6;"></td><td><span id="totalValuePreview_${req.id}_${idx}" style="font-weight:600; color:#1e3c72;">${(item.originalQty * price).toFixed(2)}</span></td><td class="action-buttons"><button class="btn-approve" onclick="approveItemFlex('${req.id}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.id}', ${idx})">❌ Reject</button></td><td><span class="status-pending-cell">Pending</span><div class="admin-info-text">⚠️ Auto-approved on Accept</div></td></tr>`;
-                setTimeout(() => {
-                    const input = document.getElementById(`qty_${req.id}_${idx}`);
-                    const totalSpan = document.getElementById(`totalValuePreview_${req.id}_${idx}`);
-                    if(input && totalSpan) {
-                        const updateTotal = () => { const newQty = parseFloat(input.value) || 0; totalSpan.innerText = (newQty * price).toFixed(2); };
-                        input.addEventListener('input', updateTotal);
-                        updateTotal();
-                    }
-                }, 50);
-            }
-        });
-        itemsHtml += `</tbody></table></div>`;
-        
-        let actions = "";
-        if(!isCompleted) {
-            actions = `<div class="request-actions">
-                <button class="btn-approve-all" onclick="approveAllFlex('${req.id}')" ${hasIndividualAction ? 'disabled' : ''}>✅ Approve All</button>
-                <button class="btn-reject-all" onclick="rejectAll('${req.id}')" ${hasIndividualAction ? 'disabled' : ''}>❌ Reject All</button>
-                <button class="btn-accept" onclick="acceptRequest('${req.id}')" ${!hasIndividualAction ? 'disabled' : ''}>🟣 Accept</button>
-            </div>`;
-        } else {
-            actions = `<div class="request-actions"><button class="btn-accept" style="background:#6c757d; cursor:default;" disabled>✅ Request Completed</button></div>`;
+    let hasIndividualAction = false;
+    let isCompleted = false;
+    if(requestStatus === "pending") {
+      for(const item of req.items) {
+        if(item.status === "approved" || item.status === "rejected") {
+          hasIndividualAction = true;
+          break;
         }
-        
-        let statusText = "", statusClass = "";
-        if(requestStatus === "pending") { statusText = "Pending"; statusClass = "status-pending"; }
-        else if(requestStatus === "approved") { statusText = "Fully Approved"; statusClass = "status-approved"; }
-        else if(requestStatus === "rejected") { statusText = "Rejected"; statusClass = "status-rejected"; }
-        else { statusText = "Accepted"; statusClass = "status-accepted"; }
-        
-        container.innerHTML += `<div class="request-card">
-            <div class="request-header">
-                <div><span class="request-id">📄 ${req.requestId}</span>${duplicateWarning}<span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div>
-                <div class="request-total-badge">
-                    <span>💰 Requested: ${requestedTotalValue.toFixed(2)} EGP</span>
-                    <span>✅ Approved: ${approvedTotalValue.toFixed(2)} EGP</span>
-                </div>
-                <span class="status-badge ${statusClass}">${statusText}</span>
-            </div>
-            <div class="request-info">
-                <div class="info-item"><div class="info-label">👨‍🍳 CHEF</div><div class="info-value">${escapeHtml(req.chefName)}</div></div>
-                <div class="info-item"><div class="info-label">📅 SUBMITTED</div><div class="info-value">${req.submittedAt}</div></div>
-                <div class="info-item"><div class="info-label">🆔 FIREBASE ID</div><div class="info-value firebase-id" onclick="copyDocId('${req.id}')">📋 ${req.id}</div></div>
-            </div>
-            ${itemsHtml}
-            ${actions}
-        </div>`;
+      }
+    } else { isCompleted = true; }
+    
+    let itemsHtml = `<div class="table-wrapper"><table class="admin-table"><thead><tr><th>Code</th><th>Item</th><th>Requested Qty</th><th>Unit</th><th>Price/Unit</th><th>Admin Qty</th><th>Total Value</th><th>Action</th><th>Status</th></tr></thead><tbody>`;
+    
+    req.items.forEach((item, idx) => {
+      const price = item.price || 0;
+      const approvedQty = item.status === "approved" ? (item.approvedQty || 0) : 0;
+      const totalValue = approvedQty * price;
+      
+      if(item.status === "approved") {
+        itemsHtml += `<tr style="background:#e8f5e9;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td class="item-price">${price.toFixed(2)}</td><td><strong>${approvedQty.toFixed(1)}</strong></td><td><strong style="color:#27ae60;">${totalValue.toFixed(2)}</strong></td><td><span class="btn-approve" style="background:#27ae60;opacity:0.7;">✅ Approved</span></td><td><span class="status-approved-cell">Approved</span><div class="admin-info-text">👤 ${escapeHtml(item.approvedBy || '?')}<br>📅 ${item.approvedAt || ''}</div></td></tr>`;
+      } else if(item.status === "rejected") {
+        itemsHtml += `<tr style="background:#fee2e2;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td class="item-price">${price.toFixed(2)}</td><td><strong>0</strong></td><td><strong style="color:#e74c3c;">0.00</strong></td><td><span class="btn-reject" style="background:#e74c3c;opacity:0.7;">❌ Rejected</span></td><td><span class="status-rejected-cell">Rejected</span><div class="admin-info-text">👤 ${escapeHtml(item.rejectedBy || '?')}<br>📅 ${item.rejectedAt || ''}<br>📝 ${escapeHtml(item.rejectionReason || '')}</div></td></tr>`;
+      } else {
+        const currentVal = (item.originalQty || 0).toFixed(1);
+        itemsHtml += `<tr style="background:#fff8e7;"><td>${item.code}</td><td><div class="item-name">${escapeHtml(item.name)}</div></td><td><span class="requested-qty">${item.originalQty}</span></td><td>${item.unit}</td><td class="item-price">${price.toFixed(2)}</td><td><input type="number" id="qty_${req.id}_${idx}" class="approval-input" value="${currentVal}" min="0" step="0.5" style="background:#fef9e6;"></td><td><span id="totalValuePreview_${req.id}_${idx}" style="font-weight:600; color:#1e3c72;">${(item.originalQty * price).toFixed(2)}</span></td><td class="action-buttons"><button class="btn-approve" onclick="approveItemFlex('${req.id}', ${idx})">✅ Approve</button><button class="btn-reject" onclick="rejectItem('${req.id}', ${idx})">❌ Reject</button></td><td><span class="status-pending-cell">Pending</span><div class="admin-info-text">⚠️ Auto-approved on Accept</div></td></tr>`;
+        setTimeout(() => {
+          const input = document.getElementById(`qty_${req.id}_${idx}`);
+          const totalSpan = document.getElementById(`totalValuePreview_${req.id}_${idx}`);
+          if(input && totalSpan) {
+            const updateTotal = () => { const newQty = parseFloat(input.value) || 0; totalSpan.innerText = (newQty * price).toFixed(2); };
+            input.addEventListener('input', updateTotal);
+            updateTotal();
+          }
+        }, 50);
+      }
     });
-    updateStats();
+    itemsHtml += `</tbody></table></div>`;
+    
+    let actions = "";
+    if(!isCompleted) {
+      actions = `<div class="request-actions">
+        <button class="btn-approve-all" onclick="approveAllFlex('${req.id}')" ${hasIndividualAction ? 'disabled' : ''}>✅ Approve All</button>
+        <button class="btn-reject-all" onclick="rejectAll('${req.id}')" ${hasIndividualAction ? 'disabled' : ''}>❌ Reject All</button>
+        <button class="btn-accept" onclick="acceptRequest('${req.id}')" ${!hasIndividualAction ? 'disabled' : ''}>🟣 Accept</button>
+      </div>`;
+    } else {
+      actions = `<div class="request-actions"><button class="btn-accept" style="background:#6c757d; cursor:default;" disabled>✅ Request Completed</button></div>`;
+    }
+    
+    let statusText = "", statusClass = "";
+    if(requestStatus === "pending") { statusText = "Pending"; statusClass = "status-pending"; }
+    else if(requestStatus === "approved") { statusText = "Fully Approved"; statusClass = "status-approved"; }
+    else if(requestStatus === "rejected") { statusText = "Rejected"; statusClass = "status-rejected"; }
+    else { statusText = "Accepted"; statusClass = "status-accepted"; }
+    
+    container.innerHTML += `<div class="request-card">
+      <div class="request-header">
+        <div><span class="request-id">📄 ${req.requestId}</span>${duplicateWarning}<span class="kitchen-badge ${kitchenClass}" style="margin-left:10px;">${req.section}</span></div>
+        <div class="request-total-badge">
+          <span>💰 Requested: ${requestedTotalValue.toFixed(2)} EGP</span>
+          <span>✅ Approved: ${approvedTotalValue.toFixed(2)} EGP</span>
+        </div>
+        <span class="status-badge ${statusClass}">${statusText}</span>
+      </div>
+      <div class="request-info">
+        <div class="info-item"><div class="info-label">👨‍🍳 CHEF</div><div class="info-value">${escapeHtml(req.chefName)}</div></div>
+        <div class="info-item"><div class="info-label">📅 SUBMITTED</div><div class="info-value">${req.submittedAt}</div></div>
+        <div class="info-item"><div class="info-label">🆔 FIREBASE ID</div><div class="info-value firebase-id" onclick="copyDocId('${req.id}')">📋 ${req.id}</div></div>
+      </div>
+      ${itemsHtml}
+      ${actions}
+    </div>`;
+  });
+  updateStats();
 }
 
 function copyDocId(docId) { navigator.clipboard.writeText(docId).then(() => showToast("📋 ID Copied")).catch(() => showToast("❌ Copy Failed")); }
@@ -1195,13 +627,14 @@ function logout() { if(confirm("Logout?")) { localStorage.removeItem("admin"); s
 function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ''; }
 function showToast(msg) { const t = document.createElement("div"); t.className = "toast"; t.innerText = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
 
+// ---------- AUTO-LOGIN ----------
 const saved = localStorage.getItem("admin");
 if(saved && ADMIN_PASSWORDS[saved]) {
-    currentAdmin = saved;
-    document.getElementById("adminNameDisplay").innerText = currentAdmin;
-    document.getElementById("passwordModal").style.display = "none";
-    document.getElementById("mainContent").style.display = "block";
-    loadRequests();
+  currentAdmin = saved;
+  document.getElementById("adminNameDisplay").innerText = currentAdmin;
+  document.getElementById("passwordModal").style.display = "none";
+  document.getElementById("mainContent").style.display = "block";
+  loadRequests();
 }
 </script>
 </body>
