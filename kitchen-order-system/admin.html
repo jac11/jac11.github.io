@@ -7,8 +7,6 @@
   <!-- Firebase compat (v10) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <!-- firebase-config.js is expected to exist in the same folder -->
-  <script src="firebase-config.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; }
@@ -206,23 +204,28 @@
 </div>
 
 <script>
-// ---------- FIREBASE INIT (from firebase-config.js) ----------
-// expects firebaseConfig to be defined in firebase-config.js
-if (typeof firebaseConfig !== 'undefined') {
-  firebase.initializeApp(firebaseConfig);
-} else {
-  console.warn('firebaseConfig not found – using fallback (ensure firebase-config.js is loaded)');
-  // fallback config (only for demo, replace with your own)
-  const fallbackConfig = {
-    apiKey: "AIzaSyDemoKeyNotValid",
-    authDomain: "demo.firebaseapp.com",
-    projectId: "demo-project"
-  };
-  firebase.initializeApp(fallbackConfig);
-}
+// ========== FIREBASE CONFIGURATION ==========
+// ⚠️ IMPORTANT: Replace these values with your actual Firebase project config
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// ---------- CONSTANTS ----------
+// Enable offline persistence (optional but recommended)
+db.enablePersistence()
+  .catch((err) => {
+    console.warn('Firestore persistence error:', err);
+  });
+
+// ========== CONSTANTS ==========
 const ADMIN_PASSWORDS = { "Marco": "NNNNNNNN000000", "Nady": "Nn639123", "Ahmed": "j1cadm1n", "Nader": "nader123" };
 const KITCHENS = ["Hot Kitchen", "Cold Kitchen", "Pastry / Bakery", "Butchery", "Beach House", "Nihon Kitchen", "Staff Kitchen"];
 
@@ -233,17 +236,21 @@ let allRequests = [];
 let selectedUser = "";
 let duplicateMap = new Map();
 
-// ---------- HELPERS ----------
+// ========== HELPERS ==========
 function goBackToIndex() { window.location.href = "index.html"; }
 function openAnalytics() { window.open("analytics.html", "_blank"); }
 function openRevenue() { window.open("revenue.html", "_blank"); }
 
 function selectUser(user) {
   selectedUser = user;
-  document.getElementById("passwordInput").style.display = "block";
-  document.getElementById("loginBtn").style.display = "block";
-  document.getElementById("passwordInput").placeholder = `Password for ${user}`;
+  const passInput = document.getElementById("passwordInput");
+  const loginBtn = document.getElementById("loginBtn");
+  passInput.style.display = "block";
+  loginBtn.style.display = "block";
+  passInput.placeholder = `Password for ${user}`;
+  passInput.value = "";
   document.getElementById("loginError").innerHTML = "";
+  passInput.focus();
 }
 
 function checkLogin() {
@@ -257,16 +264,18 @@ function checkLogin() {
     loadRequests();
   } else {
     document.getElementById("loginError").innerHTML = "❌ Wrong password!";
+    document.getElementById("passwordInput").value = "";
+    document.getElementById("passwordInput").focus();
   }
 }
 
-// ---------- REFRESH (manual) ----------
+// ========== REFRESH (manual) ==========
 function manualRefresh() {
   showToast("🔄 Refreshing...");
   loadRequests();
 }
 
-// ---------- LOAD REQUESTS ----------
+// ========== LOAD REQUESTS ==========
 async function loadRequests() {
   try {
     const snapshot = await db.collection("kitchen_requests").orderBy("timestamp", "desc").get();
@@ -277,8 +286,8 @@ async function loadRequests() {
     updateStats();
     showToast("✅ Data updated");
   } catch(e) { 
-    console.error(e);
-    showToast("❌ Error loading data"); 
+    console.error("Error loading requests:", e);
+    showToast("❌ Error loading data: " + e.message);
   }
 }
 
@@ -286,6 +295,7 @@ function findDuplicateRequests() {
   duplicateMap.clear();
   const signatureMap = new Map();
   for (const req of allRequests) {
+    if (!req.items) continue;
     const itemSignature = req.items.map(item => `${item.code}|${item.originalQty}`).join(';');
     const signature = `${req.section}|${req.chefName}|${itemSignature}`;
     if (!signatureMap.has(signature)) signatureMap.set(signature, []);
@@ -324,10 +334,14 @@ async function updateRequest(id, items) {
     showToast(`✅ Updated by ${currentAdmin}`);
     await loadRequests();
     return true;
-  } catch(e) { showToast("Update error"); return false; }
+  } catch(e) { 
+    console.error("Update error:", e);
+    showToast("❌ Update error: " + e.message); 
+    return false;
+  }
 }
 
-// ---------- ACTIONS ----------
+// ========== ACTIONS ==========
 async function approveItemFlex(reqId, idx) {
   const input = document.getElementById(`qty_${reqId}_${idx}`);
   let qty = parseFloat(input?.value || 0);
@@ -424,7 +438,7 @@ async function acceptRequest(reqId) {
   }
 }
 
-// ---------- RESET MODAL ----------
+// ========== RESET MODAL ==========
 function showResetConfirmModal() {
   const toDelete = allRequests.filter(req => getRequestStatus(req.items) !== "pending");
   if(toDelete.length === 0) { showToast("ℹ️ No completed requests to delete"); return; }
@@ -447,6 +461,11 @@ function showResetConfirmModal() {
   const confirmBtn = modal.querySelector('#confirmDeleteBtn');
   input.focus();
   input.addEventListener('input', (e) => { confirmBtn.disabled = e.target.value !== 'DELETE'; });
+  input.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && input.value === 'DELETE') {
+      confirmBtn.click();
+    }
+  });
   confirmBtn.onclick = async () => {
     if(input.value === 'DELETE') {
       modal.remove();
@@ -461,7 +480,7 @@ function showResetConfirmModal() {
   };
 }
 
-// ---------- EXPORT ----------
+// ========== EXPORT ==========
 function exportExcel() {
   if(!allRequests.length) { showToast("No data"); return; }
   let csv = "Request ID,Kitchen,Chef,Date,Item,Code,Requested Qty,Unit,Price/Unit (EGP),Approved Qty,Status,Action By,Total Value (EGP),Duplicate\n";
@@ -486,7 +505,7 @@ function exportExcel() {
   link.click();
 }
 
-// ---------- STATS & FILTERS ----------
+// ========== STATS & FILTERS ==========
 function updateStats() {
   let pending=0, approved=0, rejected=0, accepted=0;
   allRequests.forEach(req => {
@@ -506,7 +525,7 @@ function updateStats() {
 function setFilter(status) { currentStatus = status; renderUI(); }
 function filterKitchen(kitchen) { currentKitchen = kitchen; renderUI(); }
 
-// ---------- RENDER ----------
+// ========== RENDER ==========
 function renderUI() {
   const kitchenDiv = document.getElementById("kitchenFilters");
   kitchenDiv.innerHTML = `<button class="kitchen-filter-btn ${currentKitchen === 'all' ? 'active' : ''}" onclick="filterKitchen('all')">📋 All</button>`;
@@ -627,7 +646,17 @@ function logout() { if(confirm("Logout?")) { localStorage.removeItem("admin"); s
 function escapeHtml(str) { return str?.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])) || ''; }
 function showToast(msg) { const t = document.createElement("div"); t.className = "toast"; t.innerText = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2500); }
 
-// ---------- AUTO-LOGIN ----------
+// ========== ENTER KEY SUPPORT FOR LOGIN ==========
+document.addEventListener('DOMContentLoaded', function() {
+  const passInput = document.getElementById('passwordInput');
+  passInput.addEventListener('keydown', function(e) {
+    if(e.key === 'Enter') {
+      checkLogin();
+    }
+  });
+});
+
+// ========== AUTO-LOGIN ==========
 const saved = localStorage.getItem("admin");
 if(saved && ADMIN_PASSWORDS[saved]) {
   currentAdmin = saved;
