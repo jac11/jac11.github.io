@@ -24,14 +24,8 @@
   {"code": "132012", "name": "Shrimps Meat (26-30)", "name_ar": "لحم جمبري (26-30)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 987.91904},
   {"code": "132013", "name": "Shrimps Medium (20-30)", "name_ar": "جمبري متوسط (20-30)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 714.375},
   {"code": "160079", "name": "Tomato Paste Wadi Food", "name_ar": "صلصة طماطم وادي فود", "unit": "3kg tin", "maxLimit": 3, "step": 1, "AVE": 142.05624},
-  {"code": "161006", "name": "Black Pepper Powder", "name_ar": "مسحوق الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 475.3},
-  {"code": "161028", "name": "Coriander Powder", "name_ar": "مسحوق كزبرة", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 92.41628},
-  {"code": "161041", "name": "Garlic Powder", "name_ar": "مسحوق ثوم", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 166.6},
-  {"code": "161042", "name": "Ginger Powder", "name_ar": "مسحوق زنجبيل", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 323.4},
   {"code": "161051", "name": "Nutmeg Whole", "name_ar": "جوزة الطيب كاملة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 931},
-  {"code": "161052", "name": "Onion Powder", "name_ar": "مسحوق بصل", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 166.6},
   {"code": "161053", "name": "Oregano Dry", "name_ar": "أوريجانو مجفف", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 98},
-  {"code": "161077", "name": "White Pepper Powder", "name_ar": "فلفل أبيض بودرة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 784},
   {"code": "161063", "name": "Salt Kitchen", "name_ar": "ملح مطبخ", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 6.82459},
   {"code": "161067", "name": "Salt Table", "name_ar": "ملح طعام", "unit": "700g pkt", "maxLimit": 8, "step": 1, "AVE": 9.38479},
   {"code": "162002", "name": "Chicken Stock Knorr", "name_ar": "مرق دجاج كنور", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 178.28444},
@@ -40,5 +34,11 @@
   {"code": "167017", "name": "Vinegar Heinz White", "name_ar": "خل أبيض هاينز", "unit": "L", "maxLimit": 3, "step": 1, "AVE": 16.29254},
   {"code": "167006", "name": "Mustard Dijon", "name_ar": "موسترد ديجون", "unit": "370g jar", "maxLimit": 2, "step": 1, "AVE": 127.53333},
   {"code": "175248", "name": "Bread Crumb Imported Coarse", "name_ar": "بقسماط خشن مستورد", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 149.76413},
-  {"code": "161138", "name": "Black Pepper Powder (PURE)", "name_ar": "فلفل أسود بودرة (نقي)", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 529.2}
+  {"code": "161138", "name": "Black Pepper Powder (PURE)", "name_ar": "فلفل أسود بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 540},
+  {"code": "161143", "name": "Cinnamon Powder (PURE)", "name_ar": "قرفة بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 294},
+  {"code": "161147", "name": "Coriander Powder (PURE)", "name_ar": "كزبرة بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 105},
+  {"code": "161153", "name": "Garlic Powder (PURE)", "name_ar": "ثوم بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 166.6},
+  {"code": "161154", "name": "Ginger Powder (PURE)", "name_ar": "زنجبيل بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 323.4},
+  {"code": "161157", "name": "Onion Powder (PURE)", "name_ar": "بصل بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 166.6},
+  {"code": "161163", "name": "White Pepper Powder (PURE)", "name_ar": "فلفل أبيض بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 872.2}
 ]
