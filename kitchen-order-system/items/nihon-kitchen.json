@@ -4,6 +4,7 @@
   {"code": "110050", "name": "beef Tenderloin Angus", "name_ar": "فيليه تندرلوين أنجوس", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 2850},
   {"code": "110028", "name": "Beef Shoulder Brazil", "name_ar": "كتف لحم برازيلي", "unit": "kg", "maxLimit": 20, "step": 0.5, "AVE": 278.89508},
   {"code": "120047", "name": "Chicken Breast Size 4-5", "name_ar": "صدر دجاج مقاس 4-5", "unit": "kg", "maxLimit": 15, "step": 1, "AVE": 221.75556},
+  {"code": "151038", "name": "Butter New Zealand Fontera Block", "name_ar": "زبدة نيوزيلندا فونتيرا", "unit": "25kg box", "maxLimit": 1, "step": 1, "AVE": 14500},
   {"code": "131002", "name": "Crab Steaks", "name_ar": "ستيك كابوريا", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 120},
   {"code": "110158", "name": "Beef Fillet Brazil(Minirva)", "name_ar": "فيليه لحم بقري برازيلي (مينيرفا)", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 850},
   {"code": "131015", "name": "Smoked Eel", "name_ar": "ثعبان البحر مدخن", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 844.8},
