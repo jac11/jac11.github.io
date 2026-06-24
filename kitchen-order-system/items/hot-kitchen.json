@@ -103,7 +103,6 @@
   {"code": "166018", "name": "Wheat Whole", "name_ar": "قمح كامل", "unit": "kg", "maxLimit": 3, "step": 1, "AVE": 29.4},
   {"code": "166019", "name": "White Beans", "name_ar": "فاصوليا بيضاء", "unit": "kg", "maxLimit": 12, "step": 1, "AVE": 117.6},
   {"code": "160047", "name": "White Beans Cooked 400 Gram", "name_ar": "فاصوليا بيضاء مطبوخة 400 جرام", "unit": "400g tin", "maxLimit": 12, "step": 1, "AVE": 25},
-  {"code": "166020", "name": "Yellow Lentil", "name_ar": "عدس أصفر", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 78.4},
   {"code": "165056", "name": "Prawn Crackers", "name_ar": "مقرمشات جمبري", "unit": "227g pkt", "maxLimit": 4, "step": 1, "AVE": 25},
   {"code": "170030", "name": "White Oats Lino", "name_ar": "شوفان أبيض لينو", "unit": "500g pkt", "maxLimit": 6, "step": 1, "AVE": 32.91804},
   {"code": "173025", "name": "Maple Syrup", "name_ar": "شراب القيقب", "unit": "709ml bottle", "maxLimit": 3, "step": 1, "AVE": 157.00202},
