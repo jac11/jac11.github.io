@@ -93,6 +93,7 @@
   {"code": "164102", "name": "Macaroni Spaghetti Lori Italy", "name_ar": "مكرونة سباجيتي لوري إيطالي", "unit": "500g pkt", "maxLimit": 5, "step": 1, "AVE": 82.7907},
   {"code": "164035", "name": "Macaroni Vermicelli Masria", "name_ar": "مكرونة شعرية مصرية", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 32.21457},
   {"code": "164039", "name": "Rice Basmati", "name_ar": "أرز بسمتي", "unit": "kg", "maxLimit": 10, "step": 1, "AVE": 86},
+  {"code": "164143", "name": "Rice White Local (El Badr)", "name_ar": "أرز أبيض محلي (البدر)", "unit": "25kg sac", "maxLimit": 2, "step": 1, "AVE": 750},
   {"code": "164043", "name": "Rice Risotto Gallo", "name_ar": "أرز ريزوتو جالو", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 185.9697},
   {"code": "164054", "name": "Cuscus Powder", "name_ar": "كسكسي", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 52.72206},
   {"code": "164083", "name": "Kibbeh Shami Large", "name_ar": "كبة شامي كبير", "unit": "kg", "maxLimit": 6, "step": 1, "AVE": 208.33333},
