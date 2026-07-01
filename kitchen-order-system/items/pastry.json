@@ -139,7 +139,6 @@
   {"code": "175043", "name": "Golash", "name_ar": "جلاش", "unit": "350g pkt", "maxLimit": 10, "step": 1, "AVE": 16.67391},
   {"code": "175045", "name": "Ingato Gel", "name_ar": "انجاتو جيل", "unit": "4kg gal", "maxLimit": 1, "step": 1, "AVE": 378.02492},
   {"code": "175134", "name": "Konafa", "name_ar": "كنافة", "unit": "400g pkt", "maxLimit": 10, "step": 1, "AVE": 20.92},
-  {"code": "175059", "name": "Sambousk Cheese Mini", "name_ar": "سمبوسك جبنة صغير", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 131.12111},
   {"code": "175066", "name": "Sunflower Seeds Abu Auf", "name_ar": "بذور دوار الشمس أبو عوف", "unit": "450g pkt", "maxLimit": 2, "step": 1, "AVE": 96.90389},
   {"code": "175072", "name": "Sweet Tartlet 7cm Round", "name_ar": "تارتlet حلو 7سم دائري", "unit": "144pc box", "maxLimit": 2, "step": 1, "AVE": 1039.99824},
   {"code": "175128", "name": "Vanilla Dreem", "name_ar": "فانيليا دريم", "unit": "100 bags", "maxLimit": 3, "step": 1, "AVE": 53.95},
