@@ -1,5 +1,6 @@
 [
   {"code": "113085", "name": "Beef Bacon Smoked Sliced Choice", "name_ar": "بيكون لحم مدخن شرائح شويس", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 492.8},
+  {"code": "113003", "name": "Beef Bacon Smoked Whole", "name_ar": "بيف بيكون كامل سليم", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 448.8},
   {"code": "113111", "name": "Beef Bacon Smoked Sliced Taste Pure", "name_ar": "بيكون لحم مدخن شرائح تيست بيور", "unit": "500g pkt", "maxLimit": 5, "step": 0.5, "AVE": 270.9},
   {"code": "113019", "name": "Beef Sausage Chipolata", "name_ar": "سجق لحم شيبولاتا", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 211.2},
   {"code": "113026", "name": "Chicken Sausage Chipolata", "name_ar": "سجق دجاج شيبولاتا", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 193.6},
