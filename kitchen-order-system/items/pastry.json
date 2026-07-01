@@ -1,6 +1,7 @@
 [
   {"code": "177001", "name": "Glucose Honey Gallon 20 Kg", "name_ar": "جلوكوز عسل جالون 20 كجم", "unit": "Gallon 20 KG", "maxLimit": 2, "step": 1, "AVE": 916.725},
   {"code": "175292", "name": "Semolina Powder Local (EL Gamal)", "name_ar": "دقيق سمولاينا الجمل", "unit": "kg", "maxLimit": 50, "step": 50, "AVE": 33},
+  {"code": "153127", "name": "Cheese Mascarponi Imported", "name_ar": "جبنه ميسكربوني مستورد", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 603.2},
   {"code": "177018", "name": "Jam Apricot", "name_ar": "مربى مشمش", "unit": "5kg gal", "maxLimit": 2, "step": 1, "AVE": 247.29595},
   {"code": "177033", "name": "Jam Strawberry", "name_ar": "مربى فراولة", "unit": "5kg gal", "maxLimit": 2, "step": 1, "AVE": 251.77745},
   {"code": "143004", "name": "Mix Berries Frozen", "name_ar": "توت مشكل مجمد", "unit": "kg", "maxLimit": 2.5, "step": 0.5, "AVE": 590},
