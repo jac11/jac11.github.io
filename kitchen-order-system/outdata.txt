@@ -1,0 +1,1 @@
+ {"code": "120055", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "step": 0.5, "AVE": 160},
