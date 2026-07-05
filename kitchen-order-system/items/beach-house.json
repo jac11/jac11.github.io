@@ -8,7 +8,6 @@
   {"code": "161005", "name": "Black Pepper Corn", "name_ar": "حب الفلفل الأسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 45.50},
   {"code": "167046", "name": "Mayonnaise Hellmanns Gallon 10 Kg", "name_ar": "مايونيز هيلمانز جالون 10 كجم", "unit": "gal10kg", "maxLimit": 2, "step": 1, "AVE": 1426.8},
   {"code": "155023", "name": "Ice Cream Strawbery Movenpick", "name_ar": "آيس كريم فراولة موفنبيك", "unit": "5L gal", "maxLimit": 2, "step": 1, "AVE": 1000},
-  {"code": "120055", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "step": 0.5, "AVE": 160},
   {"code": "110158", "name": "Beef Fillet Brazil(Minirva)", "name_ar": "فيليه لحم بقري برازيلي (مينيرفا)", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 850},
   {"code": "164140", "name": "Macaroni Imported Penne", "name_ar": "مكرونه بنا مستورد", "unit": "500g pkt", "maxLimit": 3, "step": 1, "AVE": 89.8932},
   {"code": "132044", "name": "Mussels Whole Shell (Al Jazira)", "name_ar": "بلح البحر", "unit": "kg", "maxLimit": 3, "step": 1, "AVE": 273.57706},
