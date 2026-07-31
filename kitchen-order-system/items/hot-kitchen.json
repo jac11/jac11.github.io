@@ -50,7 +50,6 @@
   {"code": "164005", "name": "Macaroni Birds Tongue", "name_ar": "مكرونة لسان عصفور", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 32.7557},
   {"code": "164050", "name": "Macaroni Gluten Free", "name_ar": "مكرونة خالية من الجلوتين", "unit": "340g pkt", "maxLimit": 2, "step": 1, "AVE": 73.54839},
   {"code": "164129", "name": "Macaroni Gluten Free", "name_ar": "مكرونة خالية من الجلوتين", "unit": "350g pkt", "maxLimit": 2, "step": 1, "AVE": 68},
-  {"code": "164140", "name": "Macaroni Imported Penne", "name_ar": "مكرونه بنا مستورد", "unit": "500g pkt", "maxLimit": 3, "step": 1, "AVE": 89.8932},
   {"code": "164053", "name": "Macaroni Linguine Agnesi", "name_ar": "مكرونة لينجويني أجنيزي", "unit": "500g pkt", "maxLimit": 3, "step": 1, "AVE": 89.8932},
   {"code": "164099", "name": "Macaroni Penne Lori Italy 500 Gram", "name_ar": "مكرونة بيني لوري إيطالي 500 جرام", "unit": "Pkt 500 Gram", "maxLimit": 5, "step": 1, "AVE": 90.0},
   {"code": "164098", "name": "Macaroni Rigatoni Garfallo", "name_ar": "مكرونة ريجاتوني جارفالو", "unit": "500g pkt", "maxLimit": 5, "step": 1, "AVE": 94},
