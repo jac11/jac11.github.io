@@ -45,7 +45,6 @@
   {"code": "151018", "name": "Peanut Butter", "name_ar": "زبدة الفول السوداني", "unit": "300g jar", "maxLimit": 3, "step": 1, "AVE": 87.44643},
   {"code": "176018", "name": "Peanuts For Pastry", "name_ar": "فول سوداني للحلويات", "unit": "500g pkt", "maxLimit": 8, "step": 1, "AVE": 80},
   {"code": "142016", "name": "Peas Frozen Americana", "name_ar": "بازلاء مجمدة أمريكانا", "unit": "10kg box", "maxLimit": 1, "step": 1, "AVE": 850},
-  {"code": "163024", "name": "Pickles Ginger", "name_ar": "زنجبيل مخلل", "unit": "1.5kg pkt", "maxLimit": 2, "step": 1, "AVE": 60.25514},
   {"code": "163236", "name": "Pickles Ginger 1.5 Kg Zumra", "name_ar": "زنجبيل مخلل زمرة 1.5 كجم", "unit": "Pkt 1.5 KG", "maxLimit": 3, "step": 1, "AVE": 140.0},
   {"code": "163090", "name": "Pickles Cucumber", "name_ar": "حيار مخلل برطمان 300 جرام", "unit": "300g jar", "maxLimit": 6, "step": 1, "AVE": 78.37691},
   {"code": "163211", "name": "Pickles Cucumber", "name_ar": "حيار مخلل برطمان 350 جرام", "unit": "350g jar", "maxLimit": 6, "step": 1, "AVE": 88},
