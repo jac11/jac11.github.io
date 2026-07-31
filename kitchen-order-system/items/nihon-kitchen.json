@@ -35,7 +35,6 @@
   {"code": "173101", "name": "Milk Coconut 400 Ml Rizi", "name_ar": "حليب جوز الهند ريزي 400 مل", "unit": "Tin 400 ML", "maxLimit": 6, "step": 1, "AVE": 32.89},
   {"code": "173027", "name": "Milk Coconut Alpro 1 Liter", "name_ar": "حليب جوز الهند ألبرو 1 لتر", "unit": "Liter", "maxLimit": 3, "step": 1, "AVE": 152.91667},
   {"code": "162019", "name": "Miso Paste", "name_ar": "معجون ميسو", "unit": "1kg pkt", "maxLimit": 2, "step": 1, "AVE": 270},
-  {"code": "167006", "name": "Mustard Dijon", "name_ar": "موسترد ديجون", "unit": "370g jar", "maxLimit": 2, "step": 1, "AVE": 127.53333},
   {"code": "167047", "name": "Mustard Dijon Jar 350 Gram clovis", "name_ar": "موسترد ديجون كلوفيس 350 جرام", "unit": "Jar 350 Gram", "maxLimit": 2, "step": 1, "AVE": 168.63},
   {"code": "181033", "name": "Nesquik Nestle Cocoa Pkt 750 Grm", "name_ar": "نيسكويك نستله كاكاو 750 جرام", "unit": "Pkt 750 Gram", "maxLimit": 4, "step": 1, "AVE": 218.43347},
   {"code": "163005", "name": "Oil Corn", "name_ar": "زيت ذرة", "unit": "L", "maxLimit": 6, "step": 1, "AVE": 79.81302},
