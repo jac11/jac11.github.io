@@ -44,7 +44,6 @@
   {"code": "162006", "name": "Curry Paste (Green)", "name_ar": "معجون كاري الأخضر", "unit": "400g jar", "maxLimit": 4, "step": 1, "AVE": 109.74364},
   {"code": "142025", "name": "Edamame Beans", "name_ar": "فول إدامامي", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 451.44696},
   {"code": "164001", "name": "Egg Noodles", "name_ar": "نودلز بيض", "unit": "400g pkt", "maxLimit": 6, "step": 1, "AVE": 60},
-  {"code": "175036", "name": "Flour Tempura", "name_ar": "دقيق تمبورا", "unit": "kg", "maxLimit": 6, "step": 1, "AVE": 118.32954},
   {"code": "162017", "name": "Hondashi Powder", "name_ar": "بودرة هونداشي", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 635.9649},
   {"code": "177008", "name": "Honey Bee Hero", "name_ar": "عسل نحل هيرو", "unit": "650g jar", "maxLimit": 6, "step": 1, "AVE": 148.67917},
   {"code": "163002", "name": "Ketchup Heinz", "name_ar": "كاتشب هاينز", "unit": "10kg gal", "maxLimit": 1, "step": 1, "AVE": 429.0945},
