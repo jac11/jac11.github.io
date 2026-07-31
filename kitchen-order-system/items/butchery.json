@@ -23,6 +23,7 @@
   {"code": "131008", "name": "Fish Fillet Seabass", "name_ar": "فيليه سمك القاروص", "unit": "kg", "maxLimit": 40, "step": 0.5, "AVE": 433.437},
   {"code": "161153", "name": "Garlic Powder (PURE)", "name_ar": "ثوم بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 166.6},
   {"code": "161154", "name": "Ginger Powder (PURE)", "name_ar": "زنجبيل بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 323.4},
+  {"code": "167047", "name": "Mustard Dijon Jar 350 Gram clovis", "name_ar": "موسترد ديجون كلوفيس 350 جرام", "unit": "Jar 350 Gram", "maxLimit": 2, "step": 1, "AVE": 168.63},
   {"code": "132044", "name": "Mussels Whole Shell (Al Jazira)", "name_ar": "بلح البحر", "unit": "kg", "maxLimit": 3, "step": 1, "AVE": 273.57706},
   {"code": "161051", "name": "Nutmeg Whole", "name_ar": "جوزة الطيب كاملة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 931},
   {"code": "163005", "name": "Oil Corn", "name_ar": "زيت ذرة", "unit": "L", "maxLimit": 6, "step": 1, "AVE": 79.81302},
