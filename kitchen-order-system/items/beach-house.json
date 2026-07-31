@@ -97,7 +97,6 @@
   {"code": "152003", "name": "Milk Full Cream Juhayna", "name_ar": "لبن كامل الدسم جهينة", "unit": "L", "maxLimit": 10, "step": 1, "AVE": 40.5749},
   {"code": "163152", "name": "Mix Pickles Wadi Food", "name_ar": "مخلل مشكل وادي فود", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 43.75888},
   {"code": "132044", "name": "Mussels Whole Shell (Al Jazira)", "name_ar": "بلح البحر", "unit": "kg", "maxLimit": 3, "step": 1, "AVE": 273.57706},
-  {"code": "167006", "name": "Mustard Dijon", "name_ar": "موسترد ديجون", "unit": "370g jar", "maxLimit": 2, "step": 1, "AVE": 127.53333},
   {"code": "167047", "name": "Mustard Dijon Jar 350 Gram clovis", "name_ar": "موسترد ديجون كلوفيس 350 جرام", "unit": "Jar 350 Gram", "maxLimit": 2, "step": 1, "AVE": 168.63},
   {"code": "167024", "name": "Mustard Portion", "name_ar": "موسترد قطعة", "unit": "98pc box", "maxLimit": 3, "step": 1, "AVE": 2450},
   {"code": "163005", "name": "Oil Corn", "name_ar": "زيت ذرة", "unit": "L", "maxLimit": 6, "step": 1, "AVE": 79.81302},
