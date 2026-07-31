@@ -55,7 +55,6 @@
   {"code": "166007", "name": "Fava Beans Crushed Dry", "name_ar": "فول مدمس يابس", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 49},
   {"code": "131008", "name": "Fish Fillet Seabass", "name_ar": "فيليه سمك القاروص", "unit": "kg", "maxLimit": 40, "step": 0.5, "AVE": 433.437},
   {"code": "175306", "name": "Flour Tamboura KG Uncle Barns", "name_ar": "دقيق تمبورا أنكل بارنز", "unit": "Kilogram", "maxLimit": 6, "step": 1, "AVE": 131.58},
-  {"code": "175036", "name": "Flour Tempura", "name_ar": "دقيق تمبورا", "unit": "kg", "maxLimit": 6, "step": 1, "AVE": 118.32954},
   {"code": "166038", "name": "Freek (PURE)", "name_ar": "فريك (نقي)", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 75},
   {"code": "142006", "name": "French Fried Allumettes", "name_ar": "بطاطس فرنش فرايد ألوميت", "unit": "12.5kg box", "maxLimit": 2, "step": 1, "AVE": 675.15},
   {"code": "164002", "name": "Glass Noodles", "name_ar": "نودلز زجاجية", "unit": "250g pkt", "maxLimit": 3, "step": 1, "AVE": 38.02816},
