@@ -12,6 +12,7 @@
   {"code": "161096", "name": "Black Seeds", "name_ar": "حبة البركة", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 176.4},
   {"code": "166002", "name": "Black Lentil", "name_ar": "عدس أسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 68.6},
   {"code": "161008", "name": "Black Sesame Seeds", "name_ar": "سمسم أسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 550},
+  {"code": "161138", "name": "Black Pepper Powder (PURE)", "name_ar": "فلفل أسود بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 1, "AVE": 540},
   {"code": "175307", "name": "Bread Crumb Imported KG Uncle Barns", "name_ar": "بقسماط مستورد أنكل بارنز", "unit": "Kilogram", "maxLimit": 4, "step": 1, "AVE": 182.7},
   {"code": "175248", "name": "Bread Crumb Imported Coarse", "name_ar": "بقسماط خشن مستورد", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 149.76413},
   {"code": "142003", "name": "Broccoli Frozen", "name_ar": "بروكلي مجمد", "unit": "7.5kg box", "maxLimit": 1, "step": 1, "AVE": 374.00003},
