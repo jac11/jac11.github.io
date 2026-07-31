@@ -6,7 +6,7 @@
   {"code": "113018", "name": "Beef Salami Air Dried Whole", "name_ar": "سلامي لحم مجفف هواء كامل", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 352},
   {"code": "113020", "name": "Beef Sausages Taste Pure", "name_ar": "سجق لحم تيست بيور", "unit": "Kilogram", "maxLimit": 8, "step": 1, "AVE": 232.2},
   {"code": "113079", "name": "Beef Smoked Pressed Choice", "name_ar": "لحم مدخن مضغوط شويس", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 332.64},
-  {"code": "161137", "name": "Black Pepper Corn (PURE)", "name_ar": "فلفل أسود حب (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 525},
+  {"code": "161137", "name": "Black Pepper Corn (PURE)", "name_ar": "فلفل أسود حب (نقي)", "unit": "kg", "maxLimit": 1, "step": 1, "AVE": 525},
   {"code": "161008", "name": "Black Sesame Seeds", "name_ar": "سمسم أسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 550},
   {"code": "166034", "name": "Borgoul Seeds (PURE)", "name_ar": "برغل (نقي)", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 34.3},
   {"code": "175307", "name": "Bread Crumb Imported KG Uncle Barns", "name_ar": "بقسماط مستورد أنكل بارنز", "unit": "Kilogram", "maxLimit": 4, "step": 0.5, "AVE": 182.7},
