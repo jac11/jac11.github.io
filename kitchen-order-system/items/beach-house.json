@@ -115,7 +115,7 @@
   {"code": "163234", "name": "Pickles Cucumber 350 Grm Shampero", "name_ar": "خيار مخلل شامبيرو 350 جرام", "unit": "Jar 350 Gram", "maxLimit": 6, "step": 1, "AVE": 100.8},
   {"code": "163090", "name": "Pickles Cucumber", "name_ar": "خيار مخلل", "unit": "300g jar", "maxLimit": 6, "step": 1, "AVE": 78.37691},
   {"code": "163211", "name": "Pickles Cucumber", "name_ar": "خيار مخلل", "unit": "350g jar", "maxLimit": 6, "step": 1, "AVE": 88},
-  {"code": "163236", "name": "Pickles Ginger 1.5 Kg Zumra", "name_ar": "زنجبيل مخلل زمرة 1.5 كجم", "unit": "Pkt 1.5 KG", "maxLimit": 3, "step": 1, "AVE": 140.0},
+  {"code": "163236", "name": "Pickles Ginger 1.5 Kg Zumra", "name_ar": "زنجبيل مخلل زمرة 1.5 كجم", "unit": "Pkt 1.5 KG", "maxLimit": 3, "step": 1.5, "AVE": 140.0},
   {"code": "163089", "name": "Pickles Green Olives Seedless", "name_ar": "زيتون أخضر منزوع البذر", "unit": "650g jar", "maxLimit": 3, "step": 1, "AVE": 113.85727},
   {"code": "163031", "name": "Pickles Jalapeno Wadi Food", "name_ar": "هالابينو مخلل وادي فود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 48.64024},
   {"code": "163106", "name": "Pickles Onion", "name_ar": "بصل مخلل", "unit": "350g jar", "maxLimit": 6, "step": 1, "AVE": 106.97988},
