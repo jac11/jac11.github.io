@@ -122,7 +122,7 @@
   {"code": "160028", "name": "Sweet Corn", "name_ar": "ذرة حلوة", "unit": "425g tin", "maxLimit": 12, "step": 1, "AVE": 26.5},
   {"code": "163100", "name": "Tahina Jar El Rashidi", "name_ar": "طحينة الرشيدي", "unit": "460g jar", "maxLimit": 6, "step": 1, "AVE": 102.50665},
   {"code": "191025", "name": "Tamarindus Powder (Helw Zaman) KG", "name_ar": "تمر هندي حلوان زمان", "unit": "Kilogram", "maxLimit": 3, "step": 0.5, "AVE": 78.0},
-  {"code": "160079", "name": "Tomato Paste Wadi Food", "name_ar": "صلصة طماطم وادي فود", "unit": "3kg tin", "maxLimit": 3, "AVE": 142.05624},129.38601},
+  {"code": "160079", "name": "Tomato Paste Wadi Food", "name_ar": "صلصة طماطم وادي فود", "unit": "3kg tin", "maxLimit": 3, "AVE": 142.05624},
   {"code": "160086", "name": "Tomato Peeled", "name_ar": "طماطم مقشرة", "unit": "2.55kg tin", "maxLimit": 6, "step": 1, "AVE": 165.43757},
   {"code": "161075", "name": "Turmeric Powder", "name_ar": "كركم", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 207.43333},
   {"code": "167014", "name": "Vinegar Apple", "name_ar": "خل تفاح", "unit": "500ml bottle", "maxLimit": 2, "step": 1, "AVE": 37.49921},
