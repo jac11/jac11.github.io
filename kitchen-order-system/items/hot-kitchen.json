@@ -11,6 +11,7 @@
   {"code": "151038", "name": "Butter New Zealand Fontera Block", "name_ar": "زبدة نيوزيلندا فونتيرا", "unit": "25kg box", "maxLimit": 1, "step": 1, "AVE": 14500},
   {"code": "161009", "name": "Cajun Seasoning Pkt 2 KG", "name_ar": "بهارات كاجون 2 كجم", "unit": "Pkt 2 KG", "maxLimit": 1, "step": 1, "AVE": 2737.35},
   {"code": "175291", "name": "Carbonates KG (PURE)", "name_ar": "كربونات (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 53.9},
+  {"code": "161030", "name": "Cumin Powder", "name_ar": "مسحوق كمون", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 445.9},
   {"code": "153001", "name": "Cheese Brie Pkt 200 Grm Farm Cheese", "name_ar": "جبنة بري 200 جرام", "unit": "200g pkt", "maxLimit": 6, "step": 1, "AVE": 62.75},
   {"code": "153004", "name": "Cheese Cheddar Yellow Block", "name_ar": "جبنة شيدر صفراء", "unit": "kg", "maxLimit": 5, "step": 5, "AVE": 366.22317},
   {"code": "153046", "name": "Cheese Grana Padano 1/4 Wheel", "name_ar": "جبنة جرانا بادانو ربع عجلة", "unit": "kg", "maxLimit": 4.5, "step": 4.5, "AVE": 924.18232},
