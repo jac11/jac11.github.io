@@ -54,6 +54,7 @@
   {"code": "164148", "name": "Rice Basmati Nahrien", "name_ar": "أرز بسمتي نهرين", "unit": "Kilogram", "maxLimit": 10, "step": 1, "AVE": 82.0},
   {"code": "164091", "name": "Rice Paper", "name_ar": "ورق أرز", "unit": "400g pkt", "maxLimit": 6, "step": 1, "AVE": 161.85898},
   {"code": "164122", "name": "Rice Paper 340 Gram", "name_ar": "ورق أرز 340 جرام", "unit": "Pkt 340 Gram", "maxLimit": 4, "step": 1, "AVE": 170.0},
+  {"code": "152017", "name": "Rich Cream Juhayna Cooking", "name_ar": "كريمة طبخ جهينة", "unit": "L", "maxLimit": 8, "step": 1, "AVE": 173.09748},
   {"code": "164143", "name": "Rice White Local (El Badr)", "name_ar": "أرز أبيض محلي (البدر)", "unit": "25kg sac", "maxLimit": 2, "step": 1, "AVE": 750},
   {"code": "131055", "name": "Salmon Whole Side Fillet Skin On Maxim", "name_ar": "فيليه سلمون كامل بالجلد ماكسيم", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 830},
   {"code": "161078", "name": "Salt Himalayan", "name_ar": "ملح هملايا", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 61.36905},
