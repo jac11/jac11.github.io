@@ -14,7 +14,7 @@
   {"code": "153038", "name": "Cheese White Gallon", "name_ar": "جبنة بيضاء جالون", "unit": "10kg gal", "maxLimit": 1, "step": 1, "AVE": 700.0522},
   {"code": "161030", "name": "Cumin Powder", "name_ar": "مسحوق كمون", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 445.9},
   {"code": "142016", "name": "Peas Frozen Americana", "name_ar": "بازلاء مجمدة أمريكانا", "unit": "10kg box", "maxLimit": 1, "step": 0.5, "AVE": 850},
-  {"code": "160103", "name": "Tomato Paste Faragello 3 Kg", "name_ar": "معجون طماطم فاراجيلو 3 كجم", "unit": "Tin 3 KG", "maxLimit": 3, "step": 1, "AVE": 129.38601},
+ {"code": "160079", "name": "Tomato Paste Wadi Food", "name_ar": "صلصة طماطم وادي فود", "unit": "3kg tin", "maxLimit": 3, "AVE": 142.05624},
   {"code": "177068", "name": "Honey Black El Rashedy", "name_ar": "عسل أسود الرشيدي", "unit": "650g jar", "maxLimit": 5, "step": 1, "AVE": 42.45296},
   {"code": "151005", "name": "Butter Fern", "name_ar": "زبدة فيرن", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 147.69841},
   {"code": "153036", "name": "Cheese Smoked Farm Cheese", "name_ar": "جبنة مدخنة", "unit": "kg", "maxLimit": 4.5, "step": 4.5, "AVE": 344.75},
