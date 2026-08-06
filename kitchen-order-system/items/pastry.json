@@ -98,7 +98,7 @@
   {"code": "172049", "name": "Fruffi Mango Filling", "name_ar": "حشو مانجو فروفي", "unit": "3.3kg tin", "maxLimit": 2, "step": 1, "AVE": 833.32999},
   {"code": "172103", "name": "Raspberry Filling 70%", "name_ar": "حشو توت أحمر 70%", "unit": "3kg tin", "maxLimit": 2, "step": 1, "AVE": 1128},
   {"code": "172081", "name": "Raspberry Filling Osterberg", "name_ar": "حشو توت أحمر أوستربيرج", "unit": "3kg tin", "maxLimit": 2, "step": 1, "AVE": 1132.11666},
-  {"code": "172002", "name": "Dates Majdoul", "name_ar": "تمر مجدول", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 160},
+  {"code": "172100", "name": "Dates Majdoul Abu Auf", "name_ar": "تمر مجدول أبو عوف", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 160},
   {"code": "172066", "name": "Dried Banana Slice", "name_ar": "موز مجفف شرائح", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 700},
   {"code": "172096", "name": "Dry Fig", "name_ar": "تين مجفف", "unit": "300g pkt", "maxLimit": 6, "step": 1, "AVE": 127.193},
   {"code": "172023", "name": "Dry Plums", "name_ar": "برقوق مجفف", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 229.31122},
