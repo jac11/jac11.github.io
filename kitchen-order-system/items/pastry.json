@@ -45,7 +45,6 @@
   {"code": "161096", "name": "Black Seeds", "name_ar": "حبة البركة", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 176.4},
   {"code": "161008", "name": "Black Sesame Seeds", "name_ar": "سمسم أسود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 550},
   {"code": "161011", "name": "Cardamom Seeds", "name_ar": "حب الهال", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 1960},
-  {"code": "161015", "name": "Chia Seeds", "name_ar": "بذور الشيا", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 225},
   {"code": "161019", "name": "Chili Powder", "name_ar": "مسحوق شطة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 117.6},
   {"code": "161024", "name": "Cinnamon Powder", "name_ar": "مسحوق قرفة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 254.8},
   {"code": "161026", "name": "Cinnamon Sticks", "name_ar": "أعواد قرفة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 401.8},
