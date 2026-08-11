@@ -7,6 +7,7 @@
   {"code": "161138", "name": "Black Pepper Powder (PURE)", "name_ar": "فلفل أسود بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 1, "AVE": 540},  
   {"code": "175307", "name": "Bread Crumb Imported KG Uncle Barns", "name_ar": "بقسماط مستورد أنكل بارنز", "unit": "Kilogram", "maxLimit": 4, "step": 0.5, "AVE": 182.7},
   {"code": "142003", "name": "Broccoli Frozen", "name_ar": "بروكلي مجمد", "unit": "7.5kg box", "maxLimit": 1, "step": 0.5, "AVE": 374.00003},
+  {"code": "166002", "name": "Black Lentil", "name_ar": "عدس أسود", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 68.6},
   {"code": "110073", "name": "Burger Vegan Classic Yumazing Box 5 KG", "name_ar": "برجر نباتي كلاسيك يوميزينج", "unit": "Box 5 Kg", "maxLimit": 1, "step": 1, "AVE": 2263},
   {"code": "151038", "name": "Butter New Zealand Fontera Block", "name_ar": "زبدة نيوزيلندا فونتيرا", "unit": "25kg box", "maxLimit": 1, "step": 1, "AVE": 14500},
   {"code": "161009", "name": "Cajun Seasoning Pkt 2 KG", "name_ar": "بهارات كاجون 2 كجم", "unit": "Pkt 2 KG", "maxLimit": 1, "step": 1, "AVE": 2737.35},
