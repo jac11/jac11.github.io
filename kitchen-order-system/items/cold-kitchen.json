@@ -148,7 +148,6 @@
   {"code": "113034", "name": "Spring Roll With Vegetables", "name_ar": "سبرينج رول", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 124.6875},
   {"code": "161071", "name": "Star Anis Seeds", "name_ar": "ينسون نجمي", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 862.4},
   {"code": "161166", "name": "Sumacs Powder(PURE) KG", "name_ar": "سماق بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 285},
-  {"code": "160027", "name": "Sweet Corn", "name_ar": "ذرة حلوة", "unit": "400g tin", "maxLimit": 12, "step": 1, "AVE": 26.14861},
   {"code": "160028", "name": "Sweet Corn", "name_ar": "ذرة حلوة", "unit": "425g tin", "maxLimit": 12, "step": 1, "AVE": 26.5},
   {"code": "170018", "name": "Sweet Flakes Temmyes", "name_ar": "سويت فليكس تيميز", "unit": "250g pkt", "maxLimit": 6, "step": 1, "AVE": 45.07059},
   {"code": "163100", "name": "Tahina Jar El Rashidi", "name_ar": "طحينة الرشيدي", "unit": "460g jar", "maxLimit": 6, "step": 1, "AVE": 102.50665},
