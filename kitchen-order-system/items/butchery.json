@@ -2,7 +2,7 @@
   {"code": "112010", "name": "Lamb FORE shin Australian", "name_ar": "لحم خروف فور شين أسترالي", "unit": "Kilogram", "maxLimit": 4, "step": 0.5, "AVE": 630.0},
   {"code": "112006", "name": "Lamb Rack Australian", "name_ar": "لحم خروف راك أسترالي", "unit": "Kilogram", "maxLimit": 4, "step": 0.5, "AVE": 1100.0},
   {"code": "112007", "name": "Lamb Rack Standard", "name_ar": "راك خروف", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 1154.75491},
-  {"code": "112009", "name": "Lamb Shank Australian", "name_ar": "شنك خروف أسترالي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 573.64334},
+  {"code": "112010", "name": "Lamb Shank Australian", "name_ar": "شنك خروف أسترالي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 573.64334},
   {"code": "113003", "name": "Beef Bacon Smoked Whole", "name_ar": "بيف بيكون كامل سليم", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 448.8},
   {"code": "113111", "name": "Beef Bacon Smoked Sliced Taste Pure", "name_ar": "بيكون لحم مدخن شرائح تيست بيور", "unit": "500g pkt", "maxLimit": 5, "step": 1, "AVE": 270.9},
   {"code": "110158", "name": "Beef Fillet Brazil(Minirva)", "name_ar": "فيليه لحم بقري برازيلي (مينيرفا)", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 850},
