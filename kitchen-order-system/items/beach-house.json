@@ -155,7 +155,6 @@
   {"code": "178012", "name": "Sugar Diet Without Logo 1000 Pic", "name_ar": "سكر دايت بدون شعار 1000 قطعة", "unit": "Pkt 1000 Bag", "maxLimit": 2, "step": 1, "AVE": 290.44},
   {"code": "178020", "name": "Sugar White Portion Packet Without Logo Kg", "name_ar": "سكر أبيض قطعة بدون شعار", "unit": "Pkt 200 Bag", "maxLimit": 4, "step": 1, "AVE": 40.018},
   {"code": "161166", "name": "Sumacs Powder(PURE) KG", "name_ar": "سماق بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 285},
-  {"code": "160027", "name": "Sweet Corn", "name_ar": "ذرة حلوة", "unit": "400g tin", "maxLimit": 12, "step": 1, "AVE": 26.14861},
   {"code": "160028", "name": "Sweet Corn", "name_ar": "ذرة حلوة", "unit": "425g tin", "maxLimit": 12, "step": 1, "AVE": 26.5},
   {"code": "175020", "name": "Taco Shell Corn", "name_ar": "تاكو شل ذرة", "unit": "pkt", "maxLimit": 6, "step": 1, "AVE": 57.750},
   {"code": "163100", "name": "Tahina Jar El Rashidi", "name_ar": "طحينة الرشيدي", "unit": "460g jar", "maxLimit": 6, "step": 1, "AVE": 102.50665},
