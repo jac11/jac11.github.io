@@ -99,7 +99,7 @@
   {"code": "172081", "name": "Raspberry Filling Osterberg", "name_ar": "حشو توت أحمر أوستربيرج", "unit": "3kg tin", "maxLimit": 2, "step": 1, "AVE": 1132.11666},
   {"code": "172100", "name": "Dates Majdoul Abu Auf", "name_ar": "تمر مجدول أبو عوف", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 160},
   {"code": "172066", "name": "Dried Banana Slice", "name_ar": "موز مجفف شرائح", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 700},
-  {"code": "172096", "name": "Dry Fig", "name_ar": "تين مجفف", "unit": "300g pkt", "maxLimit": 6, "step": 1, "AVE": 127.193},
+  {"code": "172021", "name": "Dry Fig", "name_ar": "تين مجفف", "unit": "300g pkt", "maxLimit": 6, "step": 1, "AVE": 127.193},
   {"code": "172023", "name": "Dry Plums", "name_ar": "برقوق مجفف", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 229.31122},
   {"code": "173003", "name": "Cream Chantey Non Sugar", "name_ar": "كريم شانتي بدون سكر", "unit": "10kg sac", "maxLimit": 2, "step": 1, "AVE": 2080},
   {"code": "173006", "name": "Cream Patisserie", "name_ar": "كريم باتيسري", "unit": "10kg sac", "maxLimit": 2, "step": 1, "AVE": 1511.452},
