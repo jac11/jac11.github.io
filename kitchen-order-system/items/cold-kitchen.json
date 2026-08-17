@@ -56,7 +56,7 @@
   {"code": "161030", "name": "Cumin Powder", "name_ar": "مسحوق كمون", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 445.9},
   {"code": "161150", "name": "Cumin Whole Seed (PURE)", "name_ar": "كمون حب (نقي)", "unit": "Kilogram", "maxLimit": 2, "step": 0.5, "AVE": 450.0},
   {"code": "172066", "name": "Dried Banana Slice", "name_ar": "موز مجفف شرائح", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 700},
-  {"code": "172096", "name": "Dry Fig", "name_ar": "تين مجفف", "unit": "300g pkt", "maxLimit": 6, "step": 1, "AVE": 127.193},
+  {"code": "172021", "name": "Dry Fig", "name_ar": "تين مجفف", "unit": "300g pkt", "maxLimit": 6, "step": 1, "AVE": 127.193},
   {"code": "172023", "name": "Dry Plums", "name_ar": "برقوق مجفف", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 229.31122},
   {"code": "176011", "name": "Dry Raisins", "name_ar": "زبيب مجفف", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 192.73391},
   {"code": "175306", "name": "Flour Tamboura KG Uncle Barns", "name_ar": "دقيق تمبورا أنكل بارنز", "unit": "Kilogram", "maxLimit": 6, "step": 1, "AVE": 131.58},
