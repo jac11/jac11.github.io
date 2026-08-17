@@ -166,5 +166,6 @@
   {"code": "167023", "name": "Vinegar Balsamic", "name_ar": "خل بلسميك", "unit": "500ml bottle", "maxLimit": 2, "step": 1, "AVE": 67.27273},
   {"code": "167017", "name": "Vinegar Heinz White", "name_ar": "خل أبيض هاينز", "unit": "L", "maxLimit": 3, "step": 1, "AVE": 16.29254},
   {"code": "167018", "name": "Vinegar Red Grape", "name_ar": "خل عنب أحمر", "unit": "500ml bottle", "maxLimit": 2, "step": 1, "AVE": 43.69386},
+  {"code": "", "name": "Lamb Rack French Cut (Australian)", "name_ar": "لام راك خروف فرنسي (أسترالي)", "unit": "Kilogram", "maxLimit": 0, "step": 1, "AVE": 1850.00},
   {"code": "176025", "name": "Walnuts", "name_ar": "عين جمل", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 517.65577}
 ]
