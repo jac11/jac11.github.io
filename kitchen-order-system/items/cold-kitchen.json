@@ -140,7 +140,6 @@
   {"code": "163209", "name": "Sauce Fish 625 Ml", "name_ar": "صوص سمك 625 مل", "unit": "Bottle 625 ML", "maxLimit": 2, "step": 1, "AVE": 78.0},
   {"code": "163223", "name": "Sauce Oyster Heinz 500 Ml", "name_ar": "صوص محار هاينز 500 مل", "unit": "Bottle 500 ML", "maxLimit": 2, "step": 1, "AVE": 100.0},
   {"code": "163169", "name": "Sauce Sriracha Hot Chili", "name_ar": "صوص سريراتشا حار", "unit": "740g jar", "maxLimit": 2, "step": 1, "AVE": 95.65217},
-  {"code": "163074", "name": "Sauce Sweet Chilli Bott 750 Ml", "name_ar": "صوص شلي حلو 750 مل", "unit": "Bottle 750 ML", "maxLimit": 2, "step": 1, "AVE": 73.0},
   {"code": "163171", "name": "Sauce Sweet Chilli Bott 850 Ml", "name_ar": "صوص شلي حلو 850 مل", "unit": "Bottle 830 Ml", "maxLimit": 2, "step": 1, "AVE": 73.0},
   {"code": "163079", "name": "Sauce Worcestershire", "name_ar": "صوص وورشستر", "unit": "500ml bottle", "maxLimit": 2, "step": 1, "AVE": 78.947},
   {"code": "166040", "name": "Sesame Seeds (PURE)", "name_ar": "سمسم (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 200},
