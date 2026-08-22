@@ -1,3 +1,4 @@
  {"code": "120055", "name": "Chicken Waede Food", "name_ar": "دجاج ويد فود", "unit": "kg", "maxLimit": 42, "step": 0.5, "AVE": 160},
-
+  {"code": "163090", "name": "Pickles Cucumber", "name_ar": "حيار مخلل برطمان 300 جرام", "unit": "300g jar", "maxLimit": 6, "step": 1, "AVE": 78.37691},
+  {"code": "163211", "name": "Pickles Cucumber", "name_ar": "حيار مخلل برطمان 350 جرام", "unit": "350g jar", "maxLimit": 6, "step": 1, "AVE": 88},
 {"code": "110148", "name": "Beef Rib Eye USA", "name_ar": "ريب آي لحم روسي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 1950},
