@@ -37,7 +37,7 @@
   {"code": "153055", "name": "Cheese White Gallon Tin 12 Kg", "name_ar": "جبنة بيضاء جالون 12 كجم", "unit": "12kg gal", "maxLimit": 1, "step": 1, "AVE": 948},
   {"code": "161016", "name": "Chia Seeds Pkt ABU AUF 400 Gram", "name_ar": "بذور شيا أبو عوف 400 جرام", "unit": "Pkt 400 Gram", "maxLimit": 6, "step": 1, "AVE": 125.0},
   {"code": "113042", "name": "Chicken Cold Cut Egyswiss", "name_ar": "سجق بارد دجاج إيجي سويس", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 184.8},
-  {"code": "166035", "name": "Chick Peas Dry (PURE)", "name_ar": "حمص يابس (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 156.8},
+  {"code": "166035", "name": "Chick Peas Dry (PURE)", "name_ar": "حمص يابس (نقي)", "unit": "kg", "maxLimit": 10, "step": 0.5, "AVE": 156.8},
   {"code": "161141", "name": "Chilli Powder (PURE)", "name_ar": "مسحوق شطة (نقي)", "unit": "Kilogram", "maxLimit": 1, "step": 0.5, "AVE": 150.0},
   {"code": "165086", "name": "Chipsy Pringels 40 Gr Temmys", "name_ar": "تشيبسي برينجلز تيميز 40 جرام", "unit": "Each", "maxLimit": 12, "step": 1, "AVE": 41.67},
   {"code": "170003", "name": "Choco Pops Flakes Temmys", "name_ar": "شوكو بوبس فليكس تيميز", "unit": "250g pkt", "maxLimit": 6, "step": 1, "AVE": 45.71},
