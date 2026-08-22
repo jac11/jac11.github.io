@@ -85,8 +85,6 @@
   {"code": "161092", "name": "Paprika Smoked Powder", "name_ar": "بابريكا مدخنة", "unit": "500g pkt", "maxLimit": 1, "step": 1, "AVE": 122.5},
   {"code": "163211", "name": "Pickles Cucumber", "name_ar": "خيار مخلل", "unit": "350g jar", "maxLimit": 6, "step": 1, "AVE": 88},
   {"code": "163234", "name": "Pickles Cucumber 350 Grm Shampero", "name_ar": "خيار مخلل شامبيرو 350 جرام", "unit": "Jar 350 Gram", "maxLimit": 6, "step": 1, "AVE": 100.8},
-  {"code": "163089", "name": "Pickles Green Olives Seedless", "name_ar": "زيتون أخضر منزوع البذر", "unit": "650g jar", "maxLimit": 3, "step": 1, "AVE": 113.85727},
-  {"code": "163031", "name": "Pickles Jalapeno Wadi Food", "name_ar": "هالابينو مخلل وادي فود", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 48.64024},
   {"code": "163125", "name": "Picklesline Kalamata Wadi Food Jar 1 KG", "name_ar": "زيتون كالاماتا وادي فود 1 كجم", "unit": "Jar 1 KG", "maxLimit": 2, "step": 1, "AVE": 165.72},
   {"code": "176021", "name": "Pine Nut", "name_ar": "صنوبر", "unit": "500g pkt", "maxLimit": 4, "step": 1, "AVE": 1675},
   {"code": "176036", "name": "Pistachio Powder", "name_ar": "بودرة فستق", "unit": "500g pkt", "maxLimit": 3, "step": 1, "AVE": 881.82545},
