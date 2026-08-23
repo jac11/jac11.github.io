@@ -40,7 +40,6 @@
   {"code": "120047", "name": "Chicken Breast Size 4-5", "name_ar": "صدر دجاج مقاس 4-5", "unit": "kg", "maxLimit": 15, "step": 0.5, "AVE": 221.75556},
   {"code": "162002", "name": "Chicken Stock Knorr", "name_ar": "مرق دجاج كنور", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 178.28444},
   {"code": "120017", "name": "Chicken Whole 1100 Gr Brazil", "name_ar": "دجاج كامل 1100 جرام برازيلي", "unit": "kg", "maxLimit": 40, "step": 0.5, "AVE": 157.79083},
-  {"code": "161019", "name": "Chili Powder", "name_ar": "مسحوق شطة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 117.6},
   {"code": "161141", "name": "Chilli Powder (PURE)", "name_ar": "مسحوق شطة (نقي)", "unit": "Kilogram", "maxLimit": 1, "step": 0.5, "AVE": 150.0},
   {"code": "161142", "name": "Chilli Whole Red Indian (PURE)", "name_ar": "شطة حمراء كاملة هندي (نقي)", "unit": "Kilogram", "maxLimit": 1, "step": 0.5, "AVE": 176.0},
   {"code": "170032", "name": "Choco Pops Gluten Free", "name_ar": "شوكو بوبس خالي من الجلوتين", "unit": "250g pkt", "maxLimit": 6, "step": 1, "AVE": 78},
