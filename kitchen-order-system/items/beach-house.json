@@ -5,6 +5,7 @@
   {"code": "160001", "name": "Anchovies Small Tin", "name_ar": "أنشوجة صغيرة", "unit": "50g pkt", "maxLimit": 6, "step": 1, "AVE": 65.28066},
   {"code": "175127", "name": "Baking Powder Dreem", "name_ar": "بيكنج بودر دريم", "unit": "50 bags", "maxLimit": 1, "step": 1, "AVE": 95.029},
   {"code": "142002", "name": "Beans Frozen Americana", "name_ar": "فاصوليا مجمدة أمريكانا", "unit": "10kg box", "maxLimit": 2, "step": 1, "AVE": 297.5},
+  {"code": "113085", "name": "Beef Bacon Smoked Sliced Choice", "name_ar": "بيكون لحم مدخن شرائح شويس", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 492.8},
   {"code": "110152", "name": "Beef Rib Eye Australian", "name_ar": "ريب آي لحم استرالي", "unit": "kg", "maxLimit": 8, "step": 0.5, "AVE": 2850},
   {"code": "110046", "name": "beef tenderloin USA", "name_ar": "بيف تندرليون امريكي", "unit": "kg", "maxLimit": 8, "step": 1, "AVE": 2495},
   {"code": "110028", "name": "Beef Shoulder Brazil", "name_ar": "كتف لحم برازيلي", "unit": "kg", "maxLimit": 20, "step": 0.5, "AVE": 278.89508},
