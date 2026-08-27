@@ -81,7 +81,6 @@
   {"code": "131081", "name": "Tuna Saku", "name_ar": "تونة ساكو", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 751.6129},
   {"code": "167032", "name": "Vinegar Rice", "name_ar": "خل أرز", "unit": "20L gal", "maxLimit": 1, "step": 1, "AVE": 3150},
   {"code": "162035", "name": "Wakami", "name_ar": "واكامي", "unit": "500g pkt", "maxLimit": 2, "step": 1, "AVE": 600},
-  {"code": "161076", "name": "Wasabi Powder", "name_ar": "بودرة واسابي", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 338.33333},
   {"code": "161170", "name": "Wasabi Powder KG Zumra", "name_ar": "مسحوق واصابي زمرة", "unit": "Kilogram", "maxLimit": 1, "step": 0.5, "AVE": 335.0},
   {"code": "161163", "name": "White Pepper Powder (PURE)", "name_ar": "فلفل أبيض بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 872.2},
   {"code": "160095", "name": "Yakisushi Nori Zumra", "name_ar": "نوري سومرا", "unit": "50 sheets", "maxLimit": 5, "step": 1, "AVE": 308.8295}
