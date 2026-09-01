@@ -1,6 +1,5 @@
 [
   {"code": "171189", "name": "Chocolate Milk 36 % Van Meester Belgum Drops", "name_ar": "شوكولاتة حليب 36% فان ميستر بلجيكي", "unit": "Kilogram", "maxLimit": 5, "step": 5, "AVE": 515.0},
-  {"code": "171190", "name": "Chocolate Dark 56 % Van Meester Belgum Drops", "name_ar": "شوكولاتة داكنة 56% فان ميستر بلجيكي", "unit": "Kilogram", "maxLimit": 5, "step": 5, "AVE": 546.0},
   {"code": "177001", "name": "Glucose Honey Gallon 20 Kg", "name_ar": "جلوكوز عسل جالون 20 كجم", "unit": "Gallon 20 KG", "maxLimit": 2, "step": 1, "AVE": 916.725},
   {"code": "176051", "name": "Pistachio Spread KG", "name_ar": "فسدق اسبريد", "unit": "kg", "maxLimit": 2, "step": 1, "AVE": 712.5},
   {"code": "175292", "name": "Semolina Powder Local (EL Gamal)", "name_ar": "دقيق سمولاينا الجمل", "unit": "kg", "maxLimit": 50, "step": 50, "AVE": 33},
