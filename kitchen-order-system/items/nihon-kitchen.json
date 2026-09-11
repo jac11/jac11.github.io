@@ -45,6 +45,7 @@
   {"code": "163006", "name": "Oil Fried Mix", "name_ar": "زيت قلي", "unit": "L", "maxLimit": 18, "step": 1, "AVE": 65.49429},
   {"code": "163227", "name": "Oil Sesame", "name_ar": "زيت سمسم", "unit": "500ml bottle", "maxLimit": 2, "step": 1, "AVE": 275},
   {"code": "163013", "name": "Oil Truffle", "name_ar": "زيت كمأة", "unit": "250ml bottle", "maxLimit": 1, "step": 1, "AVE": 552.62468},
+  {"code": "163008", "name": "Oil Olive", "name_ar": "زيت زيتون", "unit": "L", "maxLimit": 2, "step": 1, "AVE": 583.28242},
   {"code": "151018", "name": "Peanut Butter", "name_ar": "زبدة الفول السوداني", "unit": "300g jar", "maxLimit": 3, "step": 1, "AVE": 87.44643},
   {"code": "176018", "name": "Peanuts For Pastry", "name_ar": "فول سوداني للحلويات", "unit": "500g pkt", "maxLimit": 8, "step": 1, "AVE": 80},
   {"code": "142016", "name": "Peas Frozen Americana", "name_ar": "بازلاء مجمدة أمريكانا", "unit": "10kg box", "maxLimit": 1, "step": 1, "AVE": 850},
