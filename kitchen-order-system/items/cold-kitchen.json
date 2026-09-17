@@ -53,7 +53,7 @@
   {"code": "170031", "name": "Corn Flakes Plain Gluten Free", "name_ar": "كورن فليكس خالي من الجلوتين", "unit": "250g pkt", "maxLimit": 8, "step": 1, "AVE": 90},
   {"code": "170007", "name": "Corn Flakes Plain Temmyes", "name_ar": "كورن فليكس تيميز", "unit": "250g pkt", "maxLimit": 6, "step": 1, "AVE": 39.71202},
   {"code": "131002", "name": "Crab Steaks", "name_ar": "كابوريا فينجر", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 120},
-  {"code": "161030", "name": "Cumin Powder", "name_ar": "مسحوق كمون", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 445.9},
+ {"code": "161149", "name": "Cumin Powder (PURE) ", "name_ar": "مسحوق كمون بيور ", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 445.9},
   {"code": "161150", "name": "Cumin Whole Seed (PURE)", "name_ar": "كمون حب (نقي)", "unit": "Kilogram", "maxLimit": 2, "step": 0.5, "AVE": 450.0},
   {"code": "172066", "name": "Dried Banana Slice", "name_ar": "موز مجفف شرائح", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 700},
   {"code": "172021", "name": "Dry Fig", "name_ar": "تين مجفف", "unit": "300g pkt", "maxLimit": 6, "step": 1, "AVE": 127.193},
