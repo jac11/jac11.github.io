@@ -48,7 +48,7 @@
   {"code": "161024", "name": "Cinnamon Powder", "name_ar": "مسحوق قرفة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 254.8},
   {"code": "161026", "name": "Cinnamon Sticks", "name_ar": "أعواد قرفة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 401.8},
   {"code": "161027", "name": "Cloves Seeds", "name_ar": "حب قرنفل", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 1078},
-  {"code": "161030", "name": "Cumin Powder", "name_ar": "مسحوق كمون", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 445.9},
+  {"code": "161149", "name": "Cumin Powder (PURE) ", "name_ar": "مسحوق كمون بيور ", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 445.9},
   {"code": "161031", "name": "Cumin Whole Seed", "name_ar": "كمون حب", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 441},
   {"code": "161049", "name": "Kharoub Powder", "name_ar": "مسحوق خروب", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 186.2},
   {"code": "161051", "name": "Nutmeg Whole", "name_ar": "جوزة الطيب كاملة", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 931},
