@@ -72,7 +72,7 @@
   {"code": "166040", "name": "Sesame Seeds (PUER)", "name_ar": "سمسم", "unit": "kg", "maxLimit": 1, "step": 1, "AVE": 196},
   {"code": "132010", "name": "Shrimps Large (16-20)", "name_ar": "جمبري كبير (16-20)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 813.48095},
   {"code": "132012", "name": "Shrimps Meat (26-30)", "name_ar": "لحم جمبري (26-30)", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 987.91904},
-  {"code": "131015", "name": "Smoked Eel", "name_ar": "ثعبان البحر مدخن", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 844.8},
+  {"code": "131086", "name": "Smoked Eel Abo el Sead", "name_ar": "ثعبان البحر مدخن ابو السيد ", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 844.8},
   {"code": "131054", "name": "Smoked Salmon Sliced Skin On Maxim", "name_ar": "سلمون مدخن شرائح بالجلد ماكسيم", "unit": "kg", "maxLimit": 4, "step": 1, "AVE": 1000},
   {"code": "164075", "name": "Soba Noodles", "name_ar": "نودلز سوبا", "unit": "300g pkt", "maxLimit": 8, "step": 1, "AVE": 65},
   {"code": "113034", "name": "Spring Roll With Vegetables", "name_ar": "سبرينج رول", "unit": "kg", "maxLimit": 4, "step": 0.5, "AVE": 124.6875},
