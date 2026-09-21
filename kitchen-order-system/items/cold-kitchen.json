@@ -3,6 +3,7 @@
   {"code": "176006", "name": "Almond Whole Abu Auf", "name_ar": "لوز كامل أبو عوف", "unit": "Kilogram", "maxLimit": 2, "step": 0.5, "AVE": 680.0},
   {"code": "160001", "name": "Anchovies Small Tin", "name_ar": "أنشوجة صغيرة", "unit": "50g pkt", "maxLimit": 6, "step": 1, "AVE": 65.28066},
   {"code": "113008", "name": "Beef Cold Cut With Meat Cut", "name_ar": "سجق بارد لحم", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 211.2},
+  {"code": "113120", "name": "Beef Cold Cut With Meat Choice", "name_ar": "سجق بارد لحم شويس", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 211},
   {"code": "113018", "name": "Beef Salami Air Dried Whole", "name_ar": "سلامي لحم مجفف هواء كامل", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 352},
   {"code": "113020", "name": "Beef Sausages Taste Pure", "name_ar": "سجق لحم تيست بيور", "unit": "Kilogram", "maxLimit": 8, "step": 1, "AVE": 232.2},
   {"code": "113079", "name": "Beef Smoked Pressed Choice", "name_ar": "لحم مدخن مضغوط شويس", "unit": "kg", "maxLimit": 5, "step": 0.5, "AVE": 332.64},
