@@ -24,6 +24,7 @@
   {"code": "161142", "name": "Chilli Whole Red Indian (PURE)", "name_ar": "شطة حمراء كاملة هندي (نقي)", "unit": "Kilogram", "maxLimit": 1, "step": 0.5, "AVE": 176.0},
   {"code": "161143", "name": "Cinnamon Powder (PURE)", "name_ar": "قرفة بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 294},
   {"code": "161027", "name": "Cloves Seeds", "name_ar": "حب قرنفل", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 1078},
+  {"code": "142004", "name": "Cauliflower Frozen Box 7.5 KG", "name_ar": "قرنبيط مجمد صندوق 7.5 كجم", "unit": "7.5kg box", "maxLimit": 1, "step": 1, "AVE": 400.4},
   {"code": "176010", "name": "Coconut Powder Fine", "name_ar": "بودرة جوز الهند ناعمة", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 188.35178},
   {"code": "161147", "name": "Coriander Powder (PURE)", "name_ar": "كزبرة بودرة (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 105},
   {"code": "175133", "name": "Corn Flour Dreem", "name_ar": "دقيق ذرة دريم", "unit": "240g pkt", "maxLimit": 8, "step": 1, "AVE": 11.8798},
