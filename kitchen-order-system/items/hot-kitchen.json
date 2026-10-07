@@ -87,6 +87,7 @@
   {"code": "163089", "name": "Pickles Green Olives Seedless", "name_ar": "زيتون أخضر منزوع البذر", "unit": "650g jar", "maxLimit": 3, "step": 1, "AVE": 113.85727},
   {"code": "163125", "name": "Picklesline Kalamata Wadi Food Jar 1 KG", "name_ar": "زيتون كالاماتا وادي فود 1 كجم", "unit": "Jar 1 KG", "maxLimit": 2, "step": 1, "AVE": 165.72},
   {"code": "176021", "name": "Pine Nut", "name_ar": "صنوبر", "unit": "500g pkt", "maxLimit": 4, "step": 1, "AVE": 1675},
+  {"code": "163031", "name": "Pickles Jalapeno Wadi Food", "name_ar": "هالابينو مخلل وادي فود", "unit": "kg", "maxLimit": 2, "step": 0.5, "AVE": 48.64024},
   {"code": "176036", "name": "Pistachio Powder", "name_ar": "بودرة فستق", "unit": "500g pkt", "maxLimit": 3, "step": 1, "AVE": 881.82545},
   {"code": "176024", "name": "Pistachio Whole", "name_ar": "فستق كامل", "unit": "kg", "maxLimit": 3, "step": 0.5, "AVE": 1145},
   {"code": "163208", "name": "Pomegranate Molasses", "name_ar": "دبس رمان", "unit": "750ml bottle", "maxLimit": 2, "step": 1, "AVE": 198.24488},
