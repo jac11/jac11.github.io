@@ -23,7 +23,7 @@
   {"code": "151038", "name": "Butter New Zealand Fontera Block", "name_ar": "زبدة نيوزيلندا فونتيرا", "unit": "25kg box", "maxLimit": 1, "step": 1, "AVE": 14500},
   {"code": "161009", "name": "Cajun Seasoning Pkt 2 KG", "name_ar": "بهارات كاجون 2 كجم", "unit": "Pkt 2 KG", "maxLimit": 1, "step": 1, "AVE": 2737.35},
   {"code": "130012", "name": "Calamari Baby", "name_ar": "كالاماري صغير", "unit": "kg", "maxLimit": 6, "step": 0.5, "AVE": 559.93},
-  {"code": "160096", "name": "Capers Jar 910 Gram", "name_ar": "كابرس 910 جرام", "unit": "910g jar", "maxLimit": 1, "step": 1, "AVE": 419.23077},
+  {"code": "160110", "name": "Capers Jar 910 Gram", "name_ar": "كابرس 910 جرام", "unit": "910g jar", "maxLimit": 1, "step": 1, "AVE": 400.0},
   {"code": "175291", "name": "Carbonates KG (PURE)", "name_ar": "كربونات (نقي)", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 53.9},
   {"code": "161011", "name": "Cardamom Seeds", "name_ar": "حب الهال", "unit": "kg", "maxLimit": 1, "step": 0.5, "AVE": 1960},
   {"code": "176007", "name": "Cashew Abu Auf", "name_ar": "كاجو أبو عوف", "unit": "500g pkt", "maxLimit": 2, "step": 1, "AVE": 329.99965},
