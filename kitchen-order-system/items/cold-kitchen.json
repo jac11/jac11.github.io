@@ -82,6 +82,7 @@
   {"code": "177059", "name": "Jam Carrot Vitrac", "name_ar": "مربى جزر فيتراك", "unit": "430g jar", "maxLimit": 5, "step": 1, "AVE": 41.28228},
   {"code": "177070", "name": "Jam Date Vitrac", "name_ar": "مربى تمر فيتراك", "unit": "430g jar", "maxLimit": 5, "step": 1, "AVE": 41.15804},
   {"code": "177038", "name": "Jam Fig Vitrac", "name_ar": "مربى تين فيتراك", "unit": "430g jar", "maxLimit": 5, "step": 1, "AVE": 41.1585},
+  {"code": "177035", "name": "Jam Strawberry Vitrac 430 Gram", "name_ar": "مربى فراولة فيتراك 430 جرام", "unit": "Jar 430 Gram", "maxLimit": 4, "step": 1, "AVE": 41.22389},
   {"code": "177064", "name": "Jam Mango Vitrac", "name_ar": "مربى مانجو فيتراك", "unit": "430g jar", "maxLimit": 5, "step": 1, "AVE": 40.99333},
   {"code": "177040", "name": "Jam Orange Vitrac", "name_ar": "مربى برتقال فيتراك", "unit": "430g jar", "maxLimit": 5, "step": 1, "AVE": 40.99333},
   {"code": "177037", "name": "Jam Portion Figs Hero", "name_ar": "مربى تين قطعة هيرو", "unit": "144pc box", "maxLimit": 2, "step": 1, "AVE": 1808.24544},
